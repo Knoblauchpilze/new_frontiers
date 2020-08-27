@@ -25,15 +25,11 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  NewFrontiersApp::tileCoordsToPixels(const olc::vi2d& tiles, bool full) noexcept {
-    olc::vi2d pc(
+  NewFrontiersApp::tileCoordsToPixels(const olc::vi2d& tiles) noexcept {
+    return olc::vi2d(
       WORLD_ORIGIN_X * 64 + (tiles.y - tiles.x) * 64 / 2,
-      WORLD_ORIGIN_Y * 32 + (tiles.x + tiles.y) * 32 / 2
+      WORLD_ORIGIN_Y * 32 + (tiles.x + tiles.y) * 32 / 2 - 32
     );
-
-    pc.y -= (full ? 64 : 32);
-
-    return pc;
   }
 
   inline

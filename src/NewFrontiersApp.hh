@@ -90,15 +90,12 @@ namespace new_frontiers {
        *          an offset applied to the world to make it more
        *          appealing and visible.
        * @param tiles - the position to convert in tiles coords.
-       * @param full - `ŧrue` if the tile associated to the pos
-       *               is a full `tile` (i.e. a full sprite) or
-       *               `false` in case it has no height element.
        * @return - the coordinates in pixels of the tile defined
        *           by the input coords.
        */
       static
       olc::vi2d
-      tileCoordsToPixels(const olc::vi2d& tiles, bool full) noexcept;
+      tileCoordsToPixels(const olc::vi2d& tiles) noexcept;
 
       /**
        * @brief - Convert from pixels coordinates to tile coords.
@@ -152,11 +149,6 @@ namespace new_frontiers {
         Cursor
       };
 
-      struct Tile {
-        olc::vi2d coords;
-        bool full;
-      };
-
       static constexpr unsigned TileCount = 5u;
 
       struct RNGUtils {
@@ -175,7 +167,7 @@ namespace new_frontiers {
       };
 
       olc::Sprite* m_sprite;
-      std::vector<Tile> m_aliases;
+      std::vector<olc::vi2d> m_aliases;
 
       std::vector<olc::vi2d> m_portals;
       std::vector<olc::vi2d> m_enemies;
