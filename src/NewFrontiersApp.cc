@@ -50,38 +50,32 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
 
     // Draw ground.
-    bool full = m_aliases[Sprite::Ground].full;
     for (unsigned y = 0u ; y < WORLD_SIZE_H ; ++y) {
       for (unsigned x = 0u ; x < WORLD_SIZE_W ; ++x) {
-        if (m_first && x == 3u && y == 3u) {
-          log("Painting ground at " + toString(olc::vi2d(x, y)) + " at " + toString(tileCoordsToPixels(olc::vi2d(x, y), full)));
-        }
-        DrawPartialSprite(tileCoordsToPixels(olc::vi2d(x, y), full), m_sprite, m_aliases[Sprite::Ground].coords, spriteSize());
+        DrawPartialSprite(tileCoordsToPixels(olc::vi2d(x, y)), m_sprite, m_aliases[Sprite::Ground], spriteSize());
       }
     }
 
     // Draw portals.
-    full = m_aliases[Sprite::Portal].full;
     for (unsigned id = 0u ; id < m_portals.size() ; ++id) {
       olc::vi2d coord = m_portals[id];
-      DrawPartialSprite(tileCoordsToPixels(coord, full), m_sprite, m_aliases[Sprite::Portal].coords, spriteSize());
+      DrawPartialSprite(tileCoordsToPixels(coord), m_sprite, m_aliases[Sprite::Portal], spriteSize());
     }
 
     // Draw door.
-    DrawPartialSprite(tileCoordsToPixels(olc::vi2d(1, 1), m_aliases[Sprite::Door].full), m_sprite, m_aliases[Sprite::Door].coords, spriteSize());
+    DrawPartialSprite(tileCoordsToPixels(olc::vi2d(1, 1)), m_sprite, m_aliases[Sprite::Door], spriteSize());
 
     // Draw enemies.
-    full = m_aliases[Sprite::Monster].full;
     for (unsigned id = 0u ; id < m_enemies.size() ; ++id) {
       olc::vi2d coord = m_enemies[id];
-      DrawPartialSprite(tileCoordsToPixels(coord, full), m_sprite, m_aliases[Sprite::Monster].coords, spriteSize());
+      DrawPartialSprite(tileCoordsToPixels(coord), m_sprite, m_aliases[Sprite::Monster], spriteSize());
     }
 
     // Draw cursor.
     olc::vi2d mp = GetMousePos();
     olc::vi2d mtp = pixelCoordsToTiles(mp);
-    olc::vi2d ctp = tileCoordsToPixels(mtp, m_aliases[Sprite::Cursor].full);
-    DrawPartialSprite(ctp, m_sprite, m_aliases[Sprite::Cursor].coords, spriteSize());
+    olc::vi2d ctp = tileCoordsToPixels(mtp);
+    DrawPartialSprite(ctp, m_sprite, m_aliases[Sprite::Cursor], spriteSize());
 
     SetPixelMode(olc::Pixel::NORMAL);
 
@@ -123,11 +117,11 @@ namespace new_frontiers {
 
     m_aliases.resize(TileCount);
 
-    m_aliases[Sprite::Portal] = Tile{spriteCoordsToPixels(12, 5), false};
-    m_aliases[Sprite::Monster] = Tile{spriteCoordsToPixels(6, 7), true};
-    m_aliases[Sprite::Ground] = Tile{spriteCoordsToPixels(10, 4), false};
-    m_aliases[Sprite::Door] = Tile{spriteCoordsToPixels(1, 2), false};
-    m_aliases[Sprite::Cursor] = Tile{spriteCoordsToPixels(5, 10), false};
+    m_aliases[Sprite::Portal] = spriteCoordsToPixels(12, 5);
+    m_aliases[Sprite::Monster] = spriteCoordsToPixels(6, 7);
+    m_aliases[Sprite::Ground] = spriteCoordsToPixels(10, 4);
+    m_aliases[Sprite::Door] = spriteCoordsToPixels(1, 2);
+    m_aliases[Sprite::Cursor] = spriteCoordsToPixels(5, 10);
   }
 
   void
