@@ -17,6 +17,8 @@ int main(int /*argc*/, char** /*argv*/) {
 
   const std::string service("new_frontiers");
   const std::string module("main");
+  const unsigned width = 640u;
+  const unsigned height = 480u;
 
   try {
     utils::LoggerLocator::getLogger().logMessage(
@@ -26,7 +28,7 @@ int main(int /*argc*/, char** /*argv*/) {
       service
     );
 
-    new_frontiers::NewFrontiersApp demo;
+    new_frontiers::NewFrontiersApp demo(width, height);
     demo.Start();
   }
   catch (const utils::CoreException& e) {
