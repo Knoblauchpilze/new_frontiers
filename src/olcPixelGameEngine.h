@@ -135,7 +135,7 @@
 	174K YouTube followers,	70+ Patreons and 8K Discord server members who give me
 	the motivation to keep going with all this :D
 
-	Significant Contributors: @Moros1138, @SaladinAkara, @MaGetzUb, @slavka, 
+	Significant Contributors: @Moros1138, @SaladinAkara, @MaGetzUb, @slavka,
 							  @Dragoneye, @Gorbit99 & @Mumflr
 
 	Special thanks to those who bring gifts!
@@ -186,7 +186,6 @@
 		  +More pedant mollification - Thanks TheLandfill
 		  +ImageLoader modules - user selectable image handling core, gdi+, libpng, stb_image
 		  +Mac Support via GLUT - thanks Mumflr!
-		  
 */
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -428,7 +427,7 @@ namespace olc
 		operator v2d_generic<double>() const { return { static_cast<double>(this->x), static_cast<double>(this->y) }; }
 	};
 
-	// Note: joshinils has some good suggestions here, but they are complicated to implement at this moment, 
+	// Note: joshinils has some good suggestions here, but they are complicated to implement at this moment,
 	// however they will appear in a future version of PGE
 	template<class T> inline v2d_generic<T> operator * (const float& lhs, const v2d_generic<T>& rhs)
 	{ return v2d_generic<T>((T)(lhs * (float)rhs.x), (T)(lhs * (float)rhs.y)); }
@@ -955,7 +954,7 @@ namespace olc
 	Pixel::Pixel(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 	{
 		n = red | (green << 8) | (blue << 16) | (alpha << 24);
-	} // Thanks jarekpelczar 
+	} // Thanks jarekpelczar
 
 
 	Pixel::Pixel(uint32_t p)
@@ -1207,7 +1206,7 @@ namespace olc
 
 
 	//=============================================================
-	// Resource Packs - Allows you to store files in one large 
+	// Resource Packs - Allows you to store files in one large
 	// scrambled file - Thanks MaGetzUb for debugging a null char in std::stringstream bug
 	ResourceBuffer::ResourceBuffer(std::ifstream& ifs, uint32_t offset, uint32_t size)
 	{
@@ -2768,7 +2767,7 @@ namespace olc
 
 	public:
 		void PrepareDevice() override
-		{ 
+		{
 #if defined(__APPLE__)
 			//glutInit has to be called with main() arguments, make fake ones
 			int argc = 0;
@@ -3243,7 +3242,7 @@ namespace olc
 // MIT License - Copyright(c) 2017 Sean Barrett
 
 // Note you need to download the above file into your project folder, and
-// #define OLC_IMAGE_STB 
+// #define OLC_IMAGE_STB
 // #define OLC_PGE_APPLICATION
 // #include "olcPixelGameEngine.h"
 

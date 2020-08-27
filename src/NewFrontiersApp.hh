@@ -89,18 +89,23 @@ namespace new_frontiers {
        *          use of a global world origin that represents
        *          an offset applied to the world to make it more
        *          appealing and visible.
+       * @param tiles - the position to convert in tiles coords.
+       * @param full - `ŧrue` if the tile associated to the pos
+       *               is a full `tile` (i.e. a full sprite) or
+       *               `false` in case it has no height element.
        * @return - the coordinates in pixels of the tile defined
        *           by the input coords.
        */
       static
       olc::vi2d
-      tileCoordsToPixels(const olc::vi2d& tiles) noexcept;
+      tileCoordsToPixels(const olc::vi2d& tiles, bool full) noexcept;
 
       /**
        * @brief - Convert from pixels coordinates to tile coords.
-       *          Note that we do not account for all the tiles
-       *          but rather the one 
-       *          TODO: Comment.
+       *          Some extra logic is added in order to account
+       *          for the tiles that do not align with the grid
+       *          so that we always get an accurate position for
+       *          the tile.
        * @param pixels - the pixels coordinates to convert into
        *                 tile coords.
        * @return - the corresponding tile coordinates.
@@ -137,16 +142,22 @@ namespace new_frontiers {
       static constexpr int32_t WORLD_SIZE_H = 11;
 
       static constexpr int32_t PORTALS_COUNT = 2;
-      static constexpr int32_t ENEMIES_COUNT = 1;
+      static constexpr int32_t ENEMIES_COUNT = 4;
 
-      enum Tile {
+      enum Sprite {
         Portal,
         Monster,
         Ground,
+        Door,
         Cursor
       };
 
-      static constexpr unsigned TileCount = 4u;
+      struct Tile {
+        olc::vi2d coords;
+        bool full;
+      };
+
+      static constexpr unsigned TileCount = 5u;
 
       struct RNGUtils {
         std::random_device device;
@@ -164,7 +175,7 @@ namespace new_frontiers {
       };
 
       olc::Sprite* m_sprite;
-      std::vector<olc::vi2d> m_aliases;
+      std::vector<Tile> m_aliases;
 
       std::vector<olc::vi2d> m_portals;
       std::vector<olc::vi2d> m_enemies;
