@@ -14,9 +14,9 @@ namespace new_frontiers {
   bool
   NewFrontiersApp::OnUserCreate() {
     return true;
-	}
+  }
 
-	bool
+  bool
   NewFrontiersApp::OnUserUpdate(float /*fElapsedTime*/) {
     // Draw random pixels.
     for (int x = 0 ; x < ScreenWidth() ; x++) {
