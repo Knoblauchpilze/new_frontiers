@@ -27,13 +27,6 @@ int main(int /*argc*/, char** /*argv*/) {
     );
 
     new_frontiers::NewFrontiersApp demo;
-    if (demo.Construct(256, 240, 4, 4) != olc::OK) {
-      throw utils::CoreException(
-        std::string("Could not build new frontiers application"),
-        std::string("Initialization failed")
-      );
-    }
-
     demo.Start();
   }
   catch (const utils::CoreException& e) {
