@@ -50,40 +50,45 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
 
     // Draw ground.
+    bool full = m_aliases[Sprite::Ground].full;
     for (unsigned y = 0u ; y < WORLD_SIZE_H ; ++y) {
       for (unsigned x = 0u ; x < WORLD_SIZE_W ; ++x) {
-        DrawPartialSprite(tileCoordsToPixels(olc::vi2d(x, y)), m_sprite, m_aliases[Tile::Ground], spriteSize());
+        if (m_first && x == 3u && y == 3u) {
+          log("Painting ground at " + toString(olc::vi2d(x, y)) + " at " + toString(tileCoordsToPixels(olc::vi2d(x, y), full)));
+        }
+        DrawPartialSprite(tileCoordsToPixels(olc::vi2d(x, y), full), m_sprite, m_aliases[Sprite::Ground].coords, spriteSize());
       }
     }
 
     // Draw portals.
+    full = m_aliases[Sprite::Portal].full;
     for (unsigned id = 0u ; id < m_portals.size() ; ++id) {
       olc::vi2d coord = m_portals[id];
-      DrawPartialSprite(tileCoordsToPixels(coord), m_sprite, m_aliases[Tile::Portal], spriteSize());
+      DrawPartialSprite(tileCoordsToPixels(coord, full), m_sprite, m_aliases[Sprite::Portal].coords, spriteSize());
     }
 
+    // Draw door.
+    DrawPartialSprite(tileCoordsToPixels(olc::vi2d(1, 1), m_aliases[Sprite::Door].full), m_sprite, m_aliases[Sprite::Door].coords, spriteSize());
+
     // Draw enemies.
+    full = m_aliases[Sprite::Monster].full;
     for (unsigned id = 0u ; id < m_enemies.size() ; ++id) {
       olc::vi2d coord = m_enemies[id];
-      DrawPartialSprite(tileCoordsToPixels(coord), m_sprite, m_aliases[Tile::Monster], spriteSize());
+      DrawPartialSprite(tileCoordsToPixels(coord, full), m_sprite, m_aliases[Sprite::Monster].coords, spriteSize());
     }
 
     // Draw cursor.
     olc::vi2d mp = GetMousePos();
     olc::vi2d mtp = pixelCoordsToTiles(mp);
-
-    olc::vi2d ctp = tileCoordsToPixels(mtp);
-    DrawRect(ctp + olc::vi2d(0, 32), tileSize(), olc::RED);
-
-    DrawPartialSprite(ctp, m_sprite, m_aliases[Tile::Cursor], spriteSize());
+    olc::vi2d ctp = tileCoordsToPixels(mtp, m_aliases[Sprite::Cursor].full);
+    DrawPartialSprite(ctp, m_sprite, m_aliases[Sprite::Cursor].coords, spriteSize());
 
     SetPixelMode(olc::Pixel::NORMAL);
 
-    olc::vi2d mrc(mp.x / 64 - WORLD_ORIGIN_X, mp.y / 32 - WORLD_ORIGIN_Y);
-    olc::vi2d mtc(mrc.y - mrc.x, mrc.y + mrc.x);
+    DrawString(olc::vi2d(0, 450), "Mouse coords        : " + toString(mp), olc::CYAN);
+    DrawString(olc::vi2d(0, 465), "World cell coords   : " + toString(mtp), olc::CYAN);
 
-    DrawString(olc::vi2d(0, 300), "Regular cell coords: " + toString(mrc), olc::CYAN);
-    DrawString(olc::vi2d(0, 315), "World cell coords  : " + toString(mtc), olc::CYAN);
+    m_first = false;
 
     return true;
   }
@@ -109,7 +114,7 @@ namespace new_frontiers {
 
     // Initialize random generator.
     m_random.rng.seed(m_random.device());
-    m_random.reset(WORLD_SIZE_W - 1, WORLD_SIZE_H - 1);
+    m_random.reset(WORLD_SIZE_W - 2, WORLD_SIZE_H - 2);
   }
 
   void
@@ -118,12 +123,11 @@ namespace new_frontiers {
 
     m_aliases.resize(TileCount);
 
-    m_aliases[Tile::Portal] = spriteCoordsToPixels(12, 5);
-    m_aliases[Tile::Monster] = spriteCoordsToPixels(6, 7);
-    m_aliases[Tile::Ground] = spriteCoordsToPixels(10, 4);
-    m_aliases[Tile::Cursor] = spriteCoordsToPixels(5, 10);
-
-    log("Coordinates of ground is " + toString(m_aliases[Tile::Ground]));
+    m_aliases[Sprite::Portal] = Tile{spriteCoordsToPixels(12, 5), false};
+    m_aliases[Sprite::Monster] = Tile{spriteCoordsToPixels(6, 7), true};
+    m_aliases[Sprite::Ground] = Tile{spriteCoordsToPixels(10, 4), false};
+    m_aliases[Sprite::Door] = Tile{spriteCoordsToPixels(1, 2), false};
+    m_aliases[Sprite::Cursor] = Tile{spriteCoordsToPixels(5, 10), false};
   }
 
   void

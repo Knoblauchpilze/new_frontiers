@@ -25,11 +25,15 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  NewFrontiersApp::tileCoordsToPixels(const olc::vi2d& tiles) noexcept {
-    return olc::vi2d(
+  NewFrontiersApp::tileCoordsToPixels(const olc::vi2d& tiles, bool full) noexcept {
+    olc::vi2d pc(
       WORLD_ORIGIN_X * 64 + (tiles.y - tiles.x) * 64 / 2,
-      WORLD_ORIGIN_Y * 32 + (tiles.x + tiles.y) * 32 / 2 - 32
+      WORLD_ORIGIN_Y * 32 + (tiles.x + tiles.y) * 32 / 2
     );
+
+    pc.y -= (full ? 64 : 32);
+
+    return pc;
   }
 
   inline
@@ -107,8 +111,8 @@ namespace new_frontiers {
   NewFrontiersApp::RNGUtils::reset(unsigned w,
                                    unsigned h)
   {
-    wRNG.param(std::uniform_int_distribution<int>::param_type(0, w));
-    hRNG.param(std::uniform_int_distribution<int>::param_type(0, h));
+    wRNG.param(std::uniform_int_distribution<int>::param_type(1, w));
+    hRNG.param(std::uniform_int_distribution<int>::param_type(1, h));
   }
 
 }
