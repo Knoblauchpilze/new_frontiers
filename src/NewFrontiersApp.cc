@@ -9,6 +9,7 @@ namespace new_frontiers {
     olc::PixelGameEngine()
   {
     sAppName = appName;
+    initialize();
   }
 
   bool
@@ -26,6 +27,16 @@ namespace new_frontiers {
     }
 
     return true;
+  }
+
+  void
+  NewFrontiersApp::initialize() {
+    if (Construct(640, 480, 1, 1) != olc::OK) {
+      throw utils::CoreException(
+        std::string("Could not build new frontiers application"),
+        std::string("Initialization failed")
+      );
+    }
   }
 
 }

@@ -39,6 +39,13 @@ namespace new_frontiers {
       OnUserUpdate(float fElapsedTime) override;
 
     private:
+
+      /**
+       * @brief - Performs the initialization of the engine to make
+       *          it suits our needs.
+       */
+      void
+      initialize();
   };
 
 }
