@@ -31,6 +31,27 @@ namespace new_frontiers {
       RNG
       createRandomRNG() noexcept;
 
+      /**
+       * @brief - Used to generate a random number in the range
+       *          defined by the input value.
+       * @param min - the minimum value to generate.
+       * @param max - the maximum value allowed to be generated.
+       * @return - a random value in the range `[min; max]`.
+       */
+      int
+      rndInt(int min, int max) noexcept;
+
+      /**
+       * @brief - Used to generate a random number in the range
+       *          defined by the input value. Similar to the
+       *          `rndInt` method but for floats.
+       * @param min - the minimum value to generate.
+       * @param max - the maximum value allowed to be generated.
+       * @return - a random value in the range `[min; max]`.
+       */
+      float
+      rndFloat(float min, float max) noexcept;
+
     private:
 
       /**

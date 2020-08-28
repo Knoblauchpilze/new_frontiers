@@ -4,6 +4,7 @@
 # include <core_utils/CoreObject.hh>
 # include "olcPixelGameEngine.h"
 # include <random>
+# include "World.hh"
 
 namespace new_frontiers {
 
@@ -14,10 +15,13 @@ namespace new_frontiers {
        * @brief - Create a new default pixel game engine app.
        * @param width - the width of the window in pixels.
        * @param height - the height of the window in pixels.
+       * @param pixelRatio - defines the ratio between an viewport
+       *                     pixel and a screen pixel.
        * @param appName - The name of the application to create.
        */
-      NewFrontiersApp(unsigned width = 640u,
-                      unsigned height = 480u,
+      NewFrontiersApp(int width = 640,
+                      int height = 480,
+                      int pixelRatio = 1,
                       const std::string& appName = "new_frontiers");
 
       /**
@@ -66,9 +70,8 @@ namespace new_frontiers {
        * @return - a vector representing the pixels coordinates
        *           for the input sprite coords.
        */
-      static
       olc::vi2d
-      spriteCoordsToPixels(int x, int y) noexcept;
+      spriteCoordsToPixels(int x, int y) const noexcept;
 
       /**
        * @brief - Represent the size of a tile in the world as
@@ -89,13 +92,13 @@ namespace new_frontiers {
        *          use of a global world origin that represents
        *          an offset applied to the world to make it more
        *          appealing and visible.
-       * @param tiles - the position to convert in tiles coords.
+       * @param x - the cell coordinate along the `x` axis.
+       * @param y - the cell coordinate along the `y` axis.
        * @return - the coordinates in pixels of the tile defined
        *           by the input coords.
        */
-      static
       olc::vi2d
-      tileCoordsToPixels(const olc::vi2d& tiles) noexcept;
+      tileCoordsToPixels(int x, int y) const noexcept;
 
       /**
        * @brief - Convert from pixels coordinates to tile coords.
@@ -107,74 +110,109 @@ namespace new_frontiers {
        *                 tile coords.
        * @return - the corresponding tile coordinates.
        */
-      static
       olc::vi2d
-      pixelCoordsToTiles(const olc::vi2d& pixels) noexcept;
+      pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept;
 
       /**
        * @brief - Performs the initialization of the engine to make
        *          it suits our needs.
        * @param width - the width of the window in pixels.
        * @param height - the height of the window in pixels.
+       * @param pixelRatio - the ratio between a viewport pixel and
+       *                     a screen pixel.
        */
       void
-      initialize(unsigned width,
-                 unsigned height);
+      initialize(int width, int height, int pixelRatio);
 
+      /**
+       * @brief - Perform the creation of the tile aliases, allowing
+       *          to easily associate a sprite with it's visual item
+       *          and speed up the rendering.
+       *          The layout of the alias is packed so that all tiles
+       *          are contiguously stored in memory and one can use
+       *          the below methods to convert from a specific type
+       *          to the index in the alias.
+       */
       void
       createTileAliases();
 
-      void
-      generatePortals();
+      /**
+       * @brief - Compute the index of the input sprite in the atlas
+       *          array.
+       * @param sprite - the sprite for which the alias index should
+       *                 be computed.
+       * @return - the index of the sprite in the alias array.
+       */
+      static
+      int
+      aliasOfSprite(const Sprite& sprite);
 
+      /**
+       * @brief - Compute the index of the input entity in the atlas
+       *          array.
+       * @param ent - the entity for which the alias index should be
+       *              computed.
+       * @return - the index of the entity in the alias array.
+       */
+      static
+      int
+      aliasOfEntity(const Mob& ent);
+
+      /**
+       * @brief - Compute the index of the input effect in the atlas
+       *          array.
+       * @param vfx - the effect for which the alias index should be
+       *              computed.
+       * @return - the index of the effect in the alias array.
+       */
+      static
+      int
+      aliasOfEffect(const Effect& vfx);
+
+      /**
+       * @brief - Used to draw the tile referenced by its alias index
+       *          and at the coordinate `cell`.
+       * @param x - the coordinate along the `x` axis for this sprite.
+       * @param y - the coordinate along the `y` axis for this sprite.
+       * @param alias - the index of the tile in the tile atlas.
+       */
       void
-      spawnMonster();
+      drawSprite(int x, int y, int alias);
 
     private:
 
-      static constexpr int32_t WORLD_ORIGIN_X = 5;
-      static constexpr int32_t WORLD_ORIGIN_Y = 1;
-
-      static constexpr int32_t WORLD_SIZE_W = 10;
-      static constexpr int32_t WORLD_SIZE_H = 11;
-
-      static constexpr int32_t PORTALS_COUNT = 2;
-      static constexpr int32_t ENEMIES_COUNT = 4;
-
-      enum Sprite {
-        Portal,
-        Monster,
-        Ground,
-        Door,
-        Cursor
-      };
-
-      static constexpr unsigned TileCount = 5u;
-
-      struct RNGUtils {
-        std::random_device device;
-        std::mt19937 rng;
-
-        std::uniform_int_distribution<int> wRNG;
-        std::uniform_int_distribution<int> hRNG;
-
-        olc::vi2d
-        coords();
-
-        void
-        reset(unsigned w,
-              unsigned h);
-      };
-
+      /**
+       * @brief - Holds the main sprite defining the visual aspect
+       *          of in-game elements. It is usually represented as
+       *          a large texture containing separate elements for
+       *          each tile type.
+       */
       olc::Sprite* m_sprite;
+
+      /**
+       * @brief - Defines an atlas where each tile type is stored
+       *          for easy access inside the general sprite. It
+       *          allows to easily associate a tile type with a
+       *          visual element.
+       */
       std::vector<olc::vi2d> m_aliases;
 
-      std::vector<olc::vi2d> m_portals;
-      std::vector<olc::vi2d> m_enemies;
+      /**
+       * @brief - Defines the coordinates of the top part of the
+       *          world in cells' coordinates. Allows to offset
+       *          the representation of the world on-screen and
+       *          thus allow panning/zooming etc.
+       *          The `m_wox` stands for `World origin along the
+       *          x axis` and the `m_woy` stands for a similar
+       *          name but for the `y` axis.
+       */
+      int m_wox;
+      int m_woy;
 
-      RNGUtils m_random;
-
-      bool m_first;
+      /**
+       * @brief - The world managed by this application.
+       */
+      WorldShPtr m_world;
   };
 
 }

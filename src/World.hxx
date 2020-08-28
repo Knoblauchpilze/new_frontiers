@@ -17,6 +17,12 @@ namespace new_frontiers {
     return m_h;
   }
 
+  inline
+  WorldIterator
+  World::iterator() const noexcept {
+    return WorldIterator(m_w, m_h, m_tiles, m_entities, m_vfx);
+  }
+
 }
 
 #endif    /* WORLD_HXX */

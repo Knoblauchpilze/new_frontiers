@@ -5,6 +5,7 @@
 
 namespace new_frontiers {
 
+  inline
   RNG
   RNG::createRandomRNG() noexcept {
     // Create a random device. This will be used to
@@ -15,6 +16,21 @@ namespace new_frontiers {
 
     // Use this as a seed.
     return RNG(device());
+  }
+
+  inline
+  int
+  RNG::rndInt(int min, int max) noexcept {
+    // Generate an integer distribution and use it.
+    std::uniform_int_distribution<int> dist(min, max);
+    return dist(m_rng);
+  }
+
+  inline
+  float
+  RNG::rndFloat(float min, float max) noexcept {
+    std::uniform_real_distribution<float> dist(min, max);
+    return dist(m_rng);
   }
 
 }
