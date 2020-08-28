@@ -8,7 +8,10 @@ set (CMAKE_VERBOSE_MAKEFILE ON)
 set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set (SOURCES
+  olcEngine.cc
   NewFrontiersApp.cc
+  World.cc
+  RNG.cc
   )
 
 add_library (new_frontiers_lib SHARED
