@@ -1,6 +1,4 @@
 
-# define OLC_PGE_APPLICATION
-
 # include "NewFrontiersApp.hh"
 # include "utils.hh"
 
