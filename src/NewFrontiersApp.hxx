@@ -6,6 +6,25 @@
 namespace new_frontiers {
 
   inline
+  NewFrontiersApp::~NewFrontiersApp() {
+    if (m_sprite != nullptr) {
+      delete m_sprite;
+    }
+  }
+
+  inline
+  bool
+  NewFrontiersApp::OnUserCreate() {
+    // Create the world.
+    m_world = std::make_shared<World>(10, 8, 6);
+
+    // And the tile alias.
+    createTileAliases();
+
+    return true;
+  }
+
+  inline
   olc::vi2d
   NewFrontiersApp::spriteSize() noexcept {
     return olc::vi2d(64, 64);
@@ -13,7 +32,7 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  NewFrontiersApp::spriteCoordsToPixels(int x, int y) noexcept {
+  NewFrontiersApp::spriteCoordsToPixels(int x, int y) const noexcept {
     return olc::vi2d(x * 64, y * 64);
   }
 
@@ -25,18 +44,18 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  NewFrontiersApp::tileCoordsToPixels(const olc::vi2d& tiles) noexcept {
+  NewFrontiersApp::tileCoordsToPixels(int x, int y) const noexcept {
     return olc::vi2d(
-      WORLD_ORIGIN_X * 64 + (tiles.y - tiles.x) * 64 / 2,
-      WORLD_ORIGIN_Y * 32 + (tiles.x + tiles.y) * 32 / 2 - 32
+      m_wox * 64 + (y - x) * 64 / 2,
+      m_woy * 32 + (x + y) * 32 / 2 - 32
     );
   }
 
   inline
   olc::vi2d
-  NewFrontiersApp::pixelCoordsToTiles(const olc::vi2d& pixels) noexcept {
-    int tx = pixels.x / 64 - WORLD_ORIGIN_X;
-    int ty = pixels.y / 32 - WORLD_ORIGIN_Y;
+  NewFrontiersApp::pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept {
+    int tx = pixels.x / 64 - m_wox;
+    int ty = pixels.y / 32 - m_woy;
 
     olc::vi2d rt(ty - tx, ty + tx);
 
@@ -97,18 +116,38 @@ namespace new_frontiers {
   }
 
   inline
-  olc::vi2d
-  NewFrontiersApp::RNGUtils::coords() {
-    return olc::vi2d(wRNG(rng), hRNG(rng));
+  void
+  NewFrontiersApp::initialize(int width, int height, int pixelRatio) {
+    // Construct the window. Note that we use a pixel size
+    // to screen size ratio of `1` (meaning that each pixel
+    // of the viewport will be represented by a pixel on
+    // the screen).
+    olc::rcode c = Construct(width, height, pixelRatio, pixelRatio);
+
+    if (c != olc::OK) {
+      throw utils::CoreException(
+        std::string("Could not build new frontiers application"),
+        std::string("Initialization failed")
+      );
+    }
   }
 
   inline
-  void
-  NewFrontiersApp::RNGUtils::reset(unsigned w,
-                                   unsigned h)
-  {
-    wRNG.param(std::uniform_int_distribution<int>::param_type(1, w));
-    hRNG.param(std::uniform_int_distribution<int>::param_type(1, h));
+  int
+  NewFrontiersApp::aliasOfSprite(const Sprite& sprite) {
+    return sprite;
+  }
+
+  inline
+  int
+  NewFrontiersApp::aliasOfEntity(const Mob& ent) {
+    return SpritesCount + ent;
+  }
+
+  inline
+  int
+  NewFrontiersApp::aliasOfEffect(const Effect& vfx) {
+    return SpritesCount + MobsCount + vfx;
   }
 
 }
