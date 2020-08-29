@@ -116,6 +116,25 @@ namespace new_frontiers {
       void
       drawSprite(int x, int y, int alias);
 
+      /**
+       * @brief - Used to perform the necessary update based on
+       *          the controls that the user might have used in
+       *          the game.
+       * @return - `true` if no interruption was detected (and
+       *           thus the execution should continue). Meant
+       *           as a way to provide the return value for the
+       *           `OnUserUpdate` method.
+       */
+      bool
+      handleInputs();
+
+      /**
+       * @brief - Perform the rendering of the world on the
+       *          display device.
+       */
+      void
+      draw();
+
     private:
 
       /**
