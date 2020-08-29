@@ -3,7 +3,6 @@
 
 # include "CoordinateFrames.hh"
 # include <cmath>
-# include "utils.hh"
 
 namespace new_frontiers {
 
@@ -42,25 +41,25 @@ namespace new_frontiers {
       factor = 2.0f;
     }
 
-    log("Zoomed from " + toString(m_cViewport.p) + " d: " + toString(m_cViewport.dims));
-    log("Factor is " + std::to_string(factor));
+    // What we know is that the top left cell of
+    // the viewport is at the top left corner of
+    // the pixels viewport.
+    // We can compute the distance from the `pos`
+    // to the pixels viewport origin: it should
+    // be applied the *inverse* of the `factor`
+    // and we should be good to go: indeed if a
+    // viewport has its span reduced, distances
+    // are lengthened (and conversely).
+    olc::vf2d d = m_pViewport.p - pos;
+    d /= factor;
 
-    // Convert the input position to cells coords.
-    int q; olc::vi2d gc; olc::vf2d to;
-    olc::vi2d p = pixelCoordsToTiles(pos, q, gc, to);
+    m_pViewport.p = pos + d;
 
-    // We want to reduce or expand the viewport by
-    // the specified factor around the provided pos.
-    // We need to compute the new position of the
-    // top left corner of the viewport.
-
+    // Also update the dimensions of the cells
+    // viewport by `factor`.
     m_cViewport.dims *= factor;
-    m_cViewport.p = p - m_cViewport.dims / 2.0f;
 
     updateTileScale();
-
-    log("Mouse is " + toString(pos) + " and tiles " + toString(p));
-    log("New is " + toString(m_cViewport.p) + " d: " + toString(m_cViewport.dims));
   }
 
   inline
@@ -82,13 +81,13 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels, int& q, olc::vi2d& gc, olc::vf2d& to) const noexcept {
+  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept {
     // The conversion to float value is necessary in the
     // case of negative values where for example coords
     // `(-0.5, -0.5)` should be interpreted as belonging
     // to the cell `(-1, -1)`.
     float pox = pixels.x - m_pViewport.p.x;
-    float poy = pixels.y - m_pViewport.p.y - m_ts.y;
+    float poy = pixels.y - m_pViewport.p.y - m_tScaled.y;
 
     int tx = static_cast<int>(std::floor(pox / m_tScaled.x));
     int ty = static_cast<int>(std::floor(poy / m_tScaled.y));
@@ -97,8 +96,6 @@ namespace new_frontiers {
     ty -= m_cViewport.p.y;
 
     olc::vi2d rt(ty - tx, ty + tx);
-
-    gc = olc::vf2d(tx, ty);
 
     // We need to adjust for the following situation:
     //
@@ -136,34 +133,27 @@ namespace new_frontiers {
     float x = std::fmod(std::fmod(pox, m_tScaled.x) + m_tScaled.x, m_tScaled.x);
     float y = std::fmod(std::fmod(poy, m_tScaled.y) + m_tScaled.y, m_tScaled.y);
 
-    to = olc::vf2d(pox, poy);
-
     float hw = m_tScaled.x / 2.0f;
     float hh = m_tScaled.y / 2.0f;
     float how = 1.0f * m_tScaled.y / m_tScaled.x;
 
     // Now detect each corner and adjust the coordinate
     // of the cell.
-    q = 0;
     if (x < hw && y < hh && y < hh - x * how) {
       // Top left corner.
       --rt.y;
-      q += 1;
     }
     if (x > hw && y < hh && y < x * how - hh) {
       // Top right corner.
       --rt.x;
-      q += 10;
     }
     if (x < hw && y > hh && y > hh + x * how) {
       // Bottom left corner.
       ++rt.x;
-      q += 100;
     }
     if (x > hw && y > hh && y > 3 * hh - x * how) {
       // Bottom right corner.
       ++rt.y;
-      q += 1000;
     }
 
     return rt;
