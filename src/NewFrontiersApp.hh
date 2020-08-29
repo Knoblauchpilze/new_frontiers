@@ -5,6 +5,7 @@
 # include "olcPixelGameEngine.h"
 # include <random>
 # include "World.hh"
+# include "CoordinateFrames.hh"
 
 namespace new_frontiers {
 
@@ -48,70 +49,6 @@ namespace new_frontiers {
       OnUserUpdate(float fElapsedTime) override;
 
     private:
-
-      /**
-       * @brief - Returns the size of the sprite in the input image
-       *          file. This size includes the potential whitespace
-       *          included in the resource pack to accomodate for
-       *          the ground textures.
-       * @return - the sprite size in pixels.
-       */
-      static
-      olc::vi2d
-      spriteSize() noexcept;
-
-      /**
-       * @brief - Used to convert from sprite coordinates to the
-       *          corresponding pixels coordinates. This method
-       *          should mostly be used to locate a sprite in a
-       *          resource pack.
-       * @param x - the x coordinate of the sprite in the pack.
-       * @param y - the y coordinate of the sprite in the pack.
-       * @return - a vector representing the pixels coordinates
-       *           for the input sprite coords.
-       */
-      olc::vi2d
-      spriteCoordsToPixels(int x, int y) const noexcept;
-
-      /**
-       * @brief - Represent the size of a tile in the world as
-       *          displayed on the screen. This size is at most
-       *          equal to the sprite size and is usually a bit
-       *          smaller because the sprite size include the
-       *          characters which makes it higher.
-       * @return - the tile size in pixels.
-       */
-      static
-      olc::vi2d
-      tileSize() noexcept;
-
-      /**
-       * @brief - Used to convert from tile coordinates to pixel
-       *          coordinates. This method can be used when some
-       *          tile is to be displayed on the screen. We make
-       *          use of a global world origin that represents
-       *          an offset applied to the world to make it more
-       *          appealing and visible.
-       * @param x - the cell coordinate along the `x` axis.
-       * @param y - the cell coordinate along the `y` axis.
-       * @return - the coordinates in pixels of the tile defined
-       *           by the input coords.
-       */
-      olc::vi2d
-      tileCoordsToPixels(int x, int y) const noexcept;
-
-      /**
-       * @brief - Convert from pixels coordinates to tile coords.
-       *          Some extra logic is added in order to account
-       *          for the tiles that do not align with the grid
-       *          so that we always get an accurate position for
-       *          the tile.
-       * @param pixels - the pixels coordinates to convert into
-       *                 tile coords.
-       * @return - the corresponding tile coordinates.
-       */
-      olc::vi2d
-      pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept;
 
       /**
        * @brief - Performs the initialization of the engine to make
@@ -198,21 +135,24 @@ namespace new_frontiers {
       std::vector<olc::vi2d> m_aliases;
 
       /**
-       * @brief - Defines the coordinates of the top part of the
-       *          world in cells' coordinates. Allows to offset
-       *          the representation of the world on-screen and
-       *          thus allow panning/zooming etc.
-       *          The `m_wox` stands for `World origin along the
-       *          x axis` and the `m_woy` stands for a similar
-       *          name but for the `y` axis.
-       */
-      int m_wox;
-      int m_woy;
-
-      /**
        * @brief - The world managed by this application.
        */
       WorldShPtr m_world;
+
+      /**
+       * @brief - The world iterator retrieved on the world: used
+       *          to traverse the elements defined in the world to
+       *          display them.
+       */
+      WorldIteratorShPtr m_wit;
+
+      /**
+       * @brief - Holds an object allowing to convert between the
+       *          various coordinate frames handled by the app. It
+       *          handles conversion between cells coordinate and
+       *          screen coordinates and conversely.
+       */
+      CoordinateFrames m_cf;
   };
 
 }
