@@ -17,7 +17,7 @@ namespace new_frontiers {
   void
   CoordinateFrames::beginTranslation(const olc::vi2d& origin) {
     m_translationOrigin = origin;
-    m_cachedPOrigin = m_pViewport.p;
+    m_cachedCOrigin = m_cViewport.p;
   }
 
   inline
@@ -25,9 +25,17 @@ namespace new_frontiers {
   CoordinateFrames::translate(const olc::vi2d& pos) {
     // We need to deduce the translation added by
     // the input `pos` assuming that this will be
-    // the final position of the world's origin.
-    olc::vi2d translation = pos - m_translationOrigin;
-    m_pViewport.p = m_cachedPOrigin + translation;
+    // the final position of the viewport.
+    olc::vf2d translation = pos - m_translationOrigin;
+
+    // Convert this translation in terms of cells
+    // using the scale of the cells.
+    olc::vf2d cTranslation = translation / m_tScaled;
+
+    m_cViewport.p = m_cachedCOrigin + cTranslation;
+
+    log("tStart: " + toString(translation) + ", p: " + toString(pos) + ", t: " + toString(translation) + ", cT: " + toString(cTranslation));
+    log("cViewport: " + toString(m_cachedCOrigin) + ", new: " + toString(m_cViewport.p));
   }
 
   inline
@@ -87,6 +95,9 @@ namespace new_frontiers {
     int tx = static_cast<int>(std::floor(1.0f * pixels.x / m_tScaled.x));
     int ty = static_cast<int>(std::floor((1.0f * pixels.y - m_ts.y) / m_tScaled.y));
 
+    tx -= m_cViewport.p.x;
+    ty -= m_cViewport.p.y;
+
     olc::vi2d rt(ty - tx, ty + tx);
 
     gc = olc::vf2d(tx, ty);
@@ -117,14 +128,7 @@ namespace new_frontiers {
     // - `y > 3h/2 - xh/w` for the BRC.
     //
     // Compute the offset of the input position in
-    // the tile itself. Note that we should add the
-    // offset due to the world's origin to the pix
-    // coords and *then* compute the offset in the
-    // tile.
-    // The last `+ m_ts.x) % m_ts.x)` is to make
-    // sure that if the pixel position is before
-    // the world origin (so `pixels.x < m_wo.x`) we
-    // still end up with a positive value.
+    // the tile itself.
     float x = std::fmod(1.0f * pixels.x, m_tScaled.x);
     float y = std::fmod(1.0f * pixels.y, m_tScaled.y);
 
