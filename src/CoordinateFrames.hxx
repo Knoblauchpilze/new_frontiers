@@ -17,7 +17,7 @@ namespace new_frontiers {
   void
   CoordinateFrames::beginTranslation(const olc::vi2d& origin) {
     m_translationOrigin = origin;
-    m_cachedCOrigin = m_cViewport.p;
+    m_cachedPOrigin = m_pViewport.p;
   }
 
   inline
@@ -27,15 +27,7 @@ namespace new_frontiers {
     // the input `pos` assuming that this will be
     // the final position of the viewport.
     olc::vf2d translation = pos - m_translationOrigin;
-
-    // Convert this translation in terms of cells
-    // using the scale of the cells.
-    olc::vf2d cTranslation = translation / m_tScaled;
-
-    m_cViewport.p = m_cachedCOrigin + cTranslation;
-
-    log("tStart: " + toString(translation) + ", p: " + toString(pos) + ", t: " + toString(translation) + ", cT: " + toString(cTranslation));
-    log("cViewport: " + toString(m_cachedCOrigin) + ", new: " + toString(m_cViewport.p));
+    m_pViewport.p = m_cachedPOrigin + translation;
   }
 
   inline
@@ -82,7 +74,10 @@ namespace new_frontiers {
     // The isomectric representation yields the
     // formula below which takes into account a
     // scaling factor to apply to the tiles.
-    return olc::vf2d((y - x) * m_tScaled.x / 2, (x + y) * m_tScaled.y / 2);
+    return olc::vf2d(
+      m_pViewport.p.x + (y - x) * m_tScaled.x / 2,
+      m_pViewport.p.y + (x + y) * m_tScaled.y / 2
+    );
   }
 
   inline
@@ -92,8 +87,11 @@ namespace new_frontiers {
     // case of negative values where for example coords
     // `(-0.5, -0.5)` should be interpreted as belonging
     // to the cell `(-1, -1)`.
-    int tx = static_cast<int>(std::floor(1.0f * pixels.x / m_tScaled.x));
-    int ty = static_cast<int>(std::floor((1.0f * pixels.y - m_ts.y) / m_tScaled.y));
+    float pox = pixels.x - m_pViewport.p.x;
+    float poy = pixels.y - m_pViewport.p.y - m_ts.y;
+
+    int tx = static_cast<int>(std::floor(pox / m_tScaled.x));
+    int ty = static_cast<int>(std::floor(poy / m_tScaled.y));
 
     tx -= m_cViewport.p.x;
     ty -= m_cViewport.p.y;
@@ -129,10 +127,16 @@ namespace new_frontiers {
     //
     // Compute the offset of the input position in
     // the tile itself.
-    float x = std::fmod(1.0f * pixels.x, m_tScaled.x);
-    float y = std::fmod(1.0f * pixels.y, m_tScaled.y);
+    // The last `+ m_tScaled.x) % m_tScaled.x)` is
+    // to make sure that if the pixel position is
+    // before the actual position of the top left
+    // cell of the viewport (so we have this:
+    // `pixels.x < m_pViewport.p.x`) we still end
+    // up with a positive value.
+    float x = std::fmod(std::fmod(pox, m_tScaled.x) + m_tScaled.x, m_tScaled.x);
+    float y = std::fmod(std::fmod(poy, m_tScaled.y) + m_tScaled.y, m_tScaled.y);
 
-    to = olc::vf2d(x, y);
+    to = olc::vf2d(pox, poy);
 
     float hw = m_tScaled.x / 2.0f;
     float hh = m_tScaled.y / 2.0f;

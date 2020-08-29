@@ -194,11 +194,11 @@ namespace new_frontiers {
 
       /**
        * @brief - Cached position of the top left corner of the
-       *          cells viewport when starting the translation.
+       *          pixels viewport when starting the translation.
        *          Once the translation is performed we are able
        *          to update the viewport accordingly.
        */
-      olc::vf2d m_cachedCOrigin;
+      olc::vi2d m_cachedPOrigin;
   };
 
 }

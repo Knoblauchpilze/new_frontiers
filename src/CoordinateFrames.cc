@@ -17,7 +17,7 @@ namespace new_frontiers {
     m_tScaled(m_ts),
 
     m_translationOrigin(),
-    m_cachedCOrigin()
+    m_cachedPOrigin()
   {
     setService("coordinate");
 
