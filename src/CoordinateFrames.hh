@@ -125,7 +125,7 @@ namespace new_frontiers {
        * @return - the corresponding tile coordinates.
        */
       olc::vi2d
-      pixelCoordsToTiles(const olc::vi2d& pixels, int& q, olc::vi2d& gc, olc::vf2d& to) const noexcept;
+      pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept;
 
     private:
 
