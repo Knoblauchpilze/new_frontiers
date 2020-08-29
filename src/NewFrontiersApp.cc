@@ -18,8 +18,8 @@ namespace new_frontiers {
     m_world(nullptr),
     m_wit(nullptr),
 
-    m_cf(Viewport{olc::vi2d(0, 0), olc::vi2d(10, 15)},
-         Viewport{olc::vi2d(0, 0), olc::vi2d(width, height)},
+    m_cf(Viewport{olc::vf2d(0.0f, 0.0f), olc::vf2d(10.0f, 15.0f)},
+         Viewport{olc::vf2d(0.0f, 0.0f), olc::vf2d(width, height)},
          olc::vi2d(64, 32))
   {
 
@@ -82,6 +82,14 @@ namespace new_frontiers {
     }
     if (GetMouse(1).bHeld) {
       m_cf.translate(GetMousePos());
+    }
+
+    int scroll = GetMouseWheel();
+    if (scroll > 0) {
+      m_cf.zoom(Zoom::In, GetMousePos());
+    }
+    if (scroll < 0) {
+      m_cf.zoom(Zoom::Out, GetMousePos());
     }
 
     return true;

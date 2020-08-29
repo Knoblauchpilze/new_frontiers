@@ -11,8 +11,16 @@ namespace new_frontiers {
    *          corner and the associated dimensions.
    */
   struct Viewport {
-    olc::vi2d p;
-    olc::vi2d dims;
+    olc::vf2d p;
+    olc::vf2d dims;
+  };
+
+  /**
+   * @brief - Define the possible zoom types.
+   */
+  enum class Zoom {
+    In,
+    Out
   };
 
   class CoordinateFrames: public utils::CoreObject {
@@ -75,6 +83,22 @@ namespace new_frontiers {
       translate(const olc::vi2d& pos);
 
       /**
+       * @brief - Used to perform the zoom operation requested. The
+       *          viewports will be updated with a known factor so
+       *          as to reflect the operation.
+       *          The zoom operation happens by contracting or by
+       *          expanding the viewport but we need a center: it
+       *          should be provided by the user when calling the
+       *          method and usually corresponds to the position of
+       *          the mouse for maximum user-friendliness.
+       * @param z - the zoom operation to perform.
+       * @param pos - the position around which the center should
+       *              be performed.
+       */
+      void
+      zoom(const Zoom& z, const olc::vf2d& pos);
+
+      /**
        * @brief - Used to convert from tile coordinates to pixel
        *          coordinates. This method can be used when some
        *          tile is to be displayed on the screen. We make
@@ -102,6 +126,17 @@ namespace new_frontiers {
        */
       olc::vi2d
       pixelCoordsToTiles(const olc::vi2d& pixels, int& q, olc::vi2d& gc, olc::vf2d& to) const noexcept;
+
+    private:
+
+      /**
+       * @brief - Assume that the viewports are defined and use
+       *          them to compute the scale of the tiles and the
+       *          actual dimensions on screen from it and the
+       *          original size of tiles.
+       */
+      void
+      updateTileScale();
 
     private:
 
@@ -163,7 +198,7 @@ namespace new_frontiers {
        *          Once the translation is performed we are able
        *          to update the viewport accordingly.
        */
-      olc::vi2d m_cachedPOrigin;
+      olc::vf2d m_cachedPOrigin;
   };
 
 }

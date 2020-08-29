@@ -3,6 +3,7 @@
 
 # include "CoordinateFrames.hh"
 # include <cmath>
+# include "utils.hh"
 
 namespace new_frontiers {
 
@@ -30,6 +31,39 @@ namespace new_frontiers {
   }
 
   inline
+  void
+  CoordinateFrames::zoom(const Zoom& z, const olc::vf2d& pos) {
+    // Compute the factor to apply to the viewports
+    // based on the operation to perform. We will
+    // assume a zoom in behavior and update if need
+    // be.
+    float factor = 0.5f;
+    if (z == Zoom::Out) {
+      factor = 2.0f;
+    }
+
+    log("Zoomed from " + toString(m_cViewport.p) + " d: " + toString(m_cViewport.dims));
+    log("Factor is " + std::to_string(factor));
+
+    // Convert the input position to cells coords.
+    int q; olc::vi2d gc; olc::vf2d to;
+    olc::vi2d p = pixelCoordsToTiles(pos, q, gc, to);
+
+    // We want to reduce or expand the viewport by
+    // the specified factor around the provided pos.
+    // We need to compute the new position of the
+    // top left corner of the viewport.
+
+    m_cViewport.dims *= factor;
+    m_cViewport.p = p - m_cViewport.dims / 2.0f;
+
+    updateTileScale();
+
+    log("Mouse is " + toString(pos) + " and tiles " + toString(p));
+    log("New is " + toString(m_cViewport.p) + " d: " + toString(m_cViewport.dims));
+  }
+
+  inline
   olc::vf2d
   CoordinateFrames::tileCoordsToPixels(int x, int y) const noexcept {
     // Offset the input coordinates based on the
@@ -40,7 +74,7 @@ namespace new_frontiers {
     // The isomectric representation yields the
     // formula below which takes into account a
     // scaling factor to apply to the tiles.
-    return olc::vi2d((y - x) * m_tScaled.x / 2, (x + y) * m_tScaled.y / 2);
+    return olc::vf2d((y - x) * m_tScaled.x / 2, (x + y) * m_tScaled.y / 2);
   }
 
   inline
