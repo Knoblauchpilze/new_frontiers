@@ -84,7 +84,7 @@ namespace new_frontiers {
   inline
   void
   NewFrontiersApp::drawSprite(int x, int y, int alias) {
-    DrawPartialDecal(m_cf.tileCoordsToPixels(x, y), m_sprite, m_aliases[alias], m_ss);
+    DrawPartialDecal(m_cf.tileCoordsToPixels(x, y), m_sprite, m_aliases[alias], m_ss, m_cf.tileScale());
   }
 
 }

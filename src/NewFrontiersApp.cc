@@ -18,7 +18,9 @@ namespace new_frontiers {
     m_world(nullptr),
     m_wit(nullptr),
 
-    m_cf(olc::vi2d(336, 97))
+    m_cf(Viewport{olc::vi2d(0, 0), olc::vi2d(10, 15)},
+         Viewport{olc::vi2d(0, 0), olc::vi2d(width, height)},
+         olc::vi2d(64, 32))
   {
 
     // Initialize the application settings.
@@ -120,11 +122,17 @@ namespace new_frontiers {
 
     // Draw cursor.
     olc::vi2d mp = GetMousePos();
-    olc::vi2d mtp = m_cf.pixelCoordsToTiles(mp);
+    int q;
+    olc::vi2d gc;
+    olc::vf2d to;
+    olc::vi2d mtp = m_cf.pixelCoordsToTiles(mp, q, gc, to);
     drawSprite(mtp.x, mtp.y, m_aliases.size() - 1);
 
     SetPixelMode(olc::Pixel::NORMAL);
 
+    DrawString(olc::vi2d(0, 405), "q                   : " + std::to_string(q), olc::CYAN);
+    DrawString(olc::vi2d(0, 420), "Grid cells          : " + toString(gc), olc::CYAN);
+    DrawString(olc::vi2d(0, 435), "Cell offset         : " + toString(to), olc::CYAN);
     DrawString(olc::vi2d(0, 450), "Mouse coords        : " + toString(mp), olc::CYAN);
     DrawString(olc::vi2d(0, 465), "World cell coords   : " + toString(mtp), olc::CYAN);
   }

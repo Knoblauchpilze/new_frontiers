@@ -1,48 +1,64 @@
 #ifndef    COORDINATE_FRAMES_HH
 # define   COORDINATE_FRAMES_HH
 
+# include <core_utils/CoreObject.hh>
 # include "olcPixelGameEngine.h"
 
 namespace new_frontiers {
 
   /**
-   * @brief - Defines a viewport from its top left and
-   *          bottom right corner. The zoom factor is
-   *          implicit compared to the initial size of
-   *          the tiles.
-   *          The corners are expressed in cells.
+   * @brief - Defines a viewport from its top left
+   *          corner and the associated dimensions.
    */
   struct Viewport {
-    olc::vi2d tl;
-    olc::vi2d br;
+    olc::vi2d p;
+    olc::vi2d dims;
   };
 
-  class CoordinateFrames {
+  class CoordinateFrames: public utils::CoreObject {
     public:
 
       /**
-       * @brief - Create a new coordinate frame handler.
-       * @param worldOrigin - the origin of the world in pixels. Allows
-       *                      to represent the position of the origin
-       *                      cell `(0, 0)` in screen coordinates. Used
-       *                      internally for most of the conversions.
-       * @param tile - the size of a single cell on screen. It is the
-       *               representation of a single sprite on screen. It
-       *               is also used in most conversions.
+       * @brief - Create a new coordinate frame handler with the input
+       *          viewport and tiles size. The viewport will be used
+       *          as a way to convert the pixels position to their
+       *          cells counterpart.
+       *          The size of a single cell in pixels is computed as
+       *          a ratio between the viewport in cells and the one
+       *          in pixels.
+       * @param cViewport - the viewport expressed in world cells: it
+       *                    define how many cells are visible in this
+       *                    coordinate frame.
+       * @param pViewport - the viewport expressed in pixels: it is
+       *                    similar to the `cViewport` but defines
+       *                    the screen visible area.
+       * @param tileSize - defines the initial tile size as they are
+       *                   described in the sprite file. This value
+       *                   will be used to apply the scale ratio as
+       *                   needed from the viewports.
        */
-      CoordinateFrames(const olc::vi2d& worldOrigin,
-                       const olc::vi2d& tile = olc::vi2d(64, 32));
+      CoordinateFrames(const Viewport& cViewport,
+                       const Viewport& pViewport,
+                       const olc::vi2d& tileSize);
 
       ~CoordinateFrames() = default;
 
       /**
+       * @brief - Used to return the current scaling factor to apply
+       *          to the tile compared to their initial size.
+       * @return - the scaling factor to apply to the tiles.
+       */
+      const olc::vf2d&
+      tileScale() const noexcept;
+
+      /**
        * @brief - Notify the coordinate frames to start a translation.
-       *          This mainly concerns the world's origin: the goal is
-       *          to fix the current world's origin so that it can be
-       *          updated until the end of the translation.
+       *          This mainly concerns the pixel viewport's origin:
+       *          the goal is to fix the current top left corner so
+       *          that it can be updated at the end of the translation.
        * @param origin - allows to keep track of the translation so
        *                 that we can define the transformation to be
-       *                 applied to the world's origin.
+       *                 applied to the pixel viewport.
        */
       void
       beginTranslation(const olc::vi2d& origin);
@@ -51,7 +67,8 @@ namespace new_frontiers {
        * @brief - In case a translation has begun indicates that the
        *          new position to track is the input parameter. We
        *          will interpret it internally in regard to the value
-       *          of the world origin and deduce the actual translation.
+       *          of the cached viewport origin and deduce the actual
+       *          translation.
        * @param pos - the current final position of the translation.
        */
       void
@@ -61,15 +78,16 @@ namespace new_frontiers {
        * @brief - Used to convert from tile coordinates to pixel
        *          coordinates. This method can be used when some
        *          tile is to be displayed on the screen. We make
-       *          use of a global world origin that represents
-       *          an offset applied to the world to make it more
-       *          appealing and visible.
+       *          use of a global position of the viewport to be
+       *          able to correctly interpret the input cell. It
+       *          is also dependent on the current scaling for
+       *          tiles based on the cells viewport.
        * @param x - the cell coordinate along the `x` axis.
        * @param y - the cell coordinate along the `y` axis.
        * @return - the coordinates in pixels of the tile defined
        *           by the input coords.
        */
-      olc::vi2d
+      olc::vf2d
       tileCoordsToPixels(int x, int y) const noexcept;
 
       /**
@@ -83,26 +101,54 @@ namespace new_frontiers {
        * @return - the corresponding tile coordinates.
        */
       olc::vi2d
-      pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept;
+      pixelCoordsToTiles(const olc::vi2d& pixels, int& q, olc::vi2d& gc, olc::vf2d& to) const noexcept;
 
     private:
 
       /**
-       * @brief - Defines the coordinates of the top part of the
-       *          world in pixels' coordinates. Allows to offset
-       *          the representation of the world on-screen and
-       *          thus allow panning/zooming etc.
+       * @brief - Define the viewport for this coordinate frame.
+       *          It represent the area that is visible for now
+       *          given the position of the camera.
+       *          The viewport is expressed in cells and defined
+       *          through its top left corner and dimensions.
        */
-      olc::vi2d m_wo;
+      Viewport m_cViewport;
 
       /**
-       * @brief - Defines the size of a tile on screen. This can
-       *          be different from the sprite size as it's the
-       *          adaptation of said sprite to the screen. It is
-       *          also used to convert from cells' coordinates to
-       *          screen coordinates and conversely.
+       * @brief - Define a similar element but for the pixels on
+       *          screen. It is used to represent the pixels that
+       *          can be displayed on the device.
+       *          Computing the ratio between both viewport gives
+       *          the size of a tile in pixels and we can deduce
+       *          a scaling factor from the initial size of a
+       *          tile.
+       */
+      Viewport m_pViewport;
+
+      /**
+       * @brief - Define the initial size for a tile as described
+       *          from the loaded sprite file. This size is used
+       *          as a base to compute the scale from the values
+       *          of the viewports.
        */
       olc::vi2d m_ts;
+
+      /**
+       * @brief - The current scale to apply to the tiles based
+       *          on the values of the viewports. Depending on
+       *          the zoom level and panning the tiles might get
+       *          distorted and the factor is saved here.
+       *          This value is changed when the viewports are
+       *          modified.
+       */
+      olc::vf2d m_scale;
+
+      /**
+       * @brief - The size of the tiles once scaled: convenience
+       *          value to cache the result of `m_ts * m_scale`
+       *          as it is used quite often.
+       */
+      olc::vf2d m_tScaled;
 
       /**
        * @brief - The origin of the translation (i.e. the pixels
@@ -112,12 +158,12 @@ namespace new_frontiers {
       olc::vi2d m_translationOrigin;
 
       /**
-       * @brief - Cached position of the world's origin at the
-       *          beginning of the translation. Used to apply
-       *          the computed translation to update the world
-       *          origin.
+       * @brief - Cached position of the top left corner of the
+       *          pixels viewport when starting the translation.
+       *          Once the translation is performed we are able
+       *          to update the viewport accordingly.
        */
-      olc::vi2d m_cachedWo;
+      olc::vi2d m_cachedPOrigin;
   };
 
 }
