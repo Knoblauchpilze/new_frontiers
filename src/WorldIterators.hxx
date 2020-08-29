@@ -18,7 +18,11 @@ namespace new_frontiers {
 
     m_tiles(tiles),
     m_entities(entities),
-    m_vfx(vfx)
+    m_vfx(vfx),
+
+    m_sortedTiles(),
+    m_sortedEntities(),
+    m_sortedVFX()
   {
     setService("world");
 
@@ -61,19 +65,19 @@ namespace new_frontiers {
   inline
   const SolidTile&
   WorldIterator::solidTile(int id) const noexcept {
-    return m_tiles[id];
+    return m_tiles[m_sortedTiles[id].id];
   }
 
   inline
   const EntityTile&
   WorldIterator::entity(int id) const noexcept {
-    return m_entities[id];
+    return m_entities[m_sortedEntities[id].id];
   }
 
   inline
   const VFXTile&
   WorldIterator::vfx(int id) const noexcept {
-    return m_vfx[id];
+    return m_vfx[m_sortedVFX[id].id];
   }
 
 }
