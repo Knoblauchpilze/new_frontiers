@@ -24,6 +24,8 @@ namespace new_frontiers {
       );
     }
 
+    setService("world");
+
     generate();
   }
 
