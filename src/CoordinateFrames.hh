@@ -190,15 +190,15 @@ namespace new_frontiers {
        *          position when it started). Allows to compute
        *          the accumulated transform to apply to the wo.
        */
-      olc::vi2d m_translationOrigin;
+      olc::vf2d m_translationOrigin;
 
       /**
        * @brief - Cached position of the top left corner of the
-       *          pixels viewport when starting the translation.
+       *          cells viewport when starting the translation.
        *          Once the translation is performed we are able
        *          to update the viewport accordingly.
        */
-      olc::vf2d m_cachedPOrigin;
+      olc::vf2d m_cachedCOrigin;
   };
 
 }
