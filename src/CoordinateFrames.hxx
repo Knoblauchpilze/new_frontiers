@@ -45,15 +45,16 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels, int& q, olc::vi2d& tc) const noexcept {
-    // Depending on whether we're in the negative realm or
-    // in the positive one we need to compute the grid cell
-    // index differently.
+  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept {
+    // The conversion to float value is necessary in the
+    // case of negative values where for example coords
+    // `(-0.5, -0.5)` should be interpreted as belonging
+    // to the cell `(-1, -1)`.
     int pox = pixels.x - m_wo.x;
     int poy = pixels.y - m_wo.y;
 
-    int tx = (pox >= 0 ? pox / m_ts.x : pox / m_ts.x - 1);
-    int ty = (poy >= 0 ? poy / m_ts.y : poy / m_ts.y - 1);
+    int tx = static_cast<int>(std::floor(1.0f * pox / m_ts.x));
+    int ty = static_cast<int>(std::floor(1.0f * poy / m_ts.y));
 
     olc::vi2d rt(ty - tx, ty + tx);
 
@@ -94,34 +95,27 @@ namespace new_frontiers {
     int x = ((pixels.x - m_wo.x) % m_ts.x + m_ts.x) % m_ts.x;
     int y = ((pixels.y - m_wo.y) % m_ts.y + m_ts.y) % m_ts.y;
 
-    tc = olc::vi2d(x, y);
-
     float hw = m_ts.x / 2.0f;
     float hh = m_ts.y / 2.0f;
     float how = 1.0f * m_ts.y / m_ts.x;
 
     // Now detect each corner and adjust the coordinate
     // of the cell.
-    q = 0;
     if (x < hw && y < hh && y < hh - x * how) {
       // Top left corner.
       --rt.y;
-      q += 1;
     }
     if (x > hw && y < hh && y < x * how - hh) {
       // Top right corner.
       --rt.x;
-      q += 10;
     }
     if (x < hw && y > hh && y > hh + x * how) {
       // Bottom left corner.
       ++rt.x;
-      q += 100;
     }
     if (x > hw && y > hh && y > 3 * hh - x * how) {
       // Bottom right corner.
       ++rt.y;
-      q += 1000;
     }
 
     return rt;
