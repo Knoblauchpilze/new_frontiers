@@ -17,7 +17,7 @@ namespace new_frontiers {
     m_world(nullptr),
     m_wit(nullptr),
 
-    m_cf(olc::vi2d(5, 1))
+    m_cf(olc::vi2d(420, 397))
   {
 
     // Initialize the application settings.
