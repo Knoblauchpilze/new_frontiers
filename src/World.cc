@@ -30,6 +30,11 @@ namespace new_frontiers {
   World::~World() {}
 
   void
+  World::step(float /*tDelta*/) {
+    /** TODO: Implement this **/
+  }
+
+  void
   World::generate() {
     static const int portals = 1;
     static const int walls = 1;

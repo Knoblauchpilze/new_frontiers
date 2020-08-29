@@ -40,6 +40,15 @@ namespace new_frontiers {
       WorldIteratorShPtr
       iterator() const noexcept;
 
+      /**
+       * @brief - Used to move one step ahead in time in this
+       *          world, given that `tDelta` TODO: unit has
+       *          passed since the last frame.
+       * @param tDelta - TODO: comment.
+       */
+      void
+      step(float tDelta);
+
     private:
 
       /**
