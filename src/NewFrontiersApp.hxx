@@ -58,6 +58,12 @@ namespace new_frontiers {
   }
 
   inline
+  olc::vi2d
+  NewFrontiersApp::spriteCoordsToPixels(int x, int y) const noexcept {
+    return olc::vi2d(x * m_ss.x, y * m_ss.y);
+  }
+
+  inline
   int
   NewFrontiersApp::aliasOfSprite(const Sprite& sprite) {
     return sprite;
@@ -78,7 +84,7 @@ namespace new_frontiers {
   inline
   void
   NewFrontiersApp::drawSprite(int x, int y, int alias) {
-    DrawPartialSprite(m_cf.tileCoordsToPixels(x, y), m_sprite, m_aliases[alias], m_cf.spriteSize());
+    DrawPartialDecal(m_cf.tileCoordsToPixels(x, y), m_sprite, m_aliases[alias], m_ss);
   }
 
 }

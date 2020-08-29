@@ -12,6 +12,7 @@ namespace new_frontiers {
     olc::PixelGameEngine(),
 
     m_sprite(nullptr),
+    m_ss(64, 64),
     m_aliases(),
 
     m_world(nullptr),
@@ -31,33 +32,34 @@ namespace new_frontiers {
   void
   NewFrontiersApp::createTileAliases() {
     // Load the sprite containing textures.
-    m_sprite = new olc::Sprite("data/img/64x64.png");
+    olc::Sprite* spr = new olc::Sprite("data/img/64x64.png");
+    m_sprite = new olc::Decal(spr);
 
     // Build the atlas.
     int spritesCount = SpritesCount + MobsCount + EffectsCount;
     m_aliases.resize(spritesCount + 1);
 
-    m_aliases[aliasOfSprite(Empty)]         = m_cf.spriteCoordsToPixels(10, 4);
-    m_aliases[aliasOfSprite(Wall_Dirt)]     = m_cf.spriteCoordsToPixels(1, 0);
-    m_aliases[aliasOfSprite(Wall_Stone)]    = m_cf.spriteCoordsToPixels(1, 1);
-    m_aliases[aliasOfSprite(Wall_Catacomb)] = m_cf.spriteCoordsToPixels(3, 2);
-    m_aliases[aliasOfSprite(Wall_Slime)]    = m_cf.spriteCoordsToPixels(3, 3);
-    m_aliases[aliasOfSprite(Well)]          = m_cf.spriteCoordsToPixels(3, 4);
-    m_aliases[aliasOfSprite(Statue)]        = m_cf.spriteCoordsToPixels(4, 4);
-    m_aliases[aliasOfSprite(Fluid)]         = m_cf.spriteCoordsToPixels(7, 4);
-    m_aliases[aliasOfSprite(Portal)]        = m_cf.spriteCoordsToPixels(11, 5);
-    m_aliases[aliasOfEntity(Knight)]        = m_cf.spriteCoordsToPixels(4, 7);
-    m_aliases[aliasOfEntity(Snake)]         = m_cf.spriteCoordsToPixels(5, 7);
-    m_aliases[aliasOfEntity(Warlord)]       = m_cf.spriteCoordsToPixels(6, 7);
-    m_aliases[aliasOfEntity(Vampire)]       = m_cf.spriteCoordsToPixels(7, 7);
-    m_aliases[aliasOfEntity(Princess)]      = m_cf.spriteCoordsToPixels(8, 7);
-    m_aliases[aliasOfEntity(Sphynx)]        = m_cf.spriteCoordsToPixels(9, 7);
-    m_aliases[aliasOfEffect(Fire)]          = m_cf.spriteCoordsToPixels(8, 10);
-    m_aliases[aliasOfEffect(Electricity)]   = m_cf.spriteCoordsToPixels(11, 10);
-    m_aliases[aliasOfEffect(Gas)]           = m_cf.spriteCoordsToPixels(14, 10);
-    m_aliases[aliasOfEffect(Smoke)]         = m_cf.spriteCoordsToPixels(1, 11);
+    m_aliases[aliasOfSprite(Empty)]         = spriteCoordsToPixels(10, 4);
+    m_aliases[aliasOfSprite(Wall_Dirt)]     = spriteCoordsToPixels(1, 0);
+    m_aliases[aliasOfSprite(Wall_Stone)]    = spriteCoordsToPixels(1, 1);
+    m_aliases[aliasOfSprite(Wall_Catacomb)] = spriteCoordsToPixels(3, 2);
+    m_aliases[aliasOfSprite(Wall_Slime)]    = spriteCoordsToPixels(3, 3);
+    m_aliases[aliasOfSprite(Well)]          = spriteCoordsToPixels(3, 4);
+    m_aliases[aliasOfSprite(Statue)]        = spriteCoordsToPixels(4, 4);
+    m_aliases[aliasOfSprite(Fluid)]         = spriteCoordsToPixels(7, 4);
+    m_aliases[aliasOfSprite(Portal)]        = spriteCoordsToPixels(11, 5);
+    m_aliases[aliasOfEntity(Knight)]        = spriteCoordsToPixels(4, 7);
+    m_aliases[aliasOfEntity(Snake)]         = spriteCoordsToPixels(5, 7);
+    m_aliases[aliasOfEntity(Warlord)]       = spriteCoordsToPixels(6, 7);
+    m_aliases[aliasOfEntity(Vampire)]       = spriteCoordsToPixels(7, 7);
+    m_aliases[aliasOfEntity(Princess)]      = spriteCoordsToPixels(8, 7);
+    m_aliases[aliasOfEntity(Sphynx)]        = spriteCoordsToPixels(9, 7);
+    m_aliases[aliasOfEffect(Fire)]          = spriteCoordsToPixels(8, 10);
+    m_aliases[aliasOfEffect(Electricity)]   = spriteCoordsToPixels(11, 10);
+    m_aliases[aliasOfEffect(Gas)]           = spriteCoordsToPixels(14, 10);
+    m_aliases[aliasOfEffect(Smoke)]         = spriteCoordsToPixels(1, 11);
 
-    m_aliases[spritesCount] = m_cf.spriteCoordsToPixels(5, 10);
+    m_aliases[spritesCount] = spriteCoordsToPixels(5, 10);
   }
 
   bool

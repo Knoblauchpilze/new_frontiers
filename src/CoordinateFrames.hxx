@@ -13,24 +13,6 @@ namespace new_frontiers {
   }
 
   inline
-  const olc::vi2d&
-  CoordinateFrames::spriteSize() const noexcept {
-    return m_ss;
-  }
-
-  inline
-  olc::vi2d
-  CoordinateFrames::spriteCoordsToPixels(int x, int y) const noexcept {
-    return olc::vi2d(x * m_ss.x, y * m_ss.y);
-  }
-
-  inline
-  const olc::vi2d&
-  CoordinateFrames::tileSize() const noexcept {
-    return m_ts;
-  }
-
-  inline
   olc::vi2d
   CoordinateFrames::tileCoordsToPixels(int x, int y) const noexcept {
     return olc::vi2d(
