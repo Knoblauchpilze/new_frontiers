@@ -21,6 +21,11 @@ namespace new_frontiers {
     m_vfx(vfx)
   {
     setService("world");
+
+    // Sort tiles, entities and vfx to allow correct
+    // display: we want to sort by increasing `y` and
+    // `x` values.
+    sort();
   }
 
   inline

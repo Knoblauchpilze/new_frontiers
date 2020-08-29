@@ -12,6 +12,7 @@ set (SOURCES
   NewFrontiersApp.cc
   World.cc
   RNG.cc
+  WorldIterators.cc
   )
 
 add_library (new_frontiers_lib SHARED
