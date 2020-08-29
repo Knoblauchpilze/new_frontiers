@@ -2,39 +2,60 @@
 # define   COORDINATE_FRAMES_HXX
 
 # include "CoordinateFrames.hh"
+# include <cmath>
 
 namespace new_frontiers {
+
+  inline
+  const olc::vf2d&
+  CoordinateFrames::tileScale() const noexcept {
+    return m_scale;
+  }
 
   inline
   void
   CoordinateFrames::beginTranslation(const olc::vi2d& origin) {
     m_translationOrigin = origin;
-    m_cachedWo = m_wo;
+    m_cachedPOrigin = m_pViewport.p;
   }
 
   inline
-  olc::vi2d
+  void
+  CoordinateFrames::translate(const olc::vi2d& pos) {
+    // We need to deduce the translation added by
+    // the input `pos` assuming that this will be
+    // the final position of the world's origin.
+    olc::vi2d translation = pos - m_translationOrigin;
+    m_pViewport.p = m_cachedPOrigin + translation;
+  }
+
+  inline
+  olc::vf2d
   CoordinateFrames::tileCoordsToPixels(int x, int y) const noexcept {
-    return olc::vi2d(
-      m_wo.x + (y - x) * m_ts.x / 2,
-      m_wo.y + (x + y) * m_ts.y / 2 - m_ts.y
-    );
+    // Offset the input coordinates based on the
+    // current position of the cell's viewport.
+    x -= m_cViewport.p.x;
+    y -= m_cViewport.p.y;
+
+    // The isomectric representation yields the
+    // formula below which takes into account a
+    // scaling factor to apply to the tiles.
+    return olc::vi2d((y - x) * m_tScaled.x / 2, (x + y) * m_tScaled.y / 2);
   }
 
   inline
   olc::vi2d
-  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept {
+  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels, int& q, olc::vi2d& gc, olc::vf2d& to) const noexcept {
     // The conversion to float value is necessary in the
     // case of negative values where for example coords
     // `(-0.5, -0.5)` should be interpreted as belonging
     // to the cell `(-1, -1)`.
-    int pox = pixels.x - m_wo.x;
-    int poy = pixels.y - m_wo.y;
-
-    int tx = static_cast<int>(std::floor(1.0f * pox / m_ts.x));
-    int ty = static_cast<int>(std::floor(1.0f * poy / m_ts.y));
+    int tx = static_cast<int>(std::floor(1.0f * pixels.x / m_tScaled.x));
+    int ty = static_cast<int>(std::floor((1.0f * pixels.y - m_ts.y) / m_tScaled.y));
 
     olc::vi2d rt(ty - tx, ty + tx);
+
+    gc = olc::vf2d(tx, ty);
 
     // We need to adjust for the following situation:
     //
@@ -70,30 +91,37 @@ namespace new_frontiers {
     // sure that if the pixel position is before
     // the world origin (so `pixels.x < m_wo.x`) we
     // still end up with a positive value.
-    int x = ((pixels.x - m_wo.x) % m_ts.x + m_ts.x) % m_ts.x;
-    int y = ((pixels.y - m_wo.y) % m_ts.y + m_ts.y) % m_ts.y;
+    float x = std::fmod(1.0f * pixels.x, m_tScaled.x);
+    float y = std::fmod(1.0f * pixels.y, m_tScaled.y);
 
-    float hw = m_ts.x / 2.0f;
-    float hh = m_ts.y / 2.0f;
-    float how = 1.0f * m_ts.y / m_ts.x;
+    to = olc::vf2d(x, y);
+
+    float hw = m_tScaled.x / 2.0f;
+    float hh = m_tScaled.y / 2.0f;
+    float how = 1.0f * m_tScaled.y / m_tScaled.x;
 
     // Now detect each corner and adjust the coordinate
     // of the cell.
+    q = 0;
     if (x < hw && y < hh && y < hh - x * how) {
       // Top left corner.
       --rt.y;
+      q += 1;
     }
     if (x > hw && y < hh && y < x * how - hh) {
       // Top right corner.
       --rt.x;
+      q += 10;
     }
     if (x < hw && y > hh && y > hh + x * how) {
       // Bottom left corner.
       ++rt.x;
+      q += 100;
     }
     if (x > hw && y > hh && y > 3 * hh - x * how) {
       // Bottom right corner.
       ++rt.y;
+      q += 1000;
     }
 
     return rt;
