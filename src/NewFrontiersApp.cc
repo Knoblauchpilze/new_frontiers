@@ -17,7 +17,7 @@ namespace new_frontiers {
     m_world(nullptr),
     m_wit(nullptr),
 
-    m_cf(olc::vi2d(420, 397))
+    m_cf(olc::vi2d(164, 256))
   {
 
     // Initialize the application settings.
@@ -106,11 +106,38 @@ namespace new_frontiers {
 
     // Draw cursor.
     olc::vi2d mp = GetMousePos();
-    olc::vi2d mtp = m_cf.pixelCoordsToTiles(mp);
+    
+    int q;
+    olc::vi2d tc;
+    olc::vi2d mtp = m_cf.pixelCoordsToTiles(mp, q, tc);
+
     drawSprite(mtp.x, mtp.y, m_aliases.size() - 1);
+
+    if (q == 1) {
+      // Top left: green
+      DrawRect(m_cf.tileCoordsToPixels(mtp.x, mtp.y), olc::vi2d(64, 32), olc::GREEN);
+    }
+    else if (q == 10) {
+      // Top right: blue
+      DrawRect(m_cf.tileCoordsToPixels(mtp.x, mtp.y), olc::vi2d(64, 32), olc::BLUE);
+    }
+    else if (q == 100) {
+      // Bottom left: cyan
+      DrawRect(m_cf.tileCoordsToPixels(mtp.x, mtp.y), olc::vi2d(64, 32), olc::CYAN);
+    }
+    else if (q == 1000) {
+      // Bottom right: magenta
+      DrawRect(m_cf.tileCoordsToPixels(mtp.x, mtp.y), olc::vi2d(64, 32), olc::MAGENTA);
+    }
+    else {
+      // Unknown: red
+      DrawRect(m_cf.tileCoordsToPixels(mtp.x, mtp.y), olc::vi2d(64, 32), olc::RED);
+    }
 
     SetPixelMode(olc::Pixel::NORMAL);
 
+    DrawString(olc::vi2d(0, 420), "q                   : " + std::to_string(q), olc::CYAN);
+    DrawString(olc::vi2d(0, 435), "Tile coords         : " + toString(tc), olc::CYAN);
     DrawString(olc::vi2d(0, 450), "Mouse coords        : " + toString(mp), olc::CYAN);
     DrawString(olc::vi2d(0, 465), "World cell coords   : " + toString(mtp), olc::CYAN);
   }
