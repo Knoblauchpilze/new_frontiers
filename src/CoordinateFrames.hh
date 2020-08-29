@@ -5,23 +5,32 @@
 
 namespace new_frontiers {
 
+  /**
+   * @brief - Defines a viewport from its top left and
+   *          bottom right corner. The zoom factor is
+   *          implicit compared to the initial size of
+   *          the tiles.
+   *          The corners are expressed in cells.
+   */
+  struct Viewport {
+    olc::vi2d tl;
+    olc::vi2d br;
+  };
+
   class CoordinateFrames {
     public:
 
       /**
-       * @brief - Create a new default pixel game engine app.
+       * @brief - Create a new coordinate frame handler.
        * @param worldOrigin - the origin of the world in pixels. Allows
        *                      to represent the position of the origin
        *                      cell `(0, 0)` in screen coordinates. Used
        *                      internally for most of the conversions.
-       * @param sprite - the size of the sprite in the source data file
-       *                 in pixels.
        * @param tile - the size of a single cell on screen. It is the
        *               representation of a single sprite on screen. It
        *               is also used in most conversions.
        */
       CoordinateFrames(const olc::vi2d& worldOrigin,
-                       const olc::vi2d& sprite = olc::vi2d(64, 64),
                        const olc::vi2d& tile = olc::vi2d(64, 32));
 
       ~CoordinateFrames() = default;
@@ -47,40 +56,6 @@ namespace new_frontiers {
        */
       void
       translate(const olc::vi2d& pos);
-
-      /**
-       * @brief - Returns the size of the sprite in the input image
-       *          file. This size includes the potential whitespace
-       *          included in the resource pack to accomodate for
-       *          the ground textures.
-       * @return - the sprite size in pixels.
-       */
-      const olc::vi2d&
-      spriteSize() const noexcept;
-
-      /**
-       * @brief - Used to convert from sprite coordinates to the
-       *          corresponding pixels coordinates. This method
-       *          should mostly be used to locate a sprite in a
-       *          resource pack.
-       * @param x - the x coordinate of the sprite in the pack.
-       * @param y - the y coordinate of the sprite in the pack.
-       * @return - a vector representing the pixels coordinates
-       *           for the input sprite coords.
-       */
-      olc::vi2d
-      spriteCoordsToPixels(int x, int y) const noexcept;
-
-      /**
-       * @brief - Represent the size of a tile in the world as
-       *          displayed on the screen. This size is at most
-       *          equal to the sprite size and is usually a bit
-       *          smaller because the sprite size include the
-       *          characters which makes it higher.
-       * @return - the tile size in pixels.
-       */
-      const olc::vi2d&
-      tileSize() const noexcept;
 
       /**
        * @brief - Used to convert from tile coordinates to pixel
@@ -119,13 +94,6 @@ namespace new_frontiers {
        *          thus allow panning/zooming etc.
        */
       olc::vi2d m_wo;
-
-      /**
-       * @brief - Defines the size of the sprite in the original
-       *          source file. Allows mainly to draw the correct
-       *          piece of texture when representing an element.
-       */
-      olc::vi2d m_ss;
 
       /**
        * @brief - Defines the size of a tile on screen. This can

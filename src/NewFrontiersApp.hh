@@ -74,6 +74,19 @@ namespace new_frontiers {
       createTileAliases();
 
       /**
+       * @brief - Used to convert from sprite coordinates to the
+       *          corresponding pixels coordinates. This method
+       *          should mostly be used to locate a sprite in a
+       *          resource pack.
+       * @param x - the x coordinate of the sprite in the pack.
+       * @param y - the y coordinate of the sprite in the pack.
+       * @return - a vector representing the pixels coordinates
+       *           for the input sprite coords.
+       */
+      olc::vi2d
+      spriteCoordsToPixels(int x, int y) const noexcept;
+
+      /**
        * @brief - Compute the index of the input sprite in the atlas
        *          array.
        * @param sprite - the sprite for which the alias index should
@@ -142,8 +155,20 @@ namespace new_frontiers {
        *          of in-game elements. It is usually represented as
        *          a large texture containing separate elements for
        *          each tile type.
+       *          Note that the `olc` type is a decal but it does
+       *          not change the fact that we're displaying sprites.
+       *          The `decal` is just more powerful in terms of
+       *          scaling and rotation which makes it more suited
+       *          for the viewport handling for example.
        */
-      olc::Sprite* m_sprite;
+      olc::Decal* m_sprite;
+
+      /**
+       * @brief - Defines the size of the sprite in the original
+       *          source file. Allows mainly to draw the correct
+       *          piece of texture when representing an element.
+       */
+      olc::vi2d m_ss;
 
       /**
        * @brief - Defines an atlas where each tile type is stored
