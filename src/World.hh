@@ -37,7 +37,7 @@ namespace new_frontiers {
        * @brief - Used to return an iterator on this world.
        * @return - an iterator on the objects of this world.
        */
-      WorldIterator
+      WorldIteratorShPtr
       iterator() const noexcept;
 
     private:

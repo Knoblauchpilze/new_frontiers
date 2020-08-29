@@ -1,6 +1,7 @@
 #ifndef    WORLD_ITERATORS_HH
 # define   WORLD_ITERATORS_HH
 
+# include <memory>
 # include <core_utils/CoreObject.hh>
 # include "WorldTypes.hh"
 
@@ -67,6 +68,7 @@ namespace new_frontiers {
       const std::vector<VFXTile>& m_vfx;
   };
 
+  using WorldIteratorShPtr = std::shared_ptr<WorldIterator>;
 }
 
 # include "WorldIterators.hxx"

@@ -56,7 +56,7 @@ namespace new_frontiers {
 
       st.x = m_rng.rndInt(1, m_w - 2);
       st.y = m_rng.rndInt(1, m_h - 2);
-      st.type = Wall_Catacomb;
+      st.type = Wall_Slime;
 
       log("Generating wall at " + std::to_string(st.x) + "x" + std::to_string(st.y));
 
