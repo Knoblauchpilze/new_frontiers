@@ -68,6 +68,18 @@ namespace new_frontiers {
       return false;
     }
 
+    // In case we're dragging the right mouse button we
+    // will update the world's position (panning). What
+    // we want is to remember the position at the moment
+    // of the click and then continuously move the world
+    // to match the current displacement.
+    if (GetMouse(1).bPressed) {
+      m_cf.beginTranslation(GetMousePos());
+    }
+    if (GetMouse(1).bHeld) {
+      m_cf.translate(GetMousePos());
+    }
+
     return true;
   }
 

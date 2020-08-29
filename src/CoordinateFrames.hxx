@@ -6,15 +6,11 @@
 namespace new_frontiers {
 
   inline
-  CoordinateFrames::CoordinateFrames(const olc::vi2d& worldOrigin,
-                                     const olc::vi2d& sprite,
-                                     const olc::vi2d& tile):
-    m_wo(worldOrigin),
-
-    m_ss(sprite),
-    m_ts(tile)
-  {}
-
+  void
+  CoordinateFrames::beginTranslation(const olc::vi2d& origin) {
+    m_translationOrigin = origin;
+    m_cachedWo = m_wo;
+  }
 
   inline
   const olc::vi2d&
