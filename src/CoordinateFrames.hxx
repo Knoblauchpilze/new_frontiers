@@ -45,15 +45,15 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept {
+  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels, int& q, olc::vi2d& tc) const noexcept {
     // Depending on whether we're in the negative realm or
     // in the positive one we need to compute the grid cell
     // index differently.
     int pox = pixels.x - m_wo.x;
     int poy = pixels.y - m_wo.y;
 
-    int tx = (pox > 0 ? pox / m_ts.x : pox / m_ts.x - 1);
-    int ty = (poy > 0 ? poy / m_ts.y : poy / m_ts.y - 1);
+    int tx = (pox >= 0 ? pox / m_ts.x : pox / m_ts.x - 1);
+    int ty = (poy >= 0 ? poy / m_ts.y : poy / m_ts.y - 1);
 
     olc::vi2d rt(ty - tx, ty + tx);
 
@@ -87,16 +87,14 @@ namespace new_frontiers {
     // offset due to the world's origin to the pix
     // coords and *then* compute the offset in the
     // tile.
-    //
-    // Typically in the case the `m_wo` is set to
-    // `(32, 16)`, if the mouse is at `(28, 18)`,
-    // it means that the mouse is in the cell at
-    // `(-1, 0)`: thus the offset in the tile is
-    // set to `(28 + 32) % 64 = 58` along the `x`
-    // axis and `(16 + 18) % 32 = 2` along `y` if
-    // the tiles are `(64, 32)` large.
-    int x = (pixels.x + m_wo.x % m_ts.x) % m_ts.x;
-    int y = (pixels.y + m_wo.y % m_ts.y) % m_ts.y;
+    // The last `+ m_ts.x) % m_ts.x)` is to make
+    // sure that if the pixel position is before
+    // the world origin (so `pixels.x < m_wo.x`) we
+    // still end up with a positive value.
+    int x = ((pixels.x - m_wo.x) % m_ts.x + m_ts.x) % m_ts.x;
+    int y = ((pixels.y - m_wo.y) % m_ts.y + m_ts.y) % m_ts.y;
+
+    tc = olc::vi2d(x, y);
 
     float hw = m_ts.x / 2.0f;
     float hh = m_ts.y / 2.0f;
@@ -104,21 +102,26 @@ namespace new_frontiers {
 
     // Now detect each corner and adjust the coordinate
     // of the cell.
+    q = 0;
     if (x < hw && y < hh && y < hh - x * how) {
       // Top left corner.
       --rt.y;
+      q += 1;
     }
     if (x > hw && y < hh && y < x * how - hh) {
       // Top right corner.
       --rt.x;
+      q += 10;
     }
     if (x < hw && y > hh && y > hh + x * how) {
       // Bottom left corner.
       ++rt.x;
+      q += 100;
     }
     if (x > hw && y > hh && y > 3 * hh - x * how) {
       // Bottom right corner.
       ++rt.y;
+      q += 1000;
     }
 
     return rt;
