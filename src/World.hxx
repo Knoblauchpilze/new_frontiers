@@ -18,9 +18,9 @@ namespace new_frontiers {
   }
 
   inline
-  WorldIterator
+  WorldIteratorShPtr
   World::iterator() const noexcept {
-    return WorldIterator(m_w, m_h, m_tiles, m_entities, m_vfx);
+    return std::make_shared<WorldIterator>(m_w, m_h, m_tiles, m_entities, m_vfx);
   }
 
 }
