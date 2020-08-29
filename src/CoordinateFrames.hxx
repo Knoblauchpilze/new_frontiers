@@ -9,8 +9,7 @@ namespace new_frontiers {
   CoordinateFrames::CoordinateFrames(const olc::vi2d& worldOrigin,
                                      const olc::vi2d& sprite,
                                      const olc::vi2d& tile):
-    m_wox(worldOrigin.x),
-    m_woy(worldOrigin.y),
+    m_wo(worldOrigin),
 
     m_ss(sprite),
     m_ts(tile)
@@ -39,16 +38,22 @@ namespace new_frontiers {
   olc::vi2d
   CoordinateFrames::tileCoordsToPixels(int x, int y) const noexcept {
     return olc::vi2d(
-      m_wox * m_ts.x + (y - x) * m_ts.x / 2,
-      m_woy * m_ts.y + (x + y) * m_ts.y / 2 - m_ts.y
+      m_wo.x + (y - x) * m_ts.x / 2,
+      m_wo.y + (x + y) * m_ts.y / 2 - m_ts.y
     );
   }
 
   inline
   olc::vi2d
   CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept {
-    int tx = pixels.x / m_ts.x - m_wox;
-    int ty = pixels.y / m_ts.y - m_woy;
+    // Depending on whether we're in the negative realm or
+    // in the positive one we need to compute the grid cell
+    // index differently.
+    int pox = pixels.x - m_wo.x;
+    int poy = pixels.y - m_wo.y;
+
+    int tx = (pox > 0 ? pox / m_ts.x : pox / m_ts.x - 1);
+    int ty = (poy > 0 ? poy / m_ts.y : poy / m_ts.y - 1);
 
     olc::vi2d rt(ty - tx, ty + tx);
 
@@ -78,13 +83,24 @@ namespace new_frontiers {
     // - `y > 3h/2 - xh/w` for the BRC.
     //
     // Compute the offset of the input position in
-    // the tile itself.
-    int x = pixels.x % m_ts.x;
-    int y = pixels.y % m_ts.y;
+    // the tile itself. Note that we should add the
+    // offset due to the world's origin to the pix
+    // coords and *then* compute the offset in the
+    // tile.
+    //
+    // Typically in the case the `m_wo` is set to
+    // `(32, 16)`, if the mouse is at `(28, 18)`,
+    // it means that the mouse is in the cell at
+    // `(-1, 0)`: thus the offset in the tile is
+    // set to `(28 + 32) % 64 = 58` along the `x`
+    // axis and `(16 + 18) % 32 = 2` along `y` if
+    // the tiles are `(64, 32)` large.
+    int x = (pixels.x + m_wo.x % m_ts.x) % m_ts.x;
+    int y = (pixels.y + m_wo.y % m_ts.y) % m_ts.y;
 
     float hw = m_ts.x / 2.0f;
     float hh = m_ts.y / 2.0f;
-    float how = m_ts.y / m_ts.x;
+    float how = 1.0f * m_ts.y / m_ts.x;
 
     // Now detect each corner and adjust the coordinate
     // of the cell.

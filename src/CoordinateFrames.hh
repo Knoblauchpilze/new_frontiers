@@ -92,15 +92,11 @@ namespace new_frontiers {
 
       /**
        * @brief - Defines the coordinates of the top part of the
-       *          world in cells' coordinates. Allows to offset
+       *          world in pixels' coordinates. Allows to offset
        *          the representation of the world on-screen and
        *          thus allow panning/zooming etc.
-       *          The `m_wox` stands for `World origin along the
-       *          x axis` and the `m_woy` stands for a similar
-       *          name but for the `y` axis.
        */
-      int m_wox;
-      int m_woy;
+      olc::vi2d m_wo;
 
       /**
        * @brief - Defines the size of the sprite in the original
