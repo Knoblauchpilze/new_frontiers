@@ -74,12 +74,26 @@ namespace new_frontiers {
 
     private:
 
+      /**
+       * @brief - Define a convenience structure to perform the
+       *          sorting of tiles and entities.
+       */
+      struct SortEntry {
+        int x;
+        int y;
+        int id;
+      };
+
       int m_w;
       int m_h;
 
       const std::vector<SolidTile>& m_tiles;
       const std::vector<EntityTile>& m_entities;
       const std::vector<VFXTile>& m_vfx;
+
+      std::vector<SortEntry> m_sortedTiles;
+      std::vector<SortEntry> m_sortedEntities;
+      std::vector<SortEntry> m_sortedVFX;
   };
 
   using WorldIteratorShPtr = std::shared_ptr<WorldIterator>;

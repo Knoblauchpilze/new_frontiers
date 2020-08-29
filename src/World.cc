@@ -38,11 +38,12 @@ namespace new_frontiers {
 
   void
   World::generate() {
-    static const int portals = 1;
-    static const int walls = 1;
-    static const int lavas = 1;
-    static const int entities = 1;
-    static const int vfxs = 1;
+    static const int count = 3;
+    static const int portals = count;
+    static const int walls = count;
+    static const int lavas = count;
+    static const int entities = count;
+    static const int vfxs = count;
 
     // Generate portals.
     for (int id = 0 ; id < portals ; ++id) {
