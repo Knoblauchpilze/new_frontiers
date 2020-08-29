@@ -22,16 +22,19 @@ namespace new_frontiers {
     setService("coordinate");
 
     // Update the tiles scale based on the viewport.
-    m_tScaled.x = 1.0f * m_pViewport.dims.x / m_cViewport.dims.x;
-    m_tScaled.y = 1.0f * m_pViewport.dims.y / m_cViewport.dims.y;
-
-    m_scale = m_tScaled / m_ts;
+    updateTileScale();
 
     log("cViewport: " + toString(m_cViewport.dims), utils::Level::Info);
     log("pViewport: " + toString(m_pViewport.dims), utils::Level::Info);
     log("real size: " + toString(m_ts), utils::Level::Info);
     log("on screen: " + toString(m_scale), utils::Level::Info);
     log("scaling  : " + toString(m_tScaled), utils::Level::Info);
+  }
+
+  void
+  CoordinateFrames::updateTileScale() {
+    m_tScaled = m_pViewport.dims / m_cViewport.dims;
+    m_scale = m_tScaled / m_ts;
   }
 
 }
