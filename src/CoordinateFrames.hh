@@ -27,6 +27,28 @@ namespace new_frontiers {
       ~CoordinateFrames() = default;
 
       /**
+       * @brief - Notify the coordinate frames to start a translation.
+       *          This mainly concerns the world's origin: the goal is
+       *          to fix the current world's origin so that it can be
+       *          updated until the end of the translation.
+       * @param origin - allows to keep track of the translation so
+       *                 that we can define the transformation to be
+       *                 applied to the world's origin.
+       */
+      void
+      beginTranslation(const olc::vi2d& origin);
+
+      /**
+       * @brief - In case a translation has begun indicates that the
+       *          new position to track is the input parameter. We
+       *          will interpret it internally in regard to the value
+       *          of the world origin and deduce the actual translation.
+       * @param pos - the current final position of the translation.
+       */
+      void
+      translate(const olc::vi2d& pos);
+
+      /**
        * @brief - Returns the size of the sprite in the input image
        *          file. This size includes the potential whitespace
        *          included in the resource pack to accomodate for
@@ -113,6 +135,21 @@ namespace new_frontiers {
        *          screen coordinates and conversely.
        */
       olc::vi2d m_ts;
+
+      /**
+       * @brief - The origin of the translation (i.e. the pixels
+       *          position when it started). Allows to compute
+       *          the accumulated transform to apply to the wo.
+       */
+      olc::vi2d m_translationOrigin;
+
+      /**
+       * @brief - Cached position of the world's origin at the
+       *          beginning of the translation. Used to apply
+       *          the computed translation to update the world
+       *          origin.
+       */
+      olc::vi2d m_cachedWo;
   };
 
 }

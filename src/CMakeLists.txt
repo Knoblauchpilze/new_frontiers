@@ -13,6 +13,7 @@ set (SOURCES
   World.cc
   RNG.cc
   WorldIterators.cc
+  CoordinateFrames.cc
   )
 
 add_library (new_frontiers_lib SHARED
