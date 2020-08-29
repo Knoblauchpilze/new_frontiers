@@ -26,6 +26,21 @@ namespace new_frontiers {
   }
 
   inline
+  bool
+  NewFrontiersApp::OnUserUpdate(float fElapsedTime) {
+    // Handle inputs.
+    bool r = handleInputs();
+
+    // Handle game logic.
+    m_world->step(fElapsedTime);
+
+    // Handle rendering.
+    draw();
+
+    return r;
+  }
+
+  inline
   void
   NewFrontiersApp::initialize(int width, int height, int pixelRatio) {
     // Construct the window. Note that we use a pixel size
@@ -58,6 +73,12 @@ namespace new_frontiers {
   int
   NewFrontiersApp::aliasOfEffect(const Effect& vfx) {
     return SpritesCount + MobsCount + vfx;
+  }
+
+  inline
+  void
+  NewFrontiersApp::drawSprite(int x, int y, int alias) {
+    DrawPartialSprite(m_cf.tileCoordsToPixels(x, y), m_sprite, m_aliases[alias], m_cf.spriteSize());
   }
 
 }
