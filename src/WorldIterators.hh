@@ -1,6 +1,7 @@
 #ifndef    WORLD_ITERATORS_HH
 # define   WORLD_ITERATORS_HH
 
+# include <vector>
 # include <memory>
 # include <core_utils/CoreObject.hh>
 # include "WorldTypes.hh"
@@ -57,6 +58,19 @@ namespace new_frontiers {
 
       const VFXTile&
       vfx(int id) const noexcept;
+
+    private:
+
+      /**
+       * @brief - Used to perform the sorting of tiles, entities
+       *          and vfx. Indeed to make sure that all tiles are
+       *          displayed in order and are correctly hidden by
+       *          tiles that are in front of them, we need to
+       *          sort the tiles by increasing `x` value and by
+       *          increasing `y` value.
+       */
+      void
+      sort();
 
     private:
 
