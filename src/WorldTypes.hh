@@ -8,14 +8,8 @@ namespace new_frontiers {
    */
   enum Sprite {
     Empty,
-    Wall_Dirt,
-    Wall_Stone,
-    Wall_Catacomb,
-    Wall_Slime,
-    Well,
-    Statue,
-    Fluid,
-    Portal,
+    Wall,
+    Door,
 
     SpritesCount //<- Used to make sure that we know how many
                  //<- sprites we're handling.
@@ -64,6 +58,7 @@ namespace new_frontiers {
     int x;
     int y;
     TileType type;
+    int id;
   };
 
   /**
@@ -81,6 +76,19 @@ namespace new_frontiers {
    */
   using VFXTile = Tile<Effect>;
 
+  /**
+   * @brief - Used to create a new tile with the specified type
+   *          and identifier. The coordinates are set to `0`.
+   * @param type - the type of the tile.
+   * @param id - the index of the variation of the tile type.
+   * @return - the created tile.
+   */
+  template <typename TileType>
+  Tile<TileType>
+  newTile(const TileType& type, int id = 0) noexcept;
+
 }
+
+# include "WorldTypes.hxx"
 
 #endif    /* WORLD_TYPES_HH */

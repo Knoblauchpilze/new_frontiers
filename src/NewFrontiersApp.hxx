@@ -36,6 +36,7 @@ namespace new_frontiers {
 
     // Handle rendering.
     draw();
+    drawDebug();
 
     return r;
   }
@@ -59,8 +60,31 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  NewFrontiersApp::spriteCoordsToPixels(int x, int y) const noexcept {
-    return olc::vi2d(x * m_ss.x, y * m_ss.y);
+  NewFrontiersApp::spriteCoordsToPixels(const olc::vi2d& coord, int id) const noexcept {
+    // Compute linear identifier from 2D coordinates.
+    int lID = coord.y * m_theme.layout.x + coord.x + id;
+
+    // Go back to 2D coordinates using the layout on
+    // the linearized ID and the size of the sprite
+    // to obtain a pixels position.
+    return olc::vi2d(
+      (lID % m_theme.layout.x) * m_theme.size.x,
+      (lID / m_theme.layout.x) * m_theme.size.y
+    );
+  }
+
+  inline
+  olc::vi2d
+  NewFrontiersApp::entityCoordsToPixels(const olc::vi2d& coord, int id) const noexcept {
+    /** TODO: Implement this. **/
+    return spriteCoordsToPixels(coord, id);
+  }
+
+  inline
+  olc::vi2d
+  NewFrontiersApp::vfxCoordsToPixels(const olc::vi2d& coord, int id) const noexcept {
+    /** TODO: Implement this. **/
+    return spriteCoordsToPixels(coord, id);
   }
 
   inline
@@ -83,8 +107,14 @@ namespace new_frontiers {
 
   inline
   void
-  NewFrontiersApp::drawSprite(int x, int y, int alias) {
-    DrawPartialDecal(m_cf.tileCoordsToPixels(x, y), m_sprite, m_aliases[alias], m_ss, m_cf.tileScale());
+  NewFrontiersApp::drawSprite(int x, int y, int alias, int id) {
+    DrawPartialDecal(
+      m_cf.tileCoordsToPixels(x, y),
+      m_sprite,
+      spriteCoordsToPixels(m_aliases[alias], id),
+      m_theme.size,
+      m_cf.tileScale()
+    );
   }
 
 }
