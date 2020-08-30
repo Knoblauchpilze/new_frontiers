@@ -22,8 +22,8 @@ namespace new_frontiers {
        */
       WorldIterator(int width,
                     int height,
-                    const std::vector<SolidElement>& tiles,
-                    const std::vector<EntityTile>& entities,
+                    const std::vector<SolidElementShPtr>& tiles,
+                    const std::vector<EntityShPtr>& entities,
                     const std::vector<VFXTile>& vfx);
 
       ~WorldIterator() = default;
@@ -98,8 +98,8 @@ namespace new_frontiers {
       int m_w;
       int m_h;
 
-      const std::vector<SolidElement>& m_tiles;
-      const std::vector<EntityTile>& m_entities;
+      const std::vector<SolidElementShPtr>& m_tiles;
+      const std::vector<EntityShPtr>& m_entities;
       const std::vector<VFXTile>& m_vfx;
 
       std::vector<SortEntry> m_sortedTiles;

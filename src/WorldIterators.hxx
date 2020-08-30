@@ -8,8 +8,8 @@ namespace new_frontiers {
   inline
   WorldIterator::WorldIterator(int width,
                                int height,
-                               const std::vector<SolidElement>& tiles,
-                               const std::vector<EntityTile>& entities,
+                               const std::vector<SolidElementShPtr>& tiles,
+                               const std::vector<EntityShPtr>& entities,
                                const std::vector<VFXTile>& vfx):
     utils::CoreObject("iterator"),
 
@@ -65,13 +65,13 @@ namespace new_frontiers {
   inline
   const SolidTile&
   WorldIterator::solidTile(int id) const noexcept {
-    return m_tiles[m_sortedTiles[id].id].getDesc();
+    return m_tiles[m_sortedTiles[id].id]->getDesc();
   }
 
   inline
   const EntityTile&
   WorldIterator::entity(int id) const noexcept {
-    return m_entities[m_sortedEntities[id].id];
+    return m_entities[m_sortedEntities[id].id]->getDesc();
   }
 
   inline
