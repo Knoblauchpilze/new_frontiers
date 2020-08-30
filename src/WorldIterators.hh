@@ -90,8 +90,8 @@ namespace new_frontiers {
        *          sorting of tiles and entities.
        */
       struct SortEntry {
-        int x;
-        int y;
+        float x;
+        float y;
         int id;
       };
 

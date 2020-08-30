@@ -81,8 +81,8 @@ namespace new_frontiers {
    */
   template <typename TileType>
   struct Tile {
-    int x;
-    int y;
+    float x;
+    float y;
     TileType type;
     int id;
   };

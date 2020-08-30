@@ -120,7 +120,7 @@ namespace new_frontiers {
 
   inline
   void
-  NewFrontiersApp::drawSprite(int x, int y, int alias, int id) {
+  NewFrontiersApp::drawSprite(float x, float y, int alias, int id) {
     const SpriteAlias& sa = m_aliases[alias];
     const SpritesPack& sp = m_sprites[sa.type];
 

@@ -81,7 +81,7 @@ namespace new_frontiers {
   void
   Entity::step(std::vector<VFXShPtr>& created, RNG& /*rng*/) {
     // Check whether we shoud spawn a new vfx.
-    if (now() - m_vfxDelta < m_last) {
+    if (now() - m_vfxDelta < m_last || true) {
       return;
     }
 
@@ -114,7 +114,7 @@ namespace new_frontiers {
     m_interval(toMilliseconds(1000)),
     m_last(now() - m_interval),
 
-    m_toSpawn(10),
+    m_toSpawn(1),
     m_spawned(0),
 
     m_mob(Hydra),
@@ -164,8 +164,8 @@ namespace new_frontiers {
     float r = rng.rndFloat(0, m_radius * m_radius);
     float theta = rng.rndAngle();
 
-    e.x = static_cast<int>(std::sqrt(r) * std::cos(theta));
-    e.y = static_cast<int>(std::sqrt(r) * std::sin(theta));
+    e.x = std::sqrt(r) * std::cos(theta);
+    e.y = std::sqrt(r) * std::sin(theta);
 
     e.x += m_tile.x;
     e.y += m_tile.y;
