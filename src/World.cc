@@ -1,5 +1,6 @@
 
 # include "World.hh"
+# include <unordered_set>
 # include <core_utils/CoreException.hh>
 
 namespace new_frontiers {
@@ -38,76 +39,63 @@ namespace new_frontiers {
 
   void
   World::generate() {
-    static const int count = 3;
-    static const int portals = count;
+    // Generate walls at random for now.
+    static const int count = 5;
     static const int walls = count;
-    static const int lavas = count;
-    static const int entities = count;
-    static const int vfxs = count;
+    static const int doors = count;
 
-    // Generate portals.
-    for (int id = 0 ; id < portals ; ++id) {
-      SolidTile st;
-
-      st.x = m_rng.rndInt(1, m_w - 2);
-      st.y = m_rng.rndInt(1, m_h - 2);
-      st.type = Portal;
-
-      log("Generating portal at " + std::to_string(st.x) + "x" + std::to_string(st.y));
-
-      m_tiles.push_back(st);
-    }
+    std::unordered_set<int> used;
 
     // Generate walls.
-    for (int id = 0 ; id < walls ; ++id) {
-      SolidTile st;
+    int remaining = m_w * m_h;
+    for (int id = 0 ; id < walls && id < remaining; ++id) {
+      int var = m_rng.rndInt(0, 15);
+      SolidTile st = newTile(Wall, var);
 
-      st.x = m_rng.rndInt(1, m_w - 2);
-      st.y = m_rng.rndInt(1, m_h - 2);
-      st.type = Wall_Slime;
+      bool n = false;
+      int trials = 0;
+      while (!n && trials < remaining) {
+        st.x = m_rng.rndInt(1, m_w - 2);
+        st.y = m_rng.rndInt(1, m_h - 2);
 
-      log("Generating wall at " + std::to_string(st.x) + "x" + std::to_string(st.y));
+        n = (used.count(st.y * m_w + st.x) == 0);
+
+        ++trials;
+      }
+      
+      if (n) {
+        used.insert(st.y * m_w + st.x);
+      }
+
+      log("Generating wall " + std::to_string(var) + " at " + std::to_string(st.x) + "x" + std::to_string(st.y));
 
       m_tiles.push_back(st);
     }
 
-    // Generate lava lakes.
-    for (int id = 0 ; id < lavas ; ++id) {
-      SolidTile st;
+    // Generate doors.
+    remaining = m_w * m_h - m_tiles.size();
+    for (int id = 0 ; id < doors && id < remaining; ++id) {
+      int var = m_rng.rndInt(0, 3);
+      SolidTile st = newTile(Door, var);
 
-      st.x = m_rng.rndInt(1, m_w - 2);
-      st.y = m_rng.rndInt(1, m_h - 2);
-      st.type = Fluid;
+      bool n = false;
+      int trials = 0;
+      while (!n && trials < m_w * m_h) {
+        st.x = m_rng.rndInt(1, m_w - 2);
+        st.y = m_rng.rndInt(1, m_h - 2);
 
-      log("Generating fluid at " + std::to_string(st.x) + "x" + std::to_string(st.y));
+        n = (used.count(st.y * m_w + st.x) == 0);
+
+        ++trials;
+      }
+      
+      if (n) {
+        used.insert(st.y * m_w + st.x);
+      }
+
+      log("Generating door " + std::to_string(var) + " at " + std::to_string(st.x) + "x" + std::to_string(st.y));
 
       m_tiles.push_back(st);
-    }
-
-    // Generate entities.
-    for (int id = 0 ; id < entities ; ++id) {
-      EntityTile et;
-
-      et.x = m_rng.rndInt(1, m_w - 2);
-      et.y = m_rng.rndInt(1, m_h - 2);
-      et.type = Knight;
-
-      log("Generating entity at " + std::to_string(et.x) + "x" + std::to_string(et.y));
-
-      m_entities.push_back(et);
-    }
-
-    // Generate VFX.
-    for (int id = 0 ; id < vfxs ; ++id) {
-      VFXTile vt;
-
-      vt.x = m_rng.rndInt(1, m_w - 2);
-      vt.y = m_rng.rndInt(1, m_h - 2);
-      vt.type = Gas;
-
-      log("Generating vfx at " + std::to_string(vt.x) + "x" + std::to_string(vt.y));
-
-      m_vfx.push_back(vt);
     }
   }
 

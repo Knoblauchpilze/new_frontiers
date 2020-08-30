@@ -9,6 +9,20 @@
 
 namespace new_frontiers {
 
+  /**
+   * @brief - Define the common information for the theme to be
+   *          used in this application. It defines both names of
+   *          the sprite files along with information about the
+   *          layout in each one.
+   *          This information is then interpreted by the app to
+   *          correctly render the tiles.
+   */
+  struct Theme {
+    std::string file;
+    olc::vi2d size;
+    olc::vi2d layout;
+  };
+
   class NewFrontiersApp: public utils::CoreObject, public olc::PixelGameEngine {
     public:
 
@@ -16,12 +30,15 @@ namespace new_frontiers {
        * @brief - Create a new default pixel game engine app.
        * @param width - the width of the window in pixels.
        * @param height - the height of the window in pixels.
+       * @param theme - the description of the theme to use
+       *                for sprites in this application.
        * @param pixelRatio - defines the ratio between an viewport
        *                     pixel and a screen pixel.
        * @param appName - The name of the application to create.
        */
-      NewFrontiersApp(int width = 640,
-                      int height = 480,
+      NewFrontiersApp(int width,
+                      int height,
+                      const Theme& theme,
                       int pixelRatio = 1,
                       const std::string& appName = "new_frontiers");
 
@@ -78,13 +95,46 @@ namespace new_frontiers {
        *          corresponding pixels coordinates. This method
        *          should mostly be used to locate a sprite in a
        *          resource pack.
-       * @param x - the x coordinate of the sprite in the pack.
-       * @param y - the y coordinate of the sprite in the pack.
+       *          In order to find the correct sprite, both some
+       *          coordinates and a variation id should be set
+       *          to fix a single element in the sprites.
+       * @param coord - the coordinates of the sprite to convert
+       *                to pixels in the resource pack.
+       * @param id - the index of the variation of the sprite
+       *             to use: default is `0`.
        * @return - a vector representing the pixels coordinates
        *           for the input sprite coords.
        */
       olc::vi2d
-      spriteCoordsToPixels(int x, int y) const noexcept;
+      spriteCoordsToPixels(const olc::vi2d& coord, int id = 0) const noexcept;
+
+      /**
+       * @brief - Very similar to the `spriteCoordsToPixels` but
+       *          interpret the layout for the entities sprites
+       *          to convert the input coordinates into a pixels
+       *          position.
+       * @param coord - the coordinates of the sprite to convert
+       *                to pixels in the resource pack.
+       * @param id - the index of the variation of the sprite
+       *             to use: default is `0`.
+       * @return - a vector representing the pixels coordinates
+       *           for the input sprite coords.
+       */
+      olc::vi2d
+      entityCoordsToPixels(const olc::vi2d& coord, int id = 0) const noexcept;
+
+      /**
+       * @brief - Similar to the above methods but for the vfx
+       *          sprites.
+       * @param coord - the coordinates of the sprite to convert
+       *                to pixels in the resource pack.
+       * @param id - the index of the variation of the sprite
+       *             to use: default is `0`.
+       * @return - a vector representing the pixels coordinates
+       *           for the input sprite coords.
+       */
+      olc::vi2d
+      vfxCoordsToPixels(const olc::vi2d& coord, int id = 0) const noexcept;
 
       /**
        * @brief - Compute the index of the input sprite in the atlas
@@ -125,9 +175,10 @@ namespace new_frontiers {
        * @param x - the coordinate along the `x` axis for this sprite.
        * @param y - the coordinate along the `y` axis for this sprite.
        * @param alias - the index of the tile in the tile atlas.
+       * @param id - the index of the variation of this sprite.
        */
       void
-      drawSprite(int x, int y, int alias);
+      drawSprite(int x, int y, int alias, int id);
 
       /**
        * @brief - Used to perform the necessary update based on
@@ -148,7 +199,26 @@ namespace new_frontiers {
       void
       draw();
 
+      /**
+       * @brief - Used to perform debug rendering in addition to
+       *          the standard display routines.
+       */
+      void
+      drawDebug();
+
     private:
+
+      /**
+       * @brief - Define the theme of this application. It represent
+       *          the base name for sprite files and allow to easily
+       *          change the appearance of the game by using another
+       *          theme. It should also provide the layout of the
+       *          sprite file so that we can correctly render the
+       *          elements visually.
+       *          This theme is forwarded during the atlas creation
+       *          process to be applied.
+       */
+      Theme m_theme;
 
       /**
        * @brief - Holds the main sprite defining the visual aspect
@@ -162,13 +232,6 @@ namespace new_frontiers {
        *          for the viewport handling for example.
        */
       olc::Decal* m_sprite;
-
-      /**
-       * @brief - Defines the size of the sprite in the original
-       *          source file. Allows mainly to draw the correct
-       *          piece of texture when representing an element.
-       */
-      olc::vi2d m_ss;
 
       /**
        * @brief - Defines an atlas where each tile type is stored
@@ -197,6 +260,8 @@ namespace new_frontiers {
        *          screen coordinates and conversely.
        */
       CoordinateFrames m_cf;
+
+      bool m_first;
   };
 
 }

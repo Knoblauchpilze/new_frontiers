@@ -28,7 +28,12 @@ int main(int /*argc*/, char** /*argv*/) {
       service
     );
 
-    new_frontiers::NewFrontiersApp demo(width, height);
+    new_frontiers::Theme t;
+    t.file = "data/img/gehena.png";
+    t.layout = olc::vi2d(8, 3);
+    t.size = olc::vi2d(64, 64);
+
+    new_frontiers::NewFrontiersApp demo(width, height, t);
     demo.Start();
   }
   catch (const utils::CoreException& e) {
