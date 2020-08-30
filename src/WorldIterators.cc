@@ -16,7 +16,7 @@ namespace new_frontiers {
       };
     }
 
-    m_sortedEntities.resize(m_tiles.size());
+    m_sortedEntities.resize(m_entities.size());
     for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
       m_sortedEntities[id] = SortEntry{
         m_entities[id].x,
@@ -25,7 +25,7 @@ namespace new_frontiers {
       };
     }
 
-    m_sortedVFX.resize(m_tiles.size());
+    m_sortedVFX.resize(m_vfx.size());
     for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
       m_sortedVFX[id] = SortEntry{
         m_vfx[id].x,
