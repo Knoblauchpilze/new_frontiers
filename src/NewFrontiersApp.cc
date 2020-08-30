@@ -12,8 +12,8 @@ namespace new_frontiers {
     utils::CoreObject(appName),
     olc::PixelGameEngine(),
 
-    m_theme(theme),
-    m_sprite(nullptr),
+    m_ss(theme.size),
+    m_sprites(),
     m_aliases(),
 
     m_world(nullptr),
@@ -31,35 +31,78 @@ namespace new_frontiers {
     setService("app");
 
     // Generate and construct the window.
-    initialize(width, height, pixelRatio);
+    initialize(width, height, theme, pixelRatio);
   }
 
   void
   NewFrontiersApp::createTileAliases() {
-    // Load the sprite containing textures as
+    // Load the sprites containing textures as
     // defined by the theme.
-    olc::Sprite* spr = new olc::Sprite(m_theme.file);
-    m_sprite = new olc::Decal(spr);
+    m_sprites.resize(SpriteTypesCount);
+
+    olc::Sprite* spr = new olc::Sprite(m_sprites[SolidID].file);
+    m_sprites[SolidID].res = new olc::Decal(spr);
+
+    spr = new olc::Sprite(m_sprites[PortalID].file);
+    m_sprites[PortalID].res = new olc::Decal(spr);
+
+    spr = new olc::Sprite(m_sprites[EntityID].file);
+    m_sprites[EntityID].res = new olc::Decal(spr);
+
+    spr = new olc::Sprite(m_sprites[VFXID].file);
+    m_sprites[VFXID].res = new olc::Decal(spr);
+
+    spr = new olc::Sprite(m_sprites[CursorID].file);
+    m_sprites[CursorID].res = new olc::Decal(spr);
 
     // Build the atlas.
     int spritesCount = SpritesCount + MobsCount + EffectsCount;
     m_aliases.resize(spritesCount + 1);
 
-    m_aliases[aliasOfSprite(Empty)]         = olc::vi2d(4, 2);
-    m_aliases[aliasOfSprite(Wall)]          = olc::vi2d(0, 0);
-    m_aliases[aliasOfSprite(Door)]          = olc::vi2d(0, 2);
-    m_aliases[aliasOfEntity(Knight)]        = olc::vi2d(4, 7);
-    m_aliases[aliasOfEntity(Snake)]         = olc::vi2d(5, 7);
-    m_aliases[aliasOfEntity(Warlord)]       = olc::vi2d(6, 7);
-    m_aliases[aliasOfEntity(Vampire)]       = olc::vi2d(7, 7);
-    m_aliases[aliasOfEntity(Princess)]      = olc::vi2d(8, 7);
-    m_aliases[aliasOfEntity(Sphynx)]        = olc::vi2d(9, 7);
-    m_aliases[aliasOfEffect(Fire)]          = olc::vi2d(8, 10);
-    m_aliases[aliasOfEffect(Electricity)]   = olc::vi2d(11, 10);
-    m_aliases[aliasOfEffect(Gas)]           = olc::vi2d(14, 10);
-    m_aliases[aliasOfEffect(Smoke)]         = olc::vi2d(1, 11);
+    m_aliases[aliasOfSprite(Empty)]         = SpriteAlias{SolidID, olc::vi2d(4, 2)};
+    m_aliases[aliasOfSprite(Wall)]          = SpriteAlias{SolidID, olc::vi2d(0, 0)};
+    m_aliases[aliasOfSprite(Door)]          = SpriteAlias{SolidID, olc::vi2d(0, 2)};
 
-    m_aliases[spritesCount] = olc::vi2d(5, 10);
+    m_aliases[aliasOfSprite(Portal)]        = SpriteAlias{PortalID, olc::vi2d(0, 0)};
+
+    m_aliases[aliasOfEntity(MarineKnight)]      = SpriteAlias{EntityID, olc::vi2d(0, 0)};
+    m_aliases[aliasOfEntity(Warrior)]           = SpriteAlias{EntityID, olc::vi2d(1, 0)};
+    m_aliases[aliasOfEntity(StoneGiant)]        = SpriteAlias{EntityID, olc::vi2d(2, 0)};
+    m_aliases[aliasOfEntity(Sorceress)]         = SpriteAlias{EntityID, olc::vi2d(3, 0)};
+    m_aliases[aliasOfEntity(Knight)]            = SpriteAlias{EntityID, olc::vi2d(4, 0)};
+    m_aliases[aliasOfEntity(GeneticExperiment)] = SpriteAlias{EntityID, olc::vi2d(5, 0)};
+    m_aliases[aliasOfEntity(Warlord)]           = SpriteAlias{EntityID, olc::vi2d(6, 0)};
+    m_aliases[aliasOfEntity(Vampire)]           = SpriteAlias{EntityID, olc::vi2d(7, 0)};
+    m_aliases[aliasOfEntity(Gecko)]             = SpriteAlias{EntityID, olc::vi2d(9, 0)};
+    m_aliases[aliasOfEntity(DarkAnubis)]        = SpriteAlias{EntityID, olc::vi2d(10, 0)};
+    m_aliases[aliasOfEntity(Cyclope)]           = SpriteAlias{EntityID, olc::vi2d(11, 0)};
+    m_aliases[aliasOfEntity(Fool)]              = SpriteAlias{EntityID, olc::vi2d(12, 0)};
+    m_aliases[aliasOfEntity(Beast)]             = SpriteAlias{EntityID, olc::vi2d(13, 0)};
+    m_aliases[aliasOfEntity(BlueAvenger)]       = SpriteAlias{EntityID, olc::vi2d(14, 0)};
+    m_aliases[aliasOfEntity(SoulEater)]         = SpriteAlias{EntityID, olc::vi2d(15, 0)};
+    m_aliases[aliasOfEntity(Valkyrie)]          = SpriteAlias{EntityID, olc::vi2d(0, 1)};
+    m_aliases[aliasOfEntity(Guardian)]          = SpriteAlias{EntityID, olc::vi2d(1, 1)};
+    m_aliases[aliasOfEntity(Blob)]              = SpriteAlias{EntityID, olc::vi2d(2, 1)};
+    m_aliases[aliasOfEntity(CosmicThreat)]      = SpriteAlias{EntityID, olc::vi2d(3, 1)};
+    m_aliases[aliasOfEntity(Gorgone)]           = SpriteAlias{EntityID, olc::vi2d(4, 1)};
+    m_aliases[aliasOfEntity(DemonBat)]          = SpriteAlias{EntityID, olc::vi2d(5, 1)};
+    m_aliases[aliasOfEntity(Griffin)]           = SpriteAlias{EntityID, olc::vi2d(6, 1)};
+    m_aliases[aliasOfEntity(Executioner)]       = SpriteAlias{EntityID, olc::vi2d(8, 1)};
+    m_aliases[aliasOfEntity(MindlessGolem)]     = SpriteAlias{EntityID, olc::vi2d(9, 1)};
+    m_aliases[aliasOfEntity(IncaOverlord)]      = SpriteAlias{EntityID, olc::vi2d(10, 1)};
+    m_aliases[aliasOfEntity(Hydra)]             = SpriteAlias{EntityID, olc::vi2d(11, 1)};
+    m_aliases[aliasOfEntity(Dragon)]            = SpriteAlias{EntityID, olc::vi2d(2, 2)};
+    m_aliases[aliasOfEntity(Sorcerer)]          = SpriteAlias{EntityID, olc::vi2d(13, 2)};
+    m_aliases[aliasOfEntity(Satyr)]             = SpriteAlias{EntityID, olc::vi2d(14, 2)};
+    m_aliases[aliasOfEntity(TwoHeaderWarrior)]  = SpriteAlias{EntityID, olc::vi2d(15, 2)};
+    m_aliases[aliasOfEntity(FireKnight)]        = SpriteAlias{EntityID, olc::vi2d(0, 3)};
+
+    m_aliases[aliasOfEffect(Fire)]      = SpriteAlias{VFXID, olc::vi2d(0, 0)};
+    m_aliases[aliasOfEffect(Lightning)] = SpriteAlias{VFXID, olc::vi2d(3, 0)};
+    m_aliases[aliasOfEffect(Poison)]    = SpriteAlias{VFXID, olc::vi2d(6, 0)};
+    m_aliases[aliasOfEffect(Smoke)]     = SpriteAlias{VFXID, olc::vi2d(9, 0)};
+
+    m_aliases[spritesCount] = SpriteAlias{CursorID, olc::vi2d(0, 0)};
   }
 
   bool

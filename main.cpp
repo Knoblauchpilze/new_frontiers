@@ -28,9 +28,20 @@ int main(int /*argc*/, char** /*argv*/) {
       service
     );
 
+    // Define the theme of this application.
     new_frontiers::Theme t;
-    t.file = "data/img/gehena.png";
-    t.layout = olc::vi2d(8, 3);
+
+    t.solidTiles.file = "data/img/gehena.png";
+    t.solidTiles.layout = olc::vi2d(8, 3);
+    t.portals.file = "data/img/portals.png";
+    t.portals.layout = olc::vi2d(16, 2);
+    t.entities.file = "data/img/entities.png";
+    t.entities.layout = olc::vi2d(16, 4);
+    t.vfx.file = "data/img/vfx.png";
+    t.vfx.layout = olc::vi2d(14, 1);
+    t.cursors.file = "data/img/cursors.png";
+    t.cursors.layout = olc::vi2d(2, 1);
+
     t.size = olc::vi2d(64, 64);
 
     new_frontiers::NewFrontiersApp demo(width, height, t);
