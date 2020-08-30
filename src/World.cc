@@ -55,6 +55,12 @@ namespace new_frontiers {
       EntityShPtr ep = m_entities[id];
 
       if (ep->step(vfxSpawned, m_rng)) {
+        // TODO: This might be a real issue in case
+        // there are a lot of entities because we're
+        // effectively asking a full re-sort on each
+        // frame.
+        // Maybe we could separate re-sort at the
+        // very least.
         eMoved = true;
       }
     }
