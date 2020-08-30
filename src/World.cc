@@ -38,68 +38,12 @@ namespace new_frontiers {
   }
 
   void
-  World::generate() {
-    // Generate walls at random for now.
-    static const int count = 1;
-# ifdef GENERATE_TILES
-    static const int walls = count;
-    static const int doors = count;
-# endif
-    static const int portals = count;
-# ifdef GENERATE_TILES
-    static const int entities = count;
-    static const int vfx = count;
-# endif
+  World::generatePortals() {
+    // Generate a single portal for now.
+    static const int portals = 1;
 
     std::unordered_set<int> used;
 
-# ifdef GENERATE_TILES
-    // Generate walls.
-    for (int id = 0 ; id < walls ; ++id) {
-      int var = m_rng.rndInt(0, 15);
-      SolidTile st = newTile(Wall, var);
-
-      bool n = false;
-      while (!n) {
-        st.x = m_rng.rndInt(1, m_w - 2);
-        st.y = m_rng.rndInt(1, m_h - 2);
-
-        n = (used.count(st.y * m_w + st.x) == 0);
-      }
-
-      if (n) {
-        used.insert(st.y * m_w + st.x);
-      }
-
-      log("Generating wall " + std::to_string(var) + " at " + std::to_string(st.x) + "x" + std::to_string(st.y));
-
-      m_tiles.push_back(st);
-    }
-
-    // Generate doors.
-    for (int id = 0 ; id < doors ; ++id) {
-      int var = m_rng.rndInt(0, 3);
-      SolidTile st = newTile(Door, var);
-
-      bool n = false;
-      while (!n) {
-        st.x = m_rng.rndInt(1, m_w - 2);
-        st.y = m_rng.rndInt(1, m_h - 2);
-
-        n = (used.count(st.y * m_w + st.x) == 0);
-      }
-
-      if (n) {
-        used.insert(st.y * m_w + st.x);
-      }
-
-      log("Generating door " + std::to_string(var) + " at " + std::to_string(st.x) + "x" + std::to_string(st.y));
-
-      m_tiles.push_back(st);
-    }
-# endif
-
-    // Generate portals.
     for (int id = 0 ; id < portals ; ++id) {
       int var = m_rng.rndInt(0, 21);
       SolidTile st = newTile(Portal, var);
@@ -120,51 +64,6 @@ namespace new_frontiers {
 
       m_tiles.push_back(st);
     }
-
-# ifdef GENERATE_TILES
-    // Generate entities.
-    for (int id = 0 ; id < entities ; ++id) {
-      int var = m_rng.rndInt(0, MobsCount - 1);
-      EntityTile et = newTile((Mob)var, 0);
-
-      bool n = false;
-      while (!n) {
-        et.x = m_rng.rndInt(1, m_w - 2);
-        et.y = m_rng.rndInt(1, m_h - 2);
-
-        n = (used.count(et.y * m_w + et.x) == 0);
-      }
-
-      if (n) {
-        used.insert(et.y * m_w + et.x);
-      }
-
-      log("Generating entity " + std::to_string(et.type) + " at " + std::to_string(et.x) + "x" + std::to_string(et.y));
-
-      m_entities.push_back(et);
-    }
-
-    // Generate vfx.
-    for (int id = 0 ; id < vfx ; ++id) {
-      int type = m_rng.rndInt(0, EffectsCount - 1);
-      int var = m_rng.rndInt(0, 2);
-      VFXTile et = newTile((Effect)type, var);
-
-      bool n = false;
-      while (!n) {
-        et.x = m_rng.rndInt(1, m_w - 2);
-        et.y = m_rng.rndInt(1, m_h - 2);
-
-        n = (used.count(et.y * m_w + et.x) == 0);
-      }
-
-      used.insert(et.y * m_w + et.x);
-
-      log("Generating vfx " + std::to_string(et.type) + " with var " + std::to_string(var) + " at " + std::to_string(et.x) + "x" + std::to_string(et.y));
-
-      m_vfx.push_back(et);
-    }
-# endif
   }
 
 }

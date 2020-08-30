@@ -50,7 +50,7 @@ namespace new_frontiers {
     Dragon,
     Sorcerer,
     Satyr,
-    TwoHeaderWarrior,
+    TwoHeadedWarrior,
     FireKnight,
 
     MobsCount

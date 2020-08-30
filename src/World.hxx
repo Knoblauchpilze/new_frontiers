@@ -23,6 +23,13 @@ namespace new_frontiers {
     return std::make_shared<WorldIterator>(m_w, m_h, m_tiles, m_entities, m_vfx);
   }
 
+  inline
+  void
+  World::generate() {
+    // Generate portals.
+    generatePortals();
+  }
+
 }
 
 #endif    /* WORLD_HXX */

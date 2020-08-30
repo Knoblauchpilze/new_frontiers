@@ -10,8 +10,8 @@ namespace new_frontiers {
     m_sortedTiles.resize(m_tiles.size());
     for (unsigned id = 0u ; id < m_tiles.size() ; ++id) {
       m_sortedTiles[id] = SortEntry{
-        m_tiles[id].x,
-        m_tiles[id].y,
+        m_tiles[id].getDesc().x,
+        m_tiles[id].getDesc().y,
         static_cast<int>(id)
       };
     }

@@ -94,7 +94,7 @@ namespace new_frontiers {
     m_aliases[aliasOfEntity(Dragon)]            = SpriteAlias{EntityID, olc::vi2d(2, 2)};
     m_aliases[aliasOfEntity(Sorcerer)]          = SpriteAlias{EntityID, olc::vi2d(13, 2)};
     m_aliases[aliasOfEntity(Satyr)]             = SpriteAlias{EntityID, olc::vi2d(14, 2)};
-    m_aliases[aliasOfEntity(TwoHeaderWarrior)]  = SpriteAlias{EntityID, olc::vi2d(15, 2)};
+    m_aliases[aliasOfEntity(TwoHeadedWarrior)]  = SpriteAlias{EntityID, olc::vi2d(15, 2)};
     m_aliases[aliasOfEntity(FireKnight)]        = SpriteAlias{EntityID, olc::vi2d(0, 3)};
 
     m_aliases[aliasOfEffect(Fire)]      = SpriteAlias{VFXID, olc::vi2d(0, 0)};

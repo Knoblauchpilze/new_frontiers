@@ -6,6 +6,7 @@
 # include "RNG.hh"
 # include "WorldTypes.hh"
 # include "WorldIterators.hh"
+# include "WorldElements.hh"
 
 namespace new_frontiers {
 
@@ -58,6 +59,9 @@ namespace new_frontiers {
       void
       generate();
 
+      void
+      generatePortals();
+
     private:
 
       /**
@@ -76,7 +80,7 @@ namespace new_frontiers {
       /**
        * @brief - The list of tiles for this world.
        */
-      std::vector<SolidTile> m_tiles;
+      std::vector<SolidElement> m_tiles;
 
       /**
        * @bvrief - The list of monsters and entities that have spawned
