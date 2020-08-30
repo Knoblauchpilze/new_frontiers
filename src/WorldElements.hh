@@ -54,10 +54,18 @@ namespace new_frontiers {
       Entity(const EntityTile& desc,
              const Effect& vfx);
 
-      virtual void
+      virtual bool
       step(std::vector<VFXShPtr>& created, RNG& rng);
 
     private:
+
+      float m_ox;
+      float m_oy;
+
+      bool m_started;
+      float m_radius;
+      Duration m_lap;
+      TimeStamp m_init;
 
       Effect m_vfx;
 

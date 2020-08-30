@@ -71,18 +71,41 @@ namespace new_frontiers {
                  const Effect& vfx):
     WorldElement(desc, "entity"),
 
+    m_ox(desc.x),
+    m_oy(desc.y),
+
+    m_started(false),
+    m_radius(1.0f),
+    m_lap(toMilliseconds(2000)),
+    m_init(now()),
+
     m_vfx(vfx),
 
-    m_vfxDelta(toMilliseconds(2000)),
+    m_vfxDelta(toMilliseconds(1000)),
     m_last(now() - m_vfxDelta)
   {}
 
   inline
-  void
-  Entity::step(std::vector<VFXShPtr>& created, RNG& /*rng*/) {
+  bool
+  Entity::step(std::vector<VFXShPtr>& created, RNG& rng) {
+    // Make the entity walk on a circle with
+    // random speed and radius.
+    if (!m_started) {
+      m_started = true;
+
+      m_radius = rng.rndFloat(0.0f, 3.0f);
+      m_lap = toMilliseconds(rng.rndInt(2000, 4000));
+    }
+
+    Duration elapsed = now() - m_init;
+    float period = 1.0f * elapsed.count() / m_lap.count();
+
+    m_tile.x = m_ox - m_radius + m_radius * std::cos(2.0f * 3.14159f * period);
+    m_tile.y = m_oy            + m_radius * std::sin(2.0f * 3.14159f * period);
+
     // Check whether we shoud spawn a new vfx.
-    if (now() - m_vfxDelta < m_last || true) {
-      return;
+    if (now() - m_vfxDelta < m_last) {
+      return true;
     }
 
     // Now is the last time we generated a vfx
@@ -99,6 +122,8 @@ namespace new_frontiers {
     v.y = m_tile.y;
 
     created.push_back(std::make_shared<VFX>(v));
+
+    return true;
   }
 
   inline
@@ -114,7 +139,7 @@ namespace new_frontiers {
     m_interval(toMilliseconds(1000)),
     m_last(now() - m_interval),
 
-    m_toSpawn(1),
+    m_toSpawn(10),
     m_spawned(0),
 
     m_mob(Hydra),
