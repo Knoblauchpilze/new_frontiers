@@ -50,10 +50,13 @@ namespace new_frontiers {
     m_entities.insert(m_entities.end(), eSpawned.cbegin(), eSpawned.cend());
 
     // Make entities evolve.
+    bool eMoved = false;
     for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
       EntityShPtr ep = m_entities[id];
 
-      ep->step(vfxSpawned, m_rng);
+      if (ep->step(vfxSpawned, m_rng)) {
+        eMoved = true;
+      }
     }
 
     // Register vfx that have been created.
@@ -85,7 +88,7 @@ namespace new_frontiers {
 
     // In case something has been modified, refresh
     // the iterator on this world.
-    if (!eSpawned.empty() || !vfxSpawned.empty() || !toRm.empty()) {
+    if (!eSpawned.empty() || eMoved || !vfxSpawned.empty() || !toRm.empty()) {
       m_it->refresh();
     }
   }
