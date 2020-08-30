@@ -7,8 +7,12 @@ namespace new_frontiers {
 
   inline
   NewFrontiersApp::~NewFrontiersApp() {
-    if (m_sprite != nullptr) {
-      delete m_sprite;
+    if (!m_sprites.empty()) {
+      for (unsigned id = 0u ; id < m_sprites.size() ; ++id) {
+        delete m_sprites[id].res;
+      }
+
+      m_sprites.clear();
     }
   }
 
@@ -16,7 +20,7 @@ namespace new_frontiers {
   bool
   NewFrontiersApp::OnUserCreate() {
     // Create the world.
-    m_world = std::make_shared<World>(100, 8, 6);
+    m_world = std::make_shared<World>(100, 30, 20);
     m_wit = m_world->iterator();
 
     // And the tile alias.
@@ -43,7 +47,7 @@ namespace new_frontiers {
 
   inline
   void
-  NewFrontiersApp::initialize(int width, int height, int pixelRatio) {
+  NewFrontiersApp::initialize(int width, int height, const Theme& theme, int pixelRatio) {
     // Construct the window. Note that we use a pixel size
     // to screen size ratio of `1` (meaning that each pixel
     // of the viewport will be represented by a pixel on
@@ -56,35 +60,44 @@ namespace new_frontiers {
         std::string("Initialization failed")
       );
     }
+
+    // Create the placeholder for sprites and resource packs.
+    m_sprites.resize(SpriteTypesCount);
+
+    m_sprites[SolidID].file = theme.solidTiles.file;
+    m_sprites[SolidID].layout = theme.solidTiles.layout;
+    m_sprites[SolidID].res = nullptr;
+
+    m_sprites[PortalID].file = theme.portals.file;
+    m_sprites[PortalID].layout = theme.portals.layout;
+    m_sprites[PortalID].res = nullptr;
+
+    m_sprites[EntityID].file = theme.entities.file;
+    m_sprites[EntityID].layout = theme.entities.layout;
+    m_sprites[EntityID].res = nullptr;
+
+    m_sprites[VFXID].file = theme.vfx.file;
+    m_sprites[VFXID].layout = theme.vfx.layout;
+    m_sprites[VFXID].res = nullptr;
+
+    m_sprites[CursorID].file = theme.cursors.file;
+    m_sprites[CursorID].layout = theme.cursors.layout;
+    m_sprites[CursorID].res = nullptr;
   }
 
   inline
   olc::vi2d
-  NewFrontiersApp::spriteCoordsToPixels(const olc::vi2d& coord, int id) const noexcept {
+  NewFrontiersApp::spriteCoordsToPixels(const olc::vi2d& coord, const olc::vi2d& layout, int id) const noexcept {
     // Compute linear identifier from 2D coordinates.
-    int lID = coord.y * m_theme.layout.x + coord.x + id;
+    int lID = coord.y * layout.x + coord.x + id;
 
     // Go back to 2D coordinates using the layout on
     // the linearized ID and the size of the sprite
     // to obtain a pixels position.
     return olc::vi2d(
-      (lID % m_theme.layout.x) * m_theme.size.x,
-      (lID / m_theme.layout.x) * m_theme.size.y
+      (lID % layout.x) * m_ss.x,
+      (lID / layout.x) * m_ss.y
     );
-  }
-
-  inline
-  olc::vi2d
-  NewFrontiersApp::entityCoordsToPixels(const olc::vi2d& coord, int id) const noexcept {
-    /** TODO: Implement this. **/
-    return spriteCoordsToPixels(coord, id);
-  }
-
-  inline
-  olc::vi2d
-  NewFrontiersApp::vfxCoordsToPixels(const olc::vi2d& coord, int id) const noexcept {
-    /** TODO: Implement this. **/
-    return spriteCoordsToPixels(coord, id);
   }
 
   inline
@@ -108,11 +121,14 @@ namespace new_frontiers {
   inline
   void
   NewFrontiersApp::drawSprite(int x, int y, int alias, int id) {
+    const SpriteAlias& sa = m_aliases[alias];
+    const SpritesPack& sp = m_sprites[sa.type];
+
     DrawPartialDecal(
       m_cf.tileCoordsToPixels(x, y),
-      m_sprite,
-      spriteCoordsToPixels(m_aliases[alias], id),
-      m_theme.size,
+      sp.res,
+      spriteCoordsToPixels(sa.alias, sp.layout, id),
+      m_ss,
       m_cf.tileScale()
     );
   }

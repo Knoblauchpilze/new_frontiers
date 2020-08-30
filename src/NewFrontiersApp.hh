@@ -10,6 +10,18 @@
 namespace new_frontiers {
 
   /**
+   * @brief - Convenience structure allowing to represent the
+   *          sprites inside a file. In addition to the name
+   *          of the file the layout of the sprites is also
+   *          specified so as to be able to identify tiles in
+   *          a correct way.
+   */
+  struct SpriteFile {
+    std::string file;
+    olc::vi2d layout;
+  };
+
+  /**
    * @brief - Define the common information for the theme to be
    *          used in this application. It defines both names of
    *          the sprite files along with information about the
@@ -18,9 +30,14 @@ namespace new_frontiers {
    *          correctly render the tiles.
    */
   struct Theme {
-    std::string file;
+    // Sprite files.
+    SpriteFile solidTiles;
+    SpriteFile portals;
+    SpriteFile entities;
+    SpriteFile vfx;
+    SpriteFile cursors;
+
     olc::vi2d size;
-    olc::vi2d layout;
   };
 
   class NewFrontiersApp: public utils::CoreObject, public olc::PixelGameEngine {
@@ -72,11 +89,12 @@ namespace new_frontiers {
        *          it suits our needs.
        * @param width - the width of the window in pixels.
        * @param height - the height of the window in pixels.
+       * @param theme - the theme to use for this application.
        * @param pixelRatio - the ratio between a viewport pixel and
        *                     a screen pixel.
        */
       void
-      initialize(int width, int height, int pixelRatio);
+      initialize(int width, int height, const Theme& theme, int pixelRatio);
 
       /**
        * @brief - Perform the creation of the tile aliases, allowing
@@ -94,47 +112,25 @@ namespace new_frontiers {
        * @brief - Used to convert from sprite coordinates to the
        *          corresponding pixels coordinates. This method
        *          should mostly be used to locate a sprite in a
-       *          resource pack.
+       *          resource pack. The provided layout allows to
+       *          know in advance how sprites are laid out in
+       *          the pack and thus find the correct location
+       *          based on the coordinates of the sprite and
+       *          its identifier.
        *          In order to find the correct sprite, both some
        *          coordinates and a variation id should be set
        *          to fix a single element in the sprites.
        * @param coord - the coordinates of the sprite to convert
        *                to pixels in the resource pack.
+       * @param layout - defines the layout of the sprites in
+       *                 the resource pack.
        * @param id - the index of the variation of the sprite
        *             to use: default is `0`.
        * @return - a vector representing the pixels coordinates
        *           for the input sprite coords.
        */
       olc::vi2d
-      spriteCoordsToPixels(const olc::vi2d& coord, int id = 0) const noexcept;
-
-      /**
-       * @brief - Very similar to the `spriteCoordsToPixels` but
-       *          interpret the layout for the entities sprites
-       *          to convert the input coordinates into a pixels
-       *          position.
-       * @param coord - the coordinates of the sprite to convert
-       *                to pixels in the resource pack.
-       * @param id - the index of the variation of the sprite
-       *             to use: default is `0`.
-       * @return - a vector representing the pixels coordinates
-       *           for the input sprite coords.
-       */
-      olc::vi2d
-      entityCoordsToPixels(const olc::vi2d& coord, int id = 0) const noexcept;
-
-      /**
-       * @brief - Similar to the above methods but for the vfx
-       *          sprites.
-       * @param coord - the coordinates of the sprite to convert
-       *                to pixels in the resource pack.
-       * @param id - the index of the variation of the sprite
-       *             to use: default is `0`.
-       * @return - a vector representing the pixels coordinates
-       *           for the input sprite coords.
-       */
-      olc::vi2d
-      vfxCoordsToPixels(const olc::vi2d& coord, int id = 0) const noexcept;
+      spriteCoordsToPixels(const olc::vi2d& coord, const olc::vi2d& layout, int id = 0) const noexcept;
 
       /**
        * @brief - Compute the index of the input sprite in the atlas
@@ -209,29 +205,63 @@ namespace new_frontiers {
     private:
 
       /**
-       * @brief - Define the theme of this application. It represent
-       *          the base name for sprite files and allow to easily
-       *          change the appearance of the game by using another
-       *          theme. It should also provide the layout of the
-       *          sprite file so that we can correctly render the
-       *          elements visually.
-       *          This theme is forwarded during the atlas creation
-       *          process to be applied.
+       * @brief - Convenience enumeration to refer to the position of
+       *          each sprite type in the `m_sprites` array.
        */
-      Theme m_theme;
+      enum SpriteLocation {
+        SolidID,
+        PortalID,
+        EntityID,
+        VFXID,
+        CursorID,
+
+        SpriteTypesCount
+      };
 
       /**
-       * @brief - Holds the main sprite defining the visual aspect
+       * @brief - Convenience define allowing to refer to an alias in
+       *          a sprite file: it contains both the sprite's type
+       *          along with its actual position in the resource pack.
+       */
+      struct SpriteAlias {
+        SpriteLocation type;
+        olc::vi2d alias;
+      };
+
+      /**
+       * @brief - Convenience define allowing to represent a resource
+       *          pack within the app. It mostly consists in a single
+       *          `decal` (understand sprite) resource and the layout
+       *          associated to it.
+       *          In order to allow deferred loading we provide the
+       *          name of the file defining this pack.
+       */
+      struct SpritesPack {
+        std::string file;
+        olc::Decal* res;
+        olc::vi2d layout;
+      };
+
+      /**
+       * @brief - Define the size of a sprtie in pixels as loaded
+       *          from the resource packs used by this application.
+       *          We allow only a single size in order to maintain
+       *          some sort of aspect consistency across the app.
+       */
+      olc::vi2d m_ss;
+
+      /**
+       * @brief - Holds the main sprites defining the visual aspect
        *          of in-game elements. It is usually represented as
-       *          a large texture containing separate elements for
-       *          each tile type.
+       *          some large textures containing separate elements
+       *          for each tile type.
        *          Note that the `olc` type is a decal but it does
        *          not change the fact that we're displaying sprites.
        *          The `decal` is just more powerful in terms of
        *          scaling and rotation which makes it more suited
        *          for the viewport handling for example.
        */
-      olc::Decal* m_sprite;
+      std::vector<SpritesPack> m_sprites;
 
       /**
        * @brief - Defines an atlas where each tile type is stored
@@ -239,7 +269,7 @@ namespace new_frontiers {
        *          allows to easily associate a tile type with a
        *          visual element.
        */
-      std::vector<olc::vi2d> m_aliases;
+      std::vector<SpriteAlias> m_aliases;
 
       /**
        * @brief - The world managed by this application.
