@@ -3,6 +3,7 @@
 
 # include "WorldElements.hh"
 
+
 namespace new_frontiers {
 
   template <typename TileType>
@@ -24,9 +25,81 @@ namespace new_frontiers {
   }
 
   inline
-  Entity::Entity(const EntityTile& desc):
-    WorldElement(desc, "entity")
+  VFX::VFX(const VFXTile& desc):
+    WorldElement(desc, "vfx"),
+
+    m_transitions(2),
+
+    m_decay(toMilliseconds(250)),
+    m_lastDecay(toMilliseconds(500)),
+
+    m_phase(now() + m_decay)
   {}
+
+  inline
+  bool
+  VFX::step(RNG& /*rng*/) {
+    // Check whether the vfx should decay in its
+    // next form.
+    if (now() < m_phase) {
+      return false;
+    }
+
+    // If we reached the last transition, it's
+    // time for this effect to disappear.
+    if (m_transitions <= 0) {
+      return true;
+    }
+
+    // Otherwise, move to the next phase for
+    // this vfx and reset the decay time.
+    ++m_tile.id;
+    --m_transitions;
+
+    if (m_transitions > 0) {
+      m_phase = now() + m_decay;
+    }
+    else {
+      m_phase = now() + m_lastDecay;
+    }
+
+    return false;
+  }
+
+  inline
+  Entity::Entity(const EntityTile& desc,
+                 const Effect& vfx):
+    WorldElement(desc, "entity"),
+
+    m_vfx(vfx),
+
+    m_vfxDelta(toMilliseconds(2000)),
+    m_last(now() - m_vfxDelta)
+  {}
+
+  inline
+  void
+  Entity::step(std::vector<VFXShPtr>& created, RNG& /*rng*/) {
+    // Check whether we shoud spawn a new vfx.
+    if (now() - m_vfxDelta < m_last) {
+      return;
+    }
+
+    // Now is the last time we generated a vfx
+    // for this entity.
+    m_last = now() + m_vfxDelta;
+
+    // Generate a new vfx at the location of
+    // the entity.
+    VFXTile v;
+
+    v.type = m_vfx;
+    v.id = 0;
+    v.x = m_tile.x;
+    v.y = m_tile.y;
+
+    created.push_back(std::make_shared<VFX>(v));
+  }
 
   inline
   SolidElement::SolidElement(const SolidTile& desc,
@@ -80,7 +153,6 @@ namespace new_frontiers {
   inline
   EntityShPtr
   Spawner::spawn(RNG& rng) noexcept {
-
     EntityTile e;
 
     e.type = m_mob;
@@ -98,13 +170,16 @@ namespace new_frontiers {
     e.x += m_tile.x;
     e.y += m_tile.y;
 
+    // Randomize the effect to give to the entities.
+    Effect vfx = (Effect)rng.rndInt(0, EffectsCount - 1);
+
     // This is the last time the spawner
     // has been activated.
     ++m_spawned;
     --m_toSpawn;
     m_last = now();
 
-    return std::make_shared<Entity>(e);
+    return std::make_shared<Entity>(e, vfx);
   }
 
 }

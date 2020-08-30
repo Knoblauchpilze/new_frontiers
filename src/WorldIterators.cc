@@ -28,8 +28,8 @@ namespace new_frontiers {
     m_sortedVFX.resize(m_vfx.size());
     for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
       m_sortedVFX[id] = SortEntry{
-        m_vfx[id].x,
-        m_vfx[id].y,
+        m_vfx[id]->getDesc().x,
+        m_vfx[id]->getDesc().y,
         static_cast<int>(id)
       };
     }

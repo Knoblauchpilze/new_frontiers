@@ -37,20 +37,55 @@ namespace new_frontiers {
   void
   World::step(float /*tDelta*/) {
     // Spawn entities from spawner that can do so.
-    std::vector<EntityShPtr> spawned;
+    std::vector<EntityShPtr> eSpawned;
+    std::vector<VFXShPtr> vfxSpawned;
 
     for (unsigned id = 0u ; id < m_tiles.size() ; ++id) {
       SolidElementShPtr se = m_tiles[id];
 
-      se->step(spawned, m_rng);
+      se->step(eSpawned, m_rng);
     }
 
     // Register entities that have been spawned.
-    m_entities.insert(m_entities.end(), spawned.cbegin(), spawned.cend());
+    m_entities.insert(m_entities.end(), eSpawned.cbegin(), eSpawned.cend());
+
+    // Make entities evolve.
+    for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
+      EntityShPtr ep = m_entities[id];
+
+      ep->step(vfxSpawned, m_rng);
+    }
+
+    // Register vfx that have been created.
+    m_vfx.insert(m_vfx.end(), vfxSpawned.cbegin(), vfxSpawned.cend());
+
+    // Make vfx evolve.
+    std::vector<int> toRm;
+
+    for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
+      VFXShPtr v = m_vfx[id];
+
+      if (v->step(m_rng)) {
+        toRm.push_back(id);
+      }
+    }
+
+    // Remove dead effects. We use reverse iterators as
+    // we want to traverse the vector from end to front
+    // (so as to keep indices valid while removing) and
+    // using a classic for loop would lead to issue if
+    // we use an `unsigned` value (we could static_cast
+    // but it seems less pretty).
+    for (std::vector<int>::reverse_iterator it = toRm.rbegin() ;
+         it != toRm.rend() ;
+         ++it)
+    {
+      m_vfx.erase(m_vfx.begin() + toRm[*it]);
+    }
 
     // In case something has been modified, refresh
     // the iterator on this world.
-    if (!spawned.empty()) {
+    if (!eSpawned.empty() || !vfxSpawned.empty() || !toRm.empty()) {
       m_it->refresh();
     }
   }
