@@ -174,7 +174,7 @@ namespace new_frontiers {
        * @param id - the index of the variation of this sprite.
        */
       void
-      drawSprite(int x, int y, int alias, int id);
+      drawSprite(float x, float y, int alias, int id);
 
       /**
        * @brief - Used to perform the necessary update based on

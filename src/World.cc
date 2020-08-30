@@ -102,16 +102,19 @@ namespace new_frontiers {
       SolidTile st = newTile(Portal, var);
 
       bool n = false;
+      int x = 0;
+      int y = 0;
       while (!n) {
-        st.x = m_rng.rndInt(1, m_w - 2);
-        st.y = m_rng.rndInt(1, m_h - 2);
+        x = m_rng.rndInt(1, m_w - 2);
+        y = m_rng.rndInt(1, m_h - 2);
 
-        n = (used.count(st.y * m_w + st.x) == 0);
+        n = (used.count(y * m_w + x) == 0);
       }
 
-      if (n) {
-        used.insert(st.y * m_w + st.x);
-      }
+      used.insert(y * m_w + x);
+
+      st.x = x;
+      st.y = y;
 
       log("Generating portal " + std::to_string(var) + " at " + std::to_string(st.x) + "x" + std::to_string(st.y));
 

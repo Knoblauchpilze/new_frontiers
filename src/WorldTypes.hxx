@@ -10,8 +10,8 @@ namespace new_frontiers {
   newTile(const TileType& type, int id) noexcept {
     Tile<TileType> t;
 
-    t.x = 0;
-    t.y = 0;
+    t.x = 0.0f;
+    t.y = 0.0f;
 
     t.type = type;
     t.id = id;

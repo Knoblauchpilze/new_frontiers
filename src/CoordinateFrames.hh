@@ -112,7 +112,7 @@ namespace new_frontiers {
        *           by the input coords.
        */
       olc::vf2d
-      tileCoordsToPixels(int x, int y) const noexcept;
+      tileCoordsToPixels(float x, float y) const noexcept;
 
       /**
        * @brief - Convert from pixels coordinates to tile coords.
