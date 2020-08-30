@@ -26,10 +26,43 @@ namespace new_frontiers {
       Tile<TileType> m_tile;
   };
 
+  class VFX: public WorldElement<Effect> {
+    public:
+
+      VFX(const VFXTile& desc);
+
+      virtual bool
+      step(RNG& rng);
+
+    private:
+
+      int m_transitions;
+
+      TimeStamp m_origin;
+      Duration m_decay;
+      Duration m_lastDecay;
+
+      TimeStamp m_phase;
+
+  };
+
+  using VFXShPtr = std::shared_ptr<VFX>;
+
   class Entity: public WorldElement<Mob> {
     public:
 
-      Entity(const EntityTile& desc);
+      Entity(const EntityTile& desc,
+             const Effect& vfx);
+
+      virtual void
+      step(std::vector<VFXShPtr>& created, RNG& rng);
+
+    private:
+
+      Effect m_vfx;
+
+      Duration m_vfxDelta;
+      TimeStamp m_last;
   };
 
   using EntityShPtr = std::shared_ptr<Entity>;

@@ -93,7 +93,7 @@ namespace new_frontiers {
        *          game. Effects that have finished are erased from the
        *          list.
        */
-      std::vector<VFXTile> m_vfx;
+      std::vector<VFXShPtr> m_vfx;
 
       /**
        * @brief - The iterator on this world. Will be used as a return

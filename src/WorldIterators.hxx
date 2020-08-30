@@ -10,7 +10,7 @@ namespace new_frontiers {
                                int height,
                                const std::vector<SolidElementShPtr>& tiles,
                                const std::vector<EntityShPtr>& entities,
-                               const std::vector<VFXTile>& vfx):
+                               const std::vector<VFXShPtr>& vfx):
     utils::CoreObject("iterator"),
 
     m_w(width),
@@ -77,7 +77,7 @@ namespace new_frontiers {
   inline
   const VFXTile&
   WorldIterator::vfx(int id) const noexcept {
-    return m_vfx[m_sortedVFX[id].id];
+    return m_vfx[m_sortedVFX[id].id]->getDesc();
   }
 
   inline
