@@ -60,6 +60,16 @@ namespace new_frontiers {
       const VFXTile&
       vfx(int id) const noexcept;
 
+      /**
+       * @brief - Called whenever the tiles, entities or vfx have
+       *          been updated (for example with the generation of
+       *          new elements). In this case the iterator needs
+       *          to re-order the items to still enable correct
+       *          display.
+       */
+      void
+      refresh();
+
     private:
 
       /**

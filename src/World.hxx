@@ -20,7 +20,7 @@ namespace new_frontiers {
   inline
   WorldIteratorShPtr
   World::iterator() const noexcept {
-    return std::make_shared<WorldIterator>(m_w, m_h, m_tiles, m_entities, m_vfx);
+    return m_it;
   }
 
   inline
@@ -28,6 +28,9 @@ namespace new_frontiers {
   World::generate() {
     // Generate portals.
     generatePortals();
+
+    // Create an iterator from this.
+    m_it = std::make_shared<WorldIterator>(m_w, m_h, m_tiles, m_entities, m_vfx);
   }
 
 }
