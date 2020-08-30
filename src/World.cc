@@ -15,7 +15,9 @@ namespace new_frontiers {
 
     m_tiles(),
     m_entities(),
-    m_vfx()
+    m_vfx(),
+
+    m_it(nullptr)
   {
     // Check dimensions.
     if (m_w <= 3 || m_h <= 3) {
@@ -34,6 +36,8 @@ namespace new_frontiers {
 
   void
   World::step(float /*tDelta*/) {
+
+
     /** TODO: Implement this **/
   }
 

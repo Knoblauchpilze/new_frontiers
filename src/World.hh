@@ -94,6 +94,13 @@ namespace new_frontiers {
        *          list.
        */
       std::vector<VFXTile> m_vfx;
+
+      /**
+       * @brief - The iterator on this world. Will be used as a return
+       *          value in the `iterator` method so that everyone gets
+       *          the same one.
+       */
+      WorldIteratorShPtr m_it;
   };
 
   using WorldShPtr = std::shared_ptr<World>;

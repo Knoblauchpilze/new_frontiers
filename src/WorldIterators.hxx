@@ -80,6 +80,18 @@ namespace new_frontiers {
     return m_vfx[m_sortedVFX[id].id];
   }
 
+  inline
+  void
+  WorldIterator::refresh() {
+    // Clear sorted elements.
+    m_sortedTiles.clear();
+    m_sortedEntities.clear();
+    m_sortedVFX.clear();
+
+    // Resort elements.
+    sort();
+  }
+
 }
 
 #endif    /* WORLD_ITERATORS_HXX */
