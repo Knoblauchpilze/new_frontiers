@@ -5,6 +5,7 @@
 # include <memory>
 # include <core_utils/CoreObject.hh>
 # include "WorldTypes.hh"
+# include "WorldElements.hh"
 
 namespace new_frontiers {
 
@@ -21,7 +22,7 @@ namespace new_frontiers {
        */
       WorldIterator(int width,
                     int height,
-                    const std::vector<SolidTile>& tiles,
+                    const std::vector<SolidElement>& tiles,
                     const std::vector<EntityTile>& entities,
                     const std::vector<VFXTile>& vfx);
 
@@ -87,7 +88,7 @@ namespace new_frontiers {
       int m_w;
       int m_h;
 
-      const std::vector<SolidTile>& m_tiles;
+      const std::vector<SolidElement>& m_tiles;
       const std::vector<EntityTile>& m_entities;
       const std::vector<VFXTile>& m_vfx;
 

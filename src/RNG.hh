@@ -52,6 +52,14 @@ namespace new_frontiers {
       float
       rndFloat(float min, float max) noexcept;
 
+      /**
+       * @brief - Used as a convenience method to generate a
+       *          random angle in the range `[0; 2pi]`.
+       * @return - an value in the range `[0; 2pi]`.
+       */
+      float
+      rndAngle() noexcept;
+
     private:
 
       /**

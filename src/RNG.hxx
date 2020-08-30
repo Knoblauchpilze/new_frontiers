@@ -33,6 +33,12 @@ namespace new_frontiers {
     return dist(m_rng);
   }
 
+  inline
+  float
+  RNG::rndAngle() noexcept {
+    return rndFloat(0.0f, 2.0f * 3.1415926535f);
+  }
+
 }
 
 #endif    /* RNG_HXX */
