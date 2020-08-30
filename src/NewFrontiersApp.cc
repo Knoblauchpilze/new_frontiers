@@ -20,7 +20,7 @@ namespace new_frontiers {
     m_wit(nullptr),
 
     m_cf(Viewport{olc::vf2d(0.0f, 0.0f), olc::vf2d(10.0f, 15.0f)},
-         Viewport{olc::vf2d(0.0f, 0.0f), olc::vf2d(width, height)},
+         Viewport{olc::vf2d(320.0f, 100.0f), olc::vf2d(width, height)},
          olc::vi2d(64, 32)),
 
     m_first(true)

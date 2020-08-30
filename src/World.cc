@@ -40,15 +40,20 @@ namespace new_frontiers {
   void
   World::generate() {
     // Generate walls at random for now.
-    static const int count = 5;
+    static const int count = 1;
+# ifdef GENERATE_TILES
     static const int walls = count;
     static const int doors = count;
+# endif
     static const int portals = count;
+# ifdef GENERATE_TILES
     static const int entities = count;
     static const int vfx = count;
+# endif
 
     std::unordered_set<int> used;
 
+# ifdef GENERATE_TILES
     // Generate walls.
     for (int id = 0 ; id < walls ; ++id) {
       int var = m_rng.rndInt(0, 15);
@@ -92,6 +97,7 @@ namespace new_frontiers {
 
       m_tiles.push_back(st);
     }
+# endif
 
     // Generate portals.
     for (int id = 0 ; id < portals ; ++id) {
@@ -115,6 +121,7 @@ namespace new_frontiers {
       m_tiles.push_back(st);
     }
 
+# ifdef GENERATE_TILES
     // Generate entities.
     for (int id = 0 ; id < entities ; ++id) {
       int var = m_rng.rndInt(0, MobsCount - 1);
@@ -157,7 +164,7 @@ namespace new_frontiers {
 
       m_vfx.push_back(et);
     }
-
+# endif
   }
 
 }
