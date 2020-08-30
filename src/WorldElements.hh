@@ -4,11 +4,13 @@
 # include "WorldTypes.hh"
 # include "TimeUtils.hh"
 # include "RNG.hh"
+# include <memory>
+# include <core_utils/CoreObject.hh>
 
 namespace new_frontiers {
 
   template <typename TileType>
-  class WorldElement {
+  class WorldElement: public utils::CoreObject {
     public:
 
       const Tile<TileType>&
@@ -16,17 +18,12 @@ namespace new_frontiers {
 
     protected:
 
-      WorldElement(const Tile<TileType>& desc);
+      WorldElement(const Tile<TileType>& desc,
+                   const std::string& name);
 
-    private:
+    protected:
 
       Tile<TileType> m_tile;
-  };
-
-  class SolidElement: public WorldElement<Sprite> {
-    public:
-
-      SolidElement(const SolidTile& desc);
   };
 
   class Entity: public WorldElement<Mob> {
@@ -34,6 +31,22 @@ namespace new_frontiers {
 
       Entity(const EntityTile& desc);
   };
+
+  using EntityShPtr = std::shared_ptr<Entity>;
+
+  class SolidElement: public WorldElement<Sprite> {
+    public:
+
+      virtual void
+      step(std::vector<EntityShPtr>& created, RNG& rng) = 0;
+
+    protected:
+
+      SolidElement(const SolidTile& desc,
+                   const std::string& name);
+  };
+
+  using SolidElementShPtr = std::shared_ptr<SolidElement>;
 
   /**
    * @brief - Defines a portal in the game. A portal is the
@@ -47,13 +60,18 @@ namespace new_frontiers {
 
       Spawner(const SolidTile& desc);
 
+      void
+      step(std::vector<EntityShPtr>& created, RNG& rng) override;
+
+    private:
+
       bool
       depleted() const noexcept;
 
       bool
-      canSpawn(const TimeStamp& now) const noexcept;
+      canSpawn() const noexcept;
 
-      Entity
+      EntityShPtr
       spawn(RNG& rng) noexcept;
 
     private:
@@ -70,6 +88,7 @@ namespace new_frontiers {
       float m_radius;
   };
 
+  using SpawnerShPtr = std::shared_ptr<Spawner>;
 }
 
 # include "WorldElements.hxx"

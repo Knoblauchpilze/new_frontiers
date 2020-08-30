@@ -80,13 +80,13 @@ namespace new_frontiers {
       /**
        * @brief - The list of tiles for this world.
        */
-      std::vector<SolidElement> m_tiles;
+      std::vector<SolidElementShPtr> m_tiles;
 
       /**
        * @bvrief - The list of monsters and entities that have spawned
        *           in the world.
        */
-      std::vector<EntityTile> m_entities;
+      std::vector<EntityShPtr> m_entities;
 
       /**
        * @brief - The list of visual effects currently existing in the
