@@ -10,6 +10,7 @@ namespace new_frontiers {
     Empty,
     Wall,
     Door,
+    Portal,
 
     SpritesCount //<- Used to make sure that we know how many
                  //<- sprites we're handling.
@@ -20,12 +21,37 @@ namespace new_frontiers {
    *          an entity type in the game.
    */
   enum Mob {
+    MarineKnight,
+    Warrior,
+    StoneGiant,
+    Sorceress,
     Knight,
-    Snake,
+    GeneticExperiment,
     Warlord,
     Vampire,
-    Princess,
-    Sphynx,
+    Gecko,
+    DarkAnubis,
+    Cyclope,
+    Fool,
+    Beast,
+    BlueAvenger,
+    SoulEater,
+    Valkyrie,
+    Guardian,
+    Blob,
+    CosmicThreat,
+    Gorgone,
+    DemonBat,
+    Griffin,
+    Executioner,
+    MindlessGolem,
+    IncaOverlord,
+    Hydra,
+    Dragon,
+    Sorcerer,
+    Satyr,
+    TwoHeaderWarrior,
+    FireKnight,
 
     MobsCount
   };
@@ -36,8 +62,8 @@ namespace new_frontiers {
    */
   enum Effect {
     Fire,
-    Electricity,
-    Gas,
+    Lightning,
+    Poison,
     Smoke,
 
     EffectsCount

@@ -43,26 +43,25 @@ namespace new_frontiers {
     static const int count = 5;
     static const int walls = count;
     static const int doors = count;
+    static const int portals = count;
+    static const int entities = count;
+    static const int vfx = count;
 
     std::unordered_set<int> used;
 
     // Generate walls.
-    int remaining = m_w * m_h;
-    for (int id = 0 ; id < walls && id < remaining; ++id) {
+    for (int id = 0 ; id < walls ; ++id) {
       int var = m_rng.rndInt(0, 15);
       SolidTile st = newTile(Wall, var);
 
       bool n = false;
-      int trials = 0;
-      while (!n && trials < remaining) {
+      while (!n) {
         st.x = m_rng.rndInt(1, m_w - 2);
         st.y = m_rng.rndInt(1, m_h - 2);
 
         n = (used.count(st.y * m_w + st.x) == 0);
-
-        ++trials;
       }
-      
+
       if (n) {
         used.insert(st.y * m_w + st.x);
       }
@@ -73,22 +72,18 @@ namespace new_frontiers {
     }
 
     // Generate doors.
-    remaining = m_w * m_h - m_tiles.size();
-    for (int id = 0 ; id < doors && id < remaining; ++id) {
+    for (int id = 0 ; id < doors ; ++id) {
       int var = m_rng.rndInt(0, 3);
       SolidTile st = newTile(Door, var);
 
       bool n = false;
-      int trials = 0;
-      while (!n && trials < m_w * m_h) {
+      while (!n) {
         st.x = m_rng.rndInt(1, m_w - 2);
         st.y = m_rng.rndInt(1, m_h - 2);
 
         n = (used.count(st.y * m_w + st.x) == 0);
-
-        ++trials;
       }
-      
+
       if (n) {
         used.insert(st.y * m_w + st.x);
       }
@@ -97,6 +92,72 @@ namespace new_frontiers {
 
       m_tiles.push_back(st);
     }
+
+    // Generate portals.
+    for (int id = 0 ; id < portals ; ++id) {
+      int var = m_rng.rndInt(0, 21);
+      SolidTile st = newTile(Portal, var);
+
+      bool n = false;
+      while (!n) {
+        st.x = m_rng.rndInt(1, m_w - 2);
+        st.y = m_rng.rndInt(1, m_h - 2);
+
+        n = (used.count(st.y * m_w + st.x) == 0);
+      }
+
+      if (n) {
+        used.insert(st.y * m_w + st.x);
+      }
+
+      log("Generating portal " + std::to_string(var) + " at " + std::to_string(st.x) + "x" + std::to_string(st.y));
+
+      m_tiles.push_back(st);
+    }
+
+    // Generate entities.
+    for (int id = 0 ; id < entities ; ++id) {
+      int var = m_rng.rndInt(0, MobsCount - 1);
+      EntityTile et = newTile((Mob)var, 0);
+
+      bool n = false;
+      while (!n) {
+        et.x = m_rng.rndInt(1, m_w - 2);
+        et.y = m_rng.rndInt(1, m_h - 2);
+
+        n = (used.count(et.y * m_w + et.x) == 0);
+      }
+
+      if (n) {
+        used.insert(et.y * m_w + et.x);
+      }
+
+      log("Generating entity " + std::to_string(et.type) + " at " + std::to_string(et.x) + "x" + std::to_string(et.y));
+
+      m_entities.push_back(et);
+    }
+
+    // Generate vfx.
+    for (int id = 0 ; id < vfx ; ++id) {
+      int type = m_rng.rndInt(0, EffectsCount - 1);
+      int var = m_rng.rndInt(0, 2);
+      VFXTile et = newTile((Effect)type, var);
+
+      bool n = false;
+      while (!n) {
+        et.x = m_rng.rndInt(1, m_w - 2);
+        et.y = m_rng.rndInt(1, m_h - 2);
+
+        n = (used.count(et.y * m_w + et.x) == 0);
+      }
+
+      used.insert(et.y * m_w + et.x);
+
+      log("Generating vfx " + std::to_string(et.type) + " with var " + std::to_string(var) + " at " + std::to_string(et.x) + "x" + std::to_string(et.y));
+
+      m_vfx.push_back(et);
+    }
+
   }
 
 }

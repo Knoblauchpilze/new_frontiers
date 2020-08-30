@@ -59,7 +59,7 @@ namespace new_frontiers {
       generate();
 
     private:
-    
+
       /**
        * @brief - Dimensions of the world in cells.
        */
