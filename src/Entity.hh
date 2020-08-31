@@ -35,19 +35,11 @@ namespace new_frontiers {
 
     private:
 
-      /** TODO: Comment. **/
-      float m_ox;
-      float m_oy;
-
-      bool m_started;
-      float m_radius;
-      Duration m_lap;
-      TimeStamp m_init;
-
+      /**
+       * @brief - Defines the visual effect that can be produced
+       *          by this entity in particular situations.
+       */
       Effect m_vfx;
-
-      Duration m_vfxDelta;
-      TimeStamp m_last;
   };
 
   using EntityShPtr = std::shared_ptr<Entity>;

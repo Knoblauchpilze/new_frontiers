@@ -142,7 +142,7 @@ namespace new_frontiers {
 
       log("Generating portal " + std::to_string(var) + " at " + std::to_string(st.x) + "x" + std::to_string(st.y));
 
-      m_tiles.push_back(std::make_shared<Spawner>(st));
+      m_tiles.push_back(std::make_shared<Spawner>(st, DarkAnubis));
     }
   }
 
