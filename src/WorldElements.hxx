@@ -15,6 +15,13 @@ namespace new_frontiers {
 
   template <typename TileType>
   inline
+  Tile<TileType>&
+  WorldElement<TileType>::getDesc() noexcept {
+    return m_tile;
+  }
+
+  template <typename TileType>
+  inline
   WorldElement<TileType>::WorldElement(const Tile<TileType>& desc,
                                        const std::string& name):
     utils::CoreObject(name),
@@ -38,10 +45,10 @@ namespace new_frontiers {
 
   inline
   bool
-  VFX::step(RNG& /*rng*/) {
+  VFX::step(StepInfo& info) {
     // Check whether the vfx should decay in its
     // next form.
-    if (now() < m_phase) {
+    if (info.moment < m_phase) {
       return false;
     }
 
@@ -57,10 +64,10 @@ namespace new_frontiers {
     --m_transitions;
 
     if (m_transitions > 0) {
-      m_phase = now() + m_decay;
+      m_phase = info.moment + m_decay;
     }
     else {
-      m_phase = now() + m_lastDecay;
+      m_phase = info.moment + m_lastDecay;
     }
 
     return false;
@@ -87,30 +94,32 @@ namespace new_frontiers {
 
   inline
   bool
-  Entity::step(std::vector<VFXShPtr>& created, RNG& rng) {
+  Entity::step(StepInfo& info) {
     // Make the entity walk on a circle with
     // random speed and radius.
     if (!m_started) {
       m_started = true;
 
-      m_radius = rng.rndFloat(0.0f, 3.0f);
-      m_lap = toMilliseconds(rng.rndInt(2000, 4000));
+      m_radius = info.rng.rndFloat(0.0f, 3.0f);
+      m_lap = toMilliseconds(info.rng.rndInt(2000, 4000));
     }
 
-    Duration elapsed = now() - m_init;
+    Duration elapsed = info.moment - m_init;
     float period = 1.0f * elapsed.count() / m_lap.count();
 
     m_tile.x = m_ox - m_radius + m_radius * std::cos(2.0f * 3.14159f * period);
     m_tile.y = m_oy            + m_radius * std::sin(2.0f * 3.14159f * period);
 
+    info.clampCoord(m_tile.x, m_tile.y);
+
     // Check whether we shoud spawn a new vfx.
-    if (now() - m_vfxDelta < m_last) {
+    if (info.moment - m_vfxDelta < m_last) {
       return true;
     }
 
     // Now is the last time we generated a vfx
     // for this entity.
-    m_last = now() + m_vfxDelta;
+    m_last = info.moment + m_vfxDelta;
 
     // Generate a new vfx at the location of
     // the entity.
@@ -121,7 +130,7 @@ namespace new_frontiers {
     v.x = m_tile.x;
     v.y = m_tile.y;
 
-    created.push_back(std::make_shared<VFX>(v));
+    info.vSpawned.push_back(std::make_shared<VFX>(v));
 
     return true;
   }
@@ -150,17 +159,17 @@ namespace new_frontiers {
 
   inline
   void
-  Spawner::step(std::vector<EntityShPtr>& created, RNG& rng) {
+  Spawner::step(StepInfo& info) {
     // THe main goal of the spawner is to create new
     // entities to send in the world. We rely on the
     // fact that the spawner might be depleted or not
     // able to spawn a new entity yet to proceed.
-    if (depleted() || !canSpawn()) {
+    if (depleted() || !canSpawn(info.moment)) {
       return;
     }
 
     // Spawn a new entity.
-    created.push_back(spawn(rng));
+    info.eSpawned.push_back(spawn(info.rng));
   }
 
   inline
@@ -171,8 +180,8 @@ namespace new_frontiers {
 
   inline
   bool
-  Spawner::canSpawn() const noexcept {
-    return now() - m_interval >= m_last;
+  Spawner::canSpawn(const TimeStamp& moment) const noexcept {
+    return moment - m_interval >= m_last;
   }
 
   inline

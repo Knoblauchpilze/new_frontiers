@@ -1,5 +1,6 @@
 
 # include "World.hh"
+# include <algorithm>
 # include <unordered_set>
 # include <core_utils/CoreException.hh>
 
@@ -36,25 +37,38 @@ namespace new_frontiers {
 
   void
   World::step(float /*tDelta*/) {
-    // Spawn entities from spawner that can do so.
-    std::vector<EntityShPtr> eSpawned;
-    std::vector<VFXShPtr> vfxSpawned;
+    StepInfo si{
+      0.0f,
+      1.0f * m_w - 1.0f,
+      0.0f,
+      1.0f * m_h - 1.0f,
 
+      m_rng,
+
+      std::vector<EntityShPtr>(),
+      std::vector<VFXShPtr>(),
+
+      now()
+    };
+
+    // Spawn entities from spawner that can do so.
     for (unsigned id = 0u ; id < m_tiles.size() ; ++id) {
       SolidElementShPtr se = m_tiles[id];
 
-      se->step(eSpawned, m_rng);
+      se->step(si);
     }
 
-    // Register entities that have been spawned.
-    m_entities.insert(m_entities.end(), eSpawned.cbegin(), eSpawned.cend());
+    // Register entities that have been spawned. We
+    // need to make sure that they're spawned within
+    // the world's boundaries.
+    m_entities.insert(m_entities.end(), si.eSpawned.cbegin(), si.eSpawned.cend());
 
     // Make entities evolve.
     bool eMoved = false;
     for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
       EntityShPtr ep = m_entities[id];
 
-      if (ep->step(vfxSpawned, m_rng)) {
+      if (ep->step(si)) {
         // TODO: This might be a real issue in case
         // there are a lot of entities because we're
         // effectively asking a full re-sort on each
@@ -66,7 +80,7 @@ namespace new_frontiers {
     }
 
     // Register vfx that have been created.
-    m_vfx.insert(m_vfx.end(), vfxSpawned.cbegin(), vfxSpawned.cend());
+    m_vfx.insert(m_vfx.end(), si.vSpawned.cbegin(), si.vSpawned.cend());
 
     // Make vfx evolve.
     std::vector<int> toRm;
@@ -74,7 +88,7 @@ namespace new_frontiers {
     for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
       VFXShPtr v = m_vfx[id];
 
-      if (v->step(m_rng)) {
+      if (v->step(si)) {
         toRm.push_back(id);
       }
     }
@@ -94,7 +108,7 @@ namespace new_frontiers {
 
     // In case something has been modified, refresh
     // the iterator on this world.
-    if (!eSpawned.empty() || eMoved || !vfxSpawned.empty() || !toRm.empty()) {
+    if (!si.eSpawned.empty() || eMoved || !si.vSpawned.empty() || !toRm.empty()) {
       m_it->refresh();
     }
   }
