@@ -3,6 +3,20 @@
  * @brief - Preparation program for the olc code jam starting
  *          on 28/08/2020. The goal is to start using the olc
  *          pixel game engine to produce a small game.
+ *
+ *          The game: in a haunted world, a valorous knight
+ *          is meant to bring a piece of machinery to the
+ *          royal engineer. In order to accomplish his task
+ *          he needs to traverse the kingdom all the way from
+ *          the engineer's valley to the king's palace. Some
+ *          enemies have already landed on the kingdom and
+ *          the travel is everything but safe.
+ *          Across the land, portals are dispersed in order
+ *          to connect the multiple dimensions the kingdom
+ *          is spanning. The kinght shall pass among all of
+ *          them. Demons have quickly understood that these
+ *          passages are of the highest importance though
+ *          and they began guarding them...
  */
 
 # include <core_utils/StdLogger.hh>
