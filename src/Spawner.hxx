@@ -21,7 +21,7 @@ namespace new_frontiers {
     m_last(now() - m_interval),
 
     m_radius(3.0f),
-    m_threshold(2)
+    m_threshold(1)
   {}
 
   inline

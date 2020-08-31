@@ -91,8 +91,6 @@ namespace new_frontiers {
       int
       countEntities(const Mob& mob, float x, float y, float radius) const;
 
-    private:
-
       /**
        * @brief - Used to compute the distance between point
        *          `(x1, y1)` and `(x2, y2)`.
@@ -117,6 +115,24 @@ namespace new_frontiers {
        */
       float
       d2(float x1, float y1, float x2, float y2) const noexcept;
+
+      /**
+       * @brief - Determine whether the path defined by the
+       *          input coordinate and the direction has any
+       *          obstructing elements on it within `d` cells
+       *          of the starting position.
+       * @param x - the starting abscissa of the path.
+       * @param y - the ordinate of the path.
+       * @param xDir - the direction of the ray along the `x`
+       *               axis.
+       * @param yDir - the direction of the ray along the `y`
+       *               axis.
+       * @param d - the distance to check for obstruction.
+       * @return - `true` if the path is obstructed by any
+       *           solid element.
+       */
+      bool
+      obstructed(float x, float y, float xDir, float yDir, float d) const noexcept;
 
     private:
 
