@@ -19,20 +19,12 @@ namespace new_frontiers {
     return t;
   }
 
-  /**
-   * @brief - Represents a solid element.
-   */
-  using SolidTile = Tile<Sprite>;
-
-  /**
-   * @brief - Represents an entity.
-   */
-  using EntityTile = Tile<Mob>;
-
-  /**
-   * @brief - Represents a visual effect.
-   */
-  using VFXTile = Tile<Effect>;
+  inline
+  void
+  StepInfo::clampCoord(float& x, float& y) const noexcept {
+    x = std::min(std::max(x, xMin), xMax);
+    y = std::min(std::max(y, yMin), yMax);
+  }
 
 }
 

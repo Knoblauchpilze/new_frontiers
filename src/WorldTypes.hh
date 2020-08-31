@@ -1,6 +1,11 @@
 #ifndef    WORLD_TYPES_HH
 # define   WORLD_TYPES_HH
 
+# include <vector>
+# include <memory>
+# include "RNG.hh"
+# include "TimeUtils.hh"
+
 namespace new_frontiers {
 
   /**
@@ -112,6 +117,34 @@ namespace new_frontiers {
   template <typename TileType>
   Tile<TileType>
   newTile(const TileType& type, int id = 0) noexcept;
+
+  // Forward declaration of types to use for the `StepInfo`.
+  class Entity;
+  class VFX;
+
+  using EntityShPtr = std::shared_ptr<Entity>;
+  using VFXShPtr = std::shared_ptr<VFX>;
+
+  /**
+   * @brief - Convenience structure regrouping all variables
+   *          needed to perform the advancement of one step
+   *          of a world object. It includes a RNG, info on
+   *          the dimensions of the world, etc.
+   */
+  struct StepInfo {
+    float xMin, xMax;
+    float yMin, yMax;
+
+    RNG& rng;
+
+    std::vector<EntityShPtr> eSpawned;
+    std::vector<VFXShPtr> vSpawned;
+
+    TimeStamp moment;
+
+    void
+    clampCoord(float& x, float& y) const noexcept;
+  };
 
 }
 

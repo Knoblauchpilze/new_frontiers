@@ -16,6 +16,9 @@ namespace new_frontiers {
       const Tile<TileType>&
       getDesc() const noexcept;
 
+      Tile<TileType>&
+      getDesc() noexcept;
+
     protected:
 
       WorldElement(const Tile<TileType>& desc,
@@ -32,7 +35,7 @@ namespace new_frontiers {
       VFX(const VFXTile& desc);
 
       virtual bool
-      step(RNG& rng);
+      step(StepInfo& info);
 
     private:
 
@@ -55,7 +58,7 @@ namespace new_frontiers {
              const Effect& vfx);
 
       virtual bool
-      step(std::vector<VFXShPtr>& created, RNG& rng);
+      step(StepInfo& info);
 
     private:
 
@@ -79,7 +82,7 @@ namespace new_frontiers {
     public:
 
       virtual void
-      step(std::vector<EntityShPtr>& created, RNG& rng) = 0;
+      step(StepInfo& info) = 0;
 
     protected:
 
@@ -102,7 +105,7 @@ namespace new_frontiers {
       Spawner(const SolidTile& desc);
 
       void
-      step(std::vector<EntityShPtr>& created, RNG& rng) override;
+      step(StepInfo& info) override;
 
     private:
 
@@ -110,7 +113,7 @@ namespace new_frontiers {
       depleted() const noexcept;
 
       bool
-      canSpawn() const noexcept;
+      canSpawn(const TimeStamp& moment) const noexcept;
 
       EntityShPtr
       spawn(RNG& rng) noexcept;
