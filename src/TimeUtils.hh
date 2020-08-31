@@ -37,6 +37,15 @@ namespace new_frontiers {
   Duration
   toMilliseconds(int ms) noexcept;
 
+  /**
+   * @brief - Converts a timestamp to a human-readable
+   *          string.
+   * @param t - the time to convert.
+   * @return - a string representing this time.
+   */
+  std::string
+  timeToString(const TimeStamp& t) noexcept;
+
 }
 
 # include "TimeUtils.hxx"

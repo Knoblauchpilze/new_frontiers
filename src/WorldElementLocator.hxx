@@ -9,8 +9,11 @@ namespace new_frontiers {
   void
   WorldElementLocator::refresh(const Update& /*update*/) {
     /** TODO: Handle this. We probably need some sort of
-     * locatorEntry, where the position, the index and
-     * the **/
+     * locatorEntry, where the position and the index
+     * are stored for easy access and then inserted in
+     * a quadtree or something allowing easy spatial
+     * sorting.
+     */
   }
 
   inline

@@ -38,4 +38,10 @@ namespace new_frontiers {
     return count;
   }
 
+  bool
+  WorldElementLocator::obstructed(float /*x*/, float /*y*/, float /*xDir*/, float /*yDir*/, float /*d*/) const noexcept {
+    /** TODO: Handle this, probably through some raycasting and bresenham ? **/
+    return false;
+  }
+
 }
