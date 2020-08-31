@@ -14,7 +14,10 @@ set (SOURCES
   RNG.cc
   WorldIterators.cc
   CoordinateFrames.cc
-  WorldElements.cc
+  SolidElement.cc
+  Spawner.cc
+  Entity.cc
+  VFX.cc
   )
 
 add_library (new_frontiers_lib SHARED

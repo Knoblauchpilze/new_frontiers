@@ -3,6 +3,7 @@
 # include <algorithm>
 # include <unordered_set>
 # include <core_utils/CoreException.hh>
+# include "Spawner.hh"
 
 namespace new_frontiers {
 
