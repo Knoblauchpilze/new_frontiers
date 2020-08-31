@@ -7,6 +7,7 @@
 # include "WorldTypes.hh"
 # include "WorldIterators.hh"
 # include "WorldElement.hh"
+# include "WorldElementLocator.hh"
 
 namespace new_frontiers {
 
@@ -101,6 +102,16 @@ namespace new_frontiers {
        *          the same one.
        */
       WorldIteratorShPtr m_it;
+
+      /**
+       * @brief - An object to hold all the tiles and entities that
+       *          have been registered so far in the world, stored in
+       *          a way that maximize efficiency for location-based
+       *          queries.
+       *          Very useful for entities behavior that are usually
+       *          based on locating specific tiles in the game.
+       */
+      WorldElementLocatorShPtr m_loc;
   };
 
   using WorldShPtr = std::shared_ptr<World>;

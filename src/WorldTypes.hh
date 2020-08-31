@@ -125,6 +125,10 @@ namespace new_frontiers {
   using EntityShPtr = std::shared_ptr<Entity>;
   using VFXShPtr = std::shared_ptr<VFX>;
 
+  class WorldElementLocator;
+
+  using WorldElementLocatorShPtr = std::shared_ptr<WorldElementLocator>;
+
   /**
    * @brief - Convenience structure regrouping all variables
    *          needed to perform the advancement of one step
@@ -141,6 +145,8 @@ namespace new_frontiers {
     std::vector<VFXShPtr> vSpawned;
 
     TimeStamp moment;
+
+    WorldElementLocatorShPtr frustum;
 
     void
     clampCoord(float& x, float& y) const noexcept;

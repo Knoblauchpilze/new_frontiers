@@ -7,13 +7,6 @@
 
 namespace new_frontiers {
 
-  /**
-   * @brief - Defines a portal in the game. A portal is the
-   *          main source of enemies as it is able to spawn
-   *          them in the world at specific intervals.
-   *          Note that the interval between two consecutive
-   *          mobs spawn is expressed in milliseconds.
-   */
   class Spawner: public SolidElement {
     public:
 
@@ -23,6 +16,8 @@ namespace new_frontiers {
        *          new mobs into the game using a custom strategy.
        *          Also defines the type of mob spawned by this
        *          element, along with its variant.
+       *          Note that this variant produces a portal with
+       *          an infinite amount of mobs to spawn.
        * @param tile - the visual representation of the spawner
        *               along with its position.
        * @param mob - the type of mob spawned by this element.
@@ -124,6 +119,13 @@ namespace new_frontiers {
        *          that mobs should be spawn inside the portal.
        */
       float m_radius;
+
+      /**
+       * @brief - A threshold to prevent spawning mobs when a
+       *          certain number are already existing close
+       *          enough from the spawner.
+       */
+      int m_threshold;
   };
 
   using SpawnerShPtr = std::shared_ptr<Spawner>;

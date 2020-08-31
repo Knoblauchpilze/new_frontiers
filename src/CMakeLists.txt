@@ -18,6 +18,8 @@ set (SOURCES
   Spawner.cc
   Entity.cc
   VFX.cc
+  Teleporter.cc
+  WorldElementLocator.cc
   )
 
 add_library (new_frontiers_lib SHARED

@@ -4,6 +4,7 @@
 # include <unordered_set>
 # include <core_utils/CoreException.hh>
 # include "Spawner.hh"
+# include "Teleporter.hh"
 
 namespace new_frontiers {
 
@@ -19,7 +20,8 @@ namespace new_frontiers {
     m_entities(),
     m_vfx(),
 
-    m_it(nullptr)
+    m_it(nullptr),
+    m_loc(nullptr)
   {
     // Check dimensions.
     if (m_w <= 3 || m_h <= 3) {
@@ -49,7 +51,9 @@ namespace new_frontiers {
       std::vector<EntityShPtr>(),
       std::vector<VFXShPtr>(),
 
-      now()
+      now(),
+
+      m_loc
     };
 
     // Spawn entities from spawner that can do so.
@@ -116,34 +120,20 @@ namespace new_frontiers {
 
   void
   World::generatePortals() {
-    // Generate a single portal for now.
-    static const int portals = 1;
+    // Generate mob portal.
+    SolidTile st = newTile(Portal, 3);
+    st.x = 3; st.y = 4;
+    m_tiles.push_back(std::make_shared<Spawner>(st, DarkAnubis));
 
-    std::unordered_set<int> used;
+    // Generate entry portal.
+    st = newTile(Portal, 6);
+    st.x = 1; st.y = 1;
+    m_tiles.push_back(std::make_shared<Teleporter>(st));
 
-    for (int id = 0 ; id < portals ; ++id) {
-      int var = m_rng.rndInt(0, 21);
-      SolidTile st = newTile(Portal, var);
-
-      bool n = false;
-      int x = 0;
-      int y = 0;
-      while (!n) {
-        x = m_rng.rndInt(1, m_w - 2);
-        y = m_rng.rndInt(1, m_h - 2);
-
-        n = (used.count(y * m_w + x) == 0);
-      }
-
-      used.insert(y * m_w + x);
-
-      st.x = x;
-      st.y = y;
-
-      log("Generating portal " + std::to_string(var) + " at " + std::to_string(st.x) + "x" + std::to_string(st.y));
-
-      m_tiles.push_back(std::make_shared<Spawner>(st, DarkAnubis));
-    }
+    // Generate exit portal.
+    st = newTile(Portal, 1);
+    st.x = 6; st.y = 3;
+    m_tiles.push_back(std::make_shared<Teleporter>(st));
   }
 
 }
