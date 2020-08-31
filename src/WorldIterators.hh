@@ -5,7 +5,9 @@
 # include <memory>
 # include <core_utils/CoreObject.hh>
 # include "WorldTypes.hh"
-# include "WorldElements.hh"
+# include "SolidElement.hh"
+# include "Entity.hh"
+# include "VFX.hh"
 
 namespace new_frontiers {
 

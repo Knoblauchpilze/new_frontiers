@@ -6,7 +6,7 @@
 # include "RNG.hh"
 # include "WorldTypes.hh"
 # include "WorldIterators.hh"
-# include "WorldElements.hh"
+# include "WorldElement.hh"
 
 namespace new_frontiers {
 
