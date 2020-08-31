@@ -6,17 +6,19 @@
 namespace new_frontiers {
 
   inline
-  Spawner::Spawner(const SolidTile& tile):
+  Spawner::Spawner(const SolidTile& tile,
+                   const Mob& mob,
+                   int id):
     SolidElement(tile, "spawner"),
+
+    m_mob(mob),
+    m_mobID(id),
+
+    m_toSpawn(-1),
+    m_spawned(0),
 
     m_interval(toMilliseconds(1000)),
     m_last(now() - m_interval),
-
-    m_toSpawn(10),
-    m_spawned(0),
-
-    m_mob(Hydra),
-    m_mobID(0),
 
     m_radius(6.0f)
   {}
@@ -33,7 +35,7 @@ namespace new_frontiers {
     }
 
     // Spawn a new entity.
-    info.eSpawned.push_back(spawn(info.rng));
+    info.eSpawned.push_back(spawn(info));
 
     return true;
   }
@@ -41,7 +43,7 @@ namespace new_frontiers {
   inline
   bool
   Spawner::depleted() const noexcept {
-    return m_toSpawn <= 0;
+    return m_toSpawn == 0;
   }
 
   inline
@@ -52,7 +54,7 @@ namespace new_frontiers {
 
   inline
   EntityShPtr
-  Spawner::spawn(RNG& rng) noexcept {
+  Spawner::spawn(StepInfo& info) noexcept {
     EntityTile e;
 
     e.type = m_mob;
@@ -61,8 +63,8 @@ namespace new_frontiers {
     // Spawn the entity within `radius` of the spawner,
     // using the provided rng to pick a point. Don't
     // forget to add the position of the spawner itself.
-    float r = rng.rndFloat(0, m_radius * m_radius);
-    float theta = rng.rndAngle();
+    float r = info.rng.rndFloat(0, m_radius * m_radius);
+    float theta = info.rng.rndAngle();
 
     e.x = std::sqrt(r) * std::cos(theta);
     e.y = std::sqrt(r) * std::sin(theta);
@@ -70,13 +72,19 @@ namespace new_frontiers {
     e.x += m_tile.x;
     e.y += m_tile.y;
 
+    // Clamp the coordinates to be inside the world's
+    // boundaries.
+    info.clampCoord(e.x, e.y);
+
     // Randomize the effect to give to the entities.
-    Effect vfx = (Effect)rng.rndInt(0, EffectsCount - 1);
+    Effect vfx = (Effect)info.rng.rndInt(0, EffectsCount - 1);
 
     // This is the last time the spawner
     // has been activated.
     ++m_spawned;
-    --m_toSpawn;
+    if (m_toSpawn > 0) {
+      --m_toSpawn;
+    }
     m_last = now();
 
     return std::make_shared<Entity>(e, vfx);
