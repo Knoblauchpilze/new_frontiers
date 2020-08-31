@@ -29,8 +29,9 @@ namespace new_frontiers {
     // Generate portals.
     generatePortals();
 
-    // Create an iterator from this.
+    // Create an iterator and a locator service from this.
     m_it = std::make_shared<WorldIterator>(m_w, m_h, m_tiles, m_entities, m_vfx);
+    m_loc = std::make_shared<WorldElementLocator>(m_w, m_h, m_tiles, m_entities, m_vfx);
   }
 
 }

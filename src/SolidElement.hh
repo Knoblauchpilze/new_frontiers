@@ -7,6 +7,16 @@
 namespace new_frontiers {
 
   class SolidElement: public WorldElement<Sprite> {
+    public:
+
+      /**
+       * @brief - Base implementation for an element which
+       *          does nothing.
+       * @param info - information about the world.
+       * @return - `false` as nothing happens here.
+       */
+      bool
+      step(StepInfo& info) override;
 
     protected:
 

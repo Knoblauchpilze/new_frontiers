@@ -45,7 +45,7 @@ int main(int /*argc*/, char** /*argv*/) {
     // Define the theme of this application.
     new_frontiers::Theme t;
 
-    t.solidTiles.file = "data/img/crypt.png";
+    t.solidTiles.file = "data/img/cocutos.png";
     t.solidTiles.layout = olc::vi2d(8, 3);
     t.portals.file = "data/img/portals.png";
     t.portals.layout = olc::vi2d(16, 2);

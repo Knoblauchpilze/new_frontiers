@@ -1,8 +1,8 @@
 #ifndef    WORLD_ELEMENT_HH
 # define   WORLD_ELEMENT_HH
 
-# include "WorldTypes.hh"
 # include <core_utils/CoreObject.hh>
+# include "WorldTypes.hh"
 
 namespace new_frontiers {
 

@@ -11,6 +11,12 @@ namespace new_frontiers {
     WorldElement<Sprite>(tile, name)
   {}
 
+  inline
+  bool
+  SolidElement::step(StepInfo& /*info*/) {
+    return false;
+  }
+
 }
 
 #endif    /* SOLID_ELEMENT_HXX */
