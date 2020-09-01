@@ -2,4 +2,4 @@
 
 CURR_DIR=$(dirname $0)
 
-gdb --args ./bin/new_frontiers $(cat data/config/local)
+gdb --args ./bin/new_frontiers
