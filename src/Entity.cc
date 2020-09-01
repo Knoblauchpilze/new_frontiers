@@ -49,6 +49,14 @@ namespace new_frontiers {
     float xDir = std::cos(theta);
     float yDir = std::sin(theta);
 
+    while (info.frustum->obstructed(m_path.xO, m_path.yO, xDir, yDir, r)) {
+      r = info.rng.rndFloat(m_speed, m_pathLength);
+      theta = info.rng.rndAngle();
+
+      xDir = std::cos(theta);
+      yDir = std::sin(theta);
+    }
+
     m_path.xT = m_path.xO + r * xDir;
     m_path.yT = m_path.yO + r * yDir;
 
