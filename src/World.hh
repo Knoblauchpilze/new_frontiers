@@ -2,6 +2,7 @@
 # define   WORLD_HH
 
 # include <memory>
+# include <fstream>
 # include <core_utils/CoreObject.hh>
 # include "RNG.hh"
 # include "WorldTypes.hh"
@@ -23,6 +24,16 @@ namespace new_frontiers {
       World(int seed,
             int width = 640,
             int height = 480);
+
+      /**
+       * @brief - Build a new world from the file specified in input.
+       *          The file should describe a valid level.
+       * @param seed - the seed to use for this world.
+       * @param file - the name of the file from which the world's
+       *               data should be loaded.
+       */
+      World(int seed,
+            const std::string& file);
 
       /**
        * @brief - Desctruction of the object.
@@ -72,6 +83,39 @@ namespace new_frontiers {
        */
       void
       generateElements();
+
+      /**
+       * @brief - Attempt to load a world from the file as
+       *          specified in input.
+       * @param file - the name of the file from which the
+       *               world should be loaded.
+       */
+      void
+      loadFromFile(const std::string& file);
+
+      /**
+       * @brief - Used to parse the dimensions of the world
+       *          from the file laoded in the stream.
+       *         Throws an error in case an error occurs.
+       * @param in - the stream describing the level file.
+       */
+      void
+      loadDimensions(std::ifstream& in);
+
+      void
+      loadEntrances(std::ifstream& in);
+
+      void
+      loadExits(std::ifstream& in);
+
+      void
+      loadPortals(std::ifstream& in);
+
+      void
+      loadWalls(std::ifstream& in);
+
+      void
+      loadEntities(std::ifstream& in);
 
     private:
 

@@ -22,6 +22,17 @@ namespace new_frontiers {
   };
 
   /**
+   * @brief - Used to convert a string into a valid
+   *          sprite value. In case the string does
+   *          not correspond to any known sprite a
+   *          `SpritesCount` value is returned.
+   * @param str - the string to convert.
+   * @return - the corresponding sprite.
+   */
+  Sprite
+  strToSprite(const std::string& str) noexcept;
+
+  /**
    * @brief - Used for convenience to reference to
    *          an entity type in the game.
    */
@@ -62,6 +73,17 @@ namespace new_frontiers {
   };
 
   /**
+   * @brief - Used to convert a string into a valid
+   *          mob value. In case the string does not
+   *          correspond to any known sprite a value
+   *          of `MobsCount` is is returned.
+   * @param str - the string to convert.
+   * @return - the corresponding mob.
+   */
+  Mob
+  strToMob(const std::string& str) noexcept;
+
+  /**
    * @brief - References the explosion and various effects
    *          that are visible in the game.
    */
@@ -73,6 +95,17 @@ namespace new_frontiers {
 
     EffectsCount
   };
+
+  /**
+   * @brief - Used to convert a string into a valid
+   *          VFX value. In case the string does not
+   *          correspond to any known sprite a value
+   *          of `EffectsCount` is is returned.
+   * @param str - the string to convert.
+   * @return - the corresponding VFX.
+   */
+  Effect
+  strToEffect(const std::string& str) noexcept;
 
   /**
    * @brief - Convenience structure which defines the element of

@@ -212,22 +212,6 @@ namespace new_frontiers {
     DrawString(olc::vi2d(0, 450), "Mouse coords        : " + toString(mp), olc::CYAN);
     DrawString(olc::vi2d(0, 465), "World cell coords   : " + toString(mtp), olc::CYAN);
 
-    // // Draw entities pathes.
-    // for (int id = 0 ; id < m_wit->entitiesCount() ; ++id) {
-    //   const EntityTile& t = m_wit->entity(id);
-
-    //   float epx = m_wit->entityPtr(id)->m_path.xT;
-    //   float epy = m_wit->entityPtr(id)->m_path.yT;
-
-    //   // And draw their path.
-    //   olc::vf2d sF = m_cf.tileCoordsToPixels(t.x, t.y, true);
-    //   olc::vf2d eF = m_cf.tileCoordsToPixels(epx, epy, true);
-    //   olc::vi2d s(static_cast<int>(sF.x), static_cast<int>(sF.y));
-    //   olc::vi2d e(static_cast<int>(eF.x), static_cast<int>(eF.y));
-
-    //   DrawLine(s, e, olc::WHITE);
-    // }
-
     // Not the first frame anymore.
     m_first = false;
   }
