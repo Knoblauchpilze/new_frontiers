@@ -85,6 +85,21 @@ namespace new_frontiers {
     private:
 
       /**
+       * @brief - Convenience define indicating a fully opaque alpha.
+       */
+      static constexpr int ALPHA_OPAQUE = 255;
+
+      /**
+       * @brief - Not fully opaque nor fully transparent.
+       */
+      static constexpr int ALPHA_SEMI_OPAQUE = 128;
+
+      /**
+       * @brief - Convenience define indicating a fully transparent alpha.
+       */
+      static constexpr int ALPHA_TRANSPARENT = 0;
+
+      /**
        * @brief - Performs the initialization of the engine to make
        *          it suits our needs.
        * @param width - the width of the window in pixels.
@@ -172,9 +187,12 @@ namespace new_frontiers {
        * @param y - the coordinate along the `y` axis for this sprite.
        * @param alias - the index of the tile in the tile atlas.
        * @param id - the index of the variation of this sprite.
+       * @param alpha - a value of `255` to indicate that the sprite
+       *                should be completely opaque and `0` for fully
+       *                transparent.
        */
       void
-      drawSprite(float x, float y, int alias, int id);
+      drawSprite(float x, float y, int alias, int id, int alpha = ALPHA_OPAQUE);
 
       /**
        * @brief - Used to perform the necessary update based on
@@ -290,6 +308,13 @@ namespace new_frontiers {
        *          screen coordinates and conversely.
        */
       CoordinateFrames m_cf;
+
+      /**
+       * @brief - A map to keep track of the state of the controls
+       *          to be transmitted to the world's entities for
+       *          the simulation.
+       */
+      std::vector<bool> m_controls;
 
       bool m_first;
   };

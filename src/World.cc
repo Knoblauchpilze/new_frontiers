@@ -5,6 +5,7 @@
 # include <core_utils/CoreException.hh>
 # include "Spawner.hh"
 # include "Teleporter.hh"
+# include "Player.hh"
 
 namespace new_frontiers {
 
@@ -39,12 +40,14 @@ namespace new_frontiers {
   World::~World() {}
 
   void
-  World::step(float /*tDelta*/) {
+  World::step(float tDelta,
+              const std::vector<bool>& controls)
+  {
     StepInfo si{
       0.0f,
       1.0f * m_w - 1.0f,
       0.0f,
-      1.0f * m_h - 1.0f,
+          1.0f * m_h - 1.0f,
 
       m_rng,
 
@@ -52,8 +55,11 @@ namespace new_frontiers {
       std::vector<VFXShPtr>(),
 
       now(),
+      tDelta,
 
-      m_loc
+      m_loc,
+
+      controls
     };
 
     // Spawn entities from spawner that can do so.
@@ -119,7 +125,7 @@ namespace new_frontiers {
   }
 
   void
-  World::generatePortals() {
+  World::generateElements() {
     // Generate mob portal.
     SolidTile st = newTile(Portal, 3);
     st.x = 3; st.y = 4;
@@ -134,6 +140,10 @@ namespace new_frontiers {
     st = newTile(Portal, 1);
     st.x = 6; st.y = 3;
     m_tiles.push_back(std::make_shared<Teleporter>(st));
+
+    // Generate the player at the same location
+    // as the entry portal.
+    m_entities.push_back(std::make_shared<Player>(1.0f, 1.0f));
   }
 
 }

@@ -69,15 +69,14 @@ namespace new_frontiers {
   }
 
   inline
-  EntityShPtr
-  WorldIterator::entityPtr(int id) const noexcept {
-    return m_entities[m_sortedEntities[id].id];
-  }
-
-  inline
-  const EntityTile&
+  EntityDesc
   WorldIterator::entity(int id) const noexcept {
-    return m_entities[m_sortedEntities[id].id]->getTile();
+    EntityShPtr e = m_entities[m_sortedEntities[id].id];
+
+    return EntityDesc{
+      e->getTile(),
+      e->getState()
+    };
   }
 
   inline

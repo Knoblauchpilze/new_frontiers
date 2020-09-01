@@ -11,6 +11,18 @@
 
 namespace new_frontiers {
 
+  /**
+   * @brief - Convenience wrapper to retrieve information
+   *          about an entity. This is passed as return
+   *          value for elemenrs querying entities from
+   *          this iterator in order to have all public
+   *          info of an entity avaiable.
+   */
+  struct EntityDesc {
+    EntityTile tile;
+    State state;
+  };
+
   class WorldIterator: public utils::CoreObject {
     public:
 
@@ -56,12 +68,20 @@ namespace new_frontiers {
       const SolidTile&
       solidTile(int id) const noexcept;
 
-      EntityShPtr
-      entityPtr(int id) const noexcept;
-
-      const EntityTile&
+      /**
+       * @brief - Similar to the `solidTile` method but to get
+       *          the entity at the specified index.
+       * @param id - the index of the entity to get.
+       * @return - the corresponding entity.
+       */
+      EntityDesc
       entity(int id) const noexcept;
 
+      /**
+       * @brief - Very similar but for VFX.
+       * @param id - the index of the VFX to get.
+       * @return - the corresponding VFX.
+       */
       const VFXTile&
       vfx(int id) const noexcept;
 

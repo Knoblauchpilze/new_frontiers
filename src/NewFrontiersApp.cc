@@ -23,6 +23,8 @@ namespace new_frontiers {
          Viewport{olc::vf2d(320.0f, 100.0f), olc::vf2d(width, height)},
          olc::vi2d(64, 32)),
 
+    m_controls(ControlsCount, false),
+
     m_first(true)
   {
 
@@ -133,6 +135,22 @@ namespace new_frontiers {
       m_cf.zoom(Zoom::Out, GetMousePos());
     }
 
+    // Handle inputs.
+    olc::HWButton b = GetKey(olc::RIGHT);
+    m_controls[MoveRight] = b.bPressed || b.bHeld;
+
+    b = GetKey(olc::UP);
+    m_controls[MoveUp] = b.bPressed || b.bHeld;
+
+    b = GetKey(olc::LEFT);
+    m_controls[MoveLeft] = b.bPressed || b.bHeld;
+
+    b = GetKey(olc::DOWN);
+    m_controls[MoveDown] = b.bPressed || b.bHeld;
+
+    b = GetKey(olc::SPACE);
+    m_controls[Sprint] = b.bPressed || b.bHeld;
+
     return true;
   }
 
@@ -159,8 +177,16 @@ namespace new_frontiers {
 
     // Draw entities.
     for (int id = 0 ; id < m_wit->entitiesCount() ; ++id) {
-      EntityTile t = m_wit->entity(id);
-      drawSprite(t.x, t.y, aliasOfEntity(t.type), t.id);
+      EntityDesc t = m_wit->entity(id);
+
+      if (t.state.glowing) {
+        drawSprite(t.tile.x, t.tile.y, aliasOfEffect(Fire), 2, ALPHA_SEMI_OPAQUE);
+      }
+      if (t.state.exhausted) {
+        drawSprite(t.tile.x, t.tile.y, aliasOfEffect(Poison), 2, ALPHA_SEMI_OPAQUE);
+      }
+
+      drawSprite(t.tile.x, t.tile.y, aliasOfEntity(t.tile.type), t.tile.id);
     }
 
     // Draw vfx.
@@ -186,21 +212,21 @@ namespace new_frontiers {
     DrawString(olc::vi2d(0, 450), "Mouse coords        : " + toString(mp), olc::CYAN);
     DrawString(olc::vi2d(0, 465), "World cell coords   : " + toString(mtp), olc::CYAN);
 
-    // Draw entities pathes.
-    for (int id = 0 ; id < m_wit->entitiesCount() ; ++id) {
-      const EntityTile& t = m_wit->entity(id);
+    // // Draw entities pathes.
+    // for (int id = 0 ; id < m_wit->entitiesCount() ; ++id) {
+    //   const EntityTile& t = m_wit->entity(id);
 
-      float epx = m_wit->entityPtr(id)->m_path.xT;
-      float epy = m_wit->entityPtr(id)->m_path.yT;
+    //   float epx = m_wit->entityPtr(id)->m_path.xT;
+    //   float epy = m_wit->entityPtr(id)->m_path.yT;
 
-      // And draw their path.
-      olc::vf2d sF = m_cf.tileCoordsToPixels(t.x, t.y, true);
-      olc::vf2d eF = m_cf.tileCoordsToPixels(epx, epy, true);
-      olc::vi2d s(static_cast<int>(sF.x), static_cast<int>(sF.y));
-      olc::vi2d e(static_cast<int>(eF.x), static_cast<int>(eF.y));
+    //   // And draw their path.
+    //   olc::vf2d sF = m_cf.tileCoordsToPixels(t.x, t.y, true);
+    //   olc::vf2d eF = m_cf.tileCoordsToPixels(epx, epy, true);
+    //   olc::vi2d s(static_cast<int>(sF.x), static_cast<int>(sF.y));
+    //   olc::vi2d e(static_cast<int>(eF.x), static_cast<int>(eF.y));
 
-      DrawLine(s, e, olc::WHITE);
-    }
+    //   DrawLine(s, e, olc::WHITE);
+    // }
 
     // Not the first frame anymore.
     m_first = false;

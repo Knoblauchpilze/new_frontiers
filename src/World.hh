@@ -45,12 +45,16 @@ namespace new_frontiers {
       /**
        * @brief - Used to move one step ahead in time in this
        *          world, given that `tDelta` represents the
-       *          duration of the last frame in seconds.
+       *          duration of the last frame in seconds. The
+       *          method is also given the controls as input
+       *          so that it can be made available to entities.
        * @param tDelta - the duration of the last frame in
        *                 seconds.
+       * @param controls - the current state of the controls.
        */
       void
-      step(float tDelta);
+      step(float tDelta,
+           const std::vector<bool>& controls);
 
     private:
 
@@ -60,8 +64,14 @@ namespace new_frontiers {
       void
       generate();
 
+      /**
+       * @brief - Used to perform the generation of elements
+       *          of the world such as solid tiles or all the
+       *          entities existing at the beginning of the
+       *          game.
+       */
       void
-      generatePortals();
+      generateElements();
 
     private:
 

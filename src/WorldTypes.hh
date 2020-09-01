@@ -130,7 +130,23 @@ namespace new_frontiers {
   using WorldElementLocatorShPtr = std::shared_ptr<WorldElementLocator>;
 
   /**
-   * @brief - Convenience structure regrouping all variables
+   * @brief - Enumeration describing the possible controls
+   *          for the game. Each one is registered in the
+   *          step info and made available for the entities
+   *          to detect.
+   */
+  enum Controls {
+    MoveRight,
+    MoveUp,
+    MoveLeft,
+    MoveDown,
+    Sprint,
+
+    ControlsCount
+  };
+
+  /**
+   * @enum  - Convenience structure regrouping all variables
    *          needed to perform the advancement of one step
    *          of a world object. It includes a RNG, info on
    *          the dimensions of the world, etc.
@@ -145,8 +161,11 @@ namespace new_frontiers {
     std::vector<VFXShPtr> vSpawned;
 
     TimeStamp moment;
+    float elapsed;
 
     WorldElementLocatorShPtr frustum;
+
+    std::vector<bool> controls;
 
     void
     clampCoord(float& x, float& y) const noexcept;
