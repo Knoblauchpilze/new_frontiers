@@ -20,6 +20,7 @@ set (SOURCES
   VFX.cc
   Teleporter.cc
   WorldElementLocator.cc
+  Player.cc
   )
 
 add_library (new_frontiers_lib SHARED

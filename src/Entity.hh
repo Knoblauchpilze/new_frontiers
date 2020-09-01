@@ -39,6 +39,16 @@ namespace new_frontiers {
     length() const noexcept;
   };
 
+  /**
+   * @brief - Describes the state of this entity: general
+   *          info about its health and the effects that
+   *          are applied to it are regrouped in here.
+   */
+  struct State {
+    bool glowing;
+    bool exhausted;
+  };
+
   class Entity: public WorldElement<Mob> {
     public:
 
@@ -64,6 +74,31 @@ namespace new_frontiers {
        */
       virtual bool
       step(StepInfo& info);
+
+      /**
+       * @brief - Used to retrieve the current state of this entity.
+       *          The state provide some useful indications about
+       *          how the entity needs to be represented.
+       * @return - the state of the entity.
+       */
+      const State&
+      getState() const noexcept;
+
+    protected:
+
+      /**
+       * @brief - Indicate that the entity should start glowing.
+       * @param glowing - `true` if the entity is glowing.
+       */
+      void
+      makeGlow(bool glowing) noexcept;
+
+      /**
+       * @brief - Indicate that the entity is now exhausted.
+       * @param exhausted - `true` if the entity is exhausted.
+       */
+      void
+      makeExhausted(bool exhausted) noexcept;
 
     private:
 
@@ -111,6 +146,11 @@ namespace new_frontiers {
        * @brief - The current path followed by this entity.
        */
       PathSegment m_path;
+
+      /**
+       * @brief - The current state of the entity.
+       */
+      State m_state;
   };
 
   using EntityShPtr = std::shared_ptr<Entity>;

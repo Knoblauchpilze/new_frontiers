@@ -42,8 +42,31 @@ namespace new_frontiers {
     m_pathLength(3.0f),
 
     m_hasPath(false),
-    m_path()
+    m_path(),
+
+    m_state{
+      false, // Glowing.
+      false  // Exhausted.
+    }
   {}
+
+  inline
+  const State&
+  Entity::getState() const noexcept {
+    return m_state;
+  }
+
+  inline
+  void
+  Entity::makeGlow(bool glowing) noexcept {
+    m_state.glowing = glowing;
+  }
+
+  inline
+  void
+  Entity::makeExhausted(bool exhausted) noexcept {
+    m_state.exhausted = exhausted;
+  }
 
 }
 

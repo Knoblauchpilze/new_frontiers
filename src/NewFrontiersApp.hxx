@@ -36,7 +36,7 @@ namespace new_frontiers {
     bool r = handleInputs();
 
     // Handle game logic.
-    m_world->step(fElapsedTime);
+    m_world->step(fElapsedTime, m_controls);
 
     // Handle rendering.
     draw();
@@ -120,7 +120,7 @@ namespace new_frontiers {
 
   inline
   void
-  NewFrontiersApp::drawSprite(float x, float y, int alias, int id) {
+  NewFrontiersApp::drawSprite(float x, float y, int alias, int id, int alpha) {
     const SpriteAlias& sa = m_aliases[alias];
     const SpritesPack& sp = m_sprites[sa.type];
 
@@ -130,7 +130,7 @@ namespace new_frontiers {
       spriteCoordsToPixels(sa.alias, sp.layout, id),
       m_ss,
       m_cf.tileScale(),
-      olc::Pixel(255, 255, 255, 128)
+      olc::Pixel(255, 255, 255, alpha)
     );
   }
 
