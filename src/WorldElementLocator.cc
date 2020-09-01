@@ -1,6 +1,19 @@
 
 # include "WorldElementLocator.hxx"
 
+namespace {
+
+  template <typename T>
+  inline
+  void
+  swap(T& t1, T& t2) {
+    T tmp = t1;
+    t1 = t2;
+    t2 = tmp;
+  }
+
+}
+
 namespace new_frontiers {
 
   WorldElementLocator::WorldElementLocator(int width,
@@ -15,9 +28,13 @@ namespace new_frontiers {
 
     m_tiles(tiles),
     m_entities(entities),
-    m_vfx(vfx)
+    m_vfx(vfx),
+
+    m_solidIDs()
   {
     setService("world");
+
+    initialize();
   }
 
   int
@@ -28,7 +45,7 @@ namespace new_frontiers {
     float r2 = radius * radius;
 
     for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
-      const EntityTile& et = m_entities[id]->getDesc();
+      const EntityTile& et = m_entities[id]->getTile();
 
       if (et.type == mob && d2(x, y, et.x, et.y) <= r2) {
         ++count;
@@ -38,10 +55,14 @@ namespace new_frontiers {
     return count;
   }
 
-  bool
-  WorldElementLocator::obstructed(float /*x*/, float /*y*/, float /*xDir*/, float /*yDir*/, float /*d*/) const noexcept {
-    /** TODO: Handle this, probably through some raycasting and bresenham ? **/
-    return false;
+  void
+  WorldElementLocator::initialize() {
+    // Register each solid tile in the map.
+    for (unsigned id = 0u ; id < m_tiles.size() ; ++id) {
+      const SolidTile& st = m_tiles[id]->getTile();
+      
+      m_solidIDs.insert(static_cast<int>(st.y) * m_w + static_cast<int>(st.x));
+    }
   }
 
 }

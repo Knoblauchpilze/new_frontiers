@@ -2,6 +2,7 @@
 # define   WORLD_ELEMENT_LOCATOR_HH
 
 # include <memory>
+# include <unordered_set>
 # include <core_utils/CoreObject.hh>
 # include "SolidElement.hh"
 # include "Entity.hh"
@@ -116,23 +117,15 @@ namespace new_frontiers {
       float
       d2(float x1, float y1, float x2, float y2) const noexcept;
 
+    private:
+
       /**
-       * @brief - Determine whether the path defined by the
-       *          input coordinate and the direction has any
-       *          obstructing elements on it within `d` cells
-       *          of the starting position.
-       * @param x - the starting abscissa of the path.
-       * @param y - the ordinate of the path.
-       * @param xDir - the direction of the ray along the `x`
-       *               axis.
-       * @param yDir - the direction of the ray along the `y`
-       *               axis.
-       * @param d - the distance to check for obstruction.
-       * @return - `true` if the path is obstructed by any
-       *           solid element.
+       * @brief - Used to initialize the internal variables to
+       *          compute information about the data stored in
+       *          this world.
        */
-      bool
-      obstructed(float x, float y, float xDir, float yDir, float d) const noexcept;
+      void
+      initialize();
 
     private:
 
@@ -152,6 +145,15 @@ namespace new_frontiers {
       const std::vector<SolidElementShPtr>& m_tiles;
       const std::vector<EntityShPtr>& m_entities;
       const std::vector<VFXShPtr>& m_vfx;
+
+      /**
+       * @brief - A map referencing the unique indices for
+       *          solid tiles in the world. It is build as
+       *          the object is constructed (or refresehd)
+       *          and allows to quickly access to the id
+       *          where a solid tile exists.
+       */
+      std::unordered_set<int> m_solidIDs;
   };
 
   using WorldElementLocatorShPtr = std::shared_ptr<WorldElementLocator>;

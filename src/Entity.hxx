@@ -25,6 +25,12 @@ namespace new_frontiers {
   }
 
   inline
+  float
+  PathSegment::length() const noexcept {
+    return std::sqrt((xT - xO) * (xT - xO) + (yT - yO) * (yT - yO));
+  }
+
+  inline
   Entity::Entity(const EntityTile& desc,
                  const Effect& vfx):
     WorldElement(desc, "entity"),

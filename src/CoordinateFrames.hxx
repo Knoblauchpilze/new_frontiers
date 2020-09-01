@@ -64,7 +64,7 @@ namespace new_frontiers {
 
   inline
   olc::vf2d
-  CoordinateFrames::tileCoordsToPixels(float x, float y) const noexcept {
+  CoordinateFrames::tileCoordsToPixels(float x, float y, bool center) const noexcept {
     // Offset the input coordinates based on the
     // current position of the cell's viewport.
     x -= m_cViewport.p.x;
@@ -73,10 +73,17 @@ namespace new_frontiers {
     // The isomectric representation yields the
     // formula below which takes into account a
     // scaling factor to apply to the tiles.
-    return olc::vf2d(
+    olc::vf2d tp(
       m_pViewport.p.x + (y - x) * m_tScaled.x / 2.0f,
       m_pViewport.p.y + (x + y) * m_tScaled.y / 2.0f
     );
+
+    if (center) {
+      tp.x += (m_tScaled.x / 2.0f);
+      tp.y += (m_tScaled.y);
+    }
+
+    return tp;
   }
 
   inline

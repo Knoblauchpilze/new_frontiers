@@ -65,19 +65,25 @@ namespace new_frontiers {
   inline
   const SolidTile&
   WorldIterator::solidTile(int id) const noexcept {
-    return m_tiles[m_sortedTiles[id].id]->getDesc();
+    return m_tiles[m_sortedTiles[id].id]->getTile();
+  }
+
+  inline
+  EntityShPtr
+  WorldIterator::entityPtr(int id) const noexcept {
+    return m_entities[m_sortedEntities[id].id];
   }
 
   inline
   const EntityTile&
   WorldIterator::entity(int id) const noexcept {
-    return m_entities[m_sortedEntities[id].id]->getDesc();
+    return m_entities[m_sortedEntities[id].id]->getTile();
   }
 
   inline
   const VFXTile&
   WorldIterator::vfx(int id) const noexcept {
-    return m_vfx[m_sortedVFX[id].id]->getDesc();
+    return m_vfx[m_sortedVFX[id].id]->getTile();
   }
 
   inline

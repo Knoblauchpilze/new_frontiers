@@ -40,6 +40,15 @@ namespace new_frontiers {
     return ss.str();
   }
 
+  inline
+  float
+  diffInMs(const TimeStamp& start, const TimeStamp& end) noexcept {
+    auto elapsed = end - start;
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+
+    return ms.count();
+  }
+
 }
 
 #endif    /* TIME_UTILS_HXX */

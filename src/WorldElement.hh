@@ -15,14 +15,14 @@ namespace new_frontiers {
        * @return - the tile for this object.
        */
       const Tile<TileType>&
-      getDesc() const noexcept;
+      getTile() const noexcept;
 
       /**
        * @brief - Non constant variant of the above method.
        * @return - the tile associated to this object.
        */
       Tile<TileType>&
-      getDesc() noexcept;
+      getTile() noexcept;
 
       /**
        * @brief - Interface method allowing for a world element

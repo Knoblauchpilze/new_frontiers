@@ -1,5 +1,6 @@
 
 # include "CoordinateFrames.hh"
+# include "utils.hh"
 
 namespace new_frontiers {
 
@@ -28,6 +29,9 @@ namespace new_frontiers {
   CoordinateFrames::updateTileScale() {
     m_tScaled = m_pViewport.dims / m_cViewport.dims;
     m_scale = m_tScaled / m_ts;
+
+    log("m_tScaled: " + toString(m_tScaled));
+    log("m_scale: " + toString(m_scale));
   }
 
 }

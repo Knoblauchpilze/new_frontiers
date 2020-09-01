@@ -139,15 +139,17 @@ namespace new_frontiers {
   void
   NewFrontiersApp::draw() {
     // Clear rendering target.
-    Clear(olc::VERY_DARK_GREEN);
     SetPixelMode(olc::Pixel::ALPHA);
+    Clear(olc::VERY_DARK_GREEN);
 
-    // Drax elements of the world.
+    // Draw elements of the world.
 
     // Draw ground.
     for (int y = 0 ; y < m_wit->h() ; ++y) {
       for (int x = 0 ; x < m_wit->w() ; ++x) {
-        drawSprite(x, y, Sprite::Empty, 0);
+        // if (x == 2 && y == 2) {
+          drawSprite(x, y, Sprite::Empty, 0);
+        // }
       }
     }
 
@@ -185,6 +187,24 @@ namespace new_frontiers {
 
     DrawString(olc::vi2d(0, 450), "Mouse coords        : " + toString(mp), olc::CYAN);
     DrawString(olc::vi2d(0, 465), "World cell coords   : " + toString(mtp), olc::CYAN);
+
+    // EnableLayer(m_debugLayer, true);
+
+    // Draw entities pathes.
+    for (int id = 0 ; id < m_wit->entitiesCount() ; ++id) {
+      const EntityTile& t = m_wit->entity(id);
+
+      float epx = m_wit->entityPtr(id)->m_path.xT;
+      float epy = m_wit->entityPtr(id)->m_path.yT;
+
+      // And draw their path.
+      olc::vf2d sF = m_cf.tileCoordsToPixels(t.x, t.y, true);
+      olc::vf2d eF = m_cf.tileCoordsToPixels(epx, epy, true);
+      olc::vi2d s(static_cast<int>(sF.x), static_cast<int>(sF.y));
+      olc::vi2d e(static_cast<int>(eF.x), static_cast<int>(eF.y));
+
+      DrawLine(s, e, olc::WHITE);
+    }
 
     // Not the first frame anymore.
     m_first = false;

@@ -46,6 +46,17 @@ namespace new_frontiers {
   std::string
   timeToString(const TimeStamp& t) noexcept;
 
+  /**
+   * @brief - Return the difference in milliseconds between
+   *          the two input timestamps using a float value.
+   *          Note that 
+   * @param start - the start of the time interval.
+   * @param end - the end of the time interval.
+   * @return - a float value for the interval in milliseconds.
+   */
+  float
+  diffInMs(const TimeStamp& start, const TimeStamp& end) noexcept;
+
 }
 
 # include "TimeUtils.hxx"

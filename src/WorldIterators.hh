@@ -56,6 +56,9 @@ namespace new_frontiers {
       const SolidTile&
       solidTile(int id) const noexcept;
 
+      EntityShPtr
+      entityPtr(int id) const noexcept;
+
       const EntityTile&
       entity(int id) const noexcept;
 
