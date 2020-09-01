@@ -17,6 +17,18 @@
  *          them. Demons have quickly understood that these
  *          passages are of the highest importance though
  *          and they began guarding them...
+ *
+ *          Maybe we could have some sort of dungeon keeper
+ *          vibes where the player would have a nest and
+ *          could have a menu to produce some units in it.
+ *          Each unit would then be selectable and can be
+ *          dispatched to some places. When it arrives at
+ *          the place, it automatically does something. The
+ *          pheromone would be deposited along the way.
+ *          Or no selection and just wandering around so
+ *          as to have an ants-vibe.
+ *          Enemies would follow the same principle to get
+ *          to the mother nest and attack it.
  */
 
 # include <core_utils/StdLogger.hh>
@@ -47,7 +59,7 @@ int main(int /*argc*/, char** /*argv*/) {
     // Define the theme of this application.
     new_frontiers::Theme t;
 
-    t.solidTiles.file = "data/img/lair.png";
+    t.solidTiles.file = "data/img/gehena.png";
     t.solidTiles.layout = olc::vi2d(8, 3);
     t.portals.file = "data/img/portals.png";
     t.portals.layout = olc::vi2d(16, 2);
