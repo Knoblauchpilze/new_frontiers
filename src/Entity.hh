@@ -30,6 +30,13 @@ namespace new_frontiers {
      */
     void
     animate(const TimeStamp& moment, float& x, float& y) const;
+
+    /**
+     * @brief - Computes the length of this path in cells.
+     * @return - the length of the path in cells.
+     */
+    float
+    length() const noexcept;
   };
 
   class Entity: public WorldElement<Mob> {
@@ -69,7 +76,7 @@ namespace new_frontiers {
       void
       choosePath(const StepInfo& info);
 
-    private:
+    public:
 
       /**
        * @brief - Defines the visual effect that can be produced

@@ -108,11 +108,14 @@ namespace new_frontiers {
        *          tiles based on the cells viewport.
        * @param x - the cell coordinate along the `x` axis.
        * @param y - the cell coordinate along the `y` axis.
+       * @param center - defines whether the position in pixels
+       *                 should represent the center of the tile
+       *                 or its top left corner.
        * @return - the coordinates in pixels of the tile defined
        *           by the input coords.
        */
       olc::vf2d
-      tileCoordsToPixels(float x, float y) const noexcept;
+      tileCoordsToPixels(float x, float y, bool center = false) const noexcept;
 
       /**
        * @brief - Convert from pixels coordinates to tile coords.

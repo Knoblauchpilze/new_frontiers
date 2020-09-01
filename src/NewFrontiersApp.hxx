@@ -129,7 +129,8 @@ namespace new_frontiers {
       sp.res,
       spriteCoordsToPixels(sa.alias, sp.layout, id),
       m_ss,
-      m_cf.tileScale()
+      m_cf.tileScale(),
+      olc::Pixel(255, 255, 255, 128)
     );
   }
 

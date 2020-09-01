@@ -9,14 +9,14 @@ namespace new_frontiers {
   template <typename TileType>
   inline
   const Tile<TileType>&
-  WorldElement<TileType>::getDesc() const noexcept {
+  WorldElement<TileType>::getTile() const noexcept {
     return m_tile;
   }
 
   template <typename TileType>
   inline
   Tile<TileType>&
-  WorldElement<TileType>::getDesc() noexcept {
+  WorldElement<TileType>::getTile() noexcept {
     return m_tile;
   }
 

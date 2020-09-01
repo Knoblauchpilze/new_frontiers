@@ -10,8 +10,8 @@ namespace new_frontiers {
     m_sortedTiles.resize(m_tiles.size());
     for (unsigned id = 0u ; id < m_tiles.size() ; ++id) {
       m_sortedTiles[id] = SortEntry{
-        m_tiles[id]->getDesc().x,
-        m_tiles[id]->getDesc().y,
+        m_tiles[id]->getTile().x,
+        m_tiles[id]->getTile().y,
         static_cast<int>(id)
       };
     }
@@ -19,8 +19,8 @@ namespace new_frontiers {
     m_sortedEntities.resize(m_entities.size());
     for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
       m_sortedEntities[id] = SortEntry{
-        m_entities[id]->getDesc().x,
-        m_entities[id]->getDesc().y,
+        m_entities[id]->getTile().x,
+        m_entities[id]->getTile().y,
         static_cast<int>(id)
       };
     }
@@ -28,8 +28,8 @@ namespace new_frontiers {
     m_sortedVFX.resize(m_vfx.size());
     for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
       m_sortedVFX[id] = SortEntry{
-        m_vfx[id]->getDesc().x,
-        m_vfx[id]->getDesc().y,
+        m_vfx[id]->getTile().x,
+        m_vfx[id]->getTile().y,
         static_cast<int>(id)
       };
     }
