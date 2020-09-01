@@ -14,8 +14,9 @@ namespace new_frontiers {
        * @brief - Create a new VFX with the specified tile.
        * @param tile - the visual display for this VFX and
        *               its associated position.
+       * @param decaying - `true` if this VFX is decaying.
        */
-      VFX(const VFXTile& tile);
+      VFX(const VFXTile& tile, bool decaying);
 
       /**
        * @brief - Implementation of the interface method to
@@ -28,6 +29,15 @@ namespace new_frontiers {
       step(StepInfo& info);
 
     private:
+
+      /**
+       * @brief - If `true`, the vfx will use a certain
+       *          number of transitions before decaying.
+       *          If `false` only the `m_lastDecay` time
+       *          will be used and then the VFX will be
+       *          removed.
+       */
+      bool m_decaying;
 
       /**
        * @brief - Defines the duration of the decay time for

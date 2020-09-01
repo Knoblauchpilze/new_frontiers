@@ -15,38 +15,39 @@ namespace new_frontiers {
 
     // Determine the speed of the player based
     // on the current state.
-    float s = m_speed;
+    float sp = m_speed;
+
     if (m_state.glowing) {
-      s = m_sprintSpeed;
+      sp = m_sprintSpeed;
     } else if (m_state.exhausted) {
-      s = m_recoverySpeed;
+      sp = m_recoverySpeed;
     }
 
     if (info.controls[MoveRight]) {
       // Right is moving along the negative
       // `x` axis and conversely.
-      m_tile.x -= info.elapsed * std::sqrt(s);
-      m_tile.y += info.elapsed * std::sqrt(s);
+      m_tile.x -= info.elapsed * std::sqrt(sp);
+      m_tile.y += info.elapsed * std::sqrt(sp);
       moved = true;
     }
 
     if (info.controls[MoveUp]) {
       // Up is moving along the negative
       // `y` axis and conversely.
-      m_tile.y -= info.elapsed * std::sqrt(s);
-      m_tile.x -= info.elapsed * std::sqrt(s);
+      m_tile.y -= info.elapsed * std::sqrt(sp);
+      m_tile.x -= info.elapsed * std::sqrt(sp);
       moved = true;
     }
 
     if (info.controls[MoveLeft]) {
-      m_tile.x += info.elapsed * std::sqrt(s);
-      m_tile.y -= info.elapsed * std::sqrt(s);
+      m_tile.x += info.elapsed * std::sqrt(sp);
+      m_tile.y -= info.elapsed * std::sqrt(sp);
       moved = true;
     }
 
     if (info.controls[MoveDown]) {
-      m_tile.y += info.elapsed * std::sqrt(s);
-      m_tile.x += info.elapsed * std::sqrt(s);
+      m_tile.y += info.elapsed * std::sqrt(sp);
+      m_tile.x += info.elapsed * std::sqrt(sp);
       moved = true;
     }
 

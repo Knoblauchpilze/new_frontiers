@@ -6,16 +6,25 @@
 namespace new_frontiers {
 
   inline
-  VFX::VFX(const VFXTile& tile):
+  VFX::VFX(const VFXTile& tile, bool decaying):
     WorldElement(tile, "vfx"),
 
+    m_decaying(decaying),
+
     m_decay(toMilliseconds(250)),
-    m_lastDecay(toMilliseconds(500)),
+    m_lastDecay(decaying ? toMilliseconds(500) : toMilliseconds(1500)),
 
-    m_transitions(2),
+    m_transitions(decaying ? 2 : 0),
 
-    m_phase(now() + m_decay)
-  {}
+    m_phase()
+  {
+    if (m_decaying) {
+      m_phase = now() + m_decay;
+    }
+    else {
+      m_phase = now() + m_lastDecay;
+    }
+  }
 
   inline
   bool

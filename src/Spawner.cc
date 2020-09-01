@@ -1,6 +1,7 @@
 
 # include "Spawner.hh"
 # include "WorldElementLocator.hh"
+# include "HostileMob.hh"
 
 namespace new_frontiers {
 
@@ -50,9 +51,6 @@ namespace new_frontiers {
     // boundaries.
     info.clampCoord(e.x, e.y);
 
-    // Randomize the effect to give to the entities.
-    Effect vfx = (Effect)info.rng.rndInt(0, EffectsCount - 1);
-
     // This is the last time the spawner
     // has been activated.
     ++m_spawned;
@@ -61,7 +59,7 @@ namespace new_frontiers {
     }
     m_last = now();
 
-    return std::make_shared<Entity>(e, vfx);
+    return std::make_shared<HostileMob>(e);
   }
 
 }
