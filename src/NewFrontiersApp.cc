@@ -147,9 +147,7 @@ namespace new_frontiers {
     // Draw ground.
     for (int y = 0 ; y < m_wit->h() ; ++y) {
       for (int x = 0 ; x < m_wit->w() ; ++x) {
-        // if (x == 2 && y == 2) {
           drawSprite(x, y, Sprite::Empty, 0);
-        // }
       }
     }
 
@@ -187,8 +185,6 @@ namespace new_frontiers {
 
     DrawString(olc::vi2d(0, 450), "Mouse coords        : " + toString(mp), olc::CYAN);
     DrawString(olc::vi2d(0, 465), "World cell coords   : " + toString(mtp), olc::CYAN);
-
-    // EnableLayer(m_debugLayer, true);
 
     // Draw entities pathes.
     for (int id = 0 ; id < m_wit->entitiesCount() ; ++id) {
