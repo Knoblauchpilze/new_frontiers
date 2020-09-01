@@ -14,7 +14,7 @@ namespace new_frontiers {
     m_mob(mob),
     m_mobID(id),
 
-    m_toSpawn(-1),
+    m_toSpawn(1),
     m_spawned(0),
 
     m_interval(toMilliseconds(1000)),

@@ -21,6 +21,7 @@ set (SOURCES
   Teleporter.cc
   WorldElementLocator.cc
   Player.cc
+  HostileMob.cc
   )
 
 add_library (new_frontiers_lib SHARED

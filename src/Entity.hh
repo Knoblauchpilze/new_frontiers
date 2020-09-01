@@ -59,9 +59,14 @@ namespace new_frontiers {
        *               along with its position.
        * @param vfx - the type of visual effects that the entity
        *              is able to produce.
+       * @param vfxID - the VFX variant for this tile.
+       * @param decaying - `true` if the VFX associated to this
+       *                   entity is decaying.
        */
       Entity(const EntityTile& tile,
-             const Effect& vfx);
+             const Effect& vfx,
+             int vfxID = 0,
+             bool decaying = true);
 
       /**
        * @brief - Implementation of the interface method to evolve
@@ -100,6 +105,15 @@ namespace new_frontiers {
       void
       makeExhausted(bool exhausted) noexcept;
 
+      /**
+       * @brief - Used to create a new VFX tile at this entity's
+       *          position.
+       * @return - the VFX created from the internal parameters
+       *           that this entity has about VFX.
+       */
+      VFXShPtr
+      spawnVFX() const noexcept;
+
     private:
 
       /**
@@ -111,13 +125,24 @@ namespace new_frontiers {
       void
       choosePath(const StepInfo& info);
 
-    public:
+    protected:
 
       /**
        * @brief - Defines the visual effect that can be produced
        *          by this entity in particular situations.
        */
       Effect m_vfx;
+
+      /**
+       * @brief - The variant of the VFX to produce.
+       */
+      int m_vfxID;
+
+      /**
+       * @brief - Whether or not the VFX associated to this entity
+       *          is decaying.
+       */
+      bool m_vfxDecay;
 
       /**
        * @brief - Speed of the entity in cells per second.

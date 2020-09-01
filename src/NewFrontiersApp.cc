@@ -192,7 +192,7 @@ namespace new_frontiers {
     // Draw vfx.
     for (int id = 0 ; id < m_wit->vfxCount() ; ++id) {
       VFXTile t = m_wit->vfx(id);
-      drawSprite(t.x, t.y, aliasOfEffect(t.type), t.id);
+      drawSprite(t.x, t.y, aliasOfEffect(t.type), t.id, ALPHA_SEMI_OPAQUE);
     }
 
     // Draw cursor.
