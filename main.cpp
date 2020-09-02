@@ -33,7 +33,6 @@
 // TODO: Fix issue with top left corner in a non-zero cell.
 // TODO: Change Bresenham for intersection to something more
 // practical: it is not precise enough to rely on.
-// TODO: Understand the way layers are working.
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>

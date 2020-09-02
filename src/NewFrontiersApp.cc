@@ -25,6 +25,9 @@ namespace new_frontiers {
 
     m_controls(ControlsCount, false),
 
+    m_mLayer(0),
+    m_dLayer(0),
+
     m_first(true)
   {
 
@@ -205,6 +208,9 @@ namespace new_frontiers {
 
   void
   NewFrontiersApp::drawDebug() {
+    SetPixelMode(olc::Pixel::ALPHA);
+    Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
+
     // Render mouse and world cell coordinates.
     olc::vi2d mp = GetMousePos();
     olc::vi2d mtp = m_cf.pixelCoordsToTiles(mp);
@@ -214,6 +220,8 @@ namespace new_frontiers {
 
     // Not the first frame anymore.
     m_first = false;
+
+    SetPixelMode(olc::Pixel::NORMAL);
   }
 
 }
