@@ -27,6 +27,14 @@ namespace new_frontiers {
     // And the tile alias.
     createTileAliases();
 
+    // The debug layer is the default layer: it is always
+    // provided by the pixel game engine.
+    m_dLayer = 0u;
+
+    // Create a layer for the main content and enable it.
+    m_mLayer = CreateLayer();
+    EnableLayer(m_mLayer, true);
+
     return true;
   }
 
@@ -39,9 +47,22 @@ namespace new_frontiers {
     // Handle game logic.
     m_world->step(fElapsedTime, m_controls);
 
-    // Handle rendering.
+    // Handle rendering: for each function
+    // we will assign the draw target first
+    // so that the function does not have
+    // to handle it. We want to save the
+    // current draw target to restore it
+    // once the process is done.
+    olc::Sprite* base = GetDrawTarget();
+
+    SetDrawTarget(m_mLayer);
     draw();
+
+    SetDrawTarget(m_dLayer);
     drawDebug();
+
+    // Restore the target.
+    SetDrawTarget(base);
 
     return r;
   }
@@ -119,12 +140,19 @@ namespace new_frontiers {
     return SpritesCount + MobsCount + vfx;
   }
 
+// # define DRAW_DECAL
+
   inline
   void
+# ifdef DRAW_DECAL
   NewFrontiersApp::drawSprite(float x, float y, int alias, int id, int alpha) {
+# else
+  NewFrontiersApp::drawSprite(float x, float y, int alias, int id, int /*alpha*/) {
+# endif
     const SpriteAlias& sa = m_aliases[alias];
     const SpritesPack& sp = m_sprites[sa.type];
 
+# ifdef DRAW_DECAL
     DrawPartialDecal(
       m_cf.tileCoordsToPixels(x, y),
       sp.res,
@@ -133,6 +161,14 @@ namespace new_frontiers {
       m_cf.tileScale(),
       olc::Pixel(255, 255, 255, alpha)
     );
+# else
+    DrawPartialSprite(
+      m_cf.tileCoordsToPixels(x, y),
+      sp.res->sprite,
+      spriteCoordsToPixels(sa.alias, sp.layout, id),
+      m_ss
+    );
+# endif
   }
 
 }

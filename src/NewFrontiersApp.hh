@@ -316,6 +316,28 @@ namespace new_frontiers {
        */
       std::vector<bool> m_controls;
 
+      /**
+       * @brief - The index representing the main layer for this
+       *          app. Given how the pixel game engine is designed
+       *          we display layers with the highest order first
+       *          and then in descending order.
+       *          As we want the debug and UI layers to be on top
+       *          of the base layer, we need to give it the largest
+       *          index so that it is displayed first, and then the
+       *          rest on top.
+       */
+      uint32_t m_mLayer;
+
+      /**
+       * @brief - The index of the layer allowing to display debug
+       *          information. This layer will be assigned to the
+       *          default layer created by the pixel game engine.
+       *          It is needed in order to initialize the last of
+       *          the layers (and thus the one that will be set on
+       *          top of all the others) with meaningful data.
+       */
+      uint32_t m_dLayer;
+
       bool m_first;
   };
 
