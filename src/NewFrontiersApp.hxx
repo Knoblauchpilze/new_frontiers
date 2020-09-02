@@ -140,19 +140,12 @@ namespace new_frontiers {
     return SpritesCount + MobsCount + vfx;
   }
 
-// # define DRAW_DECAL
-
   inline
   void
-# ifdef DRAW_DECAL
   NewFrontiersApp::drawSprite(float x, float y, int alias, int id, int alpha) {
-# else
-  NewFrontiersApp::drawSprite(float x, float y, int alias, int id, int /*alpha*/) {
-# endif
     const SpriteAlias& sa = m_aliases[alias];
     const SpritesPack& sp = m_sprites[sa.type];
 
-# ifdef DRAW_DECAL
     DrawPartialDecal(
       m_cf.tileCoordsToPixels(x, y),
       sp.res,
@@ -161,14 +154,6 @@ namespace new_frontiers {
       m_cf.tileScale(),
       olc::Pixel(255, 255, 255, alpha)
     );
-# else
-    DrawPartialSprite(
-      m_cf.tileCoordsToPixels(x, y),
-      sp.res->sprite,
-      spriteCoordsToPixels(sa.alias, sp.layout, id),
-      m_ss
-    );
-# endif
   }
 
 }

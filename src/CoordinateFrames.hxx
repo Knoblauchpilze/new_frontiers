@@ -99,11 +99,13 @@ namespace new_frontiers {
     int tx = static_cast<int>(std::floor(pox / m_tScaled.x));
     int ty = static_cast<int>(std::floor(poy / m_tScaled.y));
 
-    // TODO: Issue with the cViewport top left corner.
-    tx -= m_cViewport.p.x;
-    ty -= m_cViewport.p.y;
-
     olc::vi2d rt(ty - tx, ty + tx);
+
+    // The viewport should be handled after we first
+    // computed coordinates in the world's frame: it
+    // is what is meant by the cells' offset.
+    rt.x += m_cViewport.p.x;
+    rt.y += m_cViewport.p.y;
 
     // We need to adjust for the following situation:
     //
