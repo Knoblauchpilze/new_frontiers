@@ -11,10 +11,10 @@ namespace new_frontiers {
 
       /**
        * @brief - Creates a new player at the specified location.
-       * @param x - the abscissa of the player in cells.
-       * @param y - the ordinate of the player in cells.
+       * @param tile - the visual representation of the player
+       *               along with its position.
        */
-      Player(float x, float y);
+      Player(const EntityTile& tile);
 
       /**
        * @brief - Override the base class implementation to be

@@ -21,9 +21,7 @@ namespace new_frontiers {
        * @param width - the width of the world in cells.
        * @param height - the height of the window in cells.
        */
-      World(int seed,
-            int width = 640,
-            int height = 480);
+      World(int seed, int width = 8, int height = 6);
 
       /**
        * @brief - Build a new world from the file specified in input.

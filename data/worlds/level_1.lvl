@@ -1,122 +1,126 @@
 20
 18
 
-entrance
-entry 6 1 1
-entry 6 2 3
+entrances
+entrance 6 1 1
+entrance 6 2 3
 end
-exit
-entry 1 1 4
-entry 1 4 5
+exits
+exit 1 1 4
+exit 1 4 5
 end
 portals
-entry 3 14 2 IncaOverlord
-entry 3 8 15 DarkAnubis
-entry 3 16 9 Griffin
+portal 3 14 2 IncaOverlord
+portal 3 8 15 DarkAnubis
+portal 3 16 9 Griffin
 end
 walls
 # Corners
-entry 15 0 0
-entry 15 19 0
-entry 15 19 17
-entry 15 0 17
+wall 15 0 0
+wall 15 19 0
+wall 15 19 17
+wall 15 0 17
 # Top border
-entry 11 0 1
-entry 11 0 2
-entry 11 0 3
-entry 11 0 4
-entry 11 0 5
-entry 11 0 6
-entry 11 0 7
-entry 11 0 8
-entry 11 0 9
-entry 11 0 10
-entry 11 0 11
-entry 11 0 12
-entry 11 0 13
-entry 11 0 14
-entry 11 0 15
-entry 11 0 16
+wall 11 0 1
+wall 11 0 2
+wall 11 0 3
+wall 11 0 4
+wall 11 0 5
+wall 11 0 6
+wall 11 0 7
+wall 11 0 8
+wall 11 0 9
+wall 11 0 10
+wall 11 0 11
+wall 11 0 12
+wall 11 0 13
+wall 11 0 14
+wall 11 0 15
+wall 11 0 16
 # Right border
-entry 14 1 17
-entry 14 2 17
-entry 14 3 17
-entry 14 4 17
-entry 14 5 17
-entry 14 6 17
-entry 14 7 17
-entry 14 8 17
-entry 14 9 17
-entry 14 10 17
-entry 14 11 17
-entry 14 12 17
-entry 14 13 17
-entry 14 14 17
-entry 14 15 17
-entry 14 16 17
-entry 14 17 17
-entry 14 18 17
+wall 14 1 17
+wall 14 2 17
+wall 14 3 17
+wall 14 4 17
+wall 14 5 17
+wall 14 6 17
+wall 14 7 17
+wall 14 8 17
+wall 14 9 17
+wall 14 10 17
+wall 14 11 17
+wall 14 12 17
+wall 14 13 17
+wall 14 14 17
+wall 14 15 17
+wall 14 16 17
+wall 14 17 17
+wall 14 18 17
 # Bottom border
-entry 13 19 16
-entry 13 19 15
-entry 13 19 14
-entry 13 19 13
-entry 13 19 12
-entry 13 19 11
-entry 13 19 10
-entry 13 19 9
-entry 13 19 8
-entry 13 19 7
-entry 13 19 6
-entry 13 19 5
-entry 13 19 4
-entry 13 19 3
-entry 13 19 2
-entry 13 19 1
+wall 13 19 16
+wall 13 19 15
+wall 13 19 14
+wall 13 19 13
+wall 13 19 12
+wall 13 19 11
+wall 13 19 10
+wall 13 19 9
+wall 13 19 8
+wall 13 19 7
+wall 13 19 6
+wall 13 19 5
+wall 13 19 4
+wall 13 19 3
+wall 13 19 2
+wall 13 19 1
 # Left border
-entry 7 18 0
-entry 7 17 0
-entry 7 16 0
-entry 7 15 0
-entry 7 14 0
-entry 7 13 0
-entry 7 12 0
-entry 7 11 0
-entry 7 10 0
-entry 7 9 0
-entry 7 8 0
-entry 7 7 0
-entry 7 6 0
-entry 7 5 0
-entry 7 4 0
-entry 7 3 0
-entry 7 2 0
-entry 7 1 0
+wall 7 18 0
+wall 7 17 0
+wall 7 16 0
+wall 7 15 0
+wall 7 14 0
+wall 7 13 0
+wall 7 12 0
+wall 7 11 0
+wall 7 10 0
+wall 7 9 0
+wall 7 8 0
+wall 7 7 0
+wall 7 6 0
+wall 7 5 0
+wall 7 4 0
+wall 7 3 0
+wall 7 2 0
+wall 7 1 0
 # Internal vertical line
-entry 2 16 13
-entry 6 15 13
-entry 6 14 13
-entry 6 13 13
-entry 6 12 13
-entry 6 11 13
-entry 4 10 13
+wall 2 16 13
+wall 6 15 13
+wall 6 14 13
+wall 6 13 13
+wall 6 12 13
+wall 6 11 13
+wall 4 10 13
 # Internal horizontal line
-entry 8 4 8
-entry 9 4 9
-entry 9 4 10
-entry 9 4 11
-entry 9 4 12
-entry 9 4 13
-entry 1 4 14
+wall 8 4 8
+wall 9 4 9
+wall 9 4 10
+wall 9 4 11
+wall 9 4 12
+wall 9 4 13
+wall 1 4 14
 # Internal corner line
-entry 2 12 4
-entry 6 11 4
-entry 6 10 4
-entry 6 9 4
-entry 12 8 4
-entry 9 8 5
-entry 9 8 6
-entry 9 8 7
-entry 1 8 8
+wall 2 12 4
+wall 6 11 4
+wall 6 10 4
+wall 6 9 4
+wall 12 8 4
+wall 9 8 5
+wall 9 8 6
+wall 9 8 7
+wall 1 8 8
 end
 entities
+entity hostile Vampire 0 12 12
+entity player Blob 0 12 13
+entity player Executioner 0 8 13
+end
