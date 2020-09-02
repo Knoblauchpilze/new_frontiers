@@ -7,6 +7,60 @@
 # include "Teleporter.hh"
 # include "Player.hh"
 # include "SolidWall.hh"
+# include "HostileMob.hh"
+
+namespace {
+
+  /**
+   * @brief - Create a valid entity from the input desc.
+   *          In case the `kind` or the `type` cannot be
+   *          interpreted a null pointer is returned.
+   * @param kind - the type of 'brain' to associate to
+   *               this entity.
+   * @param type - the type of visual display for it.
+   * @param id - the variant of the main display.
+   * @param x - the abscissa of the entity in cells.
+   * @param y - the ordinate of the entity in cells.
+   * @return - the pointer on the created entity or a
+   *           null pointer if one of the parameter is
+   *           not recognized.
+   */
+  inline
+  new_frontiers::EntityShPtr
+  createEntity(const std::string& kind,
+               const std::string& type,
+               int id,
+               float x,
+               float y)
+  {
+    // Retrieve the visual display type for the entity.
+    new_frontiers::Mob m = new_frontiers::strToMob(type);
+    if (m == new_frontiers::MobsCount) {
+      // We could not interpret the visual display type
+      // for this entity.
+      return nullptr;
+    }
+
+    new_frontiers::EntityTile et;
+    et.type = m;
+    et.id = id;
+
+    et.x = x;
+    et.y = y;
+
+    // Interpret the brain.
+    if (kind == "hostile") {
+      return std::make_shared<new_frontiers::HostileMob>(et);
+    }
+    if (kind == "player") {
+      return std::make_shared<new_frontiers::Player>(et);
+    }
+
+    // Could not interpret the brain.
+    return nullptr;
+  }
+
+}
 
 namespace new_frontiers {
 
@@ -67,6 +121,7 @@ namespace new_frontiers {
   World::step(float tDelta,
               const std::vector<bool>& controls)
   {
+    // Create the step information structure.
     StepInfo si{
       0.0f,
       1.0f * m_w - 1.0f,
@@ -152,22 +207,24 @@ namespace new_frontiers {
   World::generateElements() {
     // Generate mob portal.
     SolidTile st = newTile(Portal, 3);
-    st.x = 3; st.y = 4;
+    st.x = 3.0f; st.y = 4.0f;
     m_tiles.push_back(std::make_shared<Spawner>(st, DarkAnubis));
 
     // Generate entry portal.
     st = newTile(Portal, 6);
-    st.x = 1; st.y = 1;
+    st.x = 1.0f; st.y = 1.0f;
     m_tiles.push_back(std::make_shared<Teleporter>(st));
 
     // Generate exit portal.
     st = newTile(Portal, 1);
-    st.x = 6; st.y = 3;
+    st.x = 6.0f; st.y = 3.0f;
     m_tiles.push_back(std::make_shared<Teleporter>(st));
 
     // Generate the player at the same location
     // as the entry portal.
-    m_entities.push_back(std::make_shared<Player>(1.0f, 1.0f));
+    EntityTile et = newTile(Knight, 0);
+    et.x = 1.0f; et.y = 1.0f;
+    m_entities.push_back(std::make_shared<Player>(et));
   }
 
   void
@@ -196,11 +253,11 @@ namespace new_frontiers {
       if (in.eof()) {
         break;
       }
-      else if (section == "entrance") {
+      else if (section == "entrances") {
         // Starting point of the level.
         loadEntrances(in);
       }
-      else if (section == "exit") {
+      else if (section == "exits") {
         // End portal of the level.
         loadExits(in);
       }
@@ -245,8 +302,9 @@ namespace new_frontiers {
 
   void
   World::loadEntrances(std::ifstream& in) {
-    // The entrance section (just like any other section)
-    // is ended by the `end` directive.
+    // Parse until we reach a `end` directive. The
+    // cue for an entrance is a section called
+    // `entrance`.
     std::string section;
 
     int type;
@@ -265,6 +323,18 @@ namespace new_frontiers {
         // Comment, continue.
         std::string line;
         std::getline(in, line);
+
+        continue;
+      }
+      if (section != "entrance") {
+        // Not handled section, continue.
+        std::string line;
+        std::getline(in, line);
+
+        log(
+          std::string("Skipping section \"") + section + "\" (not an entrance)",
+          utils::Level::Warning
+        );
 
         continue;
       }
@@ -286,8 +356,8 @@ namespace new_frontiers {
 
   void
   World::loadExits(std::ifstream& in) {
-    // The exits section (just like any other section)
-    // is ended by the `end` directive.
+    // Parse until we reach a `end` directive. The
+    // cue for an exit is a section called `exit`.
     std::string section;
 
     int type;
@@ -309,6 +379,18 @@ namespace new_frontiers {
 
         continue;
       }
+      if (section != "exit") {
+        // Not handled section, continue.
+        std::string line;
+        std::getline(in, line);
+
+        log(
+          std::string("Skipping section \"") + section + "\" (not an exit)",
+          utils::Level::Warning
+        );
+
+        continue;
+      }
 
       in >> type >> x >> y;
 
@@ -327,8 +409,8 @@ namespace new_frontiers {
 
   void
   World::loadPortals(std::ifstream& in) {
-    // The entrance section (just like any other section)
-    // is ended by the `end` directive.
+    // Parse until we reach a `end` directive. The
+    // cue for a portal is a section called `portal`.
     std::string section;
 
     int type;
@@ -348,6 +430,18 @@ namespace new_frontiers {
         // Comment, continue.
         std::string line;
         std::getline(in, line);
+
+        continue;
+      }
+      if (section != "portal") {
+        // Not handled section, continue.
+        std::string line;
+        std::getline(in, line);
+
+        log(
+          std::string("Skipping section \"") + section + "\" (not a portal)",
+          utils::Level::Warning
+        );
 
         continue;
       }
@@ -380,8 +474,8 @@ namespace new_frontiers {
 
   void
   World::loadWalls(std::ifstream& in) {
-    // The exits section (just like any other section)
-    // is ended by the `end` directive.
+    // Parse until we reach a `end` directive. The
+    // cue for a wall is a section called `wall`.
     std::string section;
 
     int type;
@@ -403,6 +497,18 @@ namespace new_frontiers {
 
         continue;
       }
+      if (section != "wall") {
+        // Not handled section, continue.
+        std::string line;
+        std::getline(in, line);
+
+        log(
+          std::string("Skipping section \"") + section + "\" (not a wall)",
+          utils::Level::Warning
+        );
+
+        continue;
+      }
 
       in >> type >> x >> y;
 
@@ -418,8 +524,71 @@ namespace new_frontiers {
   }
 
   void
-  World::loadEntities(std::ifstream& /*in*/) {
-    /** TODO: Handle this. **/
+  World::loadEntities(std::ifstream& in) {
+    // Parse until we reach a `end` directive. The
+    // cue for an entity is reached upon finding a
+    // section called `entity`.
+    std::string section;
+
+    // The `type` and `id` caracterize the visual
+    // display for the entity: it represents how
+    // it will look on screen.
+    // The `x` and `y` represent the position of
+    // the entity.
+    // The `kind` represent whether this entity
+    // is a hostile mob, a player, or any other
+    // kind of entity. It is more linked to the
+    // type of 'brain' that is responsible for
+    // its behavior.
+    std::string kind;
+    std::string type;
+    int id;
+    float x, y;
+
+    while (!in.eof() && section != "end") {
+      in >> section;
+
+      if (in.eof()) {
+        break;
+      }
+      if (section == "end") {
+        break;
+      }
+      if (section == "#") {
+        // Comment, continue.
+        std::string line;
+        std::getline(in, line);
+
+        continue;
+      }
+      if (section != "entity") {
+        // Not handled section, continue.
+        std::string line;
+        std::getline(in, line);
+
+        log(
+          std::string("Skipping section \"") + section + "\" (not an entity)",
+          utils::Level::Warning
+        );
+
+        continue;
+      }
+
+      in >> kind >> type >> id >> x >> y;
+
+      EntityShPtr e = createEntity(kind, type, id, x, y);
+      if (e == nullptr) {
+        log(
+          std::string("Could not decode entity with unknown kind \"") + kind +
+          "\" and type \"" + type + "\"",
+          utils::Level::Warning
+        );
+
+        continue;
+      }
+
+      m_entities.push_back(e);
+    }
   }
 
 

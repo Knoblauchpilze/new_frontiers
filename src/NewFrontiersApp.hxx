@@ -21,6 +21,7 @@ namespace new_frontiers {
   NewFrontiersApp::OnUserCreate() {
     // Create the world.
     m_world = std::make_shared<World>(100, std::string("data/worlds/level_1.lvl"));
+    // m_world = std::make_shared<World>(100);
     m_wit = m_world->iterator();
 
     // And the tile alias.
