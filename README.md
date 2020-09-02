@@ -3,8 +3,8 @@ Something new is starting. I can feel it in my bones. It's huge and it won't hav
 
 # Level file
 dimensions
-entrance
-exit
+entrances
+exits
 portals
 walls
 entities

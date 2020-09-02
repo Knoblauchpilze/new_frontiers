@@ -99,7 +99,7 @@ namespace new_frontiers {
     int tx = static_cast<int>(std::floor(pox / m_tScaled.x));
     int ty = static_cast<int>(std::floor(poy / m_tScaled.y));
 
-    /** TODO: Issue with the cViewport top left corner. **/
+    // TODO: Issue with the cViewport top left corner.
     tx -= m_cViewport.p.x;
     ty -= m_cViewport.p.y;
 

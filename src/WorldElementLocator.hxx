@@ -8,12 +8,11 @@ namespace new_frontiers {
   inline
   void
   WorldElementLocator::refresh(const Update& update) {
-    /** TODO: Handle this. We probably need some sort of
-     * locatorEntry, where the position and the index
-     * are stored for easy access and then inserted in
-     * a quadtree or something allowing easy spatial
-     * sorting.
-     */
+    // TODO: Handle this. We probably need some sort of
+    // locatorEntry, where the position and the index
+    // are stored for easy access and then inserted in
+    // a quadtree or something allowing easy spatial
+    // sorting.
 
     if (update == Update::Full) {
       m_solidIDs.clear();

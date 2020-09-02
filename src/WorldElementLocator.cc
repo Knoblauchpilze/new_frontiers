@@ -74,7 +74,7 @@ namespace new_frontiers {
     int x0 = static_cast<int>(x);
     int y0 = static_cast<int>(y);
 
-    /** TODO: Handle cases where the first cell is obstructed. **/
+    // TODO: Handle cases where the first cell is obstructed.
 
     int x1 = static_cast<int>(x + d * xDir);
     int y1 = static_cast<int>(y + d * yDir);
