@@ -31,7 +31,14 @@ namespace new_frontiers {
     // provided by the pixel game engine.
     m_dLayer = 0u;
 
-    // Create a layer for the main content and enable it.
+    // Create a layer for the UI elements and enable it.
+    m_uiLayer = CreateLayer();
+    EnableLayer(m_uiLayer, true);
+
+    // And finally create a layer for the main content: as
+    // the pixel game engine draws layers from back to front
+    // the main content should be at the back so that all
+    // other elements are displayed on top of it.
     m_mLayer = CreateLayer();
     EnableLayer(m_mLayer, true);
 
@@ -57,6 +64,9 @@ namespace new_frontiers {
 
     SetDrawTarget(m_mLayer);
     draw();
+
+    SetDrawTarget(m_uiLayer);
+    drawUI();
 
     SetDrawTarget(m_dLayer);
     drawDebug();

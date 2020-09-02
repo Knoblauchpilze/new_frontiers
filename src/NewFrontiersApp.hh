@@ -214,6 +214,13 @@ namespace new_frontiers {
       draw();
 
       /**
+       * @brief - Perform the rendering of the UI elements on
+       *          display device.
+       */
+      void
+      drawUI();
+
+      /**
        * @brief - Used to perform debug rendering in addition to
        *          the standard display routines.
        */
@@ -337,6 +344,12 @@ namespace new_frontiers {
        *          top of all the others) with meaningful data.
        */
       uint32_t m_dLayer;
+
+      /**
+       * @brief - A layer used to represent all the UI elements of
+       *          the application (menu, etc).
+       */
+      uint32_t m_uiLayer;
 
       bool m_first;
   };
