@@ -32,6 +32,22 @@
  */
 // TODO: Change Bresenham for intersection to something more
 // practical: it is not precise enough to rely on.
+// TODO: Create a pheromone class: this class will be laid
+// out by entities when they move.
+// TODO: Create a base class for all entities that is able
+// to lay some pheromones.
+// TODO: This entity would have a base protected method to
+// select a path based on the amount of pheromone of a type
+// around the entity and go in this direction.
+// TODO: Refine the spawner to have some sort of abstract
+// metric to determine when a new entity should be spawned.
+// We could move the current spawner to a time based metric
+// to sue the previous mechanism.
+// TODO: Create warrior and worker entity classes.
+// TODO: Provide a way to select portals with the mouse: it
+// would make spawn raw icons to select the priority of the
+// entities that would be spawned (between warrior and the
+// worker).
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>
