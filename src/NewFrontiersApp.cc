@@ -207,6 +207,13 @@ namespace new_frontiers {
   }
 
   void
+  NewFrontiersApp::drawUI() {
+    SetPixelMode(olc::Pixel::ALPHA);
+    Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
+    SetPixelMode(olc::Pixel::NORMAL);
+  }
+
+  void
   NewFrontiersApp::drawDebug() {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
