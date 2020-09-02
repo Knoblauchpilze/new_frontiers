@@ -30,7 +30,6 @@
  *          Enemies would follow the same principle to get
  *          to the mother nest and attack it.
  */
-// TODO: Fix issue with top left corner in a non-zero cell.
 // TODO: Change Bresenham for intersection to something more
 // practical: it is not precise enough to rely on.
 
