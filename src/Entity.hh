@@ -89,6 +89,24 @@ namespace new_frontiers {
       const State&
       getState() const noexcept;
 
+      /**
+       * @brief - Returns the target abscissa of the path segment
+       *          currently being traversed by the entity. In case
+       *          no path is defined the entity's current position
+       *          is returned.
+       * @return - the abscissa of the current path segment.
+       */
+      float
+      getPathX() const noexcept;
+
+      /**
+       * @brief - Similar to the `getPathX` but return the ordinate
+       *          of the current path segment.
+       * @return - the ordinate of the path segment.
+       */
+      float
+      getPathY() const noexcept;
+
     protected:
 
       /**
