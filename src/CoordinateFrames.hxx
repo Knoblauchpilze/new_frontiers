@@ -64,7 +64,7 @@ namespace new_frontiers {
 
   inline
   olc::vf2d
-  CoordinateFrames::tileCoordsToPixels(float x, float y, bool center) const noexcept {
+  CoordinateFrames::tileCoordsToPixels(float x, float y, const Cell& pos) const noexcept {
     // Offset the input coordinates based on the
     // current position of the cell's viewport.
     x -= m_cViewport.p.x;
@@ -78,9 +78,21 @@ namespace new_frontiers {
       m_pViewport.p.y + (x + y) * m_tScaled.y / 2.0f
     );
 
-    if (center) {
-      tp.x += (m_tScaled.x / 2.0f);
-      tp.y += (m_tScaled.y);
+    // Now that we have the top left coordinate
+    // of the cell we can adjust based on the
+    // display mode desired by the user.
+    switch (pos) {
+      case Cell::Center:
+        tp.x += (m_tScaled.x / 2.0f);
+        tp.y += m_tScaled.y;
+        break;
+      case Cell::CenterBottom:
+        tp.x += (m_tScaled.x / 2.0f);
+        tp.y += 2.0f * m_tScaled.y;
+        break;
+      case Cell::TopLeft:
+      default:
+        break;
     }
 
     return tp;

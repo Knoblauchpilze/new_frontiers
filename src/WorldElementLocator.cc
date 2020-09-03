@@ -61,265 +61,84 @@ namespace new_frontiers {
     // 'under' the line when it spans its path
     // so as to determine whether there is some
     // solid tile along the way.
-    // Finding the closest pixel is not an easy
-    // task in and on itself and we will use a
-    // Bresenham as defined here:
-    // https://fr.wikipedia.org/wiki/Algorithme_de_trac%C3%A9_de_segment_de_Bresenham.
-    // We handle only one special case: we do
-    // not consider that the first cell can be
-    // obstructed (that is the `(x, y)` cell).
+    // At first, using a Bresenham algorithm to
+    // compute the cells that lie under a path
+    // seemed like a good idea. But in the end
+    // it appear that we are usually computing
+    // small path where we basically just trace
+    // two pixels and the performance of the
+    // collision detection was not sufficient
+    // to rule out some of them.
+    // So instead we figured we would sample
+    // the path and take regular probing at
+    // the underlying grid. As pathes are on
+    // average small, we won't do a lot of
+    // comparison and it is reasonable to do
+    // so. It also provide more control on
+    // precisely where we sample the path.
+    // We chose to use half a tile dims as
+    // a sample path in order to be precise
+    // enough.
+    float xT = x + d * xDir;
+    float yT = y + d * yDir;
 
-    // First, we need to compute the endpoints
-    // of the line segment to trace.
-    int x0 = static_cast<int>(x);
-    int y0 = static_cast<int>(y);
+    // Compute the step to add on the path
+    // for each sampling: it is extracted
+    // from the initial normalized that we
+    // normalize.
+    // We handle the trivial case where the
+    // direction does not have a valid length
+    // in which case we return `false` (as in
+    // no obstructed) as the initial cell is
+    // never considered obstructed.
+    float l = std::sqrt(xDir * xDir + yDir * yDir);
 
-    // TODO: Handle cases where the first cell is obstructed.
-
-    int x1 = static_cast<int>(x + d * xDir);
-    int y1 = static_cast<int>(y + d * yDir);
-
-    log(
-      "Requested s(" + std::to_string(x0) + "x" + std::to_string(y0) +
-      ") to e(" + std::to_string(x1) + "x" + std::to_string(y1) + ")",
-      utils::Level::Verbose
-    );
-
-    bool obstruction = false;
-
-    // First, handle cases where the line is
-    // perfectly horizontal or vertical.
-    if (x0 == x1 && y0 == y1) {
-      // Line in a single cell: not possible
-      // to be obstructed ever.
-      log("Line is a single point at " + std::to_string(x0) + "x" + std::to_string(y0) + ", obstruction never reported", utils::Level::Verbose);
-      return false;
-    }
-
-    if (x0 == x1) {
-      // Vertical line.
-      int sY = std::min(y0, y1);
-      int maxY = std::max(y0, y1);
-
-      while (!obstruction && sY <= maxY) {
-        obstruction = (sY != y0) && (m_solidIDs.count(sY * m_w + x0) > 0);
-
-        log(
-          "Check v at " + std::to_string(x0) + "x" + std::to_string(sY) +
-          ": " + std::to_string(m_solidIDs.count(sY * m_w + x0)) +
-          " o: " + std::to_string(obstruction),
-          utils::Level::Verbose
-        );
-
-        ++sY;
-      }
-
-      return obstruction;
-    }
-
-    if (y0 == y1) {
-      // Horizontal line.
-      int sX = std::min(x0, x1);
-      int maxX = std::max(x0, x1);
-
-      while (!obstruction && sX <= maxX) {
-        obstruction = (sX != x0) && (m_solidIDs.count(y0 * m_w + sX) > 0);
-
-        log(
-          "Check h at " + std::to_string(sX) + "x" + std::to_string(y0) +
-          ": " + std::to_string(m_solidIDs.count(y0 * m_w + sX)) +
-          " o: " + std::to_string(obstruction),
-          utils::Level::Verbose
-        );
-
-        ++sX;
-      }
-
-      return obstruction;
-    }
-
-    // We know now that the line is neither
-    // horizontal nor vertical: we can with
-    // no loss of generality swap around `x`
-    // and `y` variables in order to always
-    // have a line going in the positive
-    // direction in both `x` and `y` axes.
-    // This allows to have a single general
-    // case for the algorithm.
-    int oX, oY, sX, sY, eX, eY, dx, dy, err;
-
-    enum Op {
-      LT,
-      LTE,
-      GT,
-      GTE
-    };
-
-    Op o = LT;
-
-    dx = x1 - x0;
-    dy = y1 - y0;
-
-    oX = x0;
-    oY = y0;
-
-    int oct = 0;
-
-    if (dx > 0) {
-      if (dy > 0) {
-        if (dx >= dy) {
-          // Vector close to the horizontal (1st octant).
-          // Canonical case, nothing to change from the
-          // default settings.
-          oct = 1;
-        }
-        else {
-          // Vector close to the vertical (2nd octant).
-          swap(x0, y0);
-          swap(x1, y1);
-
-          swap(oX, oY);
-
-          swap(dx, dy);
-          oct = 2;
-        }
-      }
-      else {
-        if (dx >= -dy) {
-          // Vector close to the horizontal (8th octant).
-          // TODO: This would seem to indicate that when
-          // we're doing `dx/y *= -1` it is not needed to
-          // to `swap(x/y, x/y1)` on top of it ?
-          // But maybe it makes sense to change it all to
-          // have some sort of traversal of the path with
-          // a delta and cast at regular interval to see
-          // how it behaves.
-          // Would probably give better results anyway.
-          // swap(y0, y1);
-          dy *= -1;
-          oct = 8;
-        }
-        else {
-          // Vector close to the vertical (7th octant).
-          swap(x0, y0);
-          swap(x1, y1);
-
-          swap(oX, oY);
-
-          swap(dx, dy);
-
-          swap(x0, x1);
-          dx *= -1;
-          o = GT;
-          oct = 7;
-        }
-      }
-    }
-    else {
-      if (dy > 0) {
-        if (-dx >= dy) {
-          // Vector close to the horizontal (4th octant).
-          swap(x0, x1);
-
-          dy *= -1;
-          o = GTE;
-          oct = 4;
-        }
-        else {
-          // Vector close to the vertical (3rd octant).
-          swap(x0, x1);
-
-          swap(dx, dy);
-          dx *= -1;
-          o = LTE;
-          oct = 3;
-        }
-      }
-      else {
-        if (dx <= dy) {
-          // Vector close to the horizontal (5th octant).
-          swap(x0, x1);
-
-          swap(y0, y1);
-          o = GTE;
-          oct = 5;
-        }
-        else {
-          // Vector close to the vertical (6th octant).
-          swap(x0, x1);
-
-          swap(y0, y1);
-          o = GTE;
-
-          swap(dx, dy);
-          oct = 6;
-        }
-      }
-    }
-
-    // TODO: This fails miserably.
-    // Attempt o(0.551082x2.771852) to t(1.677884x1.108787)
-    // Requested s(0x2) to e(1x1)
-    // Analysis oct8 s(0x1) to e(1x2)
-    // Check at 0x1: 0 o: 0
-    // Check e at 1x2: 0 o: 0
-
-    sX = x0; sY = y0;
-    eX = x1; eY = y1;
-
-    err = dx;
-
-    dx *= 2;
-    dy *= 2;
-
-    log(
-      "Analysis oct" + std::to_string(oct) +
-      " s(" + std::to_string(x0) + "x" + std::to_string(y0) +
-      ") to e(" + std::to_string(x1) + "x" + std::to_string(y1) + ")",
-      utils::Level::Verbose
-    );
-
-    while (!obstruction && sX < eX) {
-      err -= dy;
+    if (l < 0.0001f) {
 
       log(
-        "Check at " + std::to_string(sX) + "x" + std::to_string(sY) +
-        ": " + std::to_string(m_solidIDs.count(sY * m_w + sX)) +
-        " o: " + std::to_string(m_solidIDs.count(sY * m_w + sX) > 0),
+        "Checking dir(" + std::to_string(xDir) + "x" + std::to_string(yDir) + ")" +
+        " not enough to change tile, not obstructed",
         utils::Level::Verbose
       );
 
-      obstruction = (sX != oX || sY != oY) && (m_solidIDs.count(sY * m_w + sX) > 0);
-
-      // Check for vertical displacement.
-      if ((o == LT && err < 0) ||
-          (o == LTE && err <= 0) ||
-          (o == GT && err > 0) ||
-          (o == GTE && err >= 0))
-      {
-        ++sY;
-        err += dx;
-      }
-
-
-      ++sX;
+      return false;
     }
 
-    if (obstruction) {
-      return true;
+    xDir /= l;
+    yDir /= l;
+
+    // Sample the path in steps of at most a
+    // length of half the cell.
+    xDir /= 2.0f;
+    yDir /= 2.0f;
+
+    bool obstruction = false;
+    float t = 0.0f;
+
+    while (!obstruction && t < d) {
+      obstruction = obstructed(x, y);
+
+      log(
+        "Checking " + std::to_string(x) + "x" + std::to_string(y) +
+        ": " + std::to_string(obstruction) +
+        " t: " + std::to_string(t) + " perc: " + std::to_string(t / d),
+        utils::Level::Verbose
+      );
+
+      x += xDir;
+      y += xDir;
+
+      t += 0.5f;
     }
 
     log(
-      "Check e at " + std::to_string(eX) + "x" + std::to_string(eY) +
-      ": " + std::to_string(m_solidIDs.count(sY * m_w + sX)) +
-      " o: " + std::to_string(m_solidIDs.count(eY * m_w + eX) > 0),
+      "Checking " + std::to_string(xT) + "x" + std::to_string(yT) +
+      ": " + std::to_string(obstructed(xT, yT)),
       utils::Level::Verbose
     );
 
-    // The algorithm does not check the last
-    // pixel so we finally return the result
-    // of the test.
-    return (m_solidIDs.count(eY * m_w + eX) > 0);
+    // Check obstruction for the final cell.
+    return obstructed(xT, yT);
   }
 
   void

@@ -68,6 +68,10 @@ namespace new_frontiers {
     SetDrawTarget(m_uiLayer);
     drawUI();
 
+    // Note that as the debug layer is the
+    // layer `0`, we always have to display
+    // it, we just need to not draw anything
+    // if the debug mode is deactivated.
     SetDrawTarget(m_dLayer);
     drawDebug();
 

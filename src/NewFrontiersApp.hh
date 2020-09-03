@@ -351,6 +351,17 @@ namespace new_frontiers {
        */
       uint32_t m_uiLayer;
 
+      /**
+       * @brief - Used to determine whether debug display is needed
+       *          for this app.
+       */
+      bool m_debugOn;
+
+      /**
+       * @brief - Boolean allowing to display logs only on the
+       *          first frame. Or do any other process a single
+       *          time upon rendering the first frame.
+       */
       bool m_first;
   };
 

@@ -28,6 +28,7 @@ namespace new_frontiers {
     m_mLayer(0),
     m_dLayer(0),
 
+    m_debugOn(false),
     m_first(true)
   {
 
@@ -154,6 +155,11 @@ namespace new_frontiers {
     b = GetKey(olc::SPACE);
     m_controls[Sprint] = b.bPressed || b.bHeld;
 
+    // De/activate the debug mode if needed.
+    if (GetKey(olc::D).bReleased) {
+      m_debugOn = !m_debugOn;
+    }
+
     return true;
   }
 
@@ -218,14 +224,24 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
 
-    // Render entities path.
+    // If the debug mode is deactivated, return
+    // now as we don't want to display anything.
+    if (!m_debugOn) {
+      return;
+    }
+
+    // Render entities path and position
     for (int id = 0 ; id < m_wit->entitiesCount() ; ++id) {
       EntityDesc ed = m_wit->entity(id);
 
-      olc::vf2d o = m_cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, true);
-      olc::vf2d t = m_cf.tileCoordsToPixels(ed.xT, ed.yT, true);
+      olc::vf2d o = m_cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, Cell::Center);
+      olc::vf2d t = m_cf.tileCoordsToPixels(ed.xT, ed.yT, Cell::Center);
+      olc::vf2d tl = m_cf.tileCoordsToPixels(ed.tile.x, ed.tile.y);
+      olc::vf2d bc = m_cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, Cell::CenterBottom);
 
       DrawLine(o, t, olc::WHITE);
+      DrawRect(tl, m_ss * m_cf.tileScale(), olc::MAGENTA);
+      FillCircle(bc, 5, olc::YELLOW);
     }
 
     // Render mouse and world cell coordinates.
