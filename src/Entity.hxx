@@ -108,6 +108,29 @@ namespace new_frontiers {
     return std::make_shared<VFX>(vt, m_vfxDecay);
   }
 
+  inline
+  void
+  Entity::normalizePath(const StepInfo& info, float& xDir, float& yDir, float& d) const noexcept {
+    // Compute the final position of the path.
+    float xt = m_tile.x + d * xDir;
+    float yt = m_tile.y + d * yDir;
+
+    // Clamp coordinates.
+    info.clampCoord(xt, yt);
+
+    // Update the direction.
+    xDir = xt - m_tile.x;
+    yDir = yt - m_tile.y;
+
+    // Update the distance.
+    d = std::sqrt(xDir * xDir + yDir * yDir);
+
+    if (d > 0.0001f) {
+      xDir /= d;
+      yDir /= d;
+    }
+  }
+
 }
 
 #endif    /* ENTITY_HXX */

@@ -29,6 +29,7 @@ namespace new_frontiers {
     m_dLayer(0),
 
     m_debugOn(true),
+    m_state(State::Running),
     m_first(true)
   {
 
@@ -155,9 +156,26 @@ namespace new_frontiers {
     b = GetKey(olc::SPACE);
     m_controls[Sprint] = b.bPressed || b.bHeld;
 
-    // De/activate the debug mode if needed.
+    // De/activate the debug mode if needed and
+    // handle general simulation control options.
     if (GetKey(olc::D).bReleased) {
       m_debugOn = !m_debugOn;
+    }
+    if (GetKey(olc::P).bReleased) {
+      switch (m_state) {
+        case State::Running:
+        case State::Resuming:
+          log("State is now pausing");
+          m_state = State::Pausing;
+          break;
+        case State::Paused:
+          log("State is now resuming");
+          m_state = State::Resuming;
+          break;
+        case State::Pausing:
+        default:
+          break;
+      }
     }
 
     return true;

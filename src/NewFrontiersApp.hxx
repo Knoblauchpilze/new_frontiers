@@ -51,9 +51,25 @@ namespace new_frontiers {
     // Handle inputs.
     bool r = handleInputs();
 
-    // Handle game logic.
-    m_world->step(fElapsedTime, m_controls);
-
+    // Handle game logic if needed.
+    switch (m_state) {
+      case State::Running:
+        m_world->step(fElapsedTime, m_controls);
+        break;
+      case State::Pausing:
+        m_world->pause();
+        log("State is now paused");
+        m_state = State::Paused;
+        break;
+      case State::Resuming:
+        m_world->resume();
+        m_state = State::Running;
+        log("State is now running");
+        break;
+      case State::Paused:
+      default:
+        break;
+    }
     // Handle rendering: for each function
     // we will assign the draw target first
     // so that the function does not have

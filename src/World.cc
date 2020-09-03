@@ -202,6 +202,16 @@ namespace new_frontiers {
   }
 
   void
+  World::pause() {
+    // TODO: Handle this.
+  }
+
+  void
+  World::resume() {
+    // TODO: Handle this.
+  }
+
+  void
   World::generateElements() {
     // Generate mob portal.
     SolidTile st = newTile(Portal, 3);
