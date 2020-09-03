@@ -194,6 +194,9 @@ namespace new_frontiers {
        * @brief - The current state of the entity.
        */
       State m_state;
+
+    public:
+      std::vector<float> m_cPoints;
   };
 
   using EntityShPtr = std::shared_ptr<Entity>;
