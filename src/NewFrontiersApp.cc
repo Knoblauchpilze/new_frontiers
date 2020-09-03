@@ -218,6 +218,16 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
 
+    // Render entities path.
+    for (int id = 0 ; id < m_wit->entitiesCount() ; ++id) {
+      EntityDesc ed = m_wit->entity(id);
+
+      olc::vf2d o = m_cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, true);
+      olc::vf2d t = m_cf.tileCoordsToPixels(ed.xT, ed.yT, true);
+
+      DrawLine(o, t, olc::WHITE);
+    }
+
     // Render mouse and world cell coordinates.
     olc::vi2d mp = GetMousePos();
     olc::vi2d mtp = m_cf.pixelCoordsToTiles(mp);
