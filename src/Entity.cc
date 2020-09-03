@@ -25,7 +25,9 @@ namespace new_frontiers {
     }
 
     // Move along the path.
-    m_path.animate(info.moment, m_tile.x, m_tile.y);
+    if (m_hasPath) {
+      m_path.animate(info.moment, m_tile.x, m_tile.y);
+    }
 
     return true;
   }
@@ -49,12 +51,30 @@ namespace new_frontiers {
     float xDir = std::cos(theta);
     float yDir = std::sin(theta);
 
+    float xt = m_path.xO + r * xDir;
+    float yt = m_path.yO + r * yDir;
+
+    log(
+      "Attempt o(" + std::to_string(m_path.xO) + "x" + std::to_string(m_path.yO) +
+      " to " + std::to_string(xt) + "x" + std::to_string(yt),
+      utils::Level::Debug
+    );
+
     while (info.frustum->obstructed(m_path.xO, m_path.yO, xDir, yDir, r)) {
       r = info.rng.rndFloat(m_speed, m_pathLength);
       theta = info.rng.rndAngle();
 
       xDir = std::cos(theta);
       yDir = std::sin(theta);
+
+      xt = m_path.xO + r * xDir;
+      yt = m_path.yO + r * yDir;
+
+      log(
+        "Attempt o(" + std::to_string(m_path.xO) + "x" + std::to_string(m_path.yO) +
+        " to " + std::to_string(xt) + "x" + std::to_string(yt),
+        utils::Level::Debug
+      );
     }
 
     m_path.xT = m_path.xO + r * xDir;

@@ -52,12 +52,35 @@ namespace new_frontiers {
       false, // Glowing.
       false  // Exhausted.
     }
-  {}
+  {
+    // Assign the path with initial position
+    // of the entity.
+    m_path.xO = m_tile.x;
+    m_path.yO = m_tile.y;
+
+    m_path.xT = m_tile.x;
+    m_path.yT = m_tile.y;
+
+    m_path.start = now();
+    m_path.end = now();
+  }
 
   inline
   const State&
   Entity::getState() const noexcept {
     return m_state;
+  }
+
+  inline
+  float
+  Entity::getPathX() const noexcept {
+    return (m_hasPath ? m_path.xT : m_tile.x);
+  }
+
+  inline
+  float
+  Entity::getPathY() const noexcept {
+    return (m_hasPath ? m_path.yT : m_tile.y);
   }
 
   inline
