@@ -82,6 +82,9 @@ namespace new_frontiers {
     float xT = x + d * xDir;
     float yT = y + d * yDir;
 
+    int xo = static_cast<int>(x);
+    int yo = static_cast<int>(y);
+
     // Compute the step to add on the path
     // for each sampling: it is extracted
     // from the initial normalized that we
@@ -115,8 +118,16 @@ namespace new_frontiers {
     bool obstruction = false;
     float t = 0.0f;
 
+    int xi, yi;
+
     while (!obstruction && t < d) {
-      obstruction = obstructed(x, y);
+      // Prevent the initial cell to be considered
+      // as obstructed: this allow objects that get
+      // stuck to be able to move out.
+      xi = static_cast<int>(xT);
+      yi = static_cast<int>(yT);
+
+      obstruction = (xi != xo || yi != yo) && (m_solidIDs.count(yi * m_w + xi) > 0);
 
       log(
         "Checking " + std::to_string(x) + "x" + std::to_string(y) +
@@ -131,14 +142,23 @@ namespace new_frontiers {
       t += 0.5f;
     }
 
+    // In case an obstruction was detected we
+    // don't need to check for the last cell.
+    if (obstruction) {
+      return true;
+    }
+
+    // Check obstruction for the final cell.
+    xi = static_cast<int>(xT);
+    yi = static_cast<int>(yT);
+
     log(
       "Checking " + std::to_string(xT) + "x" + std::to_string(yT) +
-      ": " + std::to_string(obstructed(xT, yT)),
+      ": " + std::to_string(m_solidIDs.count(yi * m_w + xi) > 0),
       utils::Level::Verbose
     );
 
-    // Check obstruction for the final cell.
-    return obstructed(xT, yT);
+    return (m_solidIDs.count(yi * m_w + xi) > 0);
   }
 
   void
