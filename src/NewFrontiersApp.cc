@@ -165,11 +165,9 @@ namespace new_frontiers {
       switch (m_state) {
         case State::Running:
         case State::Resuming:
-          log("State is now pausing");
           m_state = State::Pausing;
           break;
         case State::Paused:
-          log("State is now resuming");
           m_state = State::Resuming;
           break;
         case State::Pausing:

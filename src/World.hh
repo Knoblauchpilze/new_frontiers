@@ -70,18 +70,26 @@ namespace new_frontiers {
        *          paused. Time based entities and actions
        *          should take actions to correctly resume at
        *          a later time.
+       * @param tDelta - the duration of the last frame in
+       *                 seconds.
+       * @param controls - the current state of the controls.
        */
       void
-      pause();
+      pause(float tDelta,
+            const std::vector<bool>& controls);
 
       /**
        * @brief - Used to indicate that the world should be
        *          resuming its activity. Time based entities
        *          should take actions to be resuming their
        *          pathes, motions, etc.
+       * @param tDelta - the duration of the last frame in
+       *                 seconds.
+       * @param controls - the current state of the controls.
        */
       void
-      resume();
+      resume(float tDelta,
+             const std::vector<bool>& controls);
 
     private:
 
