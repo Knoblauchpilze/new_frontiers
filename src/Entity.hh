@@ -143,6 +143,21 @@ namespace new_frontiers {
       void
       choosePath(const StepInfo& info);
 
+      /**
+       * @brief - Used to make sure that the target of a path that
+       *          would be started at the current entity's position
+       *          and running `d` cells in the direction pointed at
+       *          by `xDir` and `yDir` would stay in admissible
+       *          bounds.
+       *          Input arguments will be modified directly.
+       * @param info - the information to use to clamp coordinates.
+       * @param xDir - the direction along the `x` axis.
+       * @param yDir - the direction along the `y` axis.
+       * @param d - the distance for this path.
+       */
+      void
+      normalizePath(const StepInfo& info, float& xDir, float& yDir, float& d) const noexcept;
+
     protected:
 
       /**

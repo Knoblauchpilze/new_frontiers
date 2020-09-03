@@ -30,8 +30,6 @@
  *          Enemies would follow the same principle to get
  *          to the mother nest and attack it.
  */
-// TODO: Change Bresenham for intersection to something more
-// practical: it is not precise enough to rely on.
 // TODO: Create a pheromone class: this class will be laid
 // out by entities when they move.
 // TODO: Create a base class for all entities that is able
@@ -48,6 +46,8 @@
 // would make spawn raw icons to select the priority of the
 // entities that would be spawned (between warrior and the
 // worker).
+// TODO: Maybe change the position of entity so that their
+// bottom is at the position indicated by their position ?
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>

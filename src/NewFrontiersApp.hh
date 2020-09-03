@@ -100,6 +100,17 @@ namespace new_frontiers {
       static constexpr int ALPHA_TRANSPARENT = 0;
 
       /**
+       * @brief - Convenience enumeration describing the state of the
+       *          game. It allows to correctly handle transitions.
+       */
+      enum class State {
+        Running,
+        Pausing,
+        Paused,
+        Resuming
+      };
+
+      /**
        * @brief - Performs the initialization of the engine to make
        *          it suits our needs.
        * @param width - the width of the window in pixels.
@@ -356,6 +367,13 @@ namespace new_frontiers {
        *          for this app.
        */
       bool m_debugOn;
+
+      /**
+       * @brief - Indicates that the simulation of the game is
+       *          paused: the world will not evolve during this
+       *          time.
+       */
+      State m_state;
 
       /**
        * @brief - Boolean allowing to display logs only on the

@@ -18,6 +18,7 @@ namespace new_frontiers {
       float dToT = info.frustum->d(m_path.xT, m_path.yT, m_tile.x, m_tile.y);
       m_hasPath = (dToT > m_rArrival);
 
+# ifdef DEBUG
       if (!m_hasPath) {
         log(
           "Reached o(" + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y) +
@@ -27,6 +28,7 @@ namespace new_frontiers {
           utils::Level::Debug
         );
       }
+# endif
     }
 
     // In case we don't have a path, select one.
@@ -36,7 +38,7 @@ namespace new_frontiers {
 
     // Move along the path.
     bool moved = false;
-    if (m_hasPath && false) {
+    if (m_hasPath && true) {
       m_path.animate(info.moment, m_tile.x, m_tile.y);
       moved = true;
     }
@@ -63,6 +65,11 @@ namespace new_frontiers {
     float xDir = std::cos(theta);
     float yDir = std::sin(theta);
 
+    // Clamp these coordinates and update the direction
+    // based on that.
+    normalizePath(info, xDir, yDir, r);
+
+# ifdef DEBUG
     float xt = m_path.xO + r * xDir;
     float yt = m_path.yO + r * yDir;
 
@@ -71,9 +78,12 @@ namespace new_frontiers {
       ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
       utils::Level::Debug
     );
+# endif
 
     while (info.frustum->obstructed(m_path.xO, m_path.yO, xDir, yDir, r, m_cPoints)) {
+# ifdef DEBUG
       log("Failed", utils::Level::Error);
+# endif
 
       r = info.rng.rndFloat(m_speed, m_pathLength);
       theta = info.rng.rndAngle();
@@ -81,14 +91,17 @@ namespace new_frontiers {
       xDir = std::cos(theta);
       yDir = std::sin(theta);
 
+      normalizePath(info, xDir, yDir, r);
+
+# ifdef DEBUG
       xt = m_path.xO + r * xDir;
       yt = m_path.yO + r * yDir;
-
       log(
         "Attempt o(" + std::to_string(m_path.xO) + "x" + std::to_string(m_path.yO) +
         ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
         utils::Level::Debug
       );
+# endif
     }
 
     m_path.xT = m_path.xO + r * xDir;

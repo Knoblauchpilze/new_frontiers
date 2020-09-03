@@ -65,6 +65,24 @@ namespace new_frontiers {
       step(float tDelta,
            const std::vector<bool>& controls);
 
+      /**
+       * @brief - Used to indicate that the world should be
+       *          paused. Time based entities and actions
+       *          should take actions to correctly resume at
+       *          a later time.
+       */
+      void
+      pause();
+
+      /**
+       * @brief - Used to indicate that the world should be
+       *          resuming its activity. Time based entities
+       *          should take actions to be resuming their
+       *          pathes, motions, etc.
+       */
+      void
+      resume();
+
     private:
 
       /**

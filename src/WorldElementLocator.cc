@@ -99,12 +99,13 @@ namespace new_frontiers {
     float l = std::sqrt(xDir * xDir + yDir * yDir);
 
     if (l < 0.0001f) {
-
+# ifdef DEBUG
       log(
         "Checking dir(" + std::to_string(xDir) + "x" + std::to_string(yDir) + ")" +
         " not enough to change tile, not obstructed",
         utils::Level::Verbose
       );
+# endif
 
       return false;
     }
@@ -134,6 +135,7 @@ namespace new_frontiers {
 
       obstruction = (xi != xo || yi != yo) && (m_solidIDs.count(yi * m_w + xi) > 0);
 
+# ifdef DEBUG
       log(
         "Checking " + std::to_string(x) + "x" + std::to_string(y) +
         " i(" + std::to_string(xi) + "x" + std::to_string(yi) + ")" +
@@ -141,6 +143,7 @@ namespace new_frontiers {
         " t: " + std::to_string(t) + " perc: " + std::to_string(t / d),
         utils::Level::Verbose
       );
+# endif
 
       x += xDir;
       y += yDir;
@@ -161,12 +164,14 @@ namespace new_frontiers {
     cPoints.push_back(xT);
     cPoints.push_back(yT);
 
+# ifdef DEBUG
     log(
       "Checking " + std::to_string(xT) + "x" + std::to_string(yT) +
       " i(" + std::to_string(xi) + "x" + std::to_string(yi) + ") (end)" +
       ": " + std::to_string(m_solidIDs.count(yi * m_w + xi) > 0),
       utils::Level::Verbose
     );
+# endif
 
     return (m_solidIDs.count(yi * m_w + xi) > 0);
   }
