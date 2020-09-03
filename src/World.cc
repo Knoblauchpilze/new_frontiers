@@ -202,12 +202,16 @@ namespace new_frontiers {
   }
 
   void
-  World::pause() {
+  World::pause(float /*tDelta*/,
+               const std::vector<bool>& /*controls*/)
+  {
     // TODO: Handle this.
   }
 
   void
-  World::resume() {
+  World::resume(float /*tDelta*/,
+                const std::vector<bool>& /*controls*/)
+  {
     // TODO: Handle this.
   }
 

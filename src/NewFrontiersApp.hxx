@@ -57,19 +57,18 @@ namespace new_frontiers {
         m_world->step(fElapsedTime, m_controls);
         break;
       case State::Pausing:
-        m_world->pause();
-        log("State is now paused");
+        m_world->pause(fElapsedTime, m_controls);
         m_state = State::Paused;
         break;
       case State::Resuming:
-        m_world->resume();
+        m_world->resume(fElapsedTime, m_controls);
         m_state = State::Running;
-        log("State is now running");
         break;
       case State::Paused:
       default:
         break;
     }
+
     // Handle rendering: for each function
     // we will assign the draw target first
     // so that the function does not have
