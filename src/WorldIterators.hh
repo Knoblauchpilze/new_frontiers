@@ -21,6 +21,8 @@ namespace new_frontiers {
   struct EntityDesc {
     EntityTile tile;
     State state;
+    float xT;
+    float yT;
   };
 
   class WorldIterator: public utils::CoreObject {

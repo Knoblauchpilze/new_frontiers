@@ -75,7 +75,9 @@ namespace new_frontiers {
 
     return EntityDesc{
       e->getTile(),
-      e->getState()
+      e->getState(),
+      e->getPathX(),
+      e->getPathY(),
     };
   }
 
