@@ -42,7 +42,7 @@ namespace new_frontiers {
     m_vfxDecay(decaying),
 
     m_speed(-1.0f),
-    m_rArrival(0.2f),
+    m_rArrival(0.05f),
     m_pathLength(3.0f),
 
     m_hasPath(false),

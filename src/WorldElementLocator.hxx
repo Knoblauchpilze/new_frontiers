@@ -33,16 +33,6 @@ namespace new_frontiers {
     return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
   }
 
-  inline
-  bool
-  WorldElementLocator::obstructed(float x, float y) const noexcept {
-    // Convert to integer coordinates.
-    int xi = static_cast<int>(x);
-    int yi = static_cast<int>(y);
-
-    return m_solidIDs.count(yi * m_w + xi) > 0;
-  }
-
 }
 
 #endif    /* WORLD_ELEMENT_LOCATOR_HXX */

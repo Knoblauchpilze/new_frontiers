@@ -28,7 +28,7 @@ namespace new_frontiers {
     m_mLayer(0),
     m_dLayer(0),
 
-    m_debugOn(false),
+    m_debugOn(true),
     m_first(true)
   {
 

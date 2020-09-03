@@ -17,6 +17,16 @@ namespace new_frontiers {
     if (m_hasPath) {
       float dToT = info.frustum->d(m_path.xT, m_path.yT, m_tile.x, m_tile.y);
       m_hasPath = (dToT > m_rArrival);
+
+      if (!m_hasPath) {
+        log(
+          "Reached o(" + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y) +
+          "), " + std::to_string(dToT) + " from t(" +
+          std::to_string(m_path.xT) + "x" + std::to_string(m_path.yT) + ") (r: " +
+          std::to_string(m_rArrival) + ")",
+          utils::Level::Debug
+        );
+      }
     }
 
     // In case we don't have a path, select one.
