@@ -25,11 +25,13 @@ namespace new_frontiers {
     }
 
     // Move along the path.
-    if (m_hasPath) {
+    bool moved = false;
+    if (m_hasPath && true) {
       m_path.animate(info.moment, m_tile.x, m_tile.y);
+      moved = true;
     }
 
-    return true;
+    return moved;
   }
 
   void
@@ -56,7 +58,7 @@ namespace new_frontiers {
 
     log(
       "Attempt o(" + std::to_string(m_path.xO) + "x" + std::to_string(m_path.yO) +
-      " to " + std::to_string(xt) + "x" + std::to_string(yt),
+      ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
       utils::Level::Debug
     );
 
@@ -72,7 +74,7 @@ namespace new_frontiers {
 
       log(
         "Attempt o(" + std::to_string(m_path.xO) + "x" + std::to_string(m_path.yO) +
-        " to " + std::to_string(xt) + "x" + std::to_string(yt),
+        ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
         utils::Level::Debug
       );
     }
