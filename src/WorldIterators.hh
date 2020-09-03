@@ -23,6 +23,7 @@ namespace new_frontiers {
     State state;
     float xT;
     float yT;
+    std::vector<float> cPoints;
   };
 
   class WorldIterator: public utils::CoreObject {

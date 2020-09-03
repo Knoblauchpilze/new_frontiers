@@ -78,6 +78,7 @@ namespace new_frontiers {
       e->getState(),
       e->getPathX(),
       e->getPathY(),
+      e->m_cPoints
     };
   }
 

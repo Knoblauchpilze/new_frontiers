@@ -56,7 +56,7 @@ namespace new_frontiers {
   }
 
   bool
-  WorldElementLocator::obstructed(float x, float y, float xDir, float yDir, float d) const noexcept {
+  WorldElementLocator::obstructed(float x, float y, float xDir, float yDir, float d, std::vector<float>& cPoints) const noexcept {
     // We basically need to find which cells are
     // 'under' the line when it spans its path
     // so as to determine whether there is some
@@ -81,6 +81,8 @@ namespace new_frontiers {
     // enough.
     float xT = x + d * xDir;
     float yT = y + d * yDir;
+
+    cPoints.clear();
 
     int xo = static_cast<int>(x);
     int yo = static_cast<int>(y);
@@ -124,20 +126,24 @@ namespace new_frontiers {
       // Prevent the initial cell to be considered
       // as obstructed: this allow objects that get
       // stuck to be able to move out.
-      xi = static_cast<int>(xT);
-      yi = static_cast<int>(yT);
+      xi = static_cast<int>(x);
+      yi = static_cast<int>(y);
+
+      cPoints.push_back(x);
+      cPoints.push_back(y);
 
       obstruction = (xi != xo || yi != yo) && (m_solidIDs.count(yi * m_w + xi) > 0);
 
       log(
         "Checking " + std::to_string(x) + "x" + std::to_string(y) +
+        " i(" + std::to_string(xi) + "x" + std::to_string(yi) + ")" +
         ": " + std::to_string(obstruction) +
         " t: " + std::to_string(t) + " perc: " + std::to_string(t / d),
         utils::Level::Verbose
       );
 
       x += xDir;
-      y += xDir;
+      y += yDir;
 
       t += 0.5f;
     }
@@ -152,8 +158,12 @@ namespace new_frontiers {
     xi = static_cast<int>(xT);
     yi = static_cast<int>(yT);
 
+    cPoints.push_back(xT);
+    cPoints.push_back(yT);
+
     log(
       "Checking " + std::to_string(xT) + "x" + std::to_string(yT) +
+      " i(" + std::to_string(xi) + "x" + std::to_string(yi) + ") (end)" +
       ": " + std::to_string(m_solidIDs.count(yi * m_w + xi) > 0),
       utils::Level::Verbose
     );

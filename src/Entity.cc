@@ -36,7 +36,7 @@ namespace new_frontiers {
 
     // Move along the path.
     bool moved = false;
-    if (m_hasPath && true) {
+    if (m_hasPath && false) {
       m_path.animate(info.moment, m_tile.x, m_tile.y);
       moved = true;
     }
@@ -72,7 +72,7 @@ namespace new_frontiers {
       utils::Level::Debug
     );
 
-    while (info.frustum->obstructed(m_path.xO, m_path.yO, xDir, yDir, r)) {
+    while (info.frustum->obstructed(m_path.xO, m_path.yO, xDir, yDir, r, m_cPoints)) {
       log("Failed", utils::Level::Error);
 
       r = info.rng.rndFloat(m_speed, m_pathLength);

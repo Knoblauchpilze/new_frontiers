@@ -239,6 +239,11 @@ namespace new_frontiers {
       olc::vf2d tl = m_cf.tileCoordsToPixels(ed.tile.x, ed.tile.y);
       olc::vf2d bc = m_cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, Cell::CenterBottom);
 
+      for (unsigned id = 0u ; id < ed.cPoints.size() / 2u ; ++id) {
+        olc::vf2d p = m_cf.tileCoordsToPixels(ed.cPoints[2 * id], ed.cPoints[2 * id + 1], Cell::Center);
+        FillCircle(p, 3, olc::CYAN);
+      }
+
       DrawLine(o, t, olc::WHITE);
       DrawRect(tl, m_ss * m_cf.tileScale(), olc::MAGENTA);
       FillCircle(bc, 5, olc::YELLOW);
@@ -246,10 +251,12 @@ namespace new_frontiers {
 
     // Render mouse and world cell coordinates.
     olc::vi2d mp = GetMousePos();
-    olc::vi2d mtp = m_cf.pixelCoordsToTiles(mp);
+    olc::vf2d it;
+    olc::vi2d mtp = m_cf.pixelCoordsToTiles(mp, &it);
 
-    DrawString(olc::vi2d(0, 450), "Mouse coords        : " + toString(mp), olc::CYAN);
-    DrawString(olc::vi2d(0, 465), "World cell coords   : " + toString(mtp), olc::CYAN);
+    DrawString(olc::vi2d(0, 435), "Mouse coords      : " + toString(mp), olc::CYAN);
+    DrawString(olc::vi2d(0, 450), "World cell coords : " + toString(mtp), olc::CYAN);
+    DrawString(olc::vi2d(0, 465), "Intra cell        : " + toString(it), olc::CYAN);
 
     // Not the first frame anymore.
     m_first = false;

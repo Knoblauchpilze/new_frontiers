@@ -137,10 +137,14 @@ namespace new_frontiers {
        *          the tile.
        * @param pixels - the pixels coordinates to convert into
        *                 tile coords.
+       * @param intraTile - used to provide the intra tile coords
+       *                    if a non null value is provided. The
+       *                    coordinates are expressed in the range
+       *                    `[0; 1]` (as in a percentage).
        * @return - the corresponding tile coordinates.
        */
       olc::vi2d
-      pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept;
+      pixelCoordsToTiles(const olc::vi2d& pixels, olc::vf2d* intraTile = nullptr) const noexcept;
 
     private:
 

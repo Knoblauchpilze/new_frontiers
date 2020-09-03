@@ -51,7 +51,9 @@ namespace new_frontiers {
     m_state{
       false, // Glowing.
       false  // Exhausted.
-    }
+    },
+
+    m_cPoints()
   {
     // Assign the path with initial position
     // of the entity.

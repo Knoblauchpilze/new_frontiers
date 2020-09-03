@@ -135,7 +135,7 @@ namespace new_frontiers {
        *           solid element.
        */
       bool
-      obstructed(float x, float y, float xDir, float yDir, float d) const noexcept;
+      obstructed(float x, float y, float xDir, float yDir, float d, std::vector<float>& cPoints) const noexcept;
 
     private:
 

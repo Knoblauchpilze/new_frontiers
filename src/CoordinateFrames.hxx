@@ -100,7 +100,7 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels) const noexcept {
+  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels, olc::vf2d* intraTile) const noexcept {
     // The conversion to float value is necessary in the
     // case of negative values where for example coords
     // `(-0.5, -0.5)` should be interpreted as belonging
@@ -155,6 +155,11 @@ namespace new_frontiers {
     float x = std::fmod(std::fmod(pox, m_tScaled.x) + m_tScaled.x, m_tScaled.x);
     float y = std::fmod(std::fmod(poy, m_tScaled.y) + m_tScaled.y, m_tScaled.y);
 
+    if (intraTile != nullptr) {
+      intraTile->x = m_tScaled.x / 2.0f - x + 2.0f * y;
+      intraTile->y = x / 2.0f - m_tScaled.y / 2.0f + y;
+    }
+
     float hw = m_tScaled.x / 2.0f;
     float hh = m_tScaled.y / 2.0f;
     float how = 1.0f * m_tScaled.y / m_tScaled.x;
@@ -164,18 +169,39 @@ namespace new_frontiers {
     if (x < hw && y < hh && y < hh - x * how) {
       // Top left corner.
       --rt.y;
+
+      if (intraTile != nullptr) {
+        intraTile->y += m_tScaled.y;
+      }
     }
     if (x > hw && y < hh && y < x * how - hh) {
       // Top right corner.
       --rt.x;
+
+      if (intraTile != nullptr) {
+        intraTile->x += m_tScaled.x;
+      }
     }
     if (x < hw && y > hh && y > hh + x * how) {
       // Bottom left corner.
       ++rt.x;
+
+      if (intraTile != nullptr) {
+        intraTile->x -= m_tScaled.x;
+      }
     }
     if (x > hw && y > hh && y > 3 * hh - x * how) {
       // Bottom right corner.
       ++rt.y;
+
+      if (intraTile != nullptr) {
+        intraTile->y -= m_tScaled.y;
+      }
+    }
+
+    if (intraTile != nullptr) {
+      intraTile->x /= m_tScaled.x;
+      intraTile->y /= m_tScaled.y;
     }
 
     return rt;
