@@ -147,6 +147,18 @@ namespace new_frontiers {
       void
       initialize();
 
+      /**
+       * @brief - Private version of the obstructed method that
+       *          checks whether the cell coordinates under the
+       *          input position is occupied by a solid block.
+       * @param x - the abscissa of the point to check.
+       * @param y - the ordinate of the point to check.
+       * @return - `true` if the point is occupied by a solid
+       *           tile.
+       */
+      bool
+      obstructed(float x, float y) const noexcept;
+
     private:
 
       /**

@@ -63,6 +63,8 @@ namespace new_frontiers {
     );
 
     while (info.frustum->obstructed(m_path.xO, m_path.yO, xDir, yDir, r)) {
+      log("Failed", utils::Level::Error);
+
       r = info.rng.rndFloat(m_speed, m_pathLength);
       theta = info.rng.rndAngle();
 

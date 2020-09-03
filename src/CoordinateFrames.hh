@@ -23,6 +23,19 @@ namespace new_frontiers {
     Out
   };
 
+  /**
+   * @brief - Define the type of conversion from cell
+   *          to pixels. Allow to determine whether
+   *          the output position should correspond
+   *          to the center, the top left corner, the
+   *          center, etc. of the cell.
+   */
+  enum class Cell {
+    TopLeft,
+    Center,
+    CenterBottom
+  };
+
   class CoordinateFrames: public utils::CoreObject {
     public:
 
@@ -108,14 +121,13 @@ namespace new_frontiers {
        *          tiles based on the cells viewport.
        * @param x - the cell coordinate along the `x` axis.
        * @param y - the cell coordinate along the `y` axis.
-       * @param center - defines whether the position in pixels
-       *                 should represent the center of the tile
-       *                 or its top left corner.
+       * @param pos - defines which position of the cell should
+       *              be computed in pixels.
        * @return - the coordinates in pixels of the tile defined
        *           by the input coords.
        */
       olc::vf2d
-      tileCoordsToPixels(float x, float y, bool center = false) const noexcept;
+      tileCoordsToPixels(float x, float y, const Cell& pos = Cell::TopLeft) const noexcept;
 
       /**
        * @brief - Convert from pixels coordinates to tile coords.
