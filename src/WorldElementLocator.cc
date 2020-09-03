@@ -79,6 +79,12 @@ namespace new_frontiers {
     int x1 = static_cast<int>(x + d * xDir);
     int y1 = static_cast<int>(y + d * yDir);
 
+    log(
+      "Requested s(" + std::to_string(x0) + "x" + std::to_string(y0) +
+      ") to e(" + std::to_string(x1) + "x" + std::to_string(y1) + ")",
+      utils::Level::Verbose
+    );
+
     bool obstruction = false;
 
     // First, handle cases where the line is
@@ -86,6 +92,7 @@ namespace new_frontiers {
     if (x0 == x1 && y0 == y1) {
       // Line in a single cell: not possible
       // to be obstructed ever.
+      log("Line is a single point at " + std::to_string(x0) + "x" + std::to_string(y0) + ", obstruction never reported", utils::Level::Verbose);
       return false;
     }
 
@@ -96,10 +103,16 @@ namespace new_frontiers {
 
       while (!obstruction && sY <= maxY) {
         obstruction = (sY != y0) && (m_solidIDs.count(sY * m_w + x0) > 0);
+
+        log(
+          "Check v at " + std::to_string(x0) + "x" + std::to_string(sY) +
+          ": " + std::to_string(m_solidIDs.count(sY * m_w + x0)) +
+          " o: " + std::to_string(obstruction),
+          utils::Level::Verbose
+        );
+
         ++sY;
       }
-
-      log("Line is vertical at " + std::to_string(x0) + ", obstruction reached " + std::to_string(sY) + " (t: " + std::to_string(obstruction) + ")", utils::Level::Verbose);
 
       return obstruction;
     }
@@ -111,10 +124,16 @@ namespace new_frontiers {
 
       while (!obstruction && sX <= maxX) {
         obstruction = (sX != x0) && (m_solidIDs.count(y0 * m_w + sX) > 0);
+
+        log(
+          "Check h at " + std::to_string(sX) + "x" + std::to_string(y0) +
+          ": " + std::to_string(m_solidIDs.count(y0 * m_w + sX)) +
+          " o: " + std::to_string(obstruction),
+          utils::Level::Verbose
+        );
+
         ++sX;
       }
-
-      log("Line is horizontal at " + std::to_string(y0) + ", obstruction reached " + std::to_string(sX) + " (t: " + std::to_string(obstruction) + ")", utils::Level::Verbose);
 
       return obstruction;
     }
@@ -144,13 +163,17 @@ namespace new_frontiers {
     oX = x0;
     oY = y0;
 
+    int oct = 0;
+
     if (dx > 0) {
       if (dy > 0) {
         if (dx >= dy) {
           // Vector close to the horizontal (1st octant).
           // Canonical case, nothing to change from the
           // default settings.
-        } else {
+          oct = 1;
+        }
+        else {
           // Vector close to the vertical (2nd octant).
           swap(x0, y0);
           swap(x1, y1);
@@ -158,13 +181,25 @@ namespace new_frontiers {
           swap(oX, oY);
 
           swap(dx, dy);
+          oct = 2;
         }
-      } else {
+      }
+      else {
         if (dx >= -dy) {
           // Vector close to the horizontal (8th octant).
-          swap(y0, y1);
+          // TODO: This would seem to indicate that when
+          // we're doing `dx/y *= -1` it is not needed to
+          // to `swap(x/y, x/y1)` on top of it ?
+          // But maybe it makes sense to change it all to
+          // have some sort of traversal of the path with
+          // a delta and cast at regular interval to see
+          // how it behaves.
+          // Would probably give better results anyway.
+          // swap(y0, y1);
           dy *= -1;
-        } else {
+          oct = 8;
+        }
+        else {
           // Vector close to the vertical (7th octant).
           swap(x0, y0);
           swap(x1, y1);
@@ -176,9 +211,11 @@ namespace new_frontiers {
           swap(x0, x1);
           dx *= -1;
           o = GT;
+          oct = 7;
         }
       }
-    } else {
+    }
+    else {
       if (dy > 0) {
         if (-dx >= dy) {
           // Vector close to the horizontal (4th octant).
@@ -186,22 +223,28 @@ namespace new_frontiers {
 
           dy *= -1;
           o = GTE;
-        } else {
+          oct = 4;
+        }
+        else {
           // Vector close to the vertical (3rd octant).
           swap(x0, x1);
 
           swap(dx, dy);
           dx *= -1;
           o = LTE;
+          oct = 3;
         }
-      } else {
+      }
+      else {
         if (dx <= dy) {
           // Vector close to the horizontal (5th octant).
           swap(x0, x1);
 
           swap(y0, y1);
           o = GTE;
-        } else {
+          oct = 5;
+        }
+        else {
           // Vector close to the vertical (6th octant).
           swap(x0, x1);
 
@@ -209,9 +252,17 @@ namespace new_frontiers {
           o = GTE;
 
           swap(dx, dy);
+          oct = 6;
         }
       }
     }
+
+    // TODO: This fails miserably.
+    // Attempt o(0.551082x2.771852) to t(1.677884x1.108787)
+    // Requested s(0x2) to e(1x1)
+    // Analysis oct8 s(0x1) to e(1x2)
+    // Check at 0x1: 0 o: 0
+    // Check e at 1x2: 0 o: 0
 
     sX = x0; sY = y0;
     eX = x1; eY = y1;
@@ -222,7 +273,8 @@ namespace new_frontiers {
     dy *= 2;
 
     log(
-      "Analysis s(" + std::to_string(x0) + "x" + std::to_string(y0) +
+      "Analysis oct" + std::to_string(oct) +
+      " s(" + std::to_string(x0) + "x" + std::to_string(y0) +
       ") to e(" + std::to_string(x1) + "x" + std::to_string(y1) + ")",
       utils::Level::Verbose
     );
@@ -233,8 +285,7 @@ namespace new_frontiers {
       log(
         "Check at " + std::to_string(sX) + "x" + std::to_string(sY) +
         ": " + std::to_string(m_solidIDs.count(sY * m_w + sX)) +
-        " (dx: " + std::to_string(dx) + ", dy: " + std::to_string(dy) +
-        " err: " + std::to_string(err) + ", o: " + std::to_string(o) + ")",
+        " o: " + std::to_string(m_solidIDs.count(sY * m_w + sX) > 0),
         utils::Level::Verbose
       );
 
@@ -257,6 +308,13 @@ namespace new_frontiers {
     if (obstruction) {
       return true;
     }
+
+    log(
+      "Check e at " + std::to_string(eX) + "x" + std::to_string(eY) +
+      ": " + std::to_string(m_solidIDs.count(sY * m_w + sX)) +
+      " o: " + std::to_string(m_solidIDs.count(eY * m_w + eX) > 0),
+      utils::Level::Verbose
+    );
 
     // The algorithm does not check the last
     // pixel so we finally return the result

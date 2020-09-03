@@ -148,9 +148,7 @@ namespace new_frontiers {
       se->step(si);
     }
 
-    // Register entities that have been spawned. We
-    // need to make sure that they're spawned within
-    // the world's boundaries.
+    // Register entities that have been spawned.
     m_entities.insert(m_entities.end(), si.eSpawned.cbegin(), si.eSpawned.cend());
 
     // Make entities evolve.
