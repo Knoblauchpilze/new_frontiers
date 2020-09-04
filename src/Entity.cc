@@ -52,6 +52,16 @@ namespace new_frontiers {
   }
 
   void
+  Entity::pause(const TimeStamp& /*t*/) {
+    // TODO: Handle this.
+  }
+
+  void
+  Entity::resume(const TimeStamp& /*t*/) {
+    // TODO: Handle this.
+  }
+
+  void
   Entity::choosePath(const StepInfo& info) {
     // We always start from the current position.
     m_path.xO = m_tile.x;

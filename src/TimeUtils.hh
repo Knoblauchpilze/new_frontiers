@@ -20,6 +20,12 @@ namespace new_frontiers {
   using Duration = std::chrono::system_clock::duration;
 
   /**
+   * @brief - Convenience define to represent a single
+   *          millisecond.
+   */
+  using Milliseconds = std::chrono::milliseconds;
+
+  /**
    * @brief - Used to retrieve the timestamp as of now.
    * @return - a timepoint at the moment of the call to
    *           this function.
@@ -38,13 +44,26 @@ namespace new_frontiers {
   toMilliseconds(int ms) noexcept;
 
   /**
-   * @brief - Converts a timestamp to a human-readable
+   * @brief - Converts a timestamp to a human readable
    *          string.
    * @param t - the time to convert.
    * @return - a string representing this time.
    */
   std::string
   timeToString(const TimeStamp& t) noexcept;
+
+  /**
+   * @brief - Converts the duration to a human readable
+   *          string expressed in milliseconds.
+   * @param d - the duration to convert to string. Be
+   *            aware that it should not be 'too far'
+   *            from one millisecond in order to get
+   *            a display that is not a huge batch of
+   *            numbers.
+   * @return - the corresponding string.
+   */
+  std::string
+  durationToString(const Duration& d) noexcept;
 
   /**
    * @brief - Return the difference in milliseconds between

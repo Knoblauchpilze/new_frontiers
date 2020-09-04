@@ -17,4 +17,14 @@ namespace new_frontiers {
     return Entity::step(info);
   }
 
+  void
+  HostileMob::pause(const TimeStamp& /*t*/) {
+    // TODO: Handle this.
+  }
+
+  void
+  HostileMob::resume(const TimeStamp& /*t*/) {
+    // TODO: Handle this.
+  }
+
 }

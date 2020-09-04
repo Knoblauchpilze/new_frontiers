@@ -74,4 +74,14 @@ namespace new_frontiers {
     return moved;
   }
 
+  void
+  Player::pause(const TimeStamp& /*t*/) {
+    // TODO: Handle this.
+  }
+
+  void
+  Player::resume(const TimeStamp& /*t*/) {
+    // TODO: Handle this.
+  }
+
 }

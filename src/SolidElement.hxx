@@ -17,6 +17,18 @@ namespace new_frontiers {
     return false;
   }
 
+  inline
+  void
+  SolidElement::pause(const TimeStamp& /*t*/) {
+    // Nothing to do.
+  }
+
+  inline
+  void
+  SolidElement::resume(const TimeStamp& /*t*/) {
+    // Nothing to do.
+  }
+
 }
 
 #endif    /* SOLID_ELEMENT_HXX */

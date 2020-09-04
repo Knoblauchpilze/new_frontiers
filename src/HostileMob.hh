@@ -24,8 +24,26 @@ namespace new_frontiers {
        * @return - `true` if the entity has moved (and thus should
        *           be repainted).
        */
-      virtual bool
-      step(StepInfo& info);
+      bool
+      step(StepInfo& info) override;
+
+      /**
+       * @brief - Implementation of the interface method to pause
+       *          the internal processes for this mob. It mostly
+       *          include the VFX spawning routine.
+       * @param t - the timestamp at which the pause occur.
+       */
+      void
+      pause(const TimeStamp& t) override;
+
+      /**
+       * @brief - Implementation of the interface method to resume
+       *          the internal processes for this mob. We will be
+       *          resuming the VFX spawning routine.
+       * @param t - the timestamp at which the resume occur.
+       */
+      void
+      resume(const TimeStamp& t) override;
 
     public:
 
