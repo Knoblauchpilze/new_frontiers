@@ -26,6 +26,8 @@ namespace new_frontiers {
   Player::pause(const TimeStamp& t) {
     // In case the player has an effect applied, save
     // the remaining duration for later use.
+    m_remaining = Duration::zero();
+
     if (m_state.glowing || m_state.exhausted) {
       m_remaining = t - m_origin;
     }

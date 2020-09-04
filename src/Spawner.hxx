@@ -31,6 +31,8 @@ namespace new_frontiers {
   Spawner::pause(const TimeStamp& t) {
     // Only save something if the spawner is not
     // depleted already.
+    m_passed = Duration::zero();
+
     if (!depleted()) {
       m_passed = t - m_last;
     }
