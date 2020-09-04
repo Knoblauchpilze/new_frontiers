@@ -52,13 +52,38 @@ namespace new_frontiers {
   }
 
   void
-  Entity::pause(const TimeStamp& /*t*/) {
-    // TODO: Handle this.
+  Entity::pause(const TimeStamp& t) {
+    // We need to make sure that the path can be
+    // continued in good conditions after pausing
+    // the simulation. This means that we want to
+    // restore the percentage of progression as
+    // it is at the moment of the pause.
+    // Of course it only applies in case we have
+    // a path.
+    m_savedPerc = -1.0f;
+
+    if (m_hasPath) {
+      Duration total = m_path.end - m_path.start;
+      Duration current = t - m_path.start;
+
+      // TODO: Handle compute progression.
+
+      log("Progression between " + timeToString(m_path.start) + " and " + timeToString(m_path.end) + " at " + timeToString(t) + " is " + std::to_string(m_savedPerc));
+    }
   }
 
   void
-  Entity::resume(const TimeStamp& /*t*/) {
-    // TODO: Handle this.
+  Entity::resume(const TimeStamp& t) {
+    // In case there's something to resume.
+    if (m_savedPerc >= 0.0f) {
+      // TODO: Restore the progression.
+      Duration total = m_path.end - m_path.start;
+      Duration current = t - m_path.start;
+
+      float perc = 0.0f;
+
+      log("Progression between " + timeToString(m_path.start) + " and " + timeToString(m_path.end) + " at " + timeToString(t) + " is " + std::to_string(perc));
+    }
   }
 
   void

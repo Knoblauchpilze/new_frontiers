@@ -53,6 +53,8 @@ namespace new_frontiers {
       false  // Exhausted.
     },
 
+    m_savedPerc(-1.0f),
+
     m_cPoints()
   {
     // Assign the path with initial position

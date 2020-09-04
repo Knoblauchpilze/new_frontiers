@@ -226,6 +226,15 @@ namespace new_frontiers {
        */
       State m_state;
 
+      /**
+       * @brief - Save of the progression percentage reached
+       *          on the path for this entity in case of a
+       *          pause event.
+       *          Allows to restore the progression when the
+       *          simulation is resumed.
+       */
+      float m_savedPerc;
+
     public:
       std::vector<float> m_cPoints;
   };
