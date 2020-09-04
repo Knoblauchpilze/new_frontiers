@@ -28,16 +28,6 @@ namespace new_frontiers {
     return true;
   }
 
-  void
-  Spawner::pause(const TimeStamp& /*t*/) {
-    // TODO: Handle this.
-  }
-
-  void
-  Spawner::resume(const TimeStamp& /*t*/) {
-    // TODO: Handle this.
-  }
-
   EntityShPtr
   Spawner::spawn(StepInfo& info) noexcept {
     EntityTile e;

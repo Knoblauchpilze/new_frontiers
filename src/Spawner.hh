@@ -145,6 +145,15 @@ namespace new_frontiers {
        *          enough from the spawner.
        */
       int m_threshold;
+
+      /**
+       * @brief - Holds the remaining duration before a spawn
+       *          is allowed for this spawner in case a pause
+       *          event occurs. Note that in case the spawner
+       *          is not allowed to spawn anything anymore it
+       *          won't contain anything.
+       */
+      Duration m_passed;
   };
 
   using SpawnerShPtr = std::shared_ptr<Spawner>;

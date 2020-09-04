@@ -14,15 +14,37 @@ namespace new_frontiers {
     m_mob(mob),
     m_mobID(id),
 
-    m_toSpawn(1),
+    m_toSpawn(-1),
     m_spawned(0),
 
     m_interval(toMilliseconds(1000)),
     m_last(now() - m_interval),
 
     m_radius(3.0f),
-    m_threshold(1)
+    m_threshold(1),
+
+    m_passed()
   {}
+
+  inline
+  void
+  Spawner::pause(const TimeStamp& t) {
+    // Only save something if the spawner is not
+    // depleted already.
+    if (!depleted()) {
+      m_passed = t - m_last;
+    }
+  }
+
+  inline
+  void
+  Spawner::resume(const TimeStamp& t) {
+    // In case the duration saved is not null we
+    // need to restore it.
+    if (m_passed != Duration::zero()) {
+      m_last = t - m_passed;
+    }
+  }
 
   inline
   bool
