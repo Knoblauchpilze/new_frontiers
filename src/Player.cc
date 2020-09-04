@@ -61,7 +61,7 @@ namespace new_frontiers {
       m_state.glowing = false;
       m_state.exhausted = true;
       m_origin = info.moment;
-      log("Player is now exhausted (and no more glowing");
+      log("Player is now exhausted (and no more glowing)");
     }
 
     // Update the sprinting status.
@@ -72,16 +72,6 @@ namespace new_frontiers {
     }
 
     return moved;
-  }
-
-  void
-  Player::pause(const TimeStamp& /*t*/) {
-    // TODO: Handle this.
-  }
-
-  void
-  Player::resume(const TimeStamp& /*t*/) {
-    // TODO: Handle this.
   }
 
 }
