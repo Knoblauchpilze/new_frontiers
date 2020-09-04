@@ -58,6 +58,15 @@ namespace new_frontiers {
        *          emitted a VFX.
        */
       TimeStamp m_last;
+
+      /**
+       * @brief - Hold the duration that has passed since the last
+       *          time a vfx was emitted in case a pause event is
+       *          received.
+       *          Used to be able to restore the vfx production as
+       *          if nothins happened.
+       */
+      Duration m_passed;
   };
 
   using HostileMobShPtr = std::shared_ptr<HostileMob>;
