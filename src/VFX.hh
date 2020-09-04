@@ -25,8 +25,28 @@ namespace new_frontiers {
        *               the world's surroundings.
        * @return - `true` if this effect should be deleted.
        */
-      virtual bool
-      step(StepInfo& info);
+      bool
+      step(StepInfo& info) override;
+
+      /**
+       * @brief - Implementation of the interface method to
+       *          pause the internal processes for this VFX.
+       *          It mostly involves pausing the decaying if
+       *          it is relevant.
+       * @param t - the timestamp at which the pause occur.
+       */
+      void
+      pause(const TimeStamp& t) override;
+
+      /**
+       * @brief - Implementation of the interface method to
+       *          resume the internal processes for this VFX.
+       *          We will resume the decaying operations if
+       *          need be.
+       * @param t - the timestamp at which the resume occur.
+       */
+      void
+      resume(const TimeStamp& t) override;
 
     private:
 
@@ -64,6 +84,15 @@ namespace new_frontiers {
        *          reached in the simulation.
        */
       TimeStamp m_phase;
+
+      /**
+       * @brief - This duration is used in the case of a `pause`
+       *          operation to save the time that was left on
+       *          the current decay operation. It will be used
+       *          to restore the same amount of decaying time
+       *          when the effect is resumed.
+       */
+      Duration m_decayTimeLeft;
   };
 
   using VFXShPtr = std::shared_ptr<VFX>;

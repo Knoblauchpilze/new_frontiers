@@ -205,14 +205,42 @@ namespace new_frontiers {
   World::pause(float /*tDelta*/,
                const std::vector<bool>& /*controls*/)
   {
-    // TODO: Handle this.
+    // Call the pause method on each world element. The
+    // pause method is invoked at this moment in time.
+    TimeStamp moment = now();
+
+    for (unsigned id = 0u ; id < m_tiles.size() ; ++id) {
+      m_tiles[id]->pause(moment);
+    }
+
+    for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
+      m_entities[id]->pause(moment);
+    }
+
+    for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
+      m_vfx[id]->pause(moment);
+    }
   }
 
   void
   World::resume(float /*tDelta*/,
                 const std::vector<bool>& /*controls*/)
   {
-    // TODO: Handle this.
+    // Call the resume method on each world element. The
+    // pause method is invoked at this moment in time.
+    TimeStamp moment = now();
+
+    for (unsigned id = 0u ; id < m_tiles.size() ; ++id) {
+      m_tiles[id]->resume(moment);
+    }
+
+    for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
+      m_entities[id]->resume(moment);
+    }
+
+    for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
+      m_vfx[id]->resume(moment);
+    }
   }
 
   void

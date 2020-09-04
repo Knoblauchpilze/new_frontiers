@@ -17,17 +17,6 @@ namespace new_frontiers {
        */
       Teleporter(const SolidTile& tile);
 
-      /**
-       * @brief - Implementation of the interface method to step
-       *          the teleporter ahead in time. Such an object
-       *          transports an entity from a position to another
-       *          after a certain period of time.
-       * @param info - the needed information about the world.
-       * @return - `true` if an entity has been spawned.
-       */
-      // bool
-      // step(StepInfo& info) override;
-
   };
 
   using TeleporterShPtr = std::shared_ptr<Teleporter>;

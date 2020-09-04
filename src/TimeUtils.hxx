@@ -17,7 +17,7 @@ namespace new_frontiers {
   inline
   Duration
   toMilliseconds(int ms) noexcept {
-    return std::chrono::milliseconds(ms);
+    return Milliseconds(ms);
   }
 
   inline
@@ -30,7 +30,7 @@ namespace new_frontiers {
     std::time_t tt = std::chrono::system_clock::to_time_t(t);
     std::tm tm = *std::gmtime(&tt); //GMT (UTC)
 
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t.time_since_epoch()) -
+    auto ms = std::chrono::duration_cast<Milliseconds>(t.time_since_epoch()) -
               std::chrono::duration_cast<std::chrono::seconds>(t.time_since_epoch());
 
     std::stringstream ss;
@@ -41,10 +41,21 @@ namespace new_frontiers {
   }
 
   inline
+  std::string
+  durationToString(const Duration& d) noexcept {
+    // See here:
+    // https://stackoverflow.com/questions/22590821/convert-stdduration-to-human-readable-time
+    auto s = std::chrono::duration_cast<Milliseconds>(d);
+    int ms = s.count();
+
+    return std::to_string(ms) + "ms";
+  }
+
+  inline
   float
   diffInMs(const TimeStamp& start, const TimeStamp& end) noexcept {
     auto elapsed = end - start;
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+    auto ms = std::chrono::duration_cast<Milliseconds>(elapsed);
 
     return ms.count();
   }

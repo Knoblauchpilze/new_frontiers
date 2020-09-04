@@ -41,6 +41,25 @@ namespace new_frontiers {
       virtual bool
       step(StepInfo& info) = 0;
 
+      /**
+       * @brief - Interface method allowing to pause this world
+       *          element: all internal behavior that depend on
+       *          time should be stopped so that they can be
+       *          later resumed.
+       * @param t - the timestamp at which the pause occur.
+       */
+      virtual void
+      pause(const TimeStamp& t) = 0;
+
+      /**
+       * @brief - Opposite operation to the `pause`, this method
+       *          is called to indicate that internal processes
+       *          for this world element can be resumed.
+       * @param t - the timestamp at which the resume occur.
+       */
+      virtual void
+      resume(const TimeStamp& t) = 0;
+
     protected:
 
       /**

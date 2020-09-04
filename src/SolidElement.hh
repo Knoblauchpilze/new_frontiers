@@ -18,6 +18,24 @@ namespace new_frontiers {
       bool
       step(StepInfo& info) override;
 
+      /**
+       * @brief - Base implementation for an element which
+       *          does nothing: there are no internal ops
+       *          to pause.
+       * @param t - the timestamp at which the pause occur.
+       */
+      void
+      pause(const TimeStamp& t) override;
+
+      /**
+       * @brief - Base implementation for an element which
+       *          does nothing: there are no internal ops
+       *          to resume.
+       * @param t - the timestamp at which the resume occur.
+       */
+      void
+      resume(const TimeStamp& t) override;
+
     protected:
 
       /**

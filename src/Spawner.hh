@@ -38,6 +38,25 @@ namespace new_frontiers {
       bool
       step(StepInfo& info) override;
 
+      /**
+       * @brief - Implementation of the interface method to pause
+       *          the internal processes for this spawner. It is
+       *          mostly  preventing desynchronization of spawning
+       *          routines.
+       * @param t - the timestamp at which the pause occur.
+       */
+      void
+      pause(const TimeStamp& t) override;
+
+      /**
+       * @brief - Implementation of the interface method to resume
+       *          the internal processes for this spawner. It is
+       *          mostly composed of resuming the spawning routine.
+       * @param t - the timestamp at which the resume occur.
+       */
+      void
+      resume(const TimeStamp& t) override;
+
     private:
 
       /**
