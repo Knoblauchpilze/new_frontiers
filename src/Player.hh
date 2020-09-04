@@ -79,6 +79,14 @@ namespace new_frontiers {
        *          a recovery or a sprinting phase.
        */
       TimeStamp m_origin;
+
+      /**
+       * @brief - A duration that represents the remaining
+       *          duration for any effect that this player
+       *          might be submitted to when a pause event
+       *          occurs.
+       */
+      Duration m_remaining;
   };
 
   using PlayerShPtr = std::shared_ptr<Player>;
