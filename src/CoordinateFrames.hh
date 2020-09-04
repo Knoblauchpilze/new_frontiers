@@ -31,9 +31,14 @@ namespace new_frontiers {
    *          center, etc. of the cell.
    */
   enum class Cell {
-    TopLeft,
-    Center,
-    CenterBottom
+    TopLeft,      //< The input position is assumed to refer
+                  //< to the top left corner of the tile.
+    Center,       //< The input position refers to the center
+                  //< of the tile.
+    CenterBottom, //< The input position refers to the bottom
+                  //< center of the tile.
+    CenterLeft    //< The input position refers to the center
+                  //< of the left side of the tile.
   };
 
   class CoordinateFrames: public utils::CoreObject {

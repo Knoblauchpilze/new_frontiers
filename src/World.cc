@@ -261,11 +261,14 @@ namespace new_frontiers {
     while (!in.eof() && success) {
       in >> section;
 
-      log("Reading section \"" + section + "\" from \"" + file + "\"");
+      // Terminate reading if needed.
       if (in.eof()) {
         break;
       }
-      else if (section == "entrances") {
+
+      log("Reading section \"" + section + "\" from \"" + file + "\"");
+
+      if (section == "entrances") {
         // Starting point of the level.
         loadEntrances(in);
       }

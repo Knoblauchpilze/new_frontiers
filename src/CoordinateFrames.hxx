@@ -90,6 +90,9 @@ namespace new_frontiers {
         tp.x += (m_tScaled.x / 2.0f);
         tp.y += 2.0f * m_tScaled.y;
         break;
+      case Cell::CenterLeft:
+        tp.y -= m_tScaled.y;
+        break;
       case Cell::TopLeft:
       default:
         break;

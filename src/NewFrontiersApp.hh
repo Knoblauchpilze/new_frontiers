@@ -198,12 +198,16 @@ namespace new_frontiers {
        * @param y - the coordinate along the `y` axis for this sprite.
        * @param alias - the index of the tile in the tile atlas.
        * @param id - the index of the variation of this sprite.
+       * @param location - defines which part of the cell is described
+       *                   by the input `(x, y)` coordinates. It allows
+       *                   to precisely define where the sprite should
+       *                   be displayed in the cell.
        * @param alpha - a value of `255` to indicate that the sprite
        *                should be completely opaque and `0` for fully
        *                transparent.
        */
       void
-      drawSprite(float x, float y, int alias, int id, int alpha = ALPHA_OPAQUE);
+      drawSprite(float x, float y, int alias, int id, const Cell& location = Cell::TopLeft, int alpha = ALPHA_OPAQUE);
 
       /**
        * @brief - Used to perform the necessary update based on
