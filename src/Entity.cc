@@ -38,7 +38,12 @@ namespace new_frontiers {
 
     // Move along the path.
     bool moved = false;
-    if (m_hasPath && true) {
+// # define NO_MOTION
+# ifdef NO_MOTION
+    if (m_hasPath && false) {
+# else
+    if (m_hasPath) {
+# endif
       m_path.animate(info.moment, m_tile.x, m_tile.y);
       moved = true;
     }

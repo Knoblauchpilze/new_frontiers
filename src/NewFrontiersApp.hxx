@@ -171,12 +171,12 @@ namespace new_frontiers {
 
   inline
   void
-  NewFrontiersApp::drawSprite(float x, float y, int alias, int id, int alpha) {
+  NewFrontiersApp::drawSprite(float x, float y, int alias, int id, const Cell& location, int alpha) {
     const SpriteAlias& sa = m_aliases[alias];
     const SpritesPack& sp = m_sprites[sa.type];
 
     DrawPartialDecal(
-      m_cf.tileCoordsToPixels(x, y),
+      m_cf.tileCoordsToPixels(x, y, location),
       sp.res,
       spriteCoordsToPixels(sa.alias, sp.layout, id),
       m_ss,
