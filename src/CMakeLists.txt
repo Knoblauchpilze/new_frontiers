@@ -7,21 +7,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set (CMAKE_VERBOSE_MAKEFILE ON)
 set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+add_subdirectory(
+  ${CMAKE_CURRENT_SOURCE_DIR}/world
+  )
+
 set (SOURCES
+  ${SOURCES}
   olcEngine.cc
   NewFrontiersApp.cc
-  World.cc
-  RNG.cc
-  WorldIterators.cc
   CoordinateFrames.cc
-  SolidElement.cc
-  Spawner.cc
-  Entity.cc
-  VFX.cc
-  Teleporter.cc
-  WorldElementLocator.cc
-  Player.cc
-  HostileMob.cc
   )
 
 add_library (new_frontiers_lib SHARED
@@ -41,4 +35,5 @@ target_link_libraries(new_frontiers_lib
 
 target_include_directories (new_frontiers_lib PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/world
   )
