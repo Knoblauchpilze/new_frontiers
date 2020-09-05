@@ -53,7 +53,7 @@ namespace new_frontiers {
       false  // Exhausted.
     },
 
-    m_savedPerc(-1.0f),
+    m_passed(),
 
     m_cPoints()
   {
@@ -67,6 +67,33 @@ namespace new_frontiers {
 
     m_path.start = now();
     m_path.end = now();
+  }
+
+  inline
+  void
+  Entity::pause(const TimeStamp& t) {
+    // We need to make sure that the path can be
+    // continued in good conditions after pausing
+    // the simulation. This means that we want to
+    // restore the percentage of progression as
+    // it is at the moment of the pause.
+    // Of course it only applies in case we have
+    // a path.
+    m_passed = Duration::zero();
+
+    if (m_hasPath) {
+      m_passed = t - m_path.start;
+    }
+  }
+
+  inline
+  void
+  Entity::resume(const TimeStamp& t) {
+    // In case there's something to resume.
+    if (m_passed != Duration::zero()) {
+      m_path.start = t - m_passed;
+      m_path.end = m_path.start + toMilliseconds(static_cast<int>(1000.0f * m_path.length() / m_speed));
+    }
   }
 
   inline
