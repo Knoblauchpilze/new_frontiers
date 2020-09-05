@@ -321,7 +321,7 @@ namespace new_frontiers {
        *          to traverse the elements defined in the world to
        *          display them.
        */
-      WorldIteratorShPtr m_wit;
+      IteratorShPtr m_wit;
 
       /**
        * @brief - Holds an object allowing to convert between the

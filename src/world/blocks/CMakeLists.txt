@@ -1,0 +1,8 @@
+
+set (SOURCES
+  ${SOURCES}
+  ${CMAKE_CURRENT_SOURCE_DIR}/Block.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/Spawner.cc
+  PARENT_SCOPE
+  )
+

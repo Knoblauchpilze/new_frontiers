@@ -1,6 +1,7 @@
 
 # include "NewFrontiersApp.hh"
 # include "utils.hh"
+# include "Controls.hh"
 
 namespace new_frontiers {
 
@@ -132,6 +133,12 @@ namespace new_frontiers {
       m_cf.translate(GetMousePos());
     }
 
+    // Detect clicks with the left mouse button to be
+    // selecting game elements.
+    if (GetMouse(0).bReleased) {
+      log("Should detect element");
+    }
+
     int scroll = GetMouseWheel();
     if (scroll > 0) {
       m_cf.zoom(Zoom::In, GetMousePos());
@@ -195,8 +202,8 @@ namespace new_frontiers {
     }
 
     // Draw solid tiles.
-    for (int id = 0 ; id < m_wit->solidTilesCount() ; ++id) {
-      SolidTile t = m_wit->solidTile(id);
+    for (int id = 0 ; id < m_wit->blocksCount() ; ++id) {
+      BlockTile t = m_wit->block(id);
       drawSprite(t.x, t.y, aliasOfSprite(t.type), t.id);
     }
 

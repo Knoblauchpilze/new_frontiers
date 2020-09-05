@@ -1,0 +1,9 @@
+
+set (SOURCES
+  ${SOURCES}
+  ${CMAKE_CURRENT_SOURCE_DIR}/Entity.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/HostileMob.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/Player.cc
+  PARENT_SCOPE
+  )
+
