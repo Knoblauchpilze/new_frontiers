@@ -7,6 +7,7 @@ namespace new_frontiers {
 
   inline
   Spawner::Spawner(const BlockTile& tile,
+                   float radius,
                    const tiles::Entity& mob,
                    int id):
     Block(tile, "spawner"),
@@ -14,50 +15,25 @@ namespace new_frontiers {
     m_mob(mob),
     m_mobID(id),
 
-    m_toSpawn(1),
-    m_spawned(0),
-
-    m_interval(toMilliseconds(1000)),
-    m_last(now() - m_interval),
-
-    m_radius(3.0f),
-    m_threshold(1),
-
-    m_passed()
+    m_radius(std::max(radius, 0.0f))
   {}
 
   inline
-  void
-  Spawner::pause(const TimeStamp& t) {
-    // Only save something if the spawner is not
-    // depleted already.
-    m_passed = Duration::zero();
-
-    if (!depleted()) {
-      m_passed = t - m_last;
-    }
-  }
-
-  inline
-  void
-  Spawner::resume(const TimeStamp& t) {
-    // In case the duration saved is not null we
-    // need to restore it.
-    if (m_passed != Duration::zero()) {
-      m_last = t - m_passed;
-    }
-  }
-
-  inline
   bool
-  Spawner::depleted() const noexcept {
-    return m_toSpawn == 0;
-  }
+  Spawner::step(StepInfo& info) {
+    // Check whether the spawner is allowed to spawn
+    // a new entity at this frame.
+    if (!canSpawn(info)) {
+      return false;
+    }
 
-  inline
-  bool
-  Spawner::canSpawn(const TimeStamp& moment) const noexcept {
-    return moment - m_interval >= m_last;
+    // Spawn a new entity and prepare it.
+    EntityShPtr ent = spawn(info);
+    preSpawn(info, ent);
+
+    info.eSpawned.push_back(ent);
+
+    return true;
   }
 
 }
