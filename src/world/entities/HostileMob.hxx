@@ -7,9 +7,9 @@ namespace new_frontiers {
 
   inline
   HostileMob::HostileMob(const EntityTile& tile):
-    Entity(tile, Smoke, 2, false),
+    Entity(tile),
 
-    m_vfxDelay(toMilliseconds(6000)),
+    m_vfxDelay(toMilliseconds(2000)),
     m_last(now()),
 
     m_passed()

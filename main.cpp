@@ -30,10 +30,6 @@
  *          Enemies would follow the same principle to get
  *          to the mother nest and attack it.
  */
-// TODO: Create a pheromone class: this class will be laid
-// out by entities when they move.
-// TODO: Create a base class for all entities that is able
-// to lay some pheromones.
 // TODO: This entity would have a base protected method to
 // select a path based on the amount of pheromone of a type
 // around the entity and go in this direction.

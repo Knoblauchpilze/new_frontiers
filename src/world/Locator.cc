@@ -38,7 +38,7 @@ namespace new_frontiers {
   }
 
   int
-  Locator::countEntities(const Mob& mob, float x, float y, float radius) const {
+  Locator::countEntities(const tiles::Entity& ent, float x, float y, float radius) const {
     int count = 0;
 
     // Traverse entities and search for `mob`s.
@@ -47,7 +47,7 @@ namespace new_frontiers {
     for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
       const EntityTile& et = m_entities[id]->getTile();
 
-      if (et.type == mob && d2(x, y, et.x, et.y) <= r2) {
+      if (et.type == ent && d2(x, y, et.x, et.y) <= r2) {
         ++count;
       }
     }

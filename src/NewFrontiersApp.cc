@@ -64,51 +64,51 @@ namespace new_frontiers {
     m_sprites[CursorID].res = new olc::Decal(spr);
 
     // Build the atlas.
-    int spritesCount = SpritesCount + MobsCount + EffectsCount;
+    int spritesCount = tiles::BlocksCount + tiles::EntitiesCount + tiles::EffectsCount;
     m_aliases.resize(spritesCount + 1);
 
-    m_aliases[aliasOfSprite(Empty)]         = SpriteAlias{SolidID, olc::vi2d(4, 2)};
-    m_aliases[aliasOfSprite(Wall)]          = SpriteAlias{SolidID, olc::vi2d(0, 0)};
-    m_aliases[aliasOfSprite(Door)]          = SpriteAlias{SolidID, olc::vi2d(0, 2)};
+    m_aliases[aliasOfBlock(tiles::Empty)]              = SpriteAlias{SolidID, olc::vi2d(4, 2)};
+    m_aliases[aliasOfBlock(tiles::Wall)]               = SpriteAlias{SolidID, olc::vi2d(0, 0)};
+    m_aliases[aliasOfBlock(tiles::Door)]               = SpriteAlias{SolidID, olc::vi2d(0, 2)};
 
-    m_aliases[aliasOfSprite(Portal)]        = SpriteAlias{PortalID, olc::vi2d(0, 0)};
+    m_aliases[aliasOfBlock(tiles::Portal)]             = SpriteAlias{PortalID, olc::vi2d(0, 0)};
 
-    m_aliases[aliasOfEntity(MarineKnight)]      = SpriteAlias{EntityID, olc::vi2d(0, 0)};
-    m_aliases[aliasOfEntity(Warrior)]           = SpriteAlias{EntityID, olc::vi2d(1, 0)};
-    m_aliases[aliasOfEntity(StoneGiant)]        = SpriteAlias{EntityID, olc::vi2d(2, 0)};
-    m_aliases[aliasOfEntity(Sorceress)]         = SpriteAlias{EntityID, olc::vi2d(3, 0)};
-    m_aliases[aliasOfEntity(Knight)]            = SpriteAlias{EntityID, olc::vi2d(4, 0)};
-    m_aliases[aliasOfEntity(GeneticExperiment)] = SpriteAlias{EntityID, olc::vi2d(5, 0)};
-    m_aliases[aliasOfEntity(Warlord)]           = SpriteAlias{EntityID, olc::vi2d(6, 0)};
-    m_aliases[aliasOfEntity(Vampire)]           = SpriteAlias{EntityID, olc::vi2d(7, 0)};
-    m_aliases[aliasOfEntity(Gecko)]             = SpriteAlias{EntityID, olc::vi2d(9, 0)};
-    m_aliases[aliasOfEntity(DarkAnubis)]        = SpriteAlias{EntityID, olc::vi2d(10, 0)};
-    m_aliases[aliasOfEntity(Cyclope)]           = SpriteAlias{EntityID, olc::vi2d(11, 0)};
-    m_aliases[aliasOfEntity(Fool)]              = SpriteAlias{EntityID, olc::vi2d(12, 0)};
-    m_aliases[aliasOfEntity(Beast)]             = SpriteAlias{EntityID, olc::vi2d(13, 0)};
-    m_aliases[aliasOfEntity(BlueAvenger)]       = SpriteAlias{EntityID, olc::vi2d(14, 0)};
-    m_aliases[aliasOfEntity(SoulEater)]         = SpriteAlias{EntityID, olc::vi2d(15, 0)};
-    m_aliases[aliasOfEntity(Valkyrie)]          = SpriteAlias{EntityID, olc::vi2d(0, 1)};
-    m_aliases[aliasOfEntity(Guardian)]          = SpriteAlias{EntityID, olc::vi2d(1, 1)};
-    m_aliases[aliasOfEntity(Blob)]              = SpriteAlias{EntityID, olc::vi2d(2, 1)};
-    m_aliases[aliasOfEntity(CosmicThreat)]      = SpriteAlias{EntityID, olc::vi2d(3, 1)};
-    m_aliases[aliasOfEntity(Gorgone)]           = SpriteAlias{EntityID, olc::vi2d(4, 1)};
-    m_aliases[aliasOfEntity(DemonBat)]          = SpriteAlias{EntityID, olc::vi2d(5, 1)};
-    m_aliases[aliasOfEntity(Griffin)]           = SpriteAlias{EntityID, olc::vi2d(6, 1)};
-    m_aliases[aliasOfEntity(Executioner)]       = SpriteAlias{EntityID, olc::vi2d(8, 1)};
-    m_aliases[aliasOfEntity(MindlessGolem)]     = SpriteAlias{EntityID, olc::vi2d(9, 1)};
-    m_aliases[aliasOfEntity(IncaOverlord)]      = SpriteAlias{EntityID, olc::vi2d(10, 1)};
-    m_aliases[aliasOfEntity(Hydra)]             = SpriteAlias{EntityID, olc::vi2d(11, 1)};
-    m_aliases[aliasOfEntity(Dragon)]            = SpriteAlias{EntityID, olc::vi2d(2, 2)};
-    m_aliases[aliasOfEntity(Sorcerer)]          = SpriteAlias{EntityID, olc::vi2d(13, 2)};
-    m_aliases[aliasOfEntity(Satyr)]             = SpriteAlias{EntityID, olc::vi2d(14, 2)};
-    m_aliases[aliasOfEntity(TwoHeadedWarrior)]  = SpriteAlias{EntityID, olc::vi2d(15, 2)};
-    m_aliases[aliasOfEntity(FireKnight)]        = SpriteAlias{EntityID, olc::vi2d(0, 3)};
+    m_aliases[aliasOfEntity(tiles::MarineKnight)]      = SpriteAlias{EntityID, olc::vi2d(0, 0)};
+    m_aliases[aliasOfEntity(tiles::Warrior)]           = SpriteAlias{EntityID, olc::vi2d(1, 0)};
+    m_aliases[aliasOfEntity(tiles::StoneGiant)]        = SpriteAlias{EntityID, olc::vi2d(2, 0)};
+    m_aliases[aliasOfEntity(tiles::Sorceress)]         = SpriteAlias{EntityID, olc::vi2d(3, 0)};
+    m_aliases[aliasOfEntity(tiles::Knight)]            = SpriteAlias{EntityID, olc::vi2d(4, 0)};
+    m_aliases[aliasOfEntity(tiles::GeneticExperiment)] = SpriteAlias{EntityID, olc::vi2d(5, 0)};
+    m_aliases[aliasOfEntity(tiles::Warlord)]           = SpriteAlias{EntityID, olc::vi2d(6, 0)};
+    m_aliases[aliasOfEntity(tiles::Vampire)]           = SpriteAlias{EntityID, olc::vi2d(7, 0)};
+    m_aliases[aliasOfEntity(tiles::Gecko)]             = SpriteAlias{EntityID, olc::vi2d(9, 0)};
+    m_aliases[aliasOfEntity(tiles::DarkAnubis)]        = SpriteAlias{EntityID, olc::vi2d(10, 0)};
+    m_aliases[aliasOfEntity(tiles::Cyclope)]           = SpriteAlias{EntityID, olc::vi2d(11, 0)};
+    m_aliases[aliasOfEntity(tiles::Fool)]              = SpriteAlias{EntityID, olc::vi2d(12, 0)};
+    m_aliases[aliasOfEntity(tiles::Beast)]             = SpriteAlias{EntityID, olc::vi2d(13, 0)};
+    m_aliases[aliasOfEntity(tiles::BlueAvenger)]       = SpriteAlias{EntityID, olc::vi2d(14, 0)};
+    m_aliases[aliasOfEntity(tiles::SoulEater)]         = SpriteAlias{EntityID, olc::vi2d(15, 0)};
+    m_aliases[aliasOfEntity(tiles::Valkyrie)]          = SpriteAlias{EntityID, olc::vi2d(0, 1)};
+    m_aliases[aliasOfEntity(tiles::Guardian)]          = SpriteAlias{EntityID, olc::vi2d(1, 1)};
+    m_aliases[aliasOfEntity(tiles::Blob)]              = SpriteAlias{EntityID, olc::vi2d(2, 1)};
+    m_aliases[aliasOfEntity(tiles::CosmicThreat)]      = SpriteAlias{EntityID, olc::vi2d(3, 1)};
+    m_aliases[aliasOfEntity(tiles::Gorgone)]           = SpriteAlias{EntityID, olc::vi2d(4, 1)};
+    m_aliases[aliasOfEntity(tiles::DemonBat)]          = SpriteAlias{EntityID, olc::vi2d(5, 1)};
+    m_aliases[aliasOfEntity(tiles::Griffin)]           = SpriteAlias{EntityID, olc::vi2d(6, 1)};
+    m_aliases[aliasOfEntity(tiles::Executioner)]       = SpriteAlias{EntityID, olc::vi2d(8, 1)};
+    m_aliases[aliasOfEntity(tiles::MindlessGolem)]     = SpriteAlias{EntityID, olc::vi2d(9, 1)};
+    m_aliases[aliasOfEntity(tiles::IncaOverlord)]      = SpriteAlias{EntityID, olc::vi2d(10, 1)};
+    m_aliases[aliasOfEntity(tiles::Hydra)]             = SpriteAlias{EntityID, olc::vi2d(11, 1)};
+    m_aliases[aliasOfEntity(tiles::Dragon)]            = SpriteAlias{EntityID, olc::vi2d(2, 2)};
+    m_aliases[aliasOfEntity(tiles::Sorcerer)]          = SpriteAlias{EntityID, olc::vi2d(13, 2)};
+    m_aliases[aliasOfEntity(tiles::Satyr)]             = SpriteAlias{EntityID, olc::vi2d(14, 2)};
+    m_aliases[aliasOfEntity(tiles::TwoHeadedWarrior)]  = SpriteAlias{EntityID, olc::vi2d(15, 2)};
+    m_aliases[aliasOfEntity(tiles::FireKnight)]        = SpriteAlias{EntityID, olc::vi2d(0, 3)};
 
-    m_aliases[aliasOfEffect(Fire)]      = SpriteAlias{VFXID, olc::vi2d(0, 0)};
-    m_aliases[aliasOfEffect(Lightning)] = SpriteAlias{VFXID, olc::vi2d(3, 0)};
-    m_aliases[aliasOfEffect(Poison)]    = SpriteAlias{VFXID, olc::vi2d(6, 0)};
-    m_aliases[aliasOfEffect(Smoke)]     = SpriteAlias{VFXID, olc::vi2d(9, 0)};
+    m_aliases[aliasOfEffect(tiles::Fire)]      = SpriteAlias{VFXID, olc::vi2d(0, 0)};
+    m_aliases[aliasOfEffect(tiles::Lightning)] = SpriteAlias{VFXID, olc::vi2d(3, 0)};
+    m_aliases[aliasOfEffect(tiles::Poison)]    = SpriteAlias{VFXID, olc::vi2d(6, 0)};
+    m_aliases[aliasOfEffect(tiles::Smoke)]     = SpriteAlias{VFXID, olc::vi2d(9, 0)};
 
     m_aliases[spritesCount] = SpriteAlias{CursorID, olc::vi2d(0, 0)};
   }
@@ -197,14 +197,14 @@ namespace new_frontiers {
     // Draw ground.
     for (int y = 0 ; y < m_wit->h() ; ++y) {
       for (int x = 0 ; x < m_wit->w() ; ++x) {
-          drawSprite(x, y, Sprite::Empty, 0);
+          drawSprite(x, y, tiles::Empty, 0);
       }
     }
 
     // Draw solid tiles.
     for (int id = 0 ; id < m_wit->blocksCount() ; ++id) {
       BlockTile t = m_wit->block(id);
-      drawSprite(t.x, t.y, aliasOfSprite(t.type), t.id);
+      drawSprite(t.x, t.y, aliasOfBlock(t.type), t.id);
     }
 
     // Draw entities.
@@ -212,10 +212,10 @@ namespace new_frontiers {
       EntityDesc t = m_wit->entity(id);
 
       if (t.state.glowing) {
-        drawSprite(t.tile.x, t.tile.y, aliasOfEffect(Fire), 2, Cell::CenterLeft, ALPHA_SEMI_OPAQUE);
+        drawSprite(t.tile.x, t.tile.y, aliasOfEffect(tiles::Fire), 2, Cell::CenterLeft, ALPHA_SEMI_OPAQUE);
       }
       if (t.state.exhausted) {
-        drawSprite(t.tile.x, t.tile.y, aliasOfEffect(Poison), 2, Cell::CenterLeft, ALPHA_SEMI_OPAQUE);
+        drawSprite(t.tile.x, t.tile.y, aliasOfEffect(tiles::Poison), 2, Cell::CenterLeft, ALPHA_SEMI_OPAQUE);
       }
 
       drawSprite(t.tile.x, t.tile.y, aliasOfEntity(t.tile.type), t.tile.id, Cell::CenterLeft);

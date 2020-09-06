@@ -7,7 +7,7 @@ namespace new_frontiers {
 
   inline
   Block::Block(const BlockTile& tile, const std::string& name):
-    Element<Sprite>(tile, name)
+    Element(tile, name)
   {}
 
   inline

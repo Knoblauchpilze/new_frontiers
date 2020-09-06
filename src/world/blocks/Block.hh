@@ -8,7 +8,7 @@
 
 namespace new_frontiers {
 
-  class Block: public Element<Sprite> {
+  class Block: public Element<tiles::Block> {
     public:
 
       /**

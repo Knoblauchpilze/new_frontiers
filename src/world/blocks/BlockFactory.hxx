@@ -7,26 +7,44 @@ namespace new_frontiers {
 
   inline
   BlockShPtr
-  BlockFactory::newPortal(const BlockTile& tile) noexcept {
-    return std::shared_ptr<Block>(new Block(tile, "portal"));
+  BlockFactory::newPortal(int id, float x, float y) noexcept {
+    return newBlock(tiles::Portal, id, x, y, "portal");
   }
 
   inline
   BlockShPtr
-  BlockFactory::newEntrance(const BlockTile& tile) noexcept {
-    return newPortal(tile);
+  BlockFactory::newEntrance(int id, float x, float y) noexcept {
+    return newPortal(id, x, y);
   }
 
   inline
   BlockShPtr
-  BlockFactory::newExit(const BlockTile& tile) noexcept {
-    return newPortal(tile);
+  BlockFactory::newExit(int id, float x, float y) noexcept {
+    return newPortal(id, x, y);
   }
 
   inline
   BlockShPtr
-  BlockFactory::newWall(const BlockTile& tile) noexcept {
-    return std::shared_ptr<Block>(new Block(tile, "wall"));
+  BlockFactory::newWall(int id, float x, float y) noexcept {
+    return newBlock(tiles::Wall, id, x, y, "wall");
+  }
+
+  inline
+  BlockShPtr
+  BlockFactory::newSpawner(int id, float x, float y, const tiles::Entity& ent) noexcept {
+    return std::make_shared<Spawner>(newTile(tiles::Portal, id, x, y), ent);
+  }
+
+  inline
+  BlockTile
+  BlockFactory::newTile(const tiles::Block& b, int id, float x, float y) noexcept {
+    return BlockTile{x, y, b, id};
+  }
+
+  inline
+  BlockShPtr
+  BlockFactory::newBlock(const tiles::Block& block, int id, float x, float y, const std::string& name) noexcept {
+    return std::shared_ptr<Block>(new Block(newTile(block, id, x, y), name));
   }
 
 }
