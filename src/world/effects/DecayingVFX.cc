@@ -1,24 +1,24 @@
 
-# include "VFX.hh"
+# include "DecayingVFX.hh"
 
 namespace new_frontiers {
 
-  bool
-  VFX::step(StepInfo& info) {
+  void
+  DecayingVFX::update(StepInfo& info) noexcept {
     // Check whether the vfx should decay in its
     // next form.
     if (info.moment < m_next) {
-      return false;
+      return;
     }
 
-    // If we reached the last transition, it's
-    // time for this effect to disappear.
+    // If we reached the last transition, we are
+    // not able to move to the next state.
     if (m_transition >= m_phases.size()) {
-      return true;
+      return;
     }
 
-    // Otherwise, move to the next phase for
-    // this vfx and reset the decay time.
+    // Otherwise, we can move to the next phase
+    // and reset the decay time.
     ++m_tile.id;
     ++m_transition;
 
@@ -26,8 +26,6 @@ namespace new_frontiers {
     if (m_transition < m_phases.size()) {
       m_next = info.moment + m_phases[m_transition];
     }
-
-    return false;
   }
 
 }

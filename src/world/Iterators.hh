@@ -14,7 +14,7 @@ namespace new_frontiers {
   /**
    * @brief - Convenience wrapper to retrieve information
    *          about an entity. This is passed as return
-   *          value for elemenrs querying entities from
+   *          value for elements querying entities from
    *          this iterator in order to have all public
    *          info of an entity avaiable.
    */
@@ -24,6 +24,18 @@ namespace new_frontiers {
     float xT;
     float yT;
     std::vector<float> cPoints;
+  };
+
+  /**
+   * @brief - Similar to the `EntityDesc` but for effects.
+   *          Contains an indication on the amount of the
+   *          initial quantity of the effect that is still
+   *          existing.
+   *          The amount is always in the range `[0; 1]`.
+   */
+  struct VFXDesc {
+    VFXTile tile;
+    float amount;
   };
 
   class Iterator: public utils::CoreObject {
@@ -85,7 +97,7 @@ namespace new_frontiers {
        * @param id - the index of the VFX to get.
        * @return - the corresponding VFX.
        */
-      const VFXTile&
+      VFXDesc
       vfx(int id) const noexcept;
 
       /**

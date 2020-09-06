@@ -83,9 +83,14 @@ namespace new_frontiers {
   }
 
   inline
-  const VFXTile&
+  VFXDesc
   Iterator::vfx(int id) const noexcept {
-    return m_vfx[m_sortedVFX[id].id]->getTile();
+    VFXShPtr v = m_vfx[m_sortedVFX[id].id];
+
+    return VFXDesc{
+      v->getTile(),
+      v->getAmount()
+    };
   }
 
   inline

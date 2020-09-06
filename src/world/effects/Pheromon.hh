@@ -2,8 +2,8 @@
 # define   PHEROMON_HH
 
 # include <memory>
-# include "VFX.hh"
 # include "TimeUtils.hh"
+# include "EvaporatingVFX.hh"
 
 namespace new_frontiers {
 
@@ -24,7 +24,7 @@ namespace new_frontiers {
 
   }
 
-  class Pheromon: public VFX {
+  class Pheromon: public EvaporatingVFX {
     protected:
 
       /**
@@ -35,11 +35,12 @@ namespace new_frontiers {
        * @param vfx - the visual representation for this
        *              pheromon. It will be passed on to the
        *              base class constructor.
-       * @param decay - the decay duration for this pheromon.
+       * @param evaporation - the speed at which this item
+       *                      is evaporating away.
        */
       Pheromon(const pheromon::Type& type,
                const VFXTile& vfx,
-               const std::vector<Duration>& decay);
+               float evaporation);
 
     private:
 

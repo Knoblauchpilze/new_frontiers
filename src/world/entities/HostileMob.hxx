@@ -10,7 +10,7 @@ namespace new_frontiers {
     Entity(tile),
 
     m_vfxDelay(toMilliseconds(2000)),
-    m_last(now()),
+    m_last(now() - m_vfxDelay),
 
     m_passed()
   {}

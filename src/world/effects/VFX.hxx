@@ -6,45 +6,50 @@
 namespace new_frontiers {
 
   inline
-  VFX::VFX(const VFXTile& tile, const std::vector<Duration>& phases):
-    Element(tile, "vfx"),
+  VFX::VFX(const VFXTile& tile, const std::string& name):
+    Element(tile, name),
 
-    m_phases(phases),
-    m_transition(0u),
+    m_amount(1.0f)
+  {}
 
-    m_next(Duration::zero()),
-    m_decayTimeLeft()
-  {
-    // Adjust the next phase duration if any transitions
-    // is specified.
-    if (!m_phases.empty()) {
-      m_transition = 0u;
-      m_next = now() + m_phases[m_transition];
+  inline
+  float
+  VFX::getAmount() const noexcept {
+    return m_amount;
+  }
+
+  inline
+  bool
+  VFX::step(StepInfo& info) {
+    // Check whether the vfx should decay in its
+    // next form.
+    if (isTerminated(info.moment)) {
+      return true;
     }
+    
+    // Make this effect progress in time.
+    update(info);
+
+    return false;
   }
 
   inline
   void
-  VFX::pause(const TimeStamp& t) {
-    // In case we're decaying, we need to pause the
-    // process. The metric to determine whether we
-    // are decaying is based on whether the `m_phase`
-    // is in the future.
-    m_decayTimeLeft = Duration::zero();
-
-    if (m_transition < m_phases.size()) {
-      m_decayTimeLeft = m_next - t;
-    }
+  VFX::pause(const TimeStamp& /*t*/) {
+    // Nothing to do.
   }
 
   inline
   void
-  VFX::resume(const TimeStamp& t) {
-    // In case the decay time left is not `0`, we
-    // have to restore it.
-    if (m_decayTimeLeft != Duration::zero()) {
-      m_next = t + m_decayTimeLeft;
-    }
+  VFX::resume(const TimeStamp& /*t*/) {
+    // Nothing to do.
+  }
+
+  inline
+  void
+  VFX::changeAmount(float delta) noexcept {
+    m_amount += delta;
+    m_amount = std::min(std::max(m_amount, 0.0f), 1.0f);
   }
 
 }

@@ -13,18 +13,8 @@ namespace new_frontiers {
     VFXTile vfx = newTile(vt);
     vfx.x = x; vfx.y = y;
 
-    // Build the VFX knowing that the decay table
-    // for pheromon is hard-coded for now.
-    std::vector<Duration> decay;
-
-    static const int b = 1000;
-    decay.push_back(toMilliseconds(b));
-    decay.push_back(toMilliseconds(2 * b));
-    decay.push_back(toMilliseconds(4 * b));
-    decay.push_back(toMilliseconds(8 * b));
-    decay.push_back(toMilliseconds(8 * b));
-
-    return std::shared_ptr<Pheromon>(new Pheromon(type, vfx, decay));
+    // Evaporation time is fixed for now.
+    return std::shared_ptr<Pheromon>(new Pheromon(type, vfx, 0.1f));
   }
 
   inline

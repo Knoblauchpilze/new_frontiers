@@ -212,19 +212,46 @@ namespace new_frontiers {
       EntityDesc t = m_wit->entity(id);
 
       if (t.state.glowing) {
-        drawSprite(t.tile.x, t.tile.y, aliasOfEffect(tiles::Fire), 2, Cell::CenterLeft, ALPHA_SEMI_OPAQUE);
+        drawSprite(
+          t.tile.x,
+          t.tile.y,
+          aliasOfEffect(tiles::Fire),
+          2,
+          Cell::CenterLeft,
+          ALPHA_SEMI_OPAQUE
+        );
       }
       if (t.state.exhausted) {
-        drawSprite(t.tile.x, t.tile.y, aliasOfEffect(tiles::Poison), 2, Cell::CenterLeft, ALPHA_SEMI_OPAQUE);
+        drawSprite(
+          t.tile.x,
+          t.tile.y,
+          aliasOfEffect(tiles::Poison),
+          2,
+          Cell::CenterLeft,
+          ALPHA_SEMI_OPAQUE
+        );
       }
 
-      drawSprite(t.tile.x, t.tile.y, aliasOfEntity(t.tile.type), t.tile.id, Cell::CenterLeft);
+      drawSprite(
+        t.tile.x,
+        t.tile.y,
+        aliasOfEntity(t.tile.type),
+        t.tile.id,
+        Cell::CenterLeft
+      );
     }
 
     // Draw vfx.
     for (int id = 0 ; id < m_wit->vfxCount() ; ++id) {
-      VFXTile t = m_wit->vfx(id);
-      drawSprite(t.x, t.y, aliasOfEffect(t.type), t.id, Cell::CenterLeft, ALPHA_SEMI_OPAQUE);
+      VFXDesc t = m_wit->vfx(id);
+      drawSprite(
+        t.tile.x,
+        t.tile.y,
+        aliasOfEffect(t.tile.type),
+        t.tile.id,
+        Cell::CenterLeft,
+        static_cast<int>(std::round(ALPHA_OPAQUE * t.amount))
+      );
     }
 
     // Draw cursor.
