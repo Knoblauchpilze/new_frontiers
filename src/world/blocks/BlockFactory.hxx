@@ -2,6 +2,9 @@
 # define   BLOCK_FACTORY_HXX
 
 # include "BlockFactory.hh"
+# include "Block.hh"
+// # include "TimedSpawner.hh"
+# include "SpawnerOMeter.hh"
 
 namespace new_frontiers {
 
@@ -32,7 +35,13 @@ namespace new_frontiers {
   inline
   BlockShPtr
   BlockFactory::newSpawner(int id, float x, float y, const tiles::Entity& ent) noexcept {
-    return std::make_shared<Spawner>(newTile(tiles::Portal, id, x, y), ent);
+    return std::make_shared<TimedSpawner>(
+      newTile(tiles::Portal, id, x, y), // spawner display
+      toMilliseconds(500),              // spawn interval
+      ent,                              // mob
+      1,                                // mob variant
+      1                                 // stock
+    );
   }
 
   inline

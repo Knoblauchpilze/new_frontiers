@@ -33,10 +33,6 @@
 // TODO: This entity would have a base protected method to
 // select a path based on the amount of pheromone of a type
 // around the entity and go in this direction.
-// TODO: Refine the spawner to have some sort of abstract
-// metric to determine when a new entity should be spawned.
-// We could move the current spawner to a time based metric
-// to use the previous mechanism.
 // TODO: Create warrior and worker entity classes.
 // TODO: Provide a way to select portals with the mouse: it
 // would make spawn raw icons to select the priority of the
