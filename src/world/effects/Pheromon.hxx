@@ -8,9 +8,9 @@ namespace new_frontiers {
   inline
   Pheromon::Pheromon(const pheromon::Type& type,
                      const VFXTile& vfx,
-                     const std::vector<Duration>& decay):
-    VFX(vfx, decay),
-    
+                     float evaporation):
+    EvaporatingVFX(vfx, evaporation),
+
     m_type(type)
   {}
 
