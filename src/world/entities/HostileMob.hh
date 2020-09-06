@@ -45,7 +45,7 @@ namespace new_frontiers {
       void
       resume(const TimeStamp& t) override;
 
-    public:
+    private:
 
       /**
        * @brief - Duration between two consecutives emission of
