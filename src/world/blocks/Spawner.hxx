@@ -7,7 +7,7 @@ namespace new_frontiers {
 
   inline
   Spawner::Spawner(const BlockTile& tile,
-                   const Mob& mob,
+                   const tiles::Entity& mob,
                    int id):
     Block(tile, "spawner"),
 

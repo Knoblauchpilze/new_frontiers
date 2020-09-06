@@ -7,16 +7,8 @@
 
 namespace new_frontiers {
 
-  class VFX: public Element<Effect> {
+  class VFX: public Element<tiles::Effect> {
     public:
-
-      /**
-       * @brief - Create a new VFX with the specified tile.
-       * @param tile - the visual display for this VFX and
-       *               its associated position.
-       * @param decaying - `true` if this VFX is decaying.
-       */
-      VFX(const VFXTile& tile, bool decaying);
 
       /**
        * @brief - Implementation of the interface method to
@@ -48,42 +40,45 @@ namespace new_frontiers {
       void
       resume(const TimeStamp& t) override;
 
+    protected:
+
+      /**
+       * @brief - Create a new effect with the specified visual
+       *          representation and decay times.
+       * @param tile - the visual display for this effect which
+       *               also contain the position at which the
+       *               effect should be spawned.
+       * @param phases - the list of phases that this effect has
+       *                 to traverse before finally decaying.
+       */
+      VFX(const VFXTile& tile, const std::vector<Duration>& phases);
+
     private:
 
       /**
-       * @brief - If `true`, the vfx will use a certain
-       *          number of transitions before decaying.
-       *          If `false` only the `m_lastDecay` time
-       *          will be used and then the VFX will be
-       *          removed.
+       * @brief - Holds the list of phases for this effect and
+       *          their associated durations. Each phase will
+       *          be traversed successively starting from the
+       *          index `0`.
+       *          In case no phase is provided, the effect is
+       *          kept as it is forever.
        */
-      bool m_decaying;
+      std::vector<Duration> m_phases;
 
       /**
-       * @brief - Defines the duration of the decay time for
-       *          a single transition for this effect. It is
-       *          expressed in milliseconds.
+       * @brief - The index of the next transition that should
+       *          be used by this effect. Once the last index
+       *          is reached in the `m_phases` array the effect
+       *          is scheduled for deletion.
        */
-      Duration m_decay;
-
-      /**
-       * @brief - Custom duration for the last transition. We
-       *          usually want to make it a bit longer.
-       */
-      Duration m_lastDecay;
-
-      /**
-       * @brief - The numebr of transitions that this effect
-       *          can go through before finally disappearing.
-       */
-      int m_transitions;
+      unsigned m_transition;
 
       /**
        * @brief - The next time at which the effect will decay.
        *          It is updated when this point in time is
        *          reached in the simulation.
        */
-      TimeStamp m_phase;
+      TimeStamp m_next;
 
       /**
        * @brief - This duration is used in the case of a `pause`

@@ -159,15 +159,15 @@ namespace new_frontiers {
       spriteCoordsToPixels(const olc::vi2d& coord, const olc::vi2d& layout, int id = 0) const noexcept;
 
       /**
-       * @brief - Compute the index of the input sprite in the atlas
+       * @brief - Compute the index of the input block in the atlas
        *          array.
-       * @param sprite - the sprite for which the alias index should
+       * @param block - the block for which the alias index should
        *                 be computed.
-       * @return - the index of the sprite in the alias array.
+       * @return - the index of the block in the alias array.
        */
       static
       int
-      aliasOfSprite(const Sprite& sprite);
+      aliasOfBlock(const tiles::Block& block);
 
       /**
        * @brief - Compute the index of the input entity in the atlas
@@ -178,7 +178,7 @@ namespace new_frontiers {
        */
       static
       int
-      aliasOfEntity(const Mob& ent);
+      aliasOfEntity(const tiles::Entity& ent);
 
       /**
        * @brief - Compute the index of the input effect in the atlas
@@ -189,7 +189,7 @@ namespace new_frontiers {
        */
       static
       int
-      aliasOfEffect(const Effect& vfx);
+      aliasOfEffect(const tiles::Effect& vfx);
 
       /**
        * @brief - Used to draw the tile referenced by its alias index

@@ -7,7 +7,7 @@ namespace new_frontiers {
 
   inline
   Player::Player(const EntityTile& tile):
-    Entity(tile, Poison),
+    Entity(tile),
 
     m_sprintSpeed(3.0f),
     m_recoverySpeed(m_sprintSpeed / 4.0f),

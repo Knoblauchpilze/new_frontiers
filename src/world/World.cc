@@ -33,15 +33,15 @@ namespace {
                float y)
   {
     // Retrieve the visual display type for the entity.
-    new_frontiers::Mob m = new_frontiers::strToMob(type);
-    if (m == new_frontiers::MobsCount) {
+    new_frontiers::tiles::Entity e = new_frontiers::strToEntity(type);
+    if (e == new_frontiers::tiles::EntitiesCount) {
       // We could not interpret the visual display type
       // for this entity.
       return nullptr;
     }
 
     new_frontiers::EntityTile et;
-    et.type = m;
+    et.type = e;
     et.id = id;
 
     et.x = x;
@@ -245,23 +245,17 @@ namespace new_frontiers {
   void
   World::generateElements() {
     // Generate mob portal.
-    BlockTile b = newTile(Portal, 3);
-    b.x = 3.0f; b.y = 4.0f;
-    m_blocks.push_back(std::make_shared<Spawner>(b, DarkAnubis));
+    m_blocks.push_back(BlockFactory::newSpawner(3, 3.0f, 4.0f, tiles::DarkAnubis));
 
     // Generate entry portal.
-    b = newTile(Portal, 6);
-    b.x = 1.0f; b.y = 1.0f;
-    m_blocks.push_back(BlockFactory::newEntrance(b));
+    m_blocks.push_back(BlockFactory::newEntrance(6, 1.0f, 1.0f));
 
     // Generate exit portal.
-    b = newTile(Portal, 1);
-    b.x = 6.0f; b.y = 3.0f;
-    m_blocks.push_back(BlockFactory::newExit(b));
+    m_blocks.push_back(BlockFactory::newExit(1, 6.0f, 3.0f));
 
     // Generate the player at the same location
     // as the entry portal.
-    EntityTile et = newTile(Knight, 0);
+    EntityTile et = newTile(tiles::Knight, 0);
     et.x = 1.0f; et.y = 1.0f;
     m_entities.push_back(std::make_shared<Player>(et));
   }
@@ -390,9 +384,7 @@ namespace new_frontiers {
         utils::Level::Verbose
       );
 
-      BlockTile t = newTile(Portal, type);
-      t.x = x; t.y = y;
-      m_blocks.push_back(BlockFactory::newEntrance(t));
+      m_blocks.push_back(BlockFactory::newEntrance(type, x, y));
     }
   }
 
@@ -443,9 +435,7 @@ namespace new_frontiers {
         utils::Level::Verbose
       );
 
-      BlockTile t = newTile(Portal, type);
-      t.x = x; t.y = y;
-      m_blocks.push_back(BlockFactory::newExit(t));
+      m_blocks.push_back(BlockFactory::newExit(type, x, y));
     }
   }
 
@@ -457,7 +447,7 @@ namespace new_frontiers {
 
     int type;
     float x, y;
-    std::string mobStr;
+    std::string entStr;
 
     while (!in.eof() && section != "end") {
       in >> section;
@@ -488,12 +478,12 @@ namespace new_frontiers {
         continue;
       }
 
-      in >> type >> x >> y >> mobStr;
+      in >> type >> x >> y >> entStr;
 
-      Mob m = strToMob(mobStr);
-      if (m == MobsCount) {
+      tiles::Entity e = strToEntity(entStr);
+      if (e == tiles::EntitiesCount) {
         log(
-          std::string("Could not decode portal spawning unknown mob \"") + mobStr +
+          std::string("Could not decode portal spawning unknown entity \"") + entStr +
           "\" at " + std::to_string(x) + "x" + std::to_string(y),
           utils::Level::Warning
         );
@@ -508,9 +498,7 @@ namespace new_frontiers {
         utils::Level::Verbose
       );
 
-      BlockTile t = newTile(Portal, type);
-      t.x = x; t.y = y;
-      m_blocks.push_back(std::make_shared<Spawner>(t, m));
+      m_blocks.push_back(BlockFactory::newSpawner(type, x, y, e));
     }
   }
 
@@ -561,9 +549,7 @@ namespace new_frontiers {
         utils::Level::Verbose
       );
 
-      BlockTile t = newTile(Wall, type);
-      t.x = x; t.y = y;
-      m_blocks.push_back(BlockFactory::newWall(t));
+      m_blocks.push_back(BlockFactory::newWall(type, x, y));
     }
   }
 

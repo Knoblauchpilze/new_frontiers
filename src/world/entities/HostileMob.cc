@@ -7,7 +7,7 @@ namespace new_frontiers {
   HostileMob::step(StepInfo& info) {
     // Emit a new VFX if needed.
     if (m_last + m_vfxDelay <= info.moment) {
-      info.vSpawned.push_back(spawnVFX());
+      info.vSpawned.push_back(spawnPheromon(pheromon::Type::Wander));
 
       m_last = info.moment;
     }

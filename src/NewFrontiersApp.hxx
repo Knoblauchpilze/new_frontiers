@@ -20,8 +20,8 @@ namespace new_frontiers {
   bool
   NewFrontiersApp::OnUserCreate() {
     // Create the world.
-    m_world = std::make_shared<World>(100, std::string("data/worlds/level_1.lvl"));
-    // m_world = std::make_shared<World>(100);
+    // m_world = std::make_shared<World>(100, std::string("data/worlds/level_1.lvl"));
+    m_world = std::make_shared<World>(100);
     m_wit = m_world->iterator();
 
     // And the tile alias.
@@ -153,20 +153,20 @@ namespace new_frontiers {
 
   inline
   int
-  NewFrontiersApp::aliasOfSprite(const Sprite& sprite) {
-    return sprite;
+  NewFrontiersApp::aliasOfBlock(const tiles::Block& block) {
+    return block;
   }
 
   inline
   int
-  NewFrontiersApp::aliasOfEntity(const Mob& ent) {
-    return SpritesCount + ent;
+  NewFrontiersApp::aliasOfEntity(const tiles::Entity& ent) {
+    return tiles::BlocksCount + ent;
   }
 
   inline
   int
-  NewFrontiersApp::aliasOfEffect(const Effect& vfx) {
-    return SpritesCount + MobsCount + vfx;
+  NewFrontiersApp::aliasOfEffect(const tiles::Effect& vfx) {
+    return tiles::BlocksCount + tiles::EntitiesCount + vfx;
   }
 
   inline

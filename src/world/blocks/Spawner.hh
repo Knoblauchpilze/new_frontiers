@@ -24,7 +24,7 @@ namespace new_frontiers {
        * @param id - the variant of mob spawned.
        */
       Spawner(const BlockTile& tile,
-              const Mob& mob,
+              const tiles::Entity& mob,
               int id = 0);
 
       /**
@@ -97,7 +97,7 @@ namespace new_frontiers {
        * @brief - The index of the mob which is spawned by this
        *          spawner.
        */
-      Mob m_mob;
+      tiles::Entity m_mob;
 
       /**
        * @brief - The variant of the mob spawned by this object.

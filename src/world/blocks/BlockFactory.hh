@@ -10,20 +10,33 @@ namespace new_frontiers {
 
       static
       BlockShPtr
-      newPortal(const BlockTile& tile) noexcept;
+      newPortal(int id, float x, float y) noexcept;
 
       static
       BlockShPtr
-      newEntrance(const BlockTile& tile) noexcept;
+      newEntrance(int id, float x, float y) noexcept;
 
       static
       BlockShPtr
-      newExit(const BlockTile& tile) noexcept;
+      newExit(int id, float x, float y) noexcept;
 
       static
       BlockShPtr
-      newWall(const BlockTile& tile) noexcept;
+      newWall(int id, float x, float y) noexcept;
 
+      static
+      BlockShPtr
+      newSpawner(int id, float x, float y, const tiles::Entity& ent) noexcept;
+
+    private:
+
+      static
+      BlockTile
+      newTile(const tiles::Block& b, int id, float x, float y) noexcept;
+
+      static
+      BlockShPtr
+      newBlock(const tiles::Block& block, int id, float x, float y, const std::string& name) noexcept;
   };
 
 }

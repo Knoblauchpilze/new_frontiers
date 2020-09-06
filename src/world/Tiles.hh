@@ -5,18 +5,75 @@
 
 namespace new_frontiers {
 
-  /**
-   * @brief - Enumeration of possible block types.
-   */
-  enum Sprite {
-    Empty,
-    Wall,
-    Door,
-    Portal,
+  namespace tiles {
 
-    SpritesCount //<- Used to make sure that we know how many
-                 //<- block we're handling.
-  };
+    /**
+     * @brief - Enumeration of possible block types.
+     */
+    enum Block {
+      Empty,
+      Wall,
+      Door,
+      Portal,
+
+      BlocksCount //<- Used to make sure that we know how many
+                  //<- block we're handling.
+    };
+
+    /**
+     * @brief - Used for convenience to reference to
+     *          an entity type in the game.
+     */
+    enum Entity {
+      MarineKnight,
+      Warrior,
+      StoneGiant,
+      Sorceress,
+      Knight,
+      GeneticExperiment,
+      Warlord,
+      Vampire,
+      Gecko,
+      DarkAnubis,
+      Cyclope,
+      Fool,
+      Beast,
+      BlueAvenger,
+      SoulEater,
+      Valkyrie,
+      Guardian,
+      Blob,
+      CosmicThreat,
+      Gorgone,
+      DemonBat,
+      Griffin,
+      Executioner,
+      MindlessGolem,
+      IncaOverlord,
+      Hydra,
+      Dragon,
+      Sorcerer,
+      Satyr,
+      TwoHeadedWarrior,
+      FireKnight,
+
+      EntitiesCount
+    };
+
+    /**
+     * @brief - References the explosion and various effects
+     *          that are visible in the game.
+     */
+    enum Effect {
+      Fire,
+      Lightning,
+      Poison,
+      Smoke,
+
+      EffectsCount
+    };
+
+  }
 
   /**
    * @brief - Used to convert a string into a valid
@@ -26,72 +83,19 @@ namespace new_frontiers {
    * @param str - the string to convert.
    * @return - the corresponding block.
    */
-  Sprite
-  strToSprite(const std::string& str) noexcept;
-
-  /**
-   * @brief - Used for convenience to reference to
-   *          an entity type in the game.
-   */
-  enum Mob {
-    MarineKnight,
-    Warrior,
-    StoneGiant,
-    Sorceress,
-    Knight,
-    GeneticExperiment,
-    Warlord,
-    Vampire,
-    Gecko,
-    DarkAnubis,
-    Cyclope,
-    Fool,
-    Beast,
-    BlueAvenger,
-    SoulEater,
-    Valkyrie,
-    Guardian,
-    Blob,
-    CosmicThreat,
-    Gorgone,
-    DemonBat,
-    Griffin,
-    Executioner,
-    MindlessGolem,
-    IncaOverlord,
-    Hydra,
-    Dragon,
-    Sorcerer,
-    Satyr,
-    TwoHeadedWarrior,
-    FireKnight,
-
-    MobsCount
-  };
+  tiles::Block
+  strToBlock(const std::string& str) noexcept;
 
   /**
    * @brief - Used to convert a string into a valid
-   *          mob value. In case the string does not
-   *          correspond to any known sprite a value
-   *          of `MobsCount` is is returned.
+   *          entity value. In case the string does
+   *          not correspond to any known sprite a
+   *          value of `EntitiesCount` is is returned.
    * @param str - the string to convert.
-   * @return - the corresponding mob.
+   * @return - the corresponding entity.
    */
-  Mob
-  strToMob(const std::string& str) noexcept;
-
-  /**
-   * @brief - References the explosion and various effects
-   *          that are visible in the game.
-   */
-  enum Effect {
-    Fire,
-    Lightning,
-    Poison,
-    Smoke,
-
-    EffectsCount
-  };
+  tiles::Entity
+  strToEntity(const std::string& str) noexcept;
 
   /**
    * @brief - Used to convert a string into a valid
@@ -101,7 +105,7 @@ namespace new_frontiers {
    * @param str - the string to convert.
    * @return - the corresponding VFX.
    */
-  Effect
+  tiles::Effect
   strToEffect(const std::string& str) noexcept;
 
   /**
@@ -125,17 +129,17 @@ namespace new_frontiers {
   /**
    * @brief - Represents a block.
    */
-  using BlockTile = Tile<Sprite>;
+  using BlockTile = Tile<tiles::Block>;
 
   /**
    * @brief - Represents an entity.
    */
-  using EntityTile = Tile<Mob>;
+  using EntityTile = Tile<tiles::Entity>;
 
   /**
    * @brief - Represents a visual effect.
    */
-  using VFXTile = Tile<Effect>;
+  using VFXTile = Tile<tiles::Effect>;
 
   /**
    * @brief - Used to create a new tile with the specified type

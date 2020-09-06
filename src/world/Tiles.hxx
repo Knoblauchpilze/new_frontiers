@@ -6,141 +6,141 @@
 namespace new_frontiers {
 
   inline
-  Sprite
-  strToSprite(const std::string& str) noexcept {
+  tiles::Block
+  strToBlock(const std::string& str) noexcept {
     if (str == "Empty") {
-      return Empty;
+      return tiles::Empty;
     }
     if (str == "Wall") {
-      return Wall;
+      return tiles::Wall;
     }
     if (str == "Door") {
-      return Door;
+      return tiles::Door;
     }
     if (str == "Portal") {
-      return Portal;
+      return tiles::Portal;
     }
 
-    return SpritesCount;
+    return tiles::BlocksCount;
   }
 
   inline
-  Mob
-  strToMob(const std::string& str) noexcept {
+  tiles::Entity
+  strToEntity(const std::string& str) noexcept {
     if (str == "MarineKnight") {
-      return MarineKnight;
+      return tiles::MarineKnight;
     }
     if (str == "Warrior") {
-      return Warrior;
+      return tiles::Warrior;
     }
     if (str == "StoneGiant") {
-      return StoneGiant;
+      return tiles::StoneGiant;
     }
     if (str == "Sorceress") {
-      return Sorceress;
+      return tiles::Sorceress;
     }
     if (str == "Knight") {
-      return Knight;
+      return tiles::Knight;
     }
     if (str == "GeneticExperiment") {
-      return GeneticExperiment;
+      return tiles::GeneticExperiment;
     }
     if (str == "Warlord") {
-      return Warlord;
+      return tiles::Warlord;
     }
     if (str == "Vampire") {
-      return Vampire;
+      return tiles::Vampire;
     }
     if (str == "Gecko") {
-      return Gecko;
+      return tiles::Gecko;
     }
     if (str == "DarkAnubis") {
-      return DarkAnubis;
+      return tiles::DarkAnubis;
     }
     if (str == "Cyclope") {
-      return Cyclope;
+      return tiles::Cyclope;
     }
     if (str == "Fool") {
-      return Fool;
+      return tiles::Fool;
     }
     if (str == "Beast") {
-      return Beast;
+      return tiles::Beast;
     }
     if (str == "BlueAvenger") {
-      return BlueAvenger;
+      return tiles::BlueAvenger;
     }
     if (str == "SoulEater") {
-      return SoulEater;
+      return tiles::SoulEater;
     }
     if (str == "Valkyrie") {
-      return Valkyrie;
+      return tiles::Valkyrie;
     }
     if (str == "Guardian") {
-      return Guardian;
+      return tiles::Guardian;
     }
     if (str == "Blob") {
-      return Blob;
+      return tiles::Blob;
     }
     if (str == "CosmicThreat") {
-      return CosmicThreat;
+      return tiles::CosmicThreat;
     }
     if (str == "Gorgone") {
-      return Gorgone;
+      return tiles::Gorgone;
     }
     if (str == "DemonBat") {
-      return DemonBat;
+      return tiles::DemonBat;
     }
     if (str == "Griffin") {
-      return Griffin;
+      return tiles::Griffin;
     }
     if (str == "Executioner") {
-      return Executioner;
+      return tiles::Executioner;
     }
     if (str == "MindlessGolem") {
-      return MindlessGolem;
+      return tiles::MindlessGolem;
     }
     if (str == "IncaOverlord") {
-      return IncaOverlord;
+      return tiles::IncaOverlord;
     }
     if (str == "Hydra") {
-      return Hydra;
+      return tiles::Hydra;
     }
     if (str == "Dragon") {
-      return Dragon;
+      return tiles::Dragon;
     }
     if (str == "Sorcerer") {
-      return Sorcerer;
+      return tiles::Sorcerer;
     }
     if (str == "Satyr") {
-      return Satyr;
+      return tiles::Satyr;
     }
     if (str == "TwoHeadedWarrior") {
-      return TwoHeadedWarrior;
+      return tiles::TwoHeadedWarrior;
     }
     if (str == "FireKnight") {
-      return FireKnight;
+      return tiles::FireKnight;
     }
 
-    return MobsCount;
+    return tiles::EntitiesCount;
   }
 
   inline
-  Effect
+  tiles::Effect
   strToEffect(const std::string& str) noexcept {
     if (str == "Fire") {
-      return Fire;
+      return tiles::Fire;
     }
     if (str == "Lightning") {
-      return Lightning;
+      return tiles::Lightning;
     }
     if (str == "Poison") {
-      return Poison;
+      return tiles::Poison;
     }
     if (str == "Smoke") {
-      return Smoke;
+      return tiles::Smoke;
     }
 
-    return EffectsCount;
+    return tiles::EffectsCount;
   }
 
   template <typename TileType>

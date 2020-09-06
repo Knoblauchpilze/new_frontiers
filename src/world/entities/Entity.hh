@@ -3,7 +3,7 @@
 
 # include <memory>
 # include "Element.hh"
-# include "../effects/VFX.hh"
+# include "../effects/Pheromon.hh"
 # include "TimeUtils.hh"
 
 namespace new_frontiers {
@@ -49,24 +49,16 @@ namespace new_frontiers {
     bool exhausted;
   };
 
-  class Entity: public Element<Mob> {
+  class Entity: public Element<tiles::Entity> {
     public:
 
       /**
        * @brief - Creates a new entity with the specified tile
-       *          and VFX produced.
+       *          to use for the visual representation.
        * @param tile - the visual representation of the entity
        *               along with its position.
-       * @param vfx - the type of visual effects that the entity
-       *              is able to produce.
-       * @param vfxID - the VFX variant for this tile.
-       * @param decaying - `true` if the VFX associated to this
-       *                   entity is decaying.
        */
-      Entity(const EntityTile& tile,
-             const Effect& vfx,
-             int vfxID = 0,
-             bool decaying = true);
+      Entity(const EntityTile& tile);
 
       /**
        * @brief - Implementation of the interface method to evolve
@@ -145,8 +137,8 @@ namespace new_frontiers {
        * @return - the VFX created from the internal parameters
        *           that this entity has about VFX.
        */
-      VFXShPtr
-      spawnVFX() const noexcept;
+      PheromonShPtr
+      spawnPheromon(const pheromon::Type& type) const noexcept;
 
     private:
 
@@ -175,23 +167,6 @@ namespace new_frontiers {
       normalizePath(const StepInfo& info, float& xDir, float& yDir, float& d) const noexcept;
 
     protected:
-
-      /**
-       * @brief - Defines the visual effect that can be produced
-       *          by this entity in particular situations.
-       */
-      Effect m_vfx;
-
-      /**
-       * @brief - The variant of the VFX to produce.
-       */
-      int m_vfxID;
-
-      /**
-       * @brief - Whether or not the VFX associated to this entity
-       *          is decaying.
-       */
-      bool m_vfxDecay;
 
       /**
        * @brief - Speed of the entity in cells per second.
