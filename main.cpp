@@ -38,6 +38,9 @@
 // would make spawn raw icons to select the priority of the
 // entities that would be spawned (between warrior and the
 // worker).
+// TODO: We could add an automatic slow refill of portals
+// for each step (with a certain amount per seconds) or
+// only rely on entities bringing back resources.
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>
