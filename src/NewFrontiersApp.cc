@@ -190,7 +190,7 @@ namespace new_frontiers {
   NewFrontiersApp::draw() {
     // Clear rendering target.
     SetPixelMode(olc::Pixel::ALPHA);
-    Clear(olc::VERY_DARK_GREEN);
+    Clear(olc::BLACK);
 
     // Draw elements of the world.
 
@@ -266,6 +266,13 @@ namespace new_frontiers {
   NewFrontiersApp::drawUI() {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
+
+    int mHeight = 100;
+    olc::vi2d mPos(0, ScreenHeight() - mHeight);
+    olc::vi2d mSize(ScreenWidth(), mHeight);
+
+    FillRectDecal(mPos, mSize, olc::Pixel(64, 64, 64, ALPHA_SEMI_OPAQUE));
+
     SetPixelMode(olc::Pixel::NORMAL);
   }
 
@@ -304,9 +311,10 @@ namespace new_frontiers {
     olc::vf2d it;
     olc::vi2d mtp = m_cf.pixelCoordsToTiles(mp, &it);
 
-    DrawString(olc::vi2d(0, 435), "Mouse coords      : " + toString(mp), olc::CYAN);
-    DrawString(olc::vi2d(0, 450), "World cell coords : " + toString(mtp), olc::CYAN);
-    DrawString(olc::vi2d(0, 465), "Intra cell        : " + toString(it), olc::CYAN);
+    int dOffset = 15;
+    DrawString(olc::vi2d(0, 0 * dOffset), "Mouse coords      : " + toString(mp), olc::CYAN);
+    DrawString(olc::vi2d(0, 1 * dOffset), "World cell coords : " + toString(mtp), olc::CYAN);
+    DrawString(olc::vi2d(0, 2 * dOffset), "Intra cell        : " + toString(it), olc::CYAN);
 
     // Not the first frame anymore.
     m_first = false;
