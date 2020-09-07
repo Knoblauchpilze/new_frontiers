@@ -50,6 +50,15 @@ namespace new_frontiers {
 
       /**
        * @brief - Implementation of the interface method to select
+       *          a speed for this entity.
+       * @param info - an object describing (among other things) a
+       *               rng.
+       */
+      void
+      prepare(StepInfo& info) override;
+
+      /**
+       * @brief - Implementation of the interface method to select
        *          the target for this mob. We will use behaviors
        *          defined for the entity to choose.
        * @param info - info to pick the target.

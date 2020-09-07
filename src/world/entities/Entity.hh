@@ -140,6 +140,18 @@ namespace new_frontiers {
       PheromonShPtr
       spawnPheromon(const pheromon::Type& type) const noexcept;
 
+
+      /**
+       * @brief - Interface method guaranteed to be called in
+       *          the first execution of the `step` method of
+       *          this entity. It allow inheriting classes
+       *          to finalize initialization of attributes if
+       *          needed.
+       * @param info - the information about the environment.
+       */
+      virtual void
+      prepare(StepInfo& info) = 0;
+
       /**
        * @brief - Interface method to make the entity choose the
        *          next position it wants to travel to. This class
