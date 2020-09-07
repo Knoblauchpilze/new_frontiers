@@ -69,7 +69,6 @@ namespace new_frontiers {
     float d = 1.0f;
     normalizePath(info, xDir, yDir, d);
 
-    // TODO: Weird stuff with the path debug display.
     m_path.xO = m_tile.x;
     m_path.yO = m_tile.y;
     m_path.xT = m_path.xO + d * xDir;
