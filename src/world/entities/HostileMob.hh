@@ -46,6 +46,19 @@ namespace new_frontiers {
       void
       resume(const TimeStamp& t) override;
 
+    protected:
+
+      /**
+       * @brief - Implementation of the interface method to select
+       *          the target for this mob. We will use behaviors
+       *          defined for the entity to choose.
+       * @param info - info to pick the target.
+       * @param x - the output abscissa of the chosen location.
+       * @param y - the output ordinate of the chosen location.
+       */
+      void
+      takeAction(const StepInfo& info, float& x, float& y) override;
+
     private:
 
       /**

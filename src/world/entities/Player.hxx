@@ -42,6 +42,12 @@ namespace new_frontiers {
     }
   }
 
+  inline
+  void
+  Player::takeAction(const StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // Nothing to do.
+  }
+
 }
 
 #endif    /* PLAYER_HXX */

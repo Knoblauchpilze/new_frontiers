@@ -140,16 +140,18 @@ namespace new_frontiers {
       PheromonShPtr
       spawnPheromon(const pheromon::Type& type) const noexcept;
 
-    private:
-
       /**
-       * @brief - Used to select a path within admissible range of
-       *          elements defined in the world.
-       * @param info - a service to locate elements that might be
-       *               blocking the path and various utilities.
+       * @brief - Interface method to make the entity choose the
+       *          next position it wants to travel to. This class
+       *          handles the motion to the target but not the
+       *          picking operation.
+       * @param info - information about the world to help in the
+       *               decision process.
+       * @param x - the output abscissa of the chosen coordinate.
+       * @param y - the output ordinate of the chosen coordinate.
        */
-      void
-      choosePath(const StepInfo& info);
+      virtual void
+      takeAction(const StepInfo& info, float& x, float& y) = 0;
 
       /**
        * @brief - Used to make sure that the target of a path that
@@ -165,6 +167,17 @@ namespace new_frontiers {
        */
       void
       normalizePath(const StepInfo& info, float& xDir, float& yDir, float& d) const noexcept;
+
+    private:
+
+      /**
+       * @brief - Used to select a path within admissible range of
+       *          elements defined in the world.
+       * @param info - a service to locate elements that might be
+       *               blocking the path and various utilities.
+       */
+      void
+      choosePath(const StepInfo& info);
 
     protected:
 
