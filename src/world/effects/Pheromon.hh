@@ -18,6 +18,7 @@ namespace new_frontiers {
     enum class Type {
       Wander,
       Chase,
+      Collect,
       Fight,
       Return
     };
