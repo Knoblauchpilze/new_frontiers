@@ -30,9 +30,6 @@
  *          Enemies would follow the same principle to get
  *          to the mother nest and attack it.
  */
-// TODO: This entity would have a base protected method to
-// select a path based on the amount of pheromone of a type
-// around the entity and go in this direction.
 // TODO: Create warrior and worker entity classes.
 // TODO: Provide a way to select portals with the mouse: it
 // would make spawn raw icons to select the priority of the

@@ -8,6 +8,8 @@ namespace new_frontiers {
   bool
   Entity::step(StepInfo& info) {
     // Choose a random speed if none is assigned yet.
+    // TODO: Maybe this could be moved in the `preSpawn`
+    // function of the spawner.
     if (m_speed < 0.0f) {
       m_speed = info.rng.rndFloat(0.1f, 3.0f);
     }
@@ -53,66 +55,25 @@ namespace new_frontiers {
 
   void
   Entity::choosePath(const StepInfo& info) {
-    // We always start from the current position.
+    // Make the entity take an action: this will
+    // provide a coordinate to go to.
+    float x = 0.0f, y = 0.0f;
+    takeAction(info, x, y);
+
+    // Build the path information from the location
+    // that was picked: basically this means clamp
+    // any invalid information.
+    float xDir = x - m_tile.x;
+    float yDir = y - m_tile.y;
+
+    float d = 1.0f;
+    normalizePath(info, xDir, yDir, d);
+
+    // TODO: Weird stuff with the path debug display.
     m_path.xO = m_tile.x;
     m_path.yO = m_tile.y;
-
-    // Pick a random location within the radius of the
-    // motion for this entity. We will use the locator
-    // to determine if any element is obstructing the
-    // view.
-    // We want at least a path of `m_speed` long so as
-    // to have a traversal duration of at least 1ms.
-    // we also take a bit of margin for good measure.
-    float r = info.rng.rndFloat(m_speed, m_pathLength);
-    float theta = info.rng.rndAngle();
-
-    float xDir = std::cos(theta);
-    float yDir = std::sin(theta);
-
-    // Clamp these coordinates and update the direction
-    // based on that.
-    normalizePath(info, xDir, yDir, r);
-
-# ifdef DEBUG
-    float xt = m_path.xO + r * xDir;
-    float yt = m_path.yO + r * yDir;
-
-    log(
-      "Attempt o(" + std::to_string(m_path.xO) + "x" + std::to_string(m_path.yO) +
-      ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
-      utils::Level::Debug
-    );
-# endif
-
-    while (info.frustum->obstructed(m_path.xO, m_path.yO, xDir, yDir, r, m_cPoints)) {
-# ifdef DEBUG
-      log("Failed", utils::Level::Error);
-# endif
-
-      r = info.rng.rndFloat(m_speed, m_pathLength);
-      theta = info.rng.rndAngle();
-
-      xDir = std::cos(theta);
-      yDir = std::sin(theta);
-
-      normalizePath(info, xDir, yDir, r);
-
-# ifdef DEBUG
-      xt = m_path.xO + r * xDir;
-      yt = m_path.yO + r * yDir;
-      log(
-        "Attempt o(" + std::to_string(m_path.xO) + "x" + std::to_string(m_path.yO) +
-        ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
-        utils::Level::Debug
-      );
-# endif
-    }
-
-    m_path.xT = m_path.xO + r * xDir;
-    m_path.yT = m_path.yO + r * yDir;
-
-    info.clampCoord(m_path.xT, m_path.yT);
+    m_path.xT = m_path.xO + d * xDir;
+    m_path.yT = m_path.yO + d * yDir;
 
     // We start right now: the end time depends on the
     // speed of the entity and the length of the path.

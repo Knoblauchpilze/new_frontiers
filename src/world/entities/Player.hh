@@ -45,6 +45,20 @@ namespace new_frontiers {
       void
       resume(const TimeStamp& t) override;
 
+    protected:
+
+      /**
+       * @brief - Dummy implementation of the method as the player is
+       *          controlled by the user and not automatically.
+       * @param info - info to take the decision of the next target.
+       * @param x - output argument representing the abscissa of the
+       *            chosen location.
+       * @param y - output argument representing the ordinate of the
+       *            chosen location.
+       */
+      void
+      takeAction(const StepInfo& info, float& x, float& y) override;
+
     private:
 
       /**
