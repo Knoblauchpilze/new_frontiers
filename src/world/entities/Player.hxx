@@ -44,13 +44,19 @@ namespace new_frontiers {
 
   inline
   void
-  Player::prepare(StepInfo& /*info*/) {
+  Player::prepareForStep(const StepInfo& /*info*/) {
     // Nothing to do.
   }
 
   inline
   void
-  Player::takeAction(const StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+  Player::takeAction(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // Nothing to do.
+  }
+
+  inline
+  void
+  Player::postStep(StepInfo& /*info*/) {
     // Nothing to do.
   }
 

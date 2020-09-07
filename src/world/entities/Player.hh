@@ -53,7 +53,7 @@ namespace new_frontiers {
        * @param info - the information about the world.
        */
       void
-      prepare(StepInfo& info) override;
+      prepareForStep(const StepInfo& info) override;
 
       /**
        * @brief - Dummy implementation of the method as the player is
@@ -65,7 +65,14 @@ namespace new_frontiers {
        *            chosen location.
        */
       void
-      takeAction(const StepInfo& info, float& x, float& y) override;
+      takeAction(StepInfo& info, float& x, float& y) override;
+
+      /**
+       * @brief - Dummy implementation of the post step method.
+       * @param info - data about the world's of this entity.
+       */
+      void
+      postStep(StepInfo& info) override;
 
     private:
 

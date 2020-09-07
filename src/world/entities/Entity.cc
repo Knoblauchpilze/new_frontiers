@@ -8,7 +8,7 @@ namespace new_frontiers {
   bool
   Entity::step(StepInfo& info) {
     // Prepare the entity for this step.
-    prepare(info);
+    prepareForStep(info);
 
     // If we did not arrive yet at our destination we
     // need to move towards it.
@@ -46,11 +46,14 @@ namespace new_frontiers {
       moved = true;
     }
 
+    // Perform post step operations.
+    postStep(info);
+
     return moved;
   }
 
   void
-  Entity::choosePath(const StepInfo& info) {
+  Entity::choosePath(StepInfo& info) {
     // Make the entity take an action: this will
     // provide a coordinate to go to.
     float x = 0.0f, y = 0.0f;

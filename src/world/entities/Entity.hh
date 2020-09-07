@@ -140,17 +140,15 @@ namespace new_frontiers {
       PheromonShPtr
       spawnPheromon(const pheromon::Type& type) const noexcept;
 
-
       /**
-       * @brief - Interface method guaranteed to be called in
-       *          the first execution of the `step` method of
-       *          this entity. It allow inheriting classes
-       *          to finalize initialization of attributes if
-       *          needed.
+       * @brief - Interface method guaranteed to be called as
+       *          the first action in the `step`method. It can
+       *          be used by inheriting classes to perform
+       *          some initialization of attributes if needed.
        * @param info - the information about the environment.
        */
       virtual void
-      prepare(StepInfo& info) = 0;
+      prepareForStep(const StepInfo& info) = 0;
 
       /**
        * @brief - Interface method to make the entity choose the
@@ -163,7 +161,16 @@ namespace new_frontiers {
        * @param y - the output ordinate of the chosen coordinate.
        */
       virtual void
-      takeAction(const StepInfo& info, float& x, float& y) = 0;
+      takeAction(StepInfo& info, float& x, float& y) = 0;
+
+      /**
+       * @brief - Interface method called after the execution of
+       *          each `step` method. It can be used to make sure
+       *          that any action has been performed.
+       * @param info - the information about the environment.
+       */
+      virtual void
+      postStep(StepInfo& info) = 0;
 
       /**
        * @brief - Used to make sure that the target of a path that
@@ -189,7 +196,7 @@ namespace new_frontiers {
        *               blocking the path and various utilities.
        */
       void
-      choosePath(const StepInfo& info);
+      choosePath(StepInfo& info);
 
     protected:
 
