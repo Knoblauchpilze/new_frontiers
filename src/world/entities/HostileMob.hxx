@@ -41,6 +41,15 @@ namespace new_frontiers {
   }
 
   inline
+  void
+  HostileMob::prepare(StepInfo& info) {
+    // Select a speed if not already done.
+    if (m_speed < 0.0f) {
+      m_speed = info.rng.rndFloat(0.1f, 3.0f);
+    }
+  }
+
+  inline
   pheromon::Type
   HostileMob::behaviorToPheromon(const Behavior& b) noexcept {
     switch (b) {

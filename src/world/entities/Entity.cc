@@ -7,12 +7,8 @@ namespace new_frontiers {
 
   bool
   Entity::step(StepInfo& info) {
-    // Choose a random speed if none is assigned yet.
-    // TODO: Maybe this could be moved in the `preSpawn`
-    // function of the spawner.
-    if (m_speed < 0.0f) {
-      m_speed = info.rng.rndFloat(0.1f, 3.0f);
-    }
+    // Prepare the entity for this step.
+    prepare(info);
 
     // If we did not arrive yet at our destination we
     // need to move towards it.

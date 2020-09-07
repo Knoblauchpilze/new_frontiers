@@ -48,6 +48,14 @@ namespace new_frontiers {
     protected:
 
       /**
+       * @brief - Dummy implementation of this method: the player
+       *          does not have anything to prepare for.
+       * @param info - the information about the world.
+       */
+      void
+      prepare(StepInfo& info) override;
+
+      /**
        * @brief - Dummy implementation of the method as the player is
        *          controlled by the user and not automatically.
        * @param info - info to take the decision of the next target.

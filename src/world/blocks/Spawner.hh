@@ -78,7 +78,7 @@ namespace new_frontiers {
        *          internal attributes in case an entity has been
        *          spawned.
        *          It is more reliable than assuming an entity
-       *          will be spawned when `canSpawn` returns `true`.*
+       *          will be spawned when `canSpawn` returns `true`.
        * @param info - the information about the spawn environment.
        * @param ent - the entity that has been spawned.
        */
