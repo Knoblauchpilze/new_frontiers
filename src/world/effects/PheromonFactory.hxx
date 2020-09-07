@@ -22,6 +22,7 @@ namespace new_frontiers {
   PheromonFactory::pheromonToVFX(const pheromon::Type& type) noexcept {
     switch (type) {
       case pheromon::Type::Chase:
+      case pheromon::Type::Collect:
         return tiles::Fire;
       case pheromon::Type::Fight:
         return tiles::Poison;

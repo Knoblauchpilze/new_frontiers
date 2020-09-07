@@ -2,6 +2,7 @@
 # define   HOSTILE_MOB_HH
 
 # include "Entity.hh"
+# include "../effects/Pheromon.hh"
 
 namespace new_frontiers {
 
@@ -48,6 +49,53 @@ namespace new_frontiers {
     private:
 
       /**
+       * @brief - Defines the mode in which this entity is currently
+       *          in. The mode defins which type of behavior it will
+       *          exhibit. Behaviors are controlled by the elements
+       *          visible in the field of view of the entity.
+       */
+      enum class Behavior {
+        Wander,
+        Chase,
+        Fight,
+        Collect,
+        Return
+      };
+
+      static
+      pheromon::Type
+      behaviorToPheromon(const Behavior& b) noexcept;
+
+      /**
+       * @brief - Dispatch method which will analyze the current state
+       *          of the entity and select the appropriate behavior to
+       *          execute.
+       * @param info - information about the surroundings of the mob.
+       * @return -  `true` if the behavior of the entity was changed
+       *            by this function. It allows to react when an entity
+       *            find an enemy, etc.
+       */
+      bool
+      behave(StepInfo& info) noexcept;
+
+      void
+      chase(StepInfo& info);
+
+      void
+      fight(StepInfo& info);
+
+      void
+      collect(StepInfo& info);
+
+      void
+      getBack(StepInfo& info);
+
+      void
+      wander(StepInfo& info);
+
+    private:
+
+      /**
        * @brief - Duration between two consecutives emission of
        *          a VFX by this mob.
        */
@@ -67,6 +115,15 @@ namespace new_frontiers {
        *          if nothins happened.
        */
       Duration m_passed;
+
+      /**
+       * @brief - Describe the current behavior for this entity. It
+       *          is changed dynamically based on the surrounding
+       *          elements.
+       *          Each behavior will lead to different actions that
+       *          can be performed by the entity.
+       */
+      Behavior m_behavior;
   };
 
   using HostileMobShPtr = std::shared_ptr<HostileMob>;
