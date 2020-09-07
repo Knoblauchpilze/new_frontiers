@@ -168,7 +168,7 @@ namespace new_frontiers {
     log(
       "Checking " + std::to_string(xT) + "x" + std::to_string(yT) +
       " i(" + std::to_string(xi) + "x" + std::to_string(yi) + ") (end)" +
-      ": " + std::to_string(m_solidIDs.count(yi * m_w + xi) > 0),
+      ": " + std::to_string(m_blocksIDs.count(yi * m_w + xi) > 0),
       utils::Level::Verbose
     );
 # endif

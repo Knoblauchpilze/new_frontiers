@@ -52,17 +52,17 @@ namespace new_frontiers {
     normalizePath(info, xDir, yDir, r);
 
 # ifdef DEBUG
-    float xt = m_path.xO + r * xDir;
-    float yt = m_path.yO + r * yDir;
+    float xt = m_tile.x + r * xDir;
+    float yt = m_tile.y + r * yDir;
 
     log(
-      "Attempt o(" + std::to_string(m_path.xO) + "x" + std::to_string(m_path.yO) +
+      "Attempt o(" + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y) +
       ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
       utils::Level::Debug
     );
 # endif
 
-    while (info.frustum->obstructed(m_path.xO, m_path.yO, xDir, yDir, r, m_cPoints)) {
+    while (info.frustum->obstructed(m_tile.x, m_tile.y, xDir, yDir, r, m_cPoints)) {
 # ifdef DEBUG
       log("Failed", utils::Level::Error);
 # endif
@@ -76,10 +76,10 @@ namespace new_frontiers {
       normalizePath(info, xDir, yDir, r);
 
 # ifdef DEBUG
-      xt = m_path.xO + r * xDir;
-      yt = m_path.yO + r * yDir;
+      xt = m_tile.x + r * xDir;
+      yt = m_tile.y + r * yDir;
       log(
-        "Attempt o(" + std::to_string(m_path.xO) + "x" + std::to_string(m_path.yO) +
+        "Attempt o(" + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y) +
         ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
         utils::Level::Debug
       );
