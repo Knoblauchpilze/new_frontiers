@@ -18,17 +18,6 @@ namespace new_frontiers {
       HostileMob(const EntityTile& tile);
 
       /**
-       * @brief - Override of the base class method to provide
-       *          emission of a VFX at regular intervals.
-       * @param info - the information about the world to use for
-       *               the entity to adapt its behavior.
-       * @return - `true` if the entity has moved (and thus should
-       *           be repainted).
-       */
-      bool
-      step(StepInfo& info) override;
-
-      /**
        * @brief - Implementation of the interface method to pause
        *          the internal processes for this mob. It mostly
        *          include the VFX spawning routine.
@@ -55,7 +44,7 @@ namespace new_frontiers {
        *               rng.
        */
       void
-      prepare(StepInfo& info) override;
+      prepareForStep(const StepInfo& info) override;
 
       /**
        * @brief - Implementation of the interface method to select
@@ -66,7 +55,15 @@ namespace new_frontiers {
        * @param y - the output ordinate of the chosen location.
        */
       void
-      takeAction(const StepInfo& info, float& x, float& y) override;
+      takeAction(StepInfo& info, float& x, float& y) override;
+
+      /**
+       * @brief - Implementation of the interface method to handle
+       *          the creation of pheromons by this entity.
+       * @param info - info to handle creation of pheromons.
+       */
+      void
+      postStep(StepInfo& info) override;
 
     private:
 
@@ -88,6 +85,9 @@ namespace new_frontiers {
       pheromon::Type
       behaviorToPheromon(const Behavior& b) noexcept;
 
+      void
+      emitPheromon(StepInfo& info) noexcept;
+
       /**
        * @brief - Dispatch method which will analyze the current state
        *          of the entity and select the appropriate behavior to
@@ -98,22 +98,22 @@ namespace new_frontiers {
        *            find an enemy, etc.
        */
       bool
-      behave(StepInfo& info) noexcept;
+      behave(StepInfo& info, float& x, float&y) noexcept;
 
       void
-      chase(StepInfo& info);
+      chase(StepInfo& info, float& x, float&y);
 
       void
-      fight(StepInfo& info);
+      fight(StepInfo& info, float& x, float&y);
 
       void
-      collect(StepInfo& info);
+      collect(StepInfo& info, float& x, float&y);
 
       void
-      getBack(StepInfo& info);
+      getBack(StepInfo& info, float& x, float&y);
 
       void
-      wander(StepInfo& info);
+      wander(StepInfo& info, float& x, float&y);
 
     private:
 

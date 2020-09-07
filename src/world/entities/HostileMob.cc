@@ -4,36 +4,47 @@
 
 namespace new_frontiers {
 
-  bool
-  HostileMob::step(StepInfo& info) {
-    // Perform the behavior of the entity.
-    bool changed = behave(info);
-
-    // Emit a new VFX if needed: that is if
-    // we emitted it too long ago or if the
-    // behavior just changed.
-    if (changed || m_last + m_vfxDelay <= info.moment) {
-      pheromon::Type pt = behaviorToPheromon(m_behavior);
-      info.vSpawned.push_back(spawnPheromon(pt));
-
-      m_last = info.moment;
-    }
-
-    // TODO: Should we keep that or integrate it
-    // in a `postStep` method provided by the base
-    // class or something ?
-
-    // Execute the base function and use it
-    // as a return value.
-    return Entity::step(info);
-  }
-
   void
-  HostileMob::takeAction(const StepInfo& info, float& x, float& y) {
+  HostileMob::takeAction(StepInfo& info, float& x, float& y) {
     // TODO: We should refine this method: it should select
     // a path based on the current behavior and on the
     // pheromons visible.
 
+    // First, we need to update the behavior of the
+    // entity: it is relevant because we just reached
+    // the destination we previously picked.
+    bool changed = behave(info, x, y);
+
+    // Once this is done, we may need to emit a new
+    // pheromon: this allow to make sure that we
+    // indicate any change of state for this entity.
+    if (changed) {
+      emitPheromon(info);
+    }
+  }
+
+  void
+  HostileMob::chase(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // TODO: Implement chase behavior.
+  }
+
+  void
+  HostileMob::fight(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // TODO: Implement fight behavior.
+  }
+
+  void
+  HostileMob::collect(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // TODO: Implement collect behavior.
+  }
+
+  void
+  HostileMob::getBack(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // TODO: Implement return behavior.
+  }
+
+  void
+  HostileMob::wander(StepInfo& info, float& x, float& y) {
     // Pick a random location within the radius of the
     // motion for this entity. We will use the locator
     // to determine if any element is obstructing the
@@ -89,31 +100,6 @@ namespace new_frontiers {
     // Save the picked location.
     x = m_tile.x + r * xDir;
     y = m_tile.y + r * yDir;
-  }
-
-  void
-  HostileMob::chase(StepInfo& /*info*/) {
-    // TODO: Implement chase behavior.
-  }
-
-  void
-  HostileMob::fight(StepInfo& /*info*/) {
-    // TODO: Implement fight behavior.
-  }
-
-  void
-  HostileMob::collect(StepInfo& /*info*/) {
-    // TODO: Implement collect behavior.
-  }
-
-  void
-  HostileMob::getBack(StepInfo& /*info*/) {
-    // TODO: Implement return behavior.
-  }
-
-  void
-  HostileMob::wander(StepInfo& /*info*/) {
-    // TODO: Implement wander behavior.
   }
 
 }

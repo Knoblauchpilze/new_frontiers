@@ -42,10 +42,22 @@ namespace new_frontiers {
 
   inline
   void
-  HostileMob::prepare(StepInfo& info) {
+  HostileMob::prepareForStep(const StepInfo& info) {
     // Select a speed if not already done.
     if (m_speed < 0.0f) {
       m_speed = info.rng.rndFloat(0.1f, 3.0f);
+    }
+  }
+
+  inline
+  void
+  HostileMob::postStep(StepInfo& info) {
+    // Emit a new VFX if needed.
+    if (m_last + m_vfxDelay <= info.moment) {
+      pheromon::Type pt = behaviorToPheromon(m_behavior);
+      info.vSpawned.push_back(spawnPheromon(pt));
+
+      m_last = info.moment;
     }
   }
 
@@ -68,27 +80,39 @@ namespace new_frontiers {
   }
 
   inline
+  void
+  HostileMob::emitPheromon(StepInfo& info) noexcept {
+    // Emit a pheromon based on the current behavior.
+    pheromon::Type pt = behaviorToPheromon(m_behavior);
+    info.vSpawned.push_back(spawnPheromon(pt));
+
+    // Register this as the last moment we produced
+    // a pheromon.
+    m_last = info.moment;
+  }
+
+  inline
   bool
-  HostileMob::behave(StepInfo& info) noexcept {
+  HostileMob::behave(StepInfo& info, float& x, float&y) noexcept {
     // Save the current behavior.
     Behavior s = m_behavior;
 
     switch (s) {
       case Behavior::Chase:
-        chase(info);
+        chase(info, x, y);
         break;
       case Behavior::Fight:
-        fight(info);
+        fight(info, x, y);
         break;
       case Behavior::Collect:
-        collect(info);
+        collect(info, x, y);
         break;
       case Behavior::Return:
-        getBack(info);
+        getBack(info, x, y);
         break;
       case Behavior::Wander:
       default:
-        wander(info);
+        wander(info, x, y);
         break;
     }
 
