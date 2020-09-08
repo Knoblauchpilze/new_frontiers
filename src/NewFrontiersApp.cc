@@ -205,7 +205,7 @@ namespace new_frontiers {
     for (int id = 0 ; id < m_wit->blocksCount() ; ++id) {
       BlockDesc t = m_wit->block(id);
       drawSprite(t.tile.x, t.tile.y, aliasOfBlock(t.tile.type), t.tile.id);
-      drawHealthBar(t.tile.x, t.tile.y, t.health);
+      drawHealthBar(t.tile.x, t.tile.y, t.health, Cell::TopLeft);
     }
 
     // Draw entities.
@@ -241,7 +241,7 @@ namespace new_frontiers {
         Cell::CenterLeft
       );
 
-      drawHealthBar(t.tile.x, t.tile.y, t.health);
+      drawHealthBar(t.tile.x, t.tile.y, t.health, Cell::CenterLeft);
     }
 
     // Draw vfx.

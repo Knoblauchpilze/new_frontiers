@@ -207,7 +207,12 @@ namespace new_frontiers {
        *                transparent.
        */
       void
-      drawSprite(float x, float y, int alias, int id, const Cell& location = Cell::TopLeft, int alpha = ALPHA_OPAQUE);
+      drawSprite(float x,
+                 float y,
+                 int alias,
+                 int id,
+                 const Cell& location = Cell::TopLeft,
+                 int alpha = ALPHA_OPAQUE);
 
       /**
        * @brief - Used to draw a minimalistic health bar for an entity
@@ -219,10 +224,16 @@ namespace new_frontiers {
        *            this healthbar is attached to.
        * @param ratio - a value in the range `[0; 1]` representing the
        *                health of the element.
+       * @param location - the base location of the health bar compared
+       *                   to the tile.
        * @param alpha - additional alpha modifier to blend the display.
        */
       void
-      drawHealthBar(float x, float y, float ratio, int alpha = ALPHA_SEMI_OPAQUE);
+      drawHealthBar(float x,
+                    float y,
+                    float ratio,
+                    const Cell& location = Cell::TopLeft,
+                    int alpha = ALPHA_SEMI_OPAQUE);
 
       /**
        * @brief - Used to compute a valid color based on the input ratio.
