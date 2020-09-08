@@ -187,7 +187,7 @@ namespace new_frontiers {
 
   inline
   void
-  NewFrontiersApp::drawHealthBar(float x, float y, float ratio, int alpha) {
+  NewFrontiersApp::drawHealthBar(float x, float y, float ratio, const Cell& location, int alpha) {
     // Fetch a color based on the input ratio.
     olc::Pixel hbc = ratioGradient(ratio, alpha);
 
@@ -206,7 +206,7 @@ namespace new_frontiers {
     // actual element and have a size of 7/10th
     // of a tile in width, and 1/10th of a tile
     // in height.
-    olc::vf2d p = m_cf.tileCoordsToPixels(x, y, Cell::CenterLeft);
+    olc::vf2d p = m_cf.tileCoordsToPixels(x, y, location);
 
     float hbWRatio = 0.7f;
     float hbHRatio = 0.1f;
