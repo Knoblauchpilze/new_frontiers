@@ -15,6 +15,7 @@ namespace new_frontiers {
 
     m_ss(theme.size),
     m_sprites(),
+    m_mSprites(),
     m_aliases(),
 
     m_world(nullptr),
@@ -111,6 +112,13 @@ namespace new_frontiers {
     m_aliases[aliasOfEffect(tiles::Smoke)]     = SpriteAlias{VFXID, olc::vi2d(9, 0)};
 
     m_aliases[spritesCount] = SpriteAlias{CursorID, olc::vi2d(0, 0)};
+  }
+
+  void
+  NewFrontiersApp::loadMenuResources() {
+    // Load the background image.
+    olc::Sprite* spr = new olc::Sprite("data/img/dark_basalt.png");
+    m_mSprites.bg = new olc::Decal(spr);
   }
 
   bool
@@ -270,11 +278,64 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
 
-    int mHeight = 100;
-    olc::vi2d mPos(0, ScreenHeight() - mHeight);
-    olc::vi2d mSize(ScreenWidth(), mHeight);
+    int mHeight = 150;
+    int mBarHeight = 20;
+    int barToMenuGap = 15;
+    int mBGWrap = 150;
 
-    FillRectDecal(mPos, mSize, olc::Pixel(64, 64, 64, ALPHA_SEMI_OPAQUE));
+    int w = ScreenWidth();
+    int h = ScreenHeight();
+
+    olc::vf2d mPos(0.0f, h - mHeight);
+    olc::vf2d mSize(w, mHeight);
+
+    // Top bar of the menu (where quick access icons are).
+    olc::Pixel c1(196, 162, 116);
+    olc::Pixel c2(30, 17, 11);
+    olc::Pixel c3(66, 48, 34);
+
+    GradientFillRectDecal(
+      mPos,
+      olc::vf2d(mSize.x, mBarHeight * 0.66f),
+      c1, c2, c2, c1
+    );
+
+    GradientFillRectDecal(
+      mPos + olc::vf2d(0.0f, mBarHeight * 0.66f),
+      olc::vf2d(mSize.x, mBarHeight * 0.34f),
+      c2, c3, c3, c2
+    );
+
+    // Background of the main menu (where stats of the
+    // currently selected item appear).
+    float repeat = mSize.x / mBGWrap;
+    float x = 0.0f;
+    olc::vf2d s(
+      1.0f * mBGWrap / m_mSprites.bg->sprite->width,
+      (mSize.y - mBarHeight - barToMenuGap) / m_mSprites.bg->sprite->height
+    );
+
+    while (repeat >= 1.0f) {
+      DrawDecal(
+        mPos + olc::vf2d(x, mBarHeight + barToMenuGap),
+        m_mSprites.bg,
+        s
+      );
+
+      x += mBGWrap;
+      repeat -= 1.0f;
+    }
+
+    if (repeat > 0.0f) {
+      DrawPartialDecal(
+        mPos + olc::vf2d(x, mBarHeight + barToMenuGap),
+        olc::vf2d(mBGWrap * repeat, mSize.y - mBarHeight - barToMenuGap),
+        m_mSprites.bg,
+        olc::vf2d(0.0f, 0.0f),
+        olc::vf2d(m_mSprites.bg->sprite->width * repeat, m_mSprites.bg->sprite->height)
+      );
+    }
+
 
     SetPixelMode(olc::Pixel::NORMAL);
   }

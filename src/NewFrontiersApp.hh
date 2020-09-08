@@ -135,6 +135,13 @@ namespace new_frontiers {
       createTileAliases();
 
       /**
+       * @brief - Called during the initialization of the application
+       *          in order to load resources needed by the menu.
+       */
+      void
+      loadMenuResources();
+
+      /**
        * @brief - Used to convert from sprite coordinates to the
        *          corresponding pixels coordinates. This method
        *          should mostly be used to locate a sprite in a
@@ -323,6 +330,14 @@ namespace new_frontiers {
       };
 
       /**
+       * @brief - Convenience structure grouping all resources
+       *          needed to display the menu.
+       */
+      struct MenuResources {
+        olc::Decal* bg;
+      };
+
+      /**
        * @brief - Define the size of a sprtie in pixels as loaded
        *          from the resource packs used by this application.
        *          We allow only a single size in order to maintain
@@ -342,6 +357,12 @@ namespace new_frontiers {
        *          for the viewport handling for example.
        */
       std::vector<SpritesPack> m_sprites;
+
+      /**
+       * @brief - Hold the list of resources needed to display the
+       *          UI and the menu for this app.
+       */
+      MenuResources m_mSprites;
 
       /**
        * @brief - Defines an atlas where each tile type is stored

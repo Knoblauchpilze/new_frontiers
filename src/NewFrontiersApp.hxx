@@ -7,12 +7,18 @@ namespace new_frontiers {
 
   inline
   NewFrontiersApp::~NewFrontiersApp() {
+    // Clear game sprites.
     if (!m_sprites.empty()) {
       for (unsigned id = 0u ; id < m_sprites.size() ; ++id) {
         delete m_sprites[id].res;
       }
 
       m_sprites.clear();
+    }
+
+    // And menu sprites.
+    if (m_mSprites.bg != nullptr) {
+      delete m_mSprites.bg;
     }
   }
 
@@ -26,6 +32,9 @@ namespace new_frontiers {
 
     // And the tile alias.
     createTileAliases();
+
+    // Load the menu resources.
+    loadMenuResources();
 
     // The debug layer is the default layer: it is always
     // provided by the pixel game engine.
