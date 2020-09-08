@@ -119,6 +119,9 @@ namespace new_frontiers {
     // Load the background image.
     olc::Sprite* spr = new olc::Sprite("data/img/dark_basalt.png");
     m_mSprites.bg = new olc::Decal(spr);
+
+    spr = new olc::Sprite("data/img/minimap.png");
+    m_mSprites.minimap = new olc::Decal(spr);
   }
 
   bool
@@ -282,6 +285,7 @@ namespace new_frontiers {
     int mBarHeight = 20;
     int barToMenuGap = 15;
     int mBGWrap = 150;
+    int mMainSize = mHeight - barToMenuGap - mBarHeight;
 
     int w = ScreenWidth();
     int h = ScreenHeight();
@@ -312,7 +316,7 @@ namespace new_frontiers {
     float x = 0.0f;
     olc::vf2d s(
       1.0f * mBGWrap / m_mSprites.bg->sprite->width,
-      (mSize.y - mBarHeight - barToMenuGap) / m_mSprites.bg->sprite->height
+      1.0f * mMainSize / m_mSprites.bg->sprite->height
     );
 
     while (repeat >= 1.0f) {
@@ -329,13 +333,24 @@ namespace new_frontiers {
     if (repeat > 0.0f) {
       DrawPartialDecal(
         mPos + olc::vf2d(x, mBarHeight + barToMenuGap),
-        olc::vf2d(mBGWrap * repeat, mSize.y - mBarHeight - barToMenuGap),
+        olc::vf2d(mBGWrap * repeat, mMainSize),
         m_mSprites.bg,
         olc::vf2d(0.0f, 0.0f),
         olc::vf2d(m_mSprites.bg->sprite->width * repeat, m_mSprites.bg->sprite->height)
       );
     }
 
+    // Draw the minimap.
+    float mS = std::min(
+      1.0f * m_mSprites.minimap->sprite->width,
+      1.0f * mMainSize / m_mSprites.minimap->sprite->height
+    );
+
+    DrawDecal(
+      mPos + olc::vf2d(0.0f, mBarHeight + barToMenuGap),
+      m_mSprites.minimap,
+      olc::vf2d(mS, mS)
+    );
 
     SetPixelMode(olc::Pixel::NORMAL);
   }

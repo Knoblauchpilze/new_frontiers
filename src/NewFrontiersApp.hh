@@ -335,6 +335,7 @@ namespace new_frontiers {
        */
       struct MenuResources {
         olc::Decal* bg;
+        olc::Decal* minimap;
       };
 
       /**
