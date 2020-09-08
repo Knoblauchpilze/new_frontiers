@@ -210,6 +210,35 @@ namespace new_frontiers {
       drawSprite(float x, float y, int alias, int id, const Cell& location = Cell::TopLeft, int alpha = ALPHA_OPAQUE);
 
       /**
+       * @brief - Used to draw a minimalistic health bar for an entity
+       *          or block at position (x, y) in cells coordinates. It
+       *          is displayed with the specified alpha transparency.
+       * @param x - the coordinate along the `x` axis for the element
+       *            this healthbar is attached to.
+       * @param y - the coordinate along the `y` axis for the element
+       *            this healthbar is attached to.
+       * @param ratio - a value in the range `[0; 1]` representing the
+       *                health of the element.
+       * @param alpha - additional alpha modifier to blend the display.
+       */
+      void
+      drawHealthBar(float x, float y, float ratio, int alpha = ALPHA_SEMI_OPAQUE);
+
+      /**
+       * @brief - Used to compute a valid color based on the input ratio.
+       *          The color is taken from a range going from pure green
+       *          to yellow, then orange and finally red for decreasing
+       *          values of the ratio in the range `[0; 1]`.
+       * @param ratio - a value in the range `[0; 1]` (clamped if it is
+       *                not the case).
+       * @param alpha - additional alpha channel information to generate
+       *                the color.
+       * @return - a color representing the ratio.
+       */
+      olc::Pixel
+      ratioGradient(float ratio, int alpha = ALPHA_SEMI_OPAQUE) const noexcept;
+
+      /**
        * @brief - Used to perform the necessary update based on
        *          the controls that the user might have used in
        *          the game.

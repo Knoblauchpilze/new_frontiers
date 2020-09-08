@@ -57,8 +57,10 @@ namespace new_frontiers {
        *          to use for the visual representation.
        * @param tile - the visual representation of the entity
        *               along with its position.
+       * @param health - the health pool of this entity.
        */
-      Entity(const EntityTile& tile);
+      Entity(const EntityTile& tile,
+             float health = 10.0f);
 
       /**
        * @brief - Implementation of the interface method to evolve

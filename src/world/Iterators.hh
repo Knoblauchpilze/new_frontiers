@@ -12,6 +12,15 @@
 namespace new_frontiers {
 
   /**
+   * @brief - Convenience wrapper describing common props
+   *          for blocks that can be used for display.
+   */
+  struct BlockDesc {
+    BlockTile tile;
+    float health;
+  };
+
+  /**
    * @brief - Convenience wrapper to retrieve information
    *          about an entity. This is passed as return
    *          value for elements querying entities from
@@ -20,6 +29,7 @@ namespace new_frontiers {
    */
   struct EntityDesc {
     EntityTile tile;
+    float health;
     State state;
     float xT;
     float yT;
@@ -80,7 +90,7 @@ namespace new_frontiers {
        * @param id - index of the tile to access.
        * @return - the tile at the specified index.
        */
-      const BlockTile&
+      BlockDesc
       block(int id) const noexcept;
 
       /**

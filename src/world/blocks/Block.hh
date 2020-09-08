@@ -47,8 +47,11 @@ namespace new_frontiers {
        * @param tile - the visual representation of this
        *               element along with its position.
        * @param name - the name of the object.
+       * @param health - the health pool for this block.
        */
-      Block(const BlockTile& tile, const std::string& name);
+      Block(const BlockTile& tile,
+            const std::string& name,
+            float health = 10.0f);
 
     private:
 

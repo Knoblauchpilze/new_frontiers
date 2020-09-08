@@ -34,6 +34,9 @@ namespace new_frontiers {
       choosePath(info);
     }
 
+    m_health -= 0.001f;
+    m_health = std::max(0.0f, m_health);
+
     // Move along the path.
     bool moved = false;
 // # define NO_MOTION
