@@ -203,8 +203,9 @@ namespace new_frontiers {
 
     // Draw solid tiles.
     for (int id = 0 ; id < m_wit->blocksCount() ; ++id) {
-      BlockTile t = m_wit->block(id);
-      drawSprite(t.x, t.y, aliasOfBlock(t.type), t.id);
+      BlockDesc t = m_wit->block(id);
+      drawSprite(t.tile.x, t.tile.y, aliasOfBlock(t.tile.type), t.tile.id);
+      drawHealthBar(t.tile.x, t.tile.y, t.health);
     }
 
     // Draw entities.
@@ -239,6 +240,8 @@ namespace new_frontiers {
         t.tile.id,
         Cell::CenterLeft
       );
+
+      drawHealthBar(t.tile.x, t.tile.y, t.health);
     }
 
     // Draw vfx.

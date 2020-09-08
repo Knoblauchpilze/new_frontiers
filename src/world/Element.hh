@@ -27,6 +27,16 @@ namespace new_frontiers {
       getTile() noexcept;
 
       /**
+       * @brief - Retrieve the ratio of current health over
+       *          total health for this element. This value
+       *          is in the range `[0; 1]` and allows to
+       *          measure how healthy this element it.
+       * @return - a ratio measuring the health of this item.
+       */
+      float
+      getHealthRatio();
+
+      /**
        * @brief - Interface method allowing for a world element
        *          to evolve based on its surroundings. We use a
        *          struct gathering the current state of the
@@ -70,10 +80,12 @@ namespace new_frontiers {
        * @param tile - the tile to associate to this object. It
        *               defines the visual along with the coords
        *               of the element.
+       * @param health - the health pool for this element.
        * @param name - the name of the object (mainly used for
        *               logging purposes).
        */
       Element(const Tile<TileType>& tile,
+              float health,
               const std::string& name);
 
     protected:
@@ -83,6 +95,19 @@ namespace new_frontiers {
        *          the coordinates at which it should be displayed.
        */
       Tile<TileType> m_tile;
+
+      /**
+       * @brief - The health pool for this element.
+       */
+      float m_health;
+
+      /**
+       * @brief - The total health pool for this element. It is
+       *          used as a reminder of how much health in total
+       *          the element had, before anything happened to
+       *          it.
+       */
+      float m_totalHealth;
   };
 
 }

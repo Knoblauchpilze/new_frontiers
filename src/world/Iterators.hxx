@@ -63,9 +63,14 @@ namespace new_frontiers {
   }
 
   inline
-  const BlockTile&
+  BlockDesc
   Iterator::block(int id) const noexcept {
-    return m_blocks[m_sortedBlocks[id].id]->getTile();
+    BlockShPtr b = m_blocks[m_sortedBlocks[id].id];
+
+    return BlockDesc{
+      b->getTile(),
+      b->getHealthRatio()
+    };
   }
 
   inline
@@ -75,6 +80,7 @@ namespace new_frontiers {
 
     return EntityDesc{
       e->getTile(),
+      e->getHealthRatio(),
       e->getState(),
       e->getPathX(),
       e->getPathY(),

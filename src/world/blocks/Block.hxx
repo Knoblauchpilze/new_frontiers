@@ -6,8 +6,10 @@
 namespace new_frontiers {
 
   inline
-  Block::Block(const BlockTile& tile, const std::string& name):
-    Element(tile, name)
+  Block::Block(const BlockTile& tile,
+               const std::string& name,
+               float health):
+    Element(tile, health, name)
   {}
 
   inline

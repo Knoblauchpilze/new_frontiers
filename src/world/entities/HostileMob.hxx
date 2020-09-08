@@ -9,7 +9,7 @@ namespace new_frontiers {
   HostileMob::HostileMob(const EntityTile& tile):
     Entity(tile),
 
-    m_vfxDelay(toMilliseconds(2000)),
+    m_vfxDelay(toMilliseconds(8000)),
     m_last(now() - m_vfxDelay),
 
     m_passed(),

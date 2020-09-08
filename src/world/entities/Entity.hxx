@@ -32,8 +32,9 @@ namespace new_frontiers {
   }
 
   inline
-  Entity::Entity(const EntityTile& desc):
-    Element(desc, "entity"),
+  Entity::Entity(const EntityTile& desc,
+                 float health):
+    Element(desc, health, "entity"),
 
     m_speed(-1.0f),
     m_rArrival(0.05f),

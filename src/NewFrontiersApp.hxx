@@ -185,6 +185,88 @@ namespace new_frontiers {
     );
   }
 
+  inline
+  void
+  NewFrontiersApp::drawHealthBar(float x, float y, float ratio, int alpha) {
+    // Fetch a color based on the input ratio.
+    olc::Pixel hbc = ratioGradient(ratio, alpha);
+
+    // Darken it for the empty portion of the
+    // healthbar.
+    olc::Pixel bc(
+      static_cast<int>(hbc.r * 0.5f),
+      static_cast<int>(hbc.g * 0.5f),
+      static_cast<int>(hbc.b * 0.5f),
+      hbc.a
+    );
+
+    // Draw both parts of the healthbar. The
+    // combined length of both elements will
+    // be placed close to the position of the
+    // actual element and have a size of 7/10th
+    // of a tile in width, and 1/10th of a tile
+    // in height.
+    olc::vf2d p = m_cf.tileCoordsToPixels(x, y, Cell::CenterLeft);
+
+    float hbWRatio = 0.7f;
+    float hbHRatio = 0.1f;
+    float hbHOffset = 0.1f;
+    olc::vf2d s = m_ss * m_cf.tileScale();
+
+    FillRectDecal(
+      olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f, p.y - s.y * hbHOffset),
+      olc::vf2d(s.x * hbWRatio * ratio, s.y * hbHRatio),
+      hbc
+    );
+    FillRectDecal(
+      olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, p.y - s.y * hbHOffset),
+      olc::vf2d(s.x * hbWRatio * (1.0f - ratio), s.y * hbHRatio),
+      bc
+    );
+  }
+
+  inline
+  olc::Pixel
+  NewFrontiersApp::ratioGradient(float ratio, int alpha) const noexcept {
+    // Go from red to orange to yellow to green
+    // based on the value of the ratio. It fits
+    // nicely in the range `[0; 1]` where each
+    // `0.33` we have a new color.
+    ratio = std::min(std::max(ratio, 0.0f), 1.0f);
+
+    float t = 0.0f;
+    olc::Pixel l, h;
+
+    if (ratio <= 0.33f) {
+      // Red to orange.
+      t = ratio / 0.33f;
+
+      l = olc::Pixel(255u, 0u, 0u);
+      h = olc::Pixel(255u, 128u, 0u);
+    }
+    else if (ratio <= 0.66f) {
+      // Orange to yellow.
+      t = (ratio - 0.33f) / 0.33f;
+
+      l = olc::Pixel(255u, 128u, 0u);
+      h = olc::Pixel(255u, 255u, 0u);
+    }
+    else {
+      // Yellow to green
+      t = (ratio - 0.66f) / 0.34f;
+
+      l = olc::Pixel(255u, 255u, 0u);
+      h = olc::Pixel(0u, 255u, 0u);
+    }
+
+    return olc::Pixel(
+      static_cast<int>((1.0f - t) * l.r + t * h.r),
+      static_cast<int>((1.0f - t) * l.g + t * h.g),
+      static_cast<int>((1.0f - t) * l.b + t * h.b),
+      alpha
+    );
+  }
+
 }
 
 #endif    /* NEW_FRONTIERS_APP_HXX */
