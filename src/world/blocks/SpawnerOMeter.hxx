@@ -17,14 +17,32 @@ namespace new_frontiers {
     }
 
     // Otherwise we have to have a sufficient amount
-    // of resource to perform the operation.
-    if (m_stock < delta && !force) {
+    // of resource to perform the operation. In case
+    // the `force` is `true` we will decrease the
+    // stock no matter if it becomes negative. If we
+    // don't force the update then we only make the
+    // stock `0`.
+    if (m_stock < delta && force) {
+      m_stock -= delta;
+
       return false;
     }
 
     m_stock = std::max(m_stock - delta, 0.0f);
 
     return true;
+  }
+
+  inline
+  void
+  SpawnerOMeter::update(StepInfo& info) {
+    refill(info.elapsed * m_refill, false);
+  }
+
+  inline
+  void
+  SpawnerOMeter::setRefillRate(float rate) noexcept {
+    m_refill = rate;
   }
 
   inline

@@ -18,21 +18,27 @@ namespace new_frontiers {
        *          entities at once.
        * @param tile - the visual representation of the spawner
        *               along with its position.
-       * @param interval - the time interval between consecutive
-       *                   spawns of entities.
-       * @param mob - the type of mob spawned by this element.
-       * @param id - the variant of mob spawned.
+       * @param threshold - the cost of each entity expressed in
+       *                    unit of the stock.
        * @param stock - a value indicating how many entities can
        *                be spawned by this portal. The default
        *                value of `-1` indicate that an infinite
        *                amount of entities can be spawned.
+       * @param interval - the time interval between consecutive
+       *                   spawns of entities.
+       * @param mob - the type of mob spawned by this element.
+       * @param id - the variant of mob spawned.
+       * @param refill - a value indicating how fast the spawner
+       *                 is automatically refilling its stock
+       *                 over time.
        */
       SpawnerOMeter(const BlockTile& tile,
                     float threshold,
                     float stock,
                     const Duration& interval,
                     const tiles::Entity& mob,
-                    int id = 0);
+                    int id = 0,
+                    float refill = 0.0f);
 
       /**
        * @brief - Used to change the amount of the resource that
@@ -54,6 +60,24 @@ namespace new_frontiers {
 
     protected:
 
+      /**
+       * @brief - Implementation of the interface method to
+       *          handle the automatic refill of the stock.
+       * @param info - information to perform the update.
+       */
+      void
+      update(StepInfo& info) override;
+
+      /**
+       * @brief - Used to define the refill rate for this spawner.
+       *          The rate is not checked to be positive which is
+       *          allowing spawner that are actually emptying on
+       *          their own over time.
+       * @param rate - the new refill rate.
+       */
+      void
+      setRefillRate(float rate) noexcept;
+
       bool
       canSpawn(StepInfo& info) const noexcept override;
 
@@ -67,14 +91,21 @@ namespace new_frontiers {
        *          spawner. Based on the cost of a single entity
        *          it can be enough to spawn a new one.
        */
-      int m_stock;
+      float m_stock;
 
       /**
        * @brief - The cost of a single entity. This amount is
        *          removed from the `m_stock` each time a new
        *          entity is spawned.
        */
-      int m_threshold;
+      float m_threshold;
+
+      /**
+       * @brief - Base refill rate for this spawner. This value
+       *          is added to the `m_stock` assuming it is the
+       *          amount of stock that is refilled every second.
+       */
+      float m_refill;
   };
 
   using SpawnerOMeterShPtr = std::shared_ptr<SpawnerOMeter>;
