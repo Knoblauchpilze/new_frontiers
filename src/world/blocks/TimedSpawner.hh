@@ -38,6 +38,9 @@ namespace new_frontiers {
 
     protected:
 
+      void
+      update(StepInfo& info) override;
+
       bool
       canSpawn(StepInfo& info) const noexcept override;
 

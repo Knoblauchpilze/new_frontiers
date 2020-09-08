@@ -23,6 +23,10 @@ namespace new_frontiers {
   Spawner::step(StepInfo& info) {
     // Check whether the spawner is allowed to spawn
     // a new entity at this frame.
+    update(info);
+
+    // In case a new entity cannot be spawned, we're
+    // done.
     if (!canSpawn(info)) {
       return false;
     }

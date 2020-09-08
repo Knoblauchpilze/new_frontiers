@@ -28,6 +28,10 @@ namespace new_frontiers {
   }
 
   inline
+  void
+  TimedSpawner::update(StepInfo& /*info*/) {}
+
+  inline
   bool
   TimedSpawner::canSpawn(StepInfo& info) const noexcept {
     return !depleted() && (info.moment - m_interval >= m_last);

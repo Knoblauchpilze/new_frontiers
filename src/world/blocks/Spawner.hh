@@ -46,6 +46,16 @@ namespace new_frontiers {
               const tiles::Entity& mob,
               int id = 0);
 
+      /**
+       * @brief - Interface method to allow inheriting classes
+       *          to perform changes in their internal values
+       *          upon each execution of the `step` method.
+       * @param info - the information about the world to use
+       *               when performing the update.
+       */
+      virtual void
+      update(StepInfo& info) = 0;
+
     private:
 
       /**
