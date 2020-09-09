@@ -6,7 +6,7 @@
 # include <random>
 # include "World.hh"
 # include "CoordinateFrames.hh"
-# include "ui/Menu.hh"
+# include "ui/GameMenu.hh"
 
 namespace new_frontiers {
 
@@ -372,7 +372,7 @@ namespace new_frontiers {
        *          the code is deferred in a dedicated class which
        *          is more robust than having everything here.
        */
-      MenuShPtr m_menu;
+      GameMenuShPtr m_menu;
 
       /**
        * @brief - Defines an atlas where each tile type is stored
