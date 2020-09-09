@@ -6,6 +6,7 @@
 # include <random>
 # include "World.hh"
 # include "CoordinateFrames.hh"
+# include "ui/Menu.hh"
 
 namespace new_frontiers {
 
@@ -364,6 +365,14 @@ namespace new_frontiers {
        *          UI and the menu for this app.
        */
       MenuResources m_mSprites;
+
+      /**
+       * @brief - Hold the representation of the in game menu for
+       *          this application. The rendering and handling of
+       *          the code is deferred in a dedicated class which
+       *          is more robust than having everything here.
+       */
+      MenuShPtr m_menu;
 
       /**
        * @brief - Defines an atlas where each tile type is stored

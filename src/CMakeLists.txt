@@ -11,6 +11,10 @@ add_subdirectory(
   ${CMAKE_CURRENT_SOURCE_DIR}/world
   )
 
+add_subdirectory(
+  ${CMAKE_CURRENT_SOURCE_DIR}/ui
+  )
+
 set (SOURCES
   ${SOURCES}
   olcEngine.cc
