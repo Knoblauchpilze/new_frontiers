@@ -16,6 +16,7 @@ namespace new_frontiers {
     m_ss(theme.size),
     m_sprites(),
     m_mSprites(),
+    m_menu(nullptr),
     m_aliases(),
 
     m_world(nullptr),
@@ -122,6 +123,18 @@ namespace new_frontiers {
 
     spr = new olc::Sprite("data/img/minimap.png");
     m_mSprites.minimap = new olc::Decal(spr);
+
+    // Create the menu: we want it to have a fixed
+    // height and be at the bottom of the screen.
+    int mHeight = 150;
+
+    int w = ScreenWidth();
+    int h = ScreenHeight();
+
+    olc::vi2d mPos(0, h - mHeight);
+    olc::vf2d mSize(w, mHeight);
+
+    m_menu = std::make_shared<Menu>(mPos, mSize, "menu");
   }
 
   bool
@@ -281,76 +294,81 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
 
-    int mHeight = 150;
-    int mBarHeight = 20;
-    int barToMenuGap = 15;
-    int mBGWrap = 150;
-    int mMainSize = mHeight - barToMenuGap - mBarHeight;
+    if (m_menu != nullptr) {
+      m_menu->render(this);
+    }
+    else {
+      int mHeight = 150;
+      int mBarHeight = 20;
+      int barToMenuGap = 15;
+      int mBGWrap = 150;
+      int mMainSize = mHeight - barToMenuGap - mBarHeight;
 
-    int w = ScreenWidth();
-    int h = ScreenHeight();
+      int w = ScreenWidth();
+      int h = ScreenHeight();
 
-    olc::vf2d mPos(0.0f, h - mHeight);
-    olc::vf2d mSize(w, mHeight);
+      olc::vf2d mPos(0.0f, h - mHeight);
+      olc::vf2d mSize(w, mHeight);
 
-    // Top bar of the menu (where quick access icons are).
-    olc::Pixel c1(196, 162, 116);
-    olc::Pixel c2(30, 17, 11);
-    olc::Pixel c3(66, 48, 34);
+      // Top bar of the menu (where quick access icons are).
+      olc::Pixel c1(196, 162, 116);
+      olc::Pixel c2(30, 17, 11);
+      olc::Pixel c3(66, 48, 34);
 
-    GradientFillRectDecal(
-      mPos,
-      olc::vf2d(mSize.x, mBarHeight * 0.66f),
-      c1, c2, c2, c1
-    );
+      GradientFillRectDecal(
+        mPos,
+        olc::vf2d(mSize.x, mBarHeight * 0.66f),
+        c1, c2, c2, c1
+      );
 
-    GradientFillRectDecal(
-      mPos + olc::vf2d(0.0f, mBarHeight * 0.66f),
-      olc::vf2d(mSize.x, mBarHeight * 0.34f),
-      c2, c3, c3, c2
-    );
+      GradientFillRectDecal(
+        mPos + olc::vf2d(0.0f, mBarHeight * 0.66f),
+        olc::vf2d(mSize.x, mBarHeight * 0.34f),
+        c2, c3, c3, c2
+      );
 
-    // Background of the main menu (where stats of the
-    // currently selected item appear).
-    float repeat = mSize.x / mBGWrap;
-    float x = 0.0f;
-    olc::vf2d s(
-      1.0f * mBGWrap / m_mSprites.bg->sprite->width,
-      1.0f * mMainSize / m_mSprites.bg->sprite->height
-    );
+      // Background of the main menu (where stats of the
+      // currently selected item appear).
+      float repeat = mSize.x / mBGWrap;
+      float x = 0.0f;
+      olc::vf2d s(
+        1.0f * mBGWrap / m_mSprites.bg->sprite->width,
+        1.0f * mMainSize / m_mSprites.bg->sprite->height
+      );
 
-    while (repeat >= 1.0f) {
+      while (repeat >= 1.0f) {
+        DrawDecal(
+          mPos + olc::vf2d(x, mBarHeight + barToMenuGap),
+          m_mSprites.bg,
+          s
+        );
+
+        x += mBGWrap;
+        repeat -= 1.0f;
+      }
+
+      if (repeat > 0.0f) {
+        DrawPartialDecal(
+          mPos + olc::vf2d(x, mBarHeight + barToMenuGap),
+          olc::vf2d(mBGWrap * repeat, mMainSize),
+          m_mSprites.bg,
+          olc::vf2d(0.0f, 0.0f),
+          olc::vf2d(m_mSprites.bg->sprite->width * repeat, m_mSprites.bg->sprite->height)
+        );
+      }
+
+      // Draw the minimap.
+      float mS = std::min(
+        1.0f * m_mSprites.minimap->sprite->width,
+        1.0f * mMainSize / m_mSprites.minimap->sprite->height
+      );
+
       DrawDecal(
-        mPos + olc::vf2d(x, mBarHeight + barToMenuGap),
-        m_mSprites.bg,
-        s
-      );
-
-      x += mBGWrap;
-      repeat -= 1.0f;
-    }
-
-    if (repeat > 0.0f) {
-      DrawPartialDecal(
-        mPos + olc::vf2d(x, mBarHeight + barToMenuGap),
-        olc::vf2d(mBGWrap * repeat, mMainSize),
-        m_mSprites.bg,
-        olc::vf2d(0.0f, 0.0f),
-        olc::vf2d(m_mSprites.bg->sprite->width * repeat, m_mSprites.bg->sprite->height)
+        mPos + olc::vf2d(0.0f, mBarHeight + barToMenuGap),
+        m_mSprites.minimap,
+        olc::vf2d(mS, mS)
       );
     }
-
-    // Draw the minimap.
-    float mS = std::min(
-      1.0f * m_mSprites.minimap->sprite->width,
-      1.0f * mMainSize / m_mSprites.minimap->sprite->height
-    );
-
-    DrawDecal(
-      mPos + olc::vf2d(0.0f, mBarHeight + barToMenuGap),
-      m_mSprites.minimap,
-      olc::vf2d(mS, mS)
-    );
 
     SetPixelMode(olc::Pixel::NORMAL);
   }
