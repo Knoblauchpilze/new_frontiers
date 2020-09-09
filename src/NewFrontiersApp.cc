@@ -134,7 +134,7 @@ namespace new_frontiers {
     olc::vi2d mPos(0, h - mHeight);
     olc::vf2d mSize(w, mHeight);
 
-    m_menu = std::make_shared<Menu>(mPos, mSize, "menu");
+    m_menu = std::make_shared<GameMenu>(mPos, mSize);
   }
 
   bool
