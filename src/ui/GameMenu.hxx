@@ -8,10 +8,10 @@ namespace new_frontiers {
   inline
   GameMenu::GameMenu(const olc::vi2d& pos,
                      const olc::vf2d& size):
-    Menu(pos, size, "menu"),
-
-    m_bg(newColoredBackground(olc::Pixel(255, 128, 0)))
-  {}
+    Menu(pos, size, newColoredBackground(olc::WHITE), "menu")
+  {
+    initialize();
+  }
 
 }
 

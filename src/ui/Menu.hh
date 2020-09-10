@@ -4,6 +4,7 @@
 # include <memory>
 # include <core_utils/CoreObject.hh>
 # include "../olcPixelGameEngine.h"
+# include "BackgroundDesc.hh"
 
 namespace new_frontiers {
 
@@ -14,10 +15,13 @@ namespace new_frontiers {
        * @brief - Create a new menu with the specified dimensions.
        * @param pos - the position of the menu in the parent app.
        * @param size - the dimensions of the menu.
+       * @param bg - description of the background which can either
+       *             be a uniform background or a tiled sprite.
        * @param name - the name of the menu (for logging purposes).
        */
       Menu(const olc::vi2d& pos,
            const olc::vf2d& size,
+           const BackgroundDesc& bg,
            const std::string& name);
 
       /**
@@ -50,6 +54,30 @@ namespace new_frontiers {
       void
       renderSelf(olc::PixelGameEngine* pge) const;
 
+      /**
+       * @brief - Replace the existing background with the new
+       *          one.
+       * @param bg - the new background to assign.
+       */
+      void
+      setBackground(const BackgroundDesc& bg);
+
+    private:
+
+      /**
+       * @brief - Clear any loaded resource for this menu. Used
+       *          when the visual appearance needs to be adjusted.
+       */
+      void
+      clear();
+
+      /**
+       * @brief - Used to perform the loading of the BG tile
+       *          if needed from the background description.
+       */
+      void
+      loadBGTile();
+
     private:
 
       /**
@@ -62,6 +90,18 @@ namespace new_frontiers {
        * @brief - The size of the menu in pixels.
        */
       olc::vi2d m_size;
+
+      /**
+       * @brief - The background associated to this menu. Can either
+       *          represent a uniform color or a tiled image.
+       */
+      BackgroundDesc m_bg;
+
+      /**
+       * @brief - Hold the sprite used to tile the background of this
+       *          menu if any is defined in the `m_bg` element.
+       */
+      olc::Decal* m_bgSprite;
   };
 
   using MenuShPtr = std::shared_ptr<Menu>;

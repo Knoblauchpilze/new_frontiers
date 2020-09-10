@@ -331,15 +331,6 @@ namespace new_frontiers {
       };
 
       /**
-       * @brief - Convenience structure grouping all resources
-       *          needed to display the menu.
-       */
-      struct MenuResources {
-        olc::Decal* bg;
-        olc::Decal* minimap;
-      };
-
-      /**
        * @brief - Define the size of a sprtie in pixels as loaded
        *          from the resource packs used by this application.
        *          We allow only a single size in order to maintain
@@ -359,12 +350,6 @@ namespace new_frontiers {
        *          for the viewport handling for example.
        */
       std::vector<SpritesPack> m_sprites;
-
-      /**
-       * @brief - Hold the list of resources needed to display the
-       *          UI and the menu for this app.
-       */
-      MenuResources m_mSprites;
 
       /**
        * @brief - Hold the representation of the in game menu for

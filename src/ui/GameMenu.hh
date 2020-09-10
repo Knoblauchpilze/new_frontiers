@@ -3,7 +3,6 @@
 
 # include <memory>
 # include "Menu.hh"
-# include "BackgroundDesc.hh"
 
 namespace new_frontiers {
 
@@ -26,11 +25,8 @@ namespace new_frontiers {
 
     private:
 
-      /**
-       * @brief - The background associated to this menu.
-       *          TODO: Should be moved in `Menu` class.
-       */
-      BackgroundDesc m_bg;
+      void
+      initialize();
   };
 
   using GameMenuShPtr = std::shared_ptr<GameMenu>;

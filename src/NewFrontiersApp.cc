@@ -15,7 +15,6 @@ namespace new_frontiers {
 
     m_ss(theme.size),
     m_sprites(),
-    m_mSprites(),
     m_menu(nullptr),
     m_aliases(),
 
@@ -117,13 +116,6 @@ namespace new_frontiers {
 
   void
   NewFrontiersApp::loadMenuResources() {
-    // Load the background image.
-    olc::Sprite* spr = new olc::Sprite("data/img/dark_basalt.png");
-    m_mSprites.bg = new olc::Decal(spr);
-
-    spr = new olc::Sprite("data/img/minimap.png");
-    m_mSprites.minimap = new olc::Decal(spr);
-
     // Create the menu: we want it to have a fixed
     // height and be at the bottom of the screen.
     int mHeight = 150;
@@ -300,9 +292,7 @@ namespace new_frontiers {
     else {
       int mHeight = 150;
       int mBarHeight = 20;
-      int barToMenuGap = 15;
-      int mBGWrap = 150;
-      int mMainSize = mHeight - barToMenuGap - mBarHeight;
+      // int barToMenuGap = 15;
 
       int w = ScreenWidth();
       int h = ScreenHeight();
@@ -327,47 +317,20 @@ namespace new_frontiers {
         c2, c3, c3, c2
       );
 
-      // Background of the main menu (where stats of the
-      // currently selected item appear).
-      float repeat = mSize.x / mBGWrap;
-      float x = 0.0f;
-      olc::vf2d s(
-        1.0f * mBGWrap / m_mSprites.bg->sprite->width,
-        1.0f * mMainSize / m_mSprites.bg->sprite->height
-      );
-
-      while (repeat >= 1.0f) {
-        DrawDecal(
-          mPos + olc::vf2d(x, mBarHeight + barToMenuGap),
-          m_mSprites.bg,
-          s
-        );
-
-        x += mBGWrap;
-        repeat -= 1.0f;
-      }
-
-      if (repeat > 0.0f) {
-        DrawPartialDecal(
-          mPos + olc::vf2d(x, mBarHeight + barToMenuGap),
-          olc::vf2d(mBGWrap * repeat, mMainSize),
-          m_mSprites.bg,
-          olc::vf2d(0.0f, 0.0f),
-          olc::vf2d(m_mSprites.bg->sprite->width * repeat, m_mSprites.bg->sprite->height)
-        );
-      }
-
       // Draw the minimap.
-      float mS = std::min(
-        1.0f * m_mSprites.minimap->sprite->width,
-        1.0f * mMainSize / m_mSprites.minimap->sprite->height
-      );
+      // float mS = std::min(
+      //   1.0f * m_mSprites.minimap->sprite->width,
+      //   1.0f * mMainSize / m_mSprites.minimap->sprite->height
+      // );
 
-      DrawDecal(
-        mPos + olc::vf2d(0.0f, mBarHeight + barToMenuGap),
-        m_mSprites.minimap,
-        olc::vf2d(mS, mS)
-      );
+      // DrawDecal(
+      //   mPos + olc::vf2d(0.0f, mBarHeight + barToMenuGap),
+      //   m_mSprites.minimap,
+      //   olc::vf2d(mS, mS)
+      // );
+      // Load the minimap image.
+      // spr = new olc::Sprite("data/img/minimap.png");
+      // m_mSprites.minimap = new olc::Decal(spr);
     }
 
     SetPixelMode(olc::Pixel::NORMAL);
