@@ -15,14 +15,6 @@ namespace new_frontiers {
 
       m_sprites.clear();
     }
-
-    // And menu sprites.
-    if (m_mSprites.bg != nullptr) {
-      delete m_mSprites.bg;
-    }
-    if (m_mSprites.minimap != nullptr) {
-      delete m_mSprites.minimap;
-    }
   }
 
   inline
