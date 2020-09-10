@@ -16,7 +16,9 @@ namespace new_frontiers {
     m_size(size),
 
     m_bg(bg),
-    m_bgSprite(nullptr)
+    m_bgSprite(nullptr),
+
+    m_children()
   {
     loadBGTile();
   }

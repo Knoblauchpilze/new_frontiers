@@ -2,11 +2,17 @@
 # define   MENU_HH
 
 # include <memory>
+# include <vector>
 # include <core_utils/CoreObject.hh>
 # include "../olcPixelGameEngine.h"
 # include "BackgroundDesc.hh"
 
 namespace new_frontiers {
+
+  // Forward declaration to be able to use shared pointers on
+  // menu elements right away.
+  class Menu;
+  using MenuShPtr = std::shared_ptr<Menu>;
 
   class Menu: public utils::CoreObject {
     public:
@@ -40,6 +46,13 @@ namespace new_frontiers {
        */
       void
       render(olc::PixelGameEngine* pge) const;
+
+      /**
+       * @brief - Adds the input menu as a child of this one.
+       * @param child - the child menu to register.
+       */
+      void
+      addMenu(MenuShPtr child);
 
     protected:
 
@@ -78,7 +91,7 @@ namespace new_frontiers {
       void
       loadBGTile();
 
-    private:
+    protected:
 
       /**
        * @brief - The position of the menu in screen coordinates. It
@@ -102,9 +115,15 @@ namespace new_frontiers {
        *          menu if any is defined in the `m_bg` element.
        */
       olc::Decal* m_bgSprite;
+
+      /**
+       * @brief - The list of children menu for this element. Children
+       *          may or may not be active and are always repainted on
+       *          the parent.
+       */
+      std::vector<MenuShPtr> m_children;
   };
 
-  using MenuShPtr = std::shared_ptr<Menu>;
 }
 
 # include "Menu.hxx"
