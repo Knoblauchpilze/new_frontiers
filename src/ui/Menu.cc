@@ -83,6 +83,26 @@ namespace new_frontiers {
         );
       }
     }
+
+    // Render this menu.
+    renderSelf(pge);
+
+    // And then draw children in the order there were
+    // added: it means that the last added menu will
+    // be repainted on top of the others.
+    for (unsigned id = 0u ; id < m_children.size() ; ++id) {
+      m_children[id]->render(pge);
+    }
+  }
+
+  void
+  Menu::addMenu(MenuShPtr child) {
+    // Check consistency.
+    if (child == nullptr) {
+      return;
+    }
+
+    m_children.push_back(child);
   }
 
   void

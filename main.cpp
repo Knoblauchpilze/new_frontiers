@@ -4,6 +4,9 @@
  *          on 28/08/2020. The goal is to start using the olc
  *          pixel game engine to produce a small game.
  *
+ *          Textures can be found here:
+ *          https://game-icons.net/1x1/delapouite/devil-mask.html
+ *
  *          The game: in a haunted world, a valorous knight
  *          is meant to bring a piece of machinery to the
  *          royal engineer. In order to accomplish his task
