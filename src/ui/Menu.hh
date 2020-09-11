@@ -14,6 +14,15 @@ namespace new_frontiers {
   class Menu;
   using MenuShPtr = std::shared_ptr<Menu>;
 
+  /**
+   * @brief - Define a direction for a menu, or in general a
+   *          layout for children items.
+   */
+  enum class Layout {
+    Horizontal,
+    Vertical
+  };
+
   class Menu: public utils::CoreObject {
     public:
 
@@ -21,14 +30,18 @@ namespace new_frontiers {
        * @brief - Create a new menu with the specified dimensions.
        * @param pos - the position of the menu in the parent app.
        * @param size - the dimensions of the menu.
-       * @param bg - description of the background which can either
-       *             be a uniform background or a tiled sprite.
        * @param name - the name of the menu (for logging purposes).
+       * @param layout - the layout for this menu: will define how
+       *                 children are represented in the menu.
+       * @param parent - the parent menu for this element. Specify
+       *                 `null` in case the menu is the root of the
+       *                 subsystem.
        */
       Menu(const olc::vi2d& pos,
            const olc::vf2d& size,
-           const BackgroundDesc& bg,
-           const std::string& name);
+           const std::string& name,
+           const Layout& layout = Layout::Vertical,
+           Menu* parent = nullptr);
 
       /**
        * @brief - Desctruction of the object.
@@ -54,6 +67,34 @@ namespace new_frontiers {
       void
       addMenu(MenuShPtr child);
 
+      /**
+       * @brief - Assign a new position and size to this menu.
+       *          Note that the position is relative to its
+       *          parent (if any).
+       * @param pos - the position of this menu within its
+       *              parent.
+       * @param size - the size of the menu in pixels.
+       */
+      void
+      setArea(const olc::vi2d& pos, const olc::vi2d& size) noexcept;
+
+      /**
+       * @brief - Assign a new color for the background for
+       *          this menu. It replaces any information on
+       *          a tile that was specified before.
+       * @param c - the new background color to set.
+       */
+      void
+      setColor(const olc::Pixel& c) noexcept;
+
+      /**
+       * @brief - Replace the existing background with the new
+       *          one.
+       * @param bg - the new background to assign.
+       */
+      void
+      setBackground(const BackgroundDesc& bg);
+
     protected:
 
       /**
@@ -68,12 +109,13 @@ namespace new_frontiers {
       renderSelf(olc::PixelGameEngine* pge) const;
 
       /**
-       * @brief - Replace the existing background with the new
-       *          one.
-       * @param bg - the new background to assign.
+       * @brief - Used to obtain the absolute position of the
+       *          menu within the app, considering the position
+       *          of the parent (if defined).
+       * @return - the absolute position of this menu.
        */
-      void
-      setBackground(const BackgroundDesc& bg);
+      olc::vi2d
+      absolutePosition() const noexcept;
 
     private:
 
@@ -91,7 +133,7 @@ namespace new_frontiers {
       void
       loadBGTile();
 
-    protected:
+    private:
 
       /**
        * @brief - The position of the menu in screen coordinates. It
@@ -115,6 +157,18 @@ namespace new_frontiers {
        *          menu if any is defined in the `m_bg` element.
        */
       olc::Decal* m_bgSprite;
+
+      /**
+       * @brief - The layout for this menu. Allow to define how the
+       *          children will be displayed in this menu.
+       */
+      Layout m_layout;
+
+      /**
+       * @brief - The parent menu for this element. Can be `null` in
+       *          case the menu is the root of the subsystem.
+       */
+      Menu* m_parent;
 
       /**
        * @brief - The list of children menu for this element. Children

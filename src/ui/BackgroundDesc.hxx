@@ -8,13 +8,13 @@ namespace new_frontiers {
   inline
   BackgroundDesc
   newColoredBackground(const olc::Pixel& c) noexcept {
-    return BackgroundDesc{c, "", olc::vi2d()};
+    return BackgroundDesc{c, "", false, olc::vi2d()};
   }
 
   inline
   BackgroundDesc
   newTiledBackground(const std::string& sprite, const olc::vi2d& wrap) noexcept {
-    return BackgroundDesc{olc::Pixel(), sprite, wrap};
+    return BackgroundDesc{olc::Pixel(), sprite, true, wrap};
   }
 
 }
