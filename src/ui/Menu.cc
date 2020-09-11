@@ -47,7 +47,6 @@ namespace new_frontiers {
     olc::vf2d o;
     float xR;
 
-    // TODO: Handle repeat.
     // TODO: Add labels.
     // TODO: Add icons for menu.
     // TODO: Maybe two subclasses ?
@@ -132,6 +131,13 @@ namespace new_frontiers {
     // child.
     child->m_parent = this;
 
+    // Update the wrap size for the background of
+    // the child menu if it indicates a no-wrap
+    // behavior.
+    if (!child->m_bg.tiling) {
+      child->m_bg.wrap = m_size;
+    }
+
     // Update the size based on the layout for this
     // menu: we also have to update the other items
     // so that a consistent size is defined.
@@ -139,7 +145,9 @@ namespace new_frontiers {
     // size to the menu layout's direction so that
     // we keep the actual desired space for the
     // child in the principal direction.
-    int d = (m_layout == Layout::Horizontal ? m_size.y : m_size.x);
+    int wh = (m_layout == Layout::Horizontal ? m_size.y : m_size.x);
+    int i = (m_layout == Layout::Horizontal ? m_size.x : m_size.y);
+    int d = static_cast<int>(1.0f * i / (m_children.size() + 1));
 
     m_children.push_back(child);
 
@@ -149,13 +157,30 @@ namespace new_frontiers {
     for (unsigned id = 0u ; id < m_children.size() ; ++id) {
       switch (m_layout) {
         case Layout::Vertical:
-          m_children[id]->m_size.x = d;
+          m_children[id]->m_size.x = wh;
+          m_children[id]->m_size.y = d;
+
+          m_children[id]->m_pos.x = 0;
+          m_children[id]->m_pos.y = id * d;
+
+          if (!m_children[id]->m_bg.tiling) {
+            m_children[id]->m_bg.wrap.y = d;
+          }
           break;
         case Layout::Horizontal:
         default:
-          m_children[id]->m_size.y = d;
+          m_children[id]->m_size.x = d;
+          m_children[id]->m_size.y = wh;
+
+          m_children[id]->m_pos.x = id * d;
+          m_children[id]->m_pos.y = 0;
+
+          if (!m_children[id]->m_bg.tiling) {
+            m_children[id]->m_bg.wrap.x = d;
+          }
           break;
       }
+
     }
   }
 
