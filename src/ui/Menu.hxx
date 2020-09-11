@@ -6,31 +6,27 @@
 namespace new_frontiers {
 
   inline
-  Menu::Menu(const olc::vi2d& pos,
-             const olc::vf2d& size,
-             const BackgroundDesc& bg,
-             const std::string& name):
-    utils::CoreObject(name),
-
-    m_pos(pos),
-    m_size(size),
-
-    m_bg(bg),
-    m_bgSprite(nullptr),
-
-    m_children()
-  {
-    loadBGTile();
-  }
-
-  inline
   Menu::~Menu() {
     clear();
   }
 
   inline
   void
-  Menu::renderSelf(olc::PixelGameEngine* /*pge*/) const {}
+  Menu::setArea(const olc::vi2d& pos, const olc::vi2d& size) noexcept {
+    m_pos = pos;
+    m_size = size;
+  }
+
+  inline
+  void
+  Menu::setColor(const olc::Pixel& c) noexcept {
+    clear();
+    m_bg.color = c;
+    m_bg.sprite = "";
+    // Load the background for convenience in case
+    // some other processes are triggered.
+    loadBGTile();
+  }
 
   inline
   void
@@ -38,6 +34,24 @@ namespace new_frontiers {
     clear();
     m_bg = bg;
     loadBGTile();
+  }
+
+  inline
+  void
+  Menu::renderSelf(olc::PixelGameEngine* /*pge*/) const {}
+
+  inline
+  olc::vi2d
+  Menu::absolutePosition() const noexcept {
+    olc::vi2d p(0, 0);
+
+    if (m_parent != nullptr) {
+      p = m_parent->absolutePosition();
+    }
+
+    p += m_pos;
+
+    return p;
   }
 
   inline

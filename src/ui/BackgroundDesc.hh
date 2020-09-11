@@ -15,7 +15,8 @@ namespace new_frontiers {
     olc::Pixel color;
 
     std::string sprite;
-    olc::vi2d warp;
+    bool wrap;
+    olc::vi2d wrap;
   };
 
   /**
