@@ -15,7 +15,7 @@ namespace new_frontiers {
     olc::Pixel color;
 
     std::string sprite;
-    bool wrap;
+    bool tiling;
     olc::vi2d wrap;
   };
 
@@ -37,6 +37,15 @@ namespace new_frontiers {
    */
   BackgroundDesc
   newTiledBackground(const std::string& sprite, const olc::vi2d& wrap) noexcept;
+
+  /**
+   * @brief - Create a bew background structure defining an image
+   *          that is repeated only once.
+   * @param sprite - the name of the file representing the sprite.
+   * @return - the created background object.
+   */
+  BackgroundDesc
+  newImageBackground(const std::string& sprite) noexcept;
 
 }
 
