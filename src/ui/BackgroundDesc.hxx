@@ -17,6 +17,12 @@ namespace new_frontiers {
     return BackgroundDesc{olc::Pixel(), sprite, true, wrap};
   }
 
+  inline
+  BackgroundDesc
+  newImageBackground(const std::string& sprite) noexcept {
+    return BackgroundDesc{olc::Pixel(), sprite, false, olc::vi2d()};
+  }
+
 }
 
 #endif    /* BACKGROUND_DESC_HXX */
