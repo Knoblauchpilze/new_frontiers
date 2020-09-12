@@ -38,6 +38,7 @@
 // would make spawn raw icons to select the priority of the
 // entities that would be spawned (between warrior and the
 // worker).
+// TODO: Segfault when exiting.
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>
