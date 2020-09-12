@@ -96,6 +96,29 @@ namespace new_frontiers {
     return olc::Pixel(r, g, b, hsl.a);
   }
 
+  inline
+  olc::Pixel
+  modulate(const olc::Pixel& in, float factor) noexcept {
+    // Convert to `HSL` color space, change the lightness
+    // and convert back to `RGB`. Also clamp the `factor`.
+    factor = std::max(factor, 0.0f);
+
+    olc::Pixel hsl = RGBToHSL(in);
+
+    // We only have a tricky case: the case where `L` is
+    // actually equal to `0`. In this case the `factor`
+    // approach won't work, and we will rather add an
+    // offset (corresponding to `1 / factor`) to still
+    // make the color brighter.
+    // Note that as the `hsl` values are in the range
+    // `[0; 255]` we're checking against `0.01 * 255`.
+    float nL = (hsl.b < 2 ? hsl.b + 255.0f / factor : hsl.b * factor);
+
+    hsl.b = std::min(std::max(static_cast<int>(nL), 0), 255);
+
+    return HSLToRGB(hsl);
+  }
+
 }
 
 #endif    /* COLOR_UTILS_HXX */

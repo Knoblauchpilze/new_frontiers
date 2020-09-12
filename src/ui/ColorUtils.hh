@@ -28,6 +28,23 @@ namespace new_frontiers {
    */
   olc::Pixel
   HSLToRGB(const olc::Pixel& hsl) noexcept;
+
+  /**
+   * @brief - Modulate the lightness of the input color
+   *          by the specified factor. We convert the
+   *          color into `HSL` space to change the `L`
+   *          component and then revert to `RGB` space.
+   * @param in - the input color to modulate.
+   * @param factor - a value indicating the change in
+   *                 lightness to perform. A value
+   *                 larger than `1` will brighten the
+   *                 color and a value in the range `0`
+   *                 to `1` will darken it. Any negative
+   *                 value will be clamped to `0`.
+   * @return - the modulated color.
+   */
+  olc::Pixel
+  modulate(const olc::Pixel& in, float factor) noexcept;
 }
 
 # include "ColorUtils.hxx"

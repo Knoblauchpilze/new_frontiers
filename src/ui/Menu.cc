@@ -11,6 +11,8 @@ namespace new_frontiers {
              Menu* parent):
     utils::CoreObject(name),
 
+    m_state(State{true, false}),
+
     m_pos(pos),
     m_size(size),
 
@@ -31,13 +33,22 @@ namespace new_frontiers {
 
   void
   Menu::render(olc::PixelGameEngine* pge) const {
+    // If the menu is not visible, do nothing.
+    if (!m_state.visible) {
+      return;
+    }
+
     // We either need to fill the area for this menu
     // with the uniform color or perform the tiling
     // with the background decal if needed.
     olc::vi2d pos = absolutePosition();
 
     if (m_bgSprite == nullptr) {
-      pge->FillRectDecal(pos, m_size, m_bg.color);
+      pge->FillRectDecal(
+        pos,
+        m_size,
+        (m_state.highlighted ? m_bg.hColor : m_bg.color)
+      );
     }
 
     if (m_bgSprite != nullptr) {
@@ -120,6 +131,41 @@ namespace new_frontiers {
     for (unsigned id = 0u ; id < m_children.size() ; ++id) {
       m_children[id]->render(pge);
     }
+  }
+
+  bool
+  Menu::processUserInput(const Controls& c) {
+    // Make sure that the children get their chance
+    // to process the event.
+    bool used = false;
+    for (unsigned id = 0u ; id < m_children.size() ; ++id) {
+      if (m_children[id]->processUserInput(c)) {
+        used = true;
+      }
+    }
+
+    // If the mouse is not inside this element, stop
+    // the process here: children still got a chance
+    // to update their state with this event. And no
+    // matter the `used` value, we know that we're
+    // not highlighted anymore at this step if the
+    // following conditions apply: it either mean
+    // that the mouse is not inside this menu or
+    // that a child is more relevant than we are.
+    olc::vi2d ap = absolutePosition();
+    if (c.mPosX < ap.x || c.mPosX >= ap.x + m_size.x ||
+        c.mPosY < ap.y || c.mPosY >= ap.y + m_size.y ||
+        used)
+    {
+      m_state.highlighted = false;
+
+      return used;
+    }
+
+    // This menu is now highlighted.
+    m_state.highlighted = true;
+
+    return true;
   }
 
   void

@@ -1,6 +1,6 @@
 
 # include "Player.hh"
-# include "Controls.hh"
+# include "PlayerControls.hh"
 
 namespace new_frontiers {
 
@@ -24,7 +24,7 @@ namespace new_frontiers {
       sp = m_recoverySpeed;
     }
 
-    if (info.controls[MoveRight]) {
+    if (info.controls.keys[MoveRight]) {
       // Right is moving along the negative
       // `x` axis and conversely.
       m_tile.x -= info.elapsed * std::sqrt(sp);
@@ -32,7 +32,7 @@ namespace new_frontiers {
       moved = true;
     }
 
-    if (info.controls[MoveUp]) {
+    if (info.controls.keys[MoveUp]) {
       // Up is moving along the negative
       // `y` axis and conversely.
       m_tile.y -= info.elapsed * std::sqrt(sp);
@@ -40,13 +40,13 @@ namespace new_frontiers {
       moved = true;
     }
 
-    if (info.controls[MoveLeft]) {
+    if (info.controls.keys[MoveLeft]) {
       m_tile.x += info.elapsed * std::sqrt(sp);
       m_tile.y -= info.elapsed * std::sqrt(sp);
       moved = true;
     }
 
-    if (info.controls[MoveDown]) {
+    if (info.controls.keys[MoveDown]) {
       m_tile.y += info.elapsed * std::sqrt(sp);
       m_tile.x += info.elapsed * std::sqrt(sp);
       moved = true;
@@ -66,7 +66,7 @@ namespace new_frontiers {
     }
 
     // Update the sprinting status.
-    if (info.controls[Sprint] && !m_state.glowing && !m_state.exhausted) {
+    if (info.controls.keys[Sprint] && !m_state.glowing && !m_state.exhausted) {
       m_state.glowing = true;
       m_origin = info.moment;
       log("Player is now glowing");

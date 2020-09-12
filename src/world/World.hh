@@ -9,6 +9,7 @@
 # include "Element.hh"
 # include "Iterators.hh"
 # include "Locator.hh"
+# include "Controls.hh"
 
 namespace new_frontiers {
 
@@ -63,7 +64,7 @@ namespace new_frontiers {
        */
       void
       step(float tDelta,
-           const std::vector<bool>& controls);
+           const Controls& controls);
 
       /**
        * @brief - Used to indicate that the world should be
@@ -76,7 +77,7 @@ namespace new_frontiers {
        */
       void
       pause(float tDelta,
-            const std::vector<bool>& controls);
+            const Controls& controls);
 
       /**
        * @brief - Used to indicate that the world should be
@@ -89,7 +90,7 @@ namespace new_frontiers {
        */
       void
       resume(float tDelta,
-             const std::vector<bool>& controls);
+             const Controls& controls);
 
     private:
 

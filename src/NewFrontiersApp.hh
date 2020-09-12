@@ -6,6 +6,7 @@
 # include <random>
 # include "World.hh"
 # include "CoordinateFrames.hh"
+# include "Controls.hh"
 # include "ui/GameMenu.hh"
 
 namespace new_frontiers {
@@ -392,7 +393,7 @@ namespace new_frontiers {
        *          to be transmitted to the world's entities for
        *          the simulation.
        */
-      std::vector<bool> m_controls;
+      Controls m_controls;
 
       /**
        * @brief - The index representing the main layer for this
