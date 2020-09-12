@@ -41,24 +41,17 @@ namespace new_frontiers {
     // Register building categories.
     olc::vi2d bDims(40, 40);
     MenuShPtr creature = std::make_shared<Menu>(olc::vi2d(), bDims, "creature_menu");
-    creature->setBackground(newImageBackground("data/img/menu/devil_mask.png"));
+    // creature->setBackground(newImageBackground("data/img/menu/devil_mask.png"));
+    creature->setContent(newImageContent("data/img/menu/devil_mask.png", bDims));
     addMenu(creature);
 
     MenuShPtr housing = std::make_shared<Menu>(olc::vi2d(0, 5 + bDims.y), bDims, "housing_menu");
-    housing->setBackground(newTiledBackground("data/img/menu/house.png", bDims));
+    housing->setContent(newImageContent("data/img/menu/house.png", bDims));
     addMenu(housing);
 
-    // MenuShPtr spells = std::make_shared<Menu>(
-    //   m_pos + olc::vi2d(mbw + 5, 5 + 2 * (bDims.x + 5)),
-    //   bDims,
-    //   newTiledBackground(
-    //     "data/img/menu/spells.png",
-    //     bDims
-    //   ),
-    //   "spells_menu"
-    // );
-
-    // addMenu(spells);
+    MenuShPtr spells = std::make_shared<Menu>(olc::vi2d(0, 5 + 2 * bDims.y), bDims, "housing_menu");
+    spells->setContent(newImageContent("data/img/menu/spells.png", bDims));
+    addMenu(spells);
 
     // Add creature menu.
     // MenuShPtr griffin = std::make_shared<Menu>(
