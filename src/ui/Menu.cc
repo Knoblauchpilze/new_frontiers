@@ -51,10 +51,6 @@ namespace new_frontiers {
     olc::vf2d o;
     float xR;
 
-    // TODO: Add labels.
-    // TODO: Add icons for menu.
-    // TODO: Maybe two subclasses ?
-
     // Repeatedly blit the sprite on the background.
     while (repeat.y >= 1.0f) {
       xR = repeat.x;
@@ -389,6 +385,12 @@ namespace new_frontiers {
             m_children[id]->m_bg.wrap.x = wh;
             m_children[id]->m_bg.wrap.y = d;
           }
+
+          // We want the icon to occupy all the space
+          // available for the child.
+          if (m_children[id]->m_content.icon != "") {
+            m_children[id]->m_content.size.y = d;
+          }
           break;
         case Layout::Horizontal:
         default:
@@ -402,6 +404,19 @@ namespace new_frontiers {
             m_children[id]->m_bg.wrap.x = d;
             m_children[id]->m_bg.wrap.y = wh;
           }
+
+          // Note that we cannot force the horizontal
+          // size of the icon in this case because we
+          // display the text and icon always in the
+          // horizontal direction: so if we wanted to
+          // set some sort of maximum size it should
+          // be consistent with allowing the text to
+          // be fully visible or something.
+          // If we wanted to have an internal layout
+          // (which would indicate whether the icon
+          // and text are laid out horizontally or
+          // vertically) we could adapt the size of
+          // the icon here.
           break;
       }
     }
