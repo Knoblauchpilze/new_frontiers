@@ -14,7 +14,7 @@ namespace new_frontiers {
     m_pos(pos),
     m_size(size),
 
-    m_bg(newColoredBackground(olc::Pixel(255, 255, 255, 0))),
+    m_bg(newColoredBackground(olc::Pixel(0, 255, 255, 0))),
     m_bgSprite(nullptr),
     m_content(newTextContent("default menu", Alignment::Left)),
     m_mcSprite(nullptr),
@@ -24,6 +24,8 @@ namespace new_frontiers {
     m_parent(parent),
     m_children()
   {
+    setService("menu");
+
     loadContentTile();
   }
 
@@ -35,77 +37,77 @@ namespace new_frontiers {
     olc::vi2d pos = absolutePosition();
 
     if (m_bgSprite == nullptr) {
-      pge->FillRectDecal(pos, m_size);
-
-      return;
+      pge->FillRectDecal(pos, m_size, m_bg.color);
     }
 
-    // Define the scale to apply to the sprite in
-    // order to match the expected tiling.
-    olc::vi2d sDims(m_bgSprite->sprite->width, m_bgSprite->sprite->height);
-    const olc::vi2d& bgWrap = m_bg.wrap;
+    if (m_bgSprite != nullptr) {
+      // Define the scale to apply to the sprite in
+      // order to match the expected tiling.
+      olc::vi2d sDims(m_bgSprite->sprite->width, m_bgSprite->sprite->height);
+      const olc::vi2d& bgWrap = m_bg.wrap;
 
-    olc::vf2d repeat(1.0f * m_size.x / bgWrap.x, 1.0f * m_size.y / bgWrap.y);
-    olc::vf2d s(1.0f * bgWrap.x / sDims.x, 1.0f * bgWrap.y / sDims.y);
+      olc::vf2d repeat(1.0f * m_size.x / bgWrap.x, 1.0f * m_size.y / bgWrap.y);
+      olc::vf2d s(1.0f * bgWrap.x / sDims.x, 1.0f * bgWrap.y / sDims.y);
 
-    olc::vf2d o;
-    float xR;
+      olc::vf2d o;
+      float xR;
 
-    // Repeatedly blit the sprite on the background.
-    while (repeat.y >= 1.0f) {
-      xR = repeat.x;
-      o.x = 0.0f;
+      // Repeatedly blit the sprite on the background.
+      while (repeat.y >= 1.0f) {
+        xR = repeat.x;
+        o.x = 0.0f;
 
-      while (xR >= 1.0f) {
-        pge->DrawDecal(
-          pos + o,
-          m_bgSprite,
-          s
-        );
+        while (xR >= 1.0f) {
+          pge->DrawDecal(
+            pos + o,
+            m_bgSprite,
+            s
+          );
 
-        o.x += bgWrap.x;
-        xR -= 1.0f;
-      }
-        
-      if (xR > 0.0f) {
-        pge->DrawPartialDecal(
-          pos + o,
-          olc::vf2d(bgWrap.x * xR, bgWrap.y),
-          m_bgSprite,
-          olc::vf2d(0.0f, 0.0f),
-          olc::vf2d(sDims.x * xR, sDims.y)
-        );
-      }
+          o.x += bgWrap.x;
+          xR -= 1.0f;
+        }
+          
+        if (xR > 0.0f) {
+          pge->DrawPartialDecal(
+            pos + o,
+            olc::vf2d(bgWrap.x * xR, bgWrap.y),
+            m_bgSprite,
+            olc::vf2d(0.0f, 0.0f),
+            olc::vf2d(sDims.x * xR, sDims.y)
+          );
+        }
 
-      o.y += bgWrap.y;
-      repeat.y -= 1.0f;
-    }
-
-    if (repeat.y > 0.0f) {
-      xR = repeat.x;
-      o.x = 0.0f;
-
-      while (xR >= 1.0f) {
-        pge->DrawPartialDecal(
-          pos + o,
-          olc::vf2d(bgWrap.x, bgWrap.y * repeat.y),
-          m_bgSprite,
-          olc::vf2d(0.0f, 0.0f),
-          olc::vf2d(sDims.x, sDims.y * repeat.y)
-        );
-
-        o.x += bgWrap.x;
-        xR -= 1.0f;
+        o.y += bgWrap.y;
+        repeat.y -= 1.0f;
       }
 
-      if (xR > 0.0f) {
-        pge->DrawPartialDecal(
-          pos + o,
-          olc::vf2d(bgWrap.x * xR, bgWrap.y * repeat.y),
-          m_bgSprite,
-          olc::vf2d(0.0f, 0.0f),
-          olc::vf2d(sDims.x * xR, sDims.y * repeat.y)
-        );
+      if (repeat.y > 0.0f) {
+        xR = repeat.x;
+        o.x = 0.0f;
+
+        while (xR >= 1.0f) {
+          pge->DrawPartialDecal(
+            pos + o,
+            olc::vf2d(bgWrap.x, bgWrap.y * repeat.y),
+            m_bgSprite,
+            olc::vf2d(0.0f, 0.0f),
+            olc::vf2d(sDims.x, sDims.y * repeat.y)
+          );
+
+          o.x += bgWrap.x;
+          xR -= 1.0f;
+        }
+
+        if (xR > 0.0f) {
+          pge->DrawPartialDecal(
+            pos + o,
+            olc::vf2d(bgWrap.x * xR, bgWrap.y * repeat.y),
+            m_bgSprite,
+            olc::vf2d(0.0f, 0.0f),
+            olc::vf2d(sDims.x * xR, sDims.y * repeat.y)
+          );
+        }
       }
     }
 
