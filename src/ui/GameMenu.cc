@@ -41,7 +41,8 @@ namespace new_frontiers {
     // Register building categories.
     olc::vi2d bDims(40, 40);
     MenuShPtr creature = std::make_shared<Menu>(olc::vi2d(), bDims, "creature_menu");
-    creature->setBackground(newColoredBackground(olc::Pixel(59, 71, 17)));
+    // creature->setBackground(newColoredBackground(olc::Pixel(59, 71, 17)));
+    creature->setBackground(newColoredBackground(olc::Pixel(0, 0, 0)));
     creature->setContent(newImageContent("data/img/menu/devil_mask.png", bDims));
     addMenu(creature);
 

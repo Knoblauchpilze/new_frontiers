@@ -73,6 +73,9 @@ namespace new_frontiers {
         break;
     }
 
+    // Handle menus update.
+    m_menu->processUserInput(m_controls);
+
     // Handle rendering: for each function
     // we will assign the draw target first
     // so that the function does not have

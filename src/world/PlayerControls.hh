@@ -1,6 +1,7 @@
-#ifndef    CONTROLS_HH
-# define   CONTROLS_HH
+#ifndef    PLAYER_CONTROLS_HH
+# define   PLAYER_CONTROLS_HH
 
+# include "../Controls.hh"
 namespace new_frontiers {
 
   /**
@@ -9,16 +10,16 @@ namespace new_frontiers {
    *          step info and made available for the entities
    *          to detect.
    */
-  enum Controls {
-    MoveRight,
-    MoveUp,
-    MoveLeft,
-    MoveDown,
-    Sprint,
+  enum Motion {
+    MoveRight = Right,
+    MoveUp = Up,
+    MoveLeft = Left,
+    MoveDown = Down,
+    Sprint = Space,
 
     ControlsCount
   };
 
 }
 
-#endif    /* CONTROLS_HH */
+#endif    /* PLAYER_CONTROLS_HH */

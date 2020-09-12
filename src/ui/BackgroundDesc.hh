@@ -13,6 +13,7 @@ namespace new_frontiers {
    */
   struct BackgroundDesc {
     olc::Pixel color;
+    olc::Pixel hColor;
 
     std::string sprite;
     bool tiling;

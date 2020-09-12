@@ -25,7 +25,7 @@ namespace new_frontiers {
          Viewport{olc::vf2d(400.0f, 100.0f), olc::vf2d(width, height)},
          olc::vi2d(64, 32)),
 
-    m_controls(ControlsCount, false),
+    m_controls(newControls()),
 
     m_mLayer(0),
     m_dLayer(0),
@@ -149,6 +149,10 @@ namespace new_frontiers {
       m_cf.translate(GetMousePos());
     }
 
+    olc::vi2d mPos = GetMousePos();
+    m_controls.mPosX = mPos.x;
+    m_controls.mPosY = mPos.y;
+
     // Detect clicks with the left mouse button to be
     // selecting game elements.
     if (GetMouse(0).bReleased) {
@@ -165,19 +169,19 @@ namespace new_frontiers {
 
     // Handle inputs.
     olc::HWButton b = GetKey(olc::RIGHT);
-    m_controls[MoveRight] = b.bPressed || b.bHeld;
+    m_controls.keys[Right] = b.bPressed || b.bHeld;
 
     b = GetKey(olc::UP);
-    m_controls[MoveUp] = b.bPressed || b.bHeld;
+    m_controls.keys[Up] = b.bPressed || b.bHeld;
 
     b = GetKey(olc::LEFT);
-    m_controls[MoveLeft] = b.bPressed || b.bHeld;
+    m_controls.keys[Left] = b.bPressed || b.bHeld;
 
     b = GetKey(olc::DOWN);
-    m_controls[MoveDown] = b.bPressed || b.bHeld;
+    m_controls.keys[Down] = b.bPressed || b.bHeld;
 
     b = GetKey(olc::SPACE);
-    m_controls[Sprint] = b.bPressed || b.bHeld;
+    m_controls.keys[Space] = b.bPressed || b.bHeld;
 
     // De/activate the debug mode if needed and
     // handle general simulation control options.

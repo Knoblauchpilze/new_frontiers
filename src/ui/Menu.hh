@@ -7,6 +7,7 @@
 # include "../olcPixelGameEngine.h"
 # include "BackgroundDesc.hh"
 # include "MenuContentDesc.hh"
+# include "Controls.hh"
 
 namespace new_frontiers {
 
@@ -60,6 +61,22 @@ namespace new_frontiers {
        */
       void
       render(olc::PixelGameEngine* pge) const;
+
+      /**
+       * @brief - Used to process the user input defined in
+       *          the argument and update the internal state
+       *          of this menu if needed.
+       * @param c - the controls and user input for this
+       *            frame.
+       * @return - `true` in case this event was processed
+       *           (which means that it was relevant for the
+       *           menu) and `false` otherwise. Defines some
+       *           sort of causal chain and allow parent to
+       *           check whether one of their children could
+       *           use the events.
+       */
+      bool
+      processUserInput(const Controls& c);
 
       /**
        * @brief - Adds the input menu as a child of this one.
@@ -164,6 +181,22 @@ namespace new_frontiers {
       updateChildren();
 
     private:
+
+      /**
+       * @brief - Convenience structure describing the current state
+       *          for this menu, such as visibility and highlight.
+       */
+      struct State {
+        bool visible;
+        bool highlighted;
+      };
+
+      /**
+       * @brief - Describe the current state for this menu. It is
+       *          used as a way to regroup all information needed
+       *          to repaint this component.
+       */
+      State m_state;
 
       /**
        * @brief - The position of the menu in screen coordinates. It

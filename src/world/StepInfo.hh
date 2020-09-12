@@ -5,6 +5,7 @@
 # include <memory>
 # include "RNG.hh"
 # include "TimeUtils.hh"
+# include "Controls.hh"
 
 namespace new_frontiers {
 
@@ -40,7 +41,7 @@ namespace new_frontiers {
 
     LocatorShPtr frustum;
 
-    std::vector<bool> controls;
+    Controls controls;
 
     void
     clampCoord(float& x, float& y) const noexcept;
