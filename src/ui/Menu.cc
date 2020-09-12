@@ -16,12 +16,17 @@ namespace new_frontiers {
 
     m_bg(newColoredBackground(olc::Pixel(255, 255, 255, 0))),
     m_bgSprite(nullptr),
+    // m_content(newTextContent("default menu", Alignment::Left)),
+    m_content(newMenuContent("default menu", "data/img/menu/minimap.png", olc::vi2d(300, 100))),
+    m_mcSprite(nullptr),
 
     m_layout(layout),
 
     m_parent(parent),
     m_children()
-  {}
+  {
+    loadContentTile();
+  }
 
   void
   Menu::render(olc::PixelGameEngine* pge) const {
@@ -128,60 +133,90 @@ namespace new_frontiers {
     }
 
     // Assign this element has the parent of the new
-    // child.
+    // child and register it as a new submenu.
     child->m_parent = this;
-
-    // Update the wrap size for the background of
-    // the child menu if it indicates a no-wrap
-    // behavior.
-    if (!child->m_bg.tiling) {
-      child->m_bg.wrap = m_size;
-    }
-
-    // Update the size based on the layout for this
-    // menu: we also have to update the other items
-    // so that a consistent size is defined.
-    // Note that we only assign the perpendicular
-    // size to the menu layout's direction so that
-    // we keep the actual desired space for the
-    // child in the principal direction.
-    int wh = (m_layout == Layout::Horizontal ? m_size.y : m_size.x);
-    int i = (m_layout == Layout::Horizontal ? m_size.x : m_size.y);
-    int d = static_cast<int>(1.0f * i / (m_children.size() + 1));
 
     m_children.push_back(child);
 
-    // Note that we also force the wraping for the
-    // background tiled children to something that
-    // will be consistent with their actual size.
-    for (unsigned id = 0u ; id < m_children.size() ; ++id) {
-      switch (m_layout) {
-        case Layout::Vertical:
-          m_children[id]->m_size.x = wh;
-          m_children[id]->m_size.y = d;
+    // Update properties of each child in response
+    // to the new child.
+    updateChildren();
+  }
 
-          m_children[id]->m_pos.x = 0;
-          m_children[id]->m_pos.y = id * d;
+  void
+  Menu::renderSelf(olc::PixelGameEngine* pge) const {
+    // We need to display both the text and the icon
+    // if needed. We assume the content will always
+    // be centered along the perpendicular axis for
+    // this menu.
+    switch (m_layout) {
+      case Layout::Vertical:
+        break;
+      case Layout::Horizontal:
+      default:
+        break;
+    }
 
-          if (!m_children[id]->m_bg.tiling) {
-            m_children[id]->m_bg.wrap.y = d;
-          }
+    // Depending on whether we need to display both
+    // an image or a text and in which order layout
+    // in the menu will change.
+    olc::vi2d ap = absolutePosition();
+
+
+    if (m_content.text != "" && m_mcSprite == nullptr) {
+      olc::vi2d ts = pge->GetTextSize(m_content.text);
+
+      olc::vi2d p;
+      switch (m_content.align) {
+        case Alignment::Center:
+          p = olc::vi2d(
+            static_cast<int>(ap.x + (m_size.x - ts.x) / 2.0f),
+            static_cast<int>(ap.y + (m_size.y - ts.y) / 2.0f)
+          );
           break;
-        case Layout::Horizontal:
+        case Alignment::Right:
+          p = olc::vi2d(
+            ap.x + m_size.x - ts.x,
+            static_cast<int>(ap.y + (m_size.y - ts.y) / 2.0f)
+          );
+          break;
+        case Alignment::Left:
         default:
-          m_children[id]->m_size.x = d;
-          m_children[id]->m_size.y = wh;
-
-          m_children[id]->m_pos.x = id * d;
-          m_children[id]->m_pos.y = 0;
-
-          if (!m_children[id]->m_bg.tiling) {
-            m_children[id]->m_bg.wrap.x = d;
-          }
+          p = olc::vi2d(
+            ap.x,
+            static_cast<int>(ap.y + (m_size.y - ts.y) / 2.0f)
+          );
           break;
       }
 
+      pge->DrawStringDecal(
+        p,
+        m_content.text,
+        olc::MAGENTA
+      );
     }
+
+    if (m_content.text == "" && m_mcSprite != nullptr) {
+      // Center the image if it is the only element
+      // to display.
+      olc::vi2d p(
+        std::max(static_cast<int>(ap.x + m_size.x / 2.0f - m_content.size.x / 2.0f), 0),
+        std::max(static_cast<int>(ap.y + m_size.y / 2.0f - m_content.size.y / 2.0f), 0)
+      );
+
+      olc::vi2d ss(m_mcSprite->sprite->width, m_mcSprite->sprite->height);
+      olc::vf2d s(1.0f * m_content.size.x / ss.x, 1.0f * m_content.size.y / ss.y);
+
+      pge->DrawPartialDecal(
+        p,
+        m_mcSprite,
+        olc::vi2d(),
+        ss,
+        s
+      );
+    }
+
+    // Both text and icon should be displayed.
   }
 
   void
@@ -199,6 +234,72 @@ namespace new_frontiers {
     // Load the sprite.
     olc::Sprite* spr = new olc::Sprite(m_bg.sprite);
     m_bgSprite = new olc::Decal(spr);
+  }
+
+  void
+  Menu::loadContentTile() {
+    // Check for actually needing to load anything.
+    if (m_content.icon == "") {
+      return;
+    }
+
+    // Clamp the size of the icon.
+    m_content.size.x = std::max(m_content.size.x, 10);
+    m_content.size.y = std::max(m_content.size.y, 10);
+
+    // Load the sprite.
+    olc::Sprite* spr = new olc::Sprite(m_content.icon);
+    m_mcSprite = new olc::Decal(spr);
+  }
+
+  void
+  Menu::updateChildren() {
+    // Update the size based on the layout for this
+    // menu: we also have to update the other items
+    // so that a consistent size is defined.
+    // Note that we only assign the perpendicular
+    // size to the menu layout's direction so that
+    // we keep the actual desired space for the
+    // child in the principal direction.
+    int wh = (m_layout == Layout::Horizontal ? m_size.y : m_size.x);
+    int i = (m_layout == Layout::Horizontal ? m_size.x : m_size.y);
+    int d = static_cast<int>(1.0f * i / m_children.size());
+
+    // Note that we also force the wraping for the
+    // background tiled children to something that
+    // will be consistent with their actual size.
+    for (unsigned id = 0u ; id < m_children.size() ; ++id) {
+      switch (m_layout) {
+        case Layout::Vertical:
+          m_children[id]->m_size.x = wh;
+          m_children[id]->m_size.y = d;
+
+          m_children[id]->m_pos.x = 0;
+          m_children[id]->m_pos.y = id * d;
+
+          // Update the wrap size for the background of
+          // the child menu if it indicates a no-wrap
+          // behavior.
+          if (!m_children[id]->m_bg.tiling) {
+            m_children[id]->m_bg.wrap.x = wh;
+            m_children[id]->m_bg.wrap.y = d;
+          }
+          break;
+        case Layout::Horizontal:
+        default:
+          m_children[id]->m_size.x = d;
+          m_children[id]->m_size.y = wh;
+
+          m_children[id]->m_pos.x = id * d;
+          m_children[id]->m_pos.y = 0;
+
+          if (!m_children[id]->m_bg.tiling) {
+            m_children[id]->m_bg.wrap.x = d;
+            m_children[id]->m_bg.wrap.y = wh;
+          }
+          break;
+      }
+    }
   }
 
 }

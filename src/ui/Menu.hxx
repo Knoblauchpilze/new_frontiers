@@ -7,6 +7,7 @@ namespace new_frontiers {
 
   inline
   Menu::~Menu() {
+    clearContent();
     clear();
   }
 
@@ -15,6 +16,9 @@ namespace new_frontiers {
   Menu::setArea(const olc::vi2d& pos, const olc::vi2d& size) noexcept {
     m_pos = pos;
     m_size = size;
+
+    // Update chidlren.
+    updateChildren();
   }
 
   inline
@@ -38,7 +42,11 @@ namespace new_frontiers {
 
   inline
   void
-  Menu::renderSelf(olc::PixelGameEngine* /*pge*/) const {}
+  Menu::setContent(const MenuContentDesc& mcd) {
+    clearContent();
+    m_content = mcd;
+    loadContentTile();
+  }
 
   inline
   olc::vi2d
@@ -62,6 +70,16 @@ namespace new_frontiers {
     }
 
     m_bgSprite = nullptr;
+  }
+
+  inline
+  void
+  Menu::clearContent() {
+    if (m_mcSprite != nullptr) {
+      delete m_mcSprite;
+    }
+
+    m_mcSprite = nullptr;
   }
 
 }

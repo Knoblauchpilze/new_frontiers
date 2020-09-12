@@ -29,7 +29,7 @@ namespace new_frontiers {
   newColoredBackground(const olc::Pixel& c) noexcept;
 
   /**
-   * @brief - Create a bew background structure defining a tiled
+   * @brief - Create a new background structure defining a tiled
    *          element with the specified sprite and wrapping.
    * @param sprite - the name of the file representing the sprite.
    * @param wrap - the dimensions of the sprite on screen.
@@ -39,7 +39,7 @@ namespace new_frontiers {
   newTiledBackground(const std::string& sprite, const olc::vi2d& wrap) noexcept;
 
   /**
-   * @brief - Create a bew background structure defining an image
+   * @brief - Create a new background structure defining an image
    *          that is repeated only once.
    * @param sprite - the name of the file representing the sprite.
    * @return - the created background object.

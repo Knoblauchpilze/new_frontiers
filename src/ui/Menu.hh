@@ -6,6 +6,7 @@
 # include <core_utils/CoreObject.hh>
 # include "../olcPixelGameEngine.h"
 # include "BackgroundDesc.hh"
+# include "MenuContentDesc.hh"
 
 namespace new_frontiers {
 
@@ -95,6 +96,13 @@ namespace new_frontiers {
       void
       setBackground(const BackgroundDesc& bg);
 
+      /**
+       * @brief - Replace the existing content with the new one.
+       * @param mcd - the new content description for this menu.
+       */
+      void
+      setContent(const MenuContentDesc& mcd);
+
     protected:
 
       /**
@@ -133,6 +141,28 @@ namespace new_frontiers {
       void
       loadBGTile();
 
+      /**
+       * @brief - Clear any loaded resource for the content of this
+       *          menu. Used when the visual appearance needs to be
+       *          adjusted.
+       */
+      void
+      clearContent();
+
+      /**
+       * @brief - Used to perform the loaded of needed tiles for
+       *          the content of this menu.
+       */
+      void
+      loadContentTile();
+
+      /**
+       * @brief - Used to adapt the size of the children menus as
+       *          required by the actual size of this menu.
+       */
+      void
+      updateChildren();
+
     private:
 
       /**
@@ -157,6 +187,19 @@ namespace new_frontiers {
        *          menu if any is defined in the `m_bg` element.
        */
       olc::Decal* m_bgSprite;
+
+      /**
+       * @brief - Describe the properties associated to the content
+       *          of this menu.
+       */
+      MenuContentDesc m_content;
+
+      /**
+       * @brief - Hold the sprite used as an icon for this menu. It
+       *          might be `null` in case none is used in the menu's
+       *          content.
+       */
+      olc::Decal* m_mcSprite;
 
       /**
        * @brief - The layout for this menu. Allow to define how the
