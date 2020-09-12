@@ -44,9 +44,9 @@ namespace new_frontiers {
     creature->setBackground(newImageBackground("data/img/menu/devil_mask.png"));
     addMenu(creature);
 
-    // MenuShPtr housing = std::make_shared<Menu>(olc::vi2d(0, 5 + bDims.y), bDims, "housing_menu");
-    // housing->setBackground(newTiledBackground("data/img/menu/house.png", bDims));
-    // addMenu(housing);
+    MenuShPtr housing = std::make_shared<Menu>(olc::vi2d(0, 5 + bDims.y), bDims, "housing_menu");
+    housing->setBackground(newTiledBackground("data/img/menu/house.png", bDims));
+    addMenu(housing);
 
     // MenuShPtr spells = std::make_shared<Menu>(
     //   m_pos + olc::vi2d(mbw + 5, 5 + 2 * (bDims.x + 5)),
