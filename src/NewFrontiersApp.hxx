@@ -6,18 +6,6 @@
 namespace new_frontiers {
 
   inline
-  NewFrontiersApp::~NewFrontiersApp() {
-    // Clear game sprites.
-    if (!m_sprites.empty()) {
-      for (unsigned id = 0u ; id < m_sprites.size() ; ++id) {
-        delete m_sprites[id].res;
-      }
-
-      m_sprites.clear();
-    }
-  }
-
-  inline
   bool
   NewFrontiersApp::OnUserCreate() {
     // Create the world.
@@ -101,6 +89,27 @@ namespace new_frontiers {
     SetDrawTarget(base);
 
     return r;
+  }
+
+  inline
+  bool
+  NewFrontiersApp::OnUserDestroy() {
+    // Clear game sprites.
+    if (!m_sprites.empty()) {
+      for (unsigned id = 0u ; id < m_sprites.size() ; ++id) {
+        if (m_sprites[id].res != nullptr) {
+          delete m_sprites[id].res;
+        }
+      }
+
+      m_sprites.clear();
+    }
+
+    if (m_menu != nullptr) {
+      m_menu.reset();
+    }
+
+    return true;
   }
 
   inline

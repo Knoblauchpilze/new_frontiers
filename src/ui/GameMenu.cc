@@ -22,7 +22,6 @@ namespace new_frontiers {
     MenuContentDesc mcd = newTextContent("");
     setContent(mcd);
 
-
     // Register the minimap.
     // TODO: Restore this.
     // int mbw = 150;
@@ -55,44 +54,6 @@ namespace new_frontiers {
     spells->setBackground(newColoredBackground(olc::Pixel(30, 66, 42)));
     spells->setContent(newImageContent("data/img/menu/spells.png", bDims));
     addMenu(spells);
-
-    // Add creature menu.
-    // MenuShPtr griffin = std::make_shared<Menu>(
-    //   m_pos + olc::vi2d(mbw + 5 + bDims.x + 10, 5),
-    //   bDims,
-    //   newTiledBackground(
-    //     "data/img/menu/griffin.png",
-    //     bDims
-    //   ),
-    //   "griffin_menu"
-    // );
-
-    // addMenu(griffin);
-
-    // MenuShPtr dragon = std::make_shared<Menu>(
-    //   m_pos + olc::vi2d(mbw + 5 + bDims.x + 10 + (bDims.x + 5), 5),
-    //   bDims,
-    //   newTiledBackground(
-    //     "data/img/menu/dragon.png",
-    //     bDims
-    //   ),
-    //   "dragon_menu"
-    // );
-
-    // addMenu(dragon);
-
-    // MenuShPtr golem = std::make_shared<Menu>(
-    //   m_pos + olc::vi2d(mbw + 5 + bDims.x + 10 + 2 * (bDims.x + 5), 5),
-    //   bDims,
-    //   newTiledBackground(
-    //     "data/img/menu/golem.png",
-    //     bDims
-    //   ),
-    //   "golem_menu"
-    // );
-
-    // addMenu(golem);
-
   }
 
 }
