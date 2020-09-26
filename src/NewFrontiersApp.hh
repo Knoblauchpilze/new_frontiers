@@ -64,7 +64,7 @@ namespace new_frontiers {
       /**
        * @brief - Desctruction of the object.
        */
-      ~NewFrontiersApp();
+      ~NewFrontiersApp() = default;
 
       /**
        * @brief - Implementation of the interface method called
@@ -83,6 +83,15 @@ namespace new_frontiers {
        */
       bool
       OnUserUpdate(float fElapsedTime) override;
+
+      /**
+       * @brief - Override of the destroy function which allows
+       *          to release resources before the OpenGL context
+       *          gets destroyed.
+       * @return - `true` if the release of resources succeeded.
+       */
+      bool
+      OnUserDestroy() override;
 
     private:
 

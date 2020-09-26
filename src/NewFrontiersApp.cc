@@ -47,8 +47,6 @@ namespace new_frontiers {
   NewFrontiersApp::createTileAliases() {
     // Load the sprites containing textures as
     // defined by the theme.
-    m_sprites.resize(SpriteTypesCount);
-
     olc::Sprite* spr = new olc::Sprite(m_sprites[SolidID].file);
     m_sprites[SolidID].res = new olc::Decal(spr);
 
