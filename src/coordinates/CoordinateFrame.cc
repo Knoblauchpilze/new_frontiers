@@ -1,16 +1,16 @@
 
-# include "CoordinateFrames.hh"
+# include "CoordinateFrame.hh"
 # include "utils.hh"
 
 namespace new_frontiers {
 
-  CoordinateFrames::CoordinateFrames(const Viewport& cViewport,
-                                     const Viewport& pViewport,
-                                     const olc::vi2d& tileSize):
+  CoordinateFrame::CoordinateFrame(const Viewport& cvp,
+                                   const Viewport& pvp,
+                                   const olc::vi2d& tileSize):
     utils::CoreObject("frame"),
 
-    m_cViewport(cViewport),
-    m_pViewport(pViewport),
+    m_cViewport(cvp),
+    m_pViewport(pvp),
 
     m_ts(tileSize),
     m_scale(1.0f, 1.0f),
@@ -26,7 +26,7 @@ namespace new_frontiers {
   }
 
   void
-  CoordinateFrames::updateTileScale() {
+  CoordinateFrame::updateTileScale() {
     m_tScaled = m_pViewport.dims / m_cViewport.dims;
     m_scale = m_tScaled / m_ts;
   }

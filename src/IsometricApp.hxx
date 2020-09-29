@@ -55,23 +55,23 @@ namespace new_frontiers {
 
   inline
   void
-  IsometricApp::drawSprite(float x, float y, int alias, int id, const Cell& location, int alpha) {
+  IsometricApp::drawSprite(const olc::vf2d& pos, const olc::vf2d& tileSize, int alias, int id, int alpha) {
     const SpriteAlias& sa = m_aliases[alias];
     const SpritesPack& sp = m_sprites[sa.type];
 
     DrawPartialDecal(
-      m_cf.tileCoordsToPixels(x, y, location),
+      pos, // m_cf.tileCoordsToPixels(x, y, location)
       sp.res,
       spriteCoordsToPixels(sa.alias, sp.layout, id),
       m_ss,
-      m_cf.tileScale(),
+      tileSize, //m_cf.tileScale()
       olc::Pixel(255, 255, 255, alpha)
     );
   }
 
   inline
   void
-  IsometricApp::drawHealthBar(float x, float y, float ratio, const Cell& location, int alpha) {
+  IsometricApp::drawHealthBar(const olc::vf2d& pos, const olc::vf2d& tileSize, float ratio, int alpha) {
     // Fetch a color based on the input ratio.
     olc::Pixel hbc = ratioGradient(ratio, alpha);
 
@@ -90,20 +90,18 @@ namespace new_frontiers {
     // actual element and have a size of 7/10th
     // of a tile in width, and 1/10th of a tile
     // in height.
-    olc::vf2d p = m_cf.tileCoordsToPixels(x, y, location);
-
     float hbWRatio = 0.7f;
     float hbHRatio = 0.1f;
     float hbHOffset = 0.1f;
-    olc::vf2d s = m_ss * m_cf.tileScale();
+    olc::vf2d s = m_ss * tileSize;
 
     FillRectDecal(
-      olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f, p.y - s.y * hbHOffset),
+      olc::vf2d(pos.x + (1.0f - hbWRatio) * s.x / 2.0f, pos.y - s.y * hbHOffset),
       olc::vf2d(s.x * hbWRatio * ratio, s.y * hbHRatio),
       hbc
     );
     FillRectDecal(
-      olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, p.y - s.y * hbHOffset),
+      olc::vf2d(pos.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, pos.y - s.y * hbHOffset),
       olc::vf2d(s.x * hbWRatio * (1.0f - ratio), s.y * hbHRatio),
       bc
     );

@@ -6,7 +6,7 @@
 # include <random>
 # include "World.hh"
 # include "Controls.hh"
-# include "CoordinateFrames.hh"
+# include "coordinates/CoordinateFrame.hh"
 # include "ui/GameMenu.hh"
 
 namespace new_frontiers {
@@ -21,6 +21,8 @@ namespace new_frontiers {
     olc::vi2d pixRatio;
 
     std::string name;
+
+    CoordinateFrameShPtr frame;
   };
 
   /**
@@ -32,7 +34,7 @@ namespace new_frontiers {
    */
   struct RenderDesc {
     IteratorShPtr wit;
-    CoordinateFrames cf;
+    CoordinateFrame& cf;
     GameMenuShPtr ui;
   };
 
@@ -230,7 +232,7 @@ namespace new_frontiers {
        *          handles conversion between cells coordinate and
        *          screen coordinates and conversely.
        */
-      CoordinateFrames m_cf;
+      CoordinateFrameShPtr m_cf;
 
       /**
        * @brief - A map to keep track of the state of the controls

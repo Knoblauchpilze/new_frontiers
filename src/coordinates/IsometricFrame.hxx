@@ -1,70 +1,20 @@
-#ifndef    COORDINATE_FRAMES_HXX
-# define   COORDINATE_FRAMES_HXX
+#ifndef    ISOMETRIC_FRAME_HXX
+# define   ISOMETRIC_FRAME_HXX
 
-# include "CoordinateFrames.hh"
-# include <cmath>
+# include "IsometricFrame.hh"
 
 namespace new_frontiers {
 
   inline
-  const olc::vf2d&
-  CoordinateFrames::tileScale() const noexcept {
-    return m_scale;
-  }
-
-  inline
-  void
-  CoordinateFrames::beginTranslation(const olc::vi2d& origin) {
-    m_translationOrigin = origin;
-    m_cachedPOrigin = m_pViewport.p;
-  }
-
-  inline
-  void
-  CoordinateFrames::translate(const olc::vi2d& pos) {
-    // We need to deduce the translation added by
-    // the input `pos` assuming that this will be
-    // the final position of the viewport.
-    olc::vf2d translation = pos - m_translationOrigin;
-    m_pViewport.p = m_cachedPOrigin + translation;
-  }
-
-  inline
-  void
-  CoordinateFrames::zoom(const Zoom& z, const olc::vf2d& pos) {
-    // Compute the factor to apply to the viewports
-    // based on the operation to perform. We will
-    // assume a zoom in behavior and update if need
-    // be.
-    float factor = 0.5f;
-    if (z == Zoom::Out) {
-      factor = 2.0f;
-    }
-
-    // What we know is that the top left cell of
-    // the viewport is at the top left corner of
-    // the pixels viewport.
-    // We can compute the distance from the `pos`
-    // to the pixels viewport origin: it should
-    // be applied the *inverse* of the `factor`
-    // and we should be good to go: indeed if a
-    // viewport has its span reduced, distances
-    // are lengthened (and conversely).
-    olc::vf2d d = m_pViewport.p - pos;
-    d /= factor;
-
-    m_pViewport.p = pos + d;
-
-    // Also update the dimensions of the cells
-    // viewport by `factor`.
-    m_cViewport.dims *= factor;
-
-    updateTileScale();
-  }
+  IsometricFrame::IsometricFrame(const Viewport& cvp,
+                                 const Viewport& pvp,
+                                 const olc::vi2d& tileSize):
+    CoordinateFrame(cvp, pvp, tileSize)
+  {}
 
   inline
   olc::vf2d
-  CoordinateFrames::tileCoordsToPixels(float x, float y, const Cell& pos) const noexcept {
+  IsometricFrame::tileCoordsToPixels(float x, float y, const Cell& pos) const noexcept {
     // Offset the input coordinates based on the
     // current position of the cell's viewport.
     x -= m_cViewport.p.x;
@@ -103,7 +53,7 @@ namespace new_frontiers {
 
   inline
   olc::vi2d
-  CoordinateFrames::pixelCoordsToTiles(const olc::vi2d& pixels, olc::vf2d* intraTile) const noexcept {
+  IsometricFrame::pixelCoordsToTiles(const olc::vi2d& pixels, olc::vf2d* intraTile) const noexcept {
     // The conversion to float value is necessary in the
     // case of negative values where for example coords
     // `(-0.5, -0.5)` should be interpreted as belonging
@@ -212,4 +162,4 @@ namespace new_frontiers {
 
 }
 
-#endif    /* COORDINATE_FRAMES_HXX */
+#endif    /* ISOMETRIC_FRAME_HXX */

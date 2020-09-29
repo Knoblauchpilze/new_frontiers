@@ -14,9 +14,7 @@ namespace new_frontiers {
     m_world(nullptr),
     m_wit(nullptr),
 
-    m_cf(Viewport{olc::vf2d(-1.0f, 1.0f), olc::vf2d(10.0f, 15.0f)},
-         Viewport{olc::vf2d(400.0f, 100.0f), olc::vf2d(desc.dims.x, desc.dims.y)},
-         olc::vi2d(64, 32)),
+    m_cf(desc.frame),
 
     m_controls(newControls()),
 
@@ -66,10 +64,10 @@ namespace new_frontiers {
     // of the click and then continuously move the world
     // to match the current displacement.
     if (GetMouse(1).bPressed) {
-      m_cf.beginTranslation(GetMousePos());
+      m_cf->beginTranslation(GetMousePos());
     }
     if (GetMouse(1).bHeld) {
-      m_cf.translate(GetMousePos());
+      m_cf->translate(GetMousePos());
     }
 
     olc::vi2d mPos = GetMousePos();
@@ -84,10 +82,10 @@ namespace new_frontiers {
 
     int scroll = GetMouseWheel();
     if (scroll > 0) {
-      m_cf.zoom(Zoom::In, GetMousePos());
+      m_cf->zoomIn(GetMousePos());
     }
     if (scroll < 0) {
-      m_cf.zoom(Zoom::Out, GetMousePos());
+      m_cf->zoomOut(GetMousePos());
     }
 
     // Handle inputs.
