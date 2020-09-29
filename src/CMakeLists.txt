@@ -18,7 +18,8 @@ add_subdirectory(
 set (SOURCES
   ${SOURCES}
   olcEngine.cc
-  NewFrontiersApp.cc
+  PGEApp.cc
+  IsometricApp.cc
   CoordinateFrames.cc
   )
 
