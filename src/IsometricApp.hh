@@ -130,8 +130,8 @@ namespace new_frontiers {
       /**
        * @brief - Used to draw the tile referenced by its alias index
        *          and at the coordinate `cell`.
-       * @param x - the coordinate along the `x` axis for this sprite.
-       * @param y - the coordinate along the `y` axis for this sprite.
+       * @param pos - the position at which the tile should be drawn.
+       * @param tileSize - the size of the tile in pixels.
        * @param alias - the index of the tile in the tile atlas.
        * @param id - the index of the variation of this sprite.
        * @param location - defines which part of the cell is described
@@ -143,32 +143,26 @@ namespace new_frontiers {
        *                transparent.
        */
       void
-      drawSprite(float x,
-                 float y,
+      drawSprite(const olc::vf2d& pos,
+                 const olc::vf2d& tileSize,
                  int alias,
                  int id,
-                 const Cell& location = Cell::TopLeft,
                  int alpha = ALPHA_OPAQUE);
 
       /**
        * @brief - Used to draw a minimalistic health bar for an entity
        *          or block at position (x, y) in cells coordinates. It
        *          is displayed with the specified alpha transparency.
-       * @param x - the coordinate along the `x` axis for the element
-       *            this healthbar is attached to.
-       * @param y - the coordinate along the `y` axis for the element
-       *            this healthbar is attached to.
+       * @param pos - the position at which the tile should be drawn.
+       * @param tileSize - the size of the tile in pixels.
        * @param ratio - a value in the range `[0; 1]` representing the
        *                health of the element.
-       * @param location - the base location of the health bar compared
-       *                   to the tile.
        * @param alpha - additional alpha modifier to blend the display.
        */
       void
-      drawHealthBar(float x,
-                    float y,
+      drawHealthBar(const olc::vf2d& pos,
+                    const olc::vf2d& tileSize,
                     float ratio,
-                    const Cell& location = Cell::TopLeft,
                     int alpha = ALPHA_SEMI_OPAQUE);
 
       /**

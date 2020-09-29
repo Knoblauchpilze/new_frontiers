@@ -10,9 +10,11 @@ set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_subdirectory(
   ${CMAKE_CURRENT_SOURCE_DIR}/world
   )
-
 add_subdirectory(
   ${CMAKE_CURRENT_SOURCE_DIR}/ui
+  )
+add_subdirectory(
+  ${CMAKE_CURRENT_SOURCE_DIR}/coordinates
   )
 
 set (SOURCES
@@ -20,7 +22,6 @@ set (SOURCES
   olcEngine.cc
   PGEApp.cc
   IsometricApp.cc
-  CoordinateFrames.cc
   )
 
 add_library (new_frontiers_lib SHARED

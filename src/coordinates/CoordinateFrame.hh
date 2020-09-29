@@ -1,73 +1,34 @@
-#ifndef    COORDINATE_FRAMES_HH
-# define   COORDINATE_FRAMES_HH
+#ifndef    COORDINATE_FRAME_HH
+# define   COORDINATE_FRAME_HH
 
+# include <memory>
 # include <core_utils/CoreObject.hh>
-# include "olcPixelGameEngine.h"
+# include "Viewport.hh"
+# include "CellLocation.hh"
 
 namespace new_frontiers {
 
-  /**
-   * @brief - Defines a viewport from its top left
-   *          corner and the associated dimensions.
-   */
-  struct Viewport {
-    olc::vf2d p;
-    olc::vf2d dims;
-  };
-
-  /**
-   * @brief - Define the possible zoom types.
-   */
-  enum class Zoom {
-    In,
-    Out
-  };
-
-  /**
-   * @brief - Define the type of conversion from cell
-   *          to pixels. Allow to determine whether
-   *          the output position should correspond
-   *          to the center, the top left corner, the
-   *          center, etc. of the cell.
-   */
-  enum class Cell {
-    TopLeft,      //< The input position is assumed to refer
-                  //< to the top left corner of the tile.
-    Center,       //< The input position refers to the center
-                  //< of the tile.
-    CenterBottom, //< The input position refers to the bottom
-                  //< center of the tile.
-    CenterLeft    //< The input position refers to the center
-                  //< of the left side of the tile.
-  };
-
-  class CoordinateFrames: public utils::CoreObject {
+  class CoordinateFrame: public utils::CoreObject {
     public:
 
       /**
        * @brief - Create a new coordinate frame handler with the input
-       *          viewport and tiles size. The viewport will be used
-       *          as a way to convert the pixels position to their
-       *          cells counterpart.
-       *          The size of a single cell in pixels is computed as
-       *          a ratio between the viewport in cells and the one
-       *          in pixels.
-       * @param cViewport - the viewport expressed in world cells: it
-       *                    define how many cells are visible in this
-       *                    coordinate frame.
-       * @param pViewport - the viewport expressed in pixels: it is
-       *                    similar to the `cViewport` but defines
-       *                    the screen visible area.
+       *          viewport and tile size.
+       * @param cvp - the viewport expressed in world cells: it defines
+       *              how many cells are visible in this coordinate
+       *              frame.
+       * @param pvp - the viewport expressed in pixels: it is similar
+       *              to the `cvp` but defines the screen visible area.
        * @param tileSize - defines the initial tile size as they are
        *                   described in the sprite file. This value
        *                   will be used to apply the scale ratio as
        *                   needed from the viewports.
        */
-      CoordinateFrames(const Viewport& cViewport,
-                       const Viewport& pViewport,
-                       const olc::vi2d& tileSize);
+      CoordinateFrame(const Viewport& cvp,
+                      const Viewport& pvp,
+                      const olc::vi2d& tileSize);
 
-      ~CoordinateFrames() = default;
+      ~CoordinateFrame() = default;
 
       /**
        * @brief - Used to return the current scaling factor to apply
@@ -75,7 +36,69 @@ namespace new_frontiers {
        * @return - the scaling factor to apply to the tiles.
        */
       const olc::vf2d&
-      tileScale() const noexcept;
+      tileSize() const noexcept;
+
+      /**
+       * @brief - Used to convert from tile coordinates to pixel
+       *          coordinates. This method can be used when some
+       *          tile is to be displayed on the screen. We make
+       *          use of a global position of the viewport to be
+       *          able to correctly interpret the input cell. It
+       *          is also dependent on the current scaling for
+       *          tiles based on the cells viewport.
+       *          This method should be redefined by inheriting
+       *          classes for their specific purposes.
+       * @param x - the cell coordinate along the `x` axis.
+       * @param y - the cell coordinate along the `y` axis.
+       * @param pos - defines which position of the cell should
+       *              be computed in pixels.
+       * @return - the coordinates in pixels of the tile defined
+       *           by the input coords.
+       */
+      virtual olc::vf2d
+      tileCoordsToPixels(float x,
+                         float y,
+                         const Cell& pos = Cell::TopLeft) const noexcept = 0;
+
+      /**
+       * @brief - Convert from pixels coordinates to tile coords.
+       *          Some extra logic is added in order to account
+       *          for the tiles that do not align with the grid
+       *          so that we always get an accurate position for
+       *          the tile.
+       *          This method should be redefined by inheriting
+       *          classes for their specific purposes.
+       * @param pixels - the pixels coordinates to convert into
+       *                 tile coords.
+       * @param intraTile - used to provide the intra tile coords
+       *                    if a non `null` value is provided. The
+       *                    coordinates are expressed in the range
+       *                    `[0; 1]` (as in a percentage).
+       * @return - the corresponding tile coordinates.
+       */
+      virtual olc::vi2d
+      pixelCoordsToTiles(const olc::vi2d& pixels,
+                         olc::vf2d* intraTile = nullptr) const noexcept = 0;
+
+      /**
+       * @brief - Used to perform the zoom operation requested. The
+       *          viewports will be updated to be smaller than the
+       *          current value so as to actually simulate a zoom.
+       * @param pos - the position around which the zoom operation
+       *              should be performed (typically the current
+       *              position of the mouse).. The final position
+       *              will stay the same on screen.
+       */
+      void
+      zoomIn(const olc::vf2d& pos);
+
+      /**
+       * @bvrief - Reverse operation to `zoomIn`.
+       * @param pos - the position which should stay constant
+       *              after the zoom out operation.
+       */
+      void
+      zoomOut(const olc::vf2d& pos);
 
       /**
        * @brief - Notify the coordinate frames to start a translation.
@@ -100,57 +123,6 @@ namespace new_frontiers {
       void
       translate(const olc::vi2d& pos);
 
-      /**
-       * @brief - Used to perform the zoom operation requested. The
-       *          viewports will be updated with a known factor so
-       *          as to reflect the operation.
-       *          The zoom operation happens by contracting or by
-       *          expanding the viewport but we need a center: it
-       *          should be provided by the user when calling the
-       *          method and usually corresponds to the position of
-       *          the mouse for maximum user-friendliness.
-       * @param z - the zoom operation to perform.
-       * @param pos - the position around which the center should
-       *              be performed.
-       */
-      void
-      zoom(const Zoom& z, const olc::vf2d& pos);
-
-      /**
-       * @brief - Used to convert from tile coordinates to pixel
-       *          coordinates. This method can be used when some
-       *          tile is to be displayed on the screen. We make
-       *          use of a global position of the viewport to be
-       *          able to correctly interpret the input cell. It
-       *          is also dependent on the current scaling for
-       *          tiles based on the cells viewport.
-       * @param x - the cell coordinate along the `x` axis.
-       * @param y - the cell coordinate along the `y` axis.
-       * @param pos - defines which position of the cell should
-       *              be computed in pixels.
-       * @return - the coordinates in pixels of the tile defined
-       *           by the input coords.
-       */
-      olc::vf2d
-      tileCoordsToPixels(float x, float y, const Cell& pos = Cell::TopLeft) const noexcept;
-
-      /**
-       * @brief - Convert from pixels coordinates to tile coords.
-       *          Some extra logic is added in order to account
-       *          for the tiles that do not align with the grid
-       *          so that we always get an accurate position for
-       *          the tile.
-       * @param pixels - the pixels coordinates to convert into
-       *                 tile coords.
-       * @param intraTile - used to provide the intra tile coords
-       *                    if a non null value is provided. The
-       *                    coordinates are expressed in the range
-       *                    `[0; 1]` (as in a percentage).
-       * @return - the corresponding tile coordinates.
-       */
-      olc::vi2d
-      pixelCoordsToTiles(const olc::vi2d& pixels, olc::vf2d* intraTile = nullptr) const noexcept;
-
     private:
 
       /**
@@ -162,7 +134,20 @@ namespace new_frontiers {
       void
       updateTileScale();
 
-    private:
+      /**
+       * @brief - General zoom method which takes a factor that
+       *          will be applied to the viewport (a value that
+       *          is larger than `1` will zoom out while a zoom
+       *          in will be performed with a value smaller than
+       *          `1`) and the center to fix.
+       * @param factor - a value to reduce/increase the size of
+       *                 the viewports.
+       * @param pos - the position to fix in the zoom operation.
+       */
+      void
+      zoom(float factor, const olc::vf2d& pos);
+
+    protected:
 
       /**
        * @brief - Define the viewport for this coordinate frame.
@@ -225,8 +210,9 @@ namespace new_frontiers {
       olc::vi2d m_cachedPOrigin;
   };
 
+  using CoordinateFrameShPtr = std::shared_ptr<CoordinateFrame>;
 }
 
-# include "CoordinateFrames.hxx"
+# include "CoordinateFrame.hxx"
 
-#endif    /* COORDINATE_FRAMES_HH */
+#endif    /* COORDINATE_FRAME_HH */
