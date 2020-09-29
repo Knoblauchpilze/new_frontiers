@@ -42,7 +42,7 @@
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>
 # include <core_utils/CoreException.hh>
-# include "NewFrontiersApp.hh"
+# include "IsometricApp.hh"
 
 int main(int /*argc*/, char** /*argv*/) {
   // Create the logger.
@@ -80,7 +80,12 @@ int main(int /*argc*/, char** /*argv*/) {
 
     t.size = olc::vi2d(64, 64);
 
-    new_frontiers::NewFrontiersApp demo(width, height, t);
+    new_frontiers::AppDesc desc;
+    desc.dims = olc::vi2d(width, height);
+    desc.pixRatio = olc::vi2d(1, 1);
+    desc.name = service;
+
+    new_frontiers::IsometricApp demo(desc, t);
     demo.Start();
   }
   catch (const utils::CoreException& e) {
