@@ -99,6 +99,21 @@ namespace new_frontiers {
     private:
 
       /**
+       * @brief - Convenience enumeration to refer to the position of
+       *          each sprite type in the `m_sprites` array.
+       */
+      enum SpriteType {
+        GroundID,
+        SolidID,
+        PortalID,
+        EntityID,
+        VFXID,
+        CursorID,
+
+        SpriteTypesCount
+      };
+
+      /**
        * @brief - Holds an array with colors defined for each in
        *          game element. It is a very minimalistic visual
        *          representation for now but it is sufficient.

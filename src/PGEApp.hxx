@@ -9,6 +9,7 @@ namespace new_frontiers {
   bool
   PGEApp::OnUserCreate() {
     // Create the world.
+// # define WORLD_FROM_FILE
 # ifdef WORLD_FROM_FILE
     m_world = std::make_shared<World>(100, std::string("data/worlds/level_1.lvl"));
 # else

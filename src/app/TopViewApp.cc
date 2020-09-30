@@ -1,7 +1,7 @@
 
 # include "TopViewApp.hh"
 # include "utils.hh"
-# include "coordinates/IsometricFrame.hh"
+# include "coordinates/TopViewFrame.hh"
 
 namespace new_frontiers {
 
@@ -10,10 +10,9 @@ namespace new_frontiers {
     PGEApp(
       newDesc(
         dims,
-        // TODO: Replace by a top view frame.
-        std::make_shared<IsometricFrame>(
-          Viewport{olc::vf2d(-1.0f, 1.0f), olc::vf2d(10.0f, 15.0f)},
-          Viewport{olc::vf2d(400.0f, 100.0f), olc::vf2d(640.0f, 480.0f)},
+        std::make_shared<TopViewFrame>(
+          Viewport{olc::vf2d(0.0f, 0.0f), olc::vf2d(10.0f, 15.0f)},
+          Viewport{olc::vf2d(100.0f, 50.0f), olc::vf2d(640.0f, 480.0f)},
           olc::vi2d(64, 32)
         ),
         name
@@ -25,74 +24,15 @@ namespace new_frontiers {
 
   void
   TopViewApp::loadResources() {
-    // Load the sprites containing textures as
-    // defined by the theme.
-    // TODO: Replace with actual sprites types.
-    // m_sprites.resize(SpriteTypesCount);
+    // Load the colors used to represent elements.
+    m_sprites.resize(SpriteTypesCount);
 
-    // olc::Sprite* spr = new olc::Sprite(m_sprites[SolidID].file);
-    // m_sprites[SolidID].res = new olc::Decal(spr);
-
-    // spr = new olc::Sprite(m_sprites[PortalID].file);
-    // m_sprites[PortalID].res = new olc::Decal(spr);
-
-    // spr = new olc::Sprite(m_sprites[EntityID].file);
-    // m_sprites[EntityID].res = new olc::Decal(spr);
-
-    // spr = new olc::Sprite(m_sprites[VFXID].file);
-    // m_sprites[VFXID].res = new olc::Decal(spr);
-
-    // spr = new olc::Sprite(m_sprites[CursorID].file);
-    // m_sprites[CursorID].res = new olc::Decal(spr);
-
-    // // Build the atlas.
-    // int spritesCount = tiles::BlocksCount + tiles::EntitiesCount + tiles::EffectsCount;
-    // m_aliases.resize(spritesCount + 1);
-
-    // m_aliases[aliasOfBlock(tiles::Empty)]              = SpriteAlias{SolidID, olc::vi2d(4, 2)};
-    // m_aliases[aliasOfBlock(tiles::Wall)]               = SpriteAlias{SolidID, olc::vi2d(0, 0)};
-    // m_aliases[aliasOfBlock(tiles::Door)]               = SpriteAlias{SolidID, olc::vi2d(0, 2)};
-
-    // m_aliases[aliasOfBlock(tiles::Portal)]             = SpriteAlias{PortalID, olc::vi2d(0, 0)};
-
-    // m_aliases[aliasOfEntity(tiles::MarineKnight)]      = SpriteAlias{EntityID, olc::vi2d(0, 0)};
-    // m_aliases[aliasOfEntity(tiles::Warrior)]           = SpriteAlias{EntityID, olc::vi2d(1, 0)};
-    // m_aliases[aliasOfEntity(tiles::StoneGiant)]        = SpriteAlias{EntityID, olc::vi2d(2, 0)};
-    // m_aliases[aliasOfEntity(tiles::Sorceress)]         = SpriteAlias{EntityID, olc::vi2d(3, 0)};
-    // m_aliases[aliasOfEntity(tiles::Knight)]            = SpriteAlias{EntityID, olc::vi2d(4, 0)};
-    // m_aliases[aliasOfEntity(tiles::GeneticExperiment)] = SpriteAlias{EntityID, olc::vi2d(5, 0)};
-    // m_aliases[aliasOfEntity(tiles::Warlord)]           = SpriteAlias{EntityID, olc::vi2d(6, 0)};
-    // m_aliases[aliasOfEntity(tiles::Vampire)]           = SpriteAlias{EntityID, olc::vi2d(7, 0)};
-    // m_aliases[aliasOfEntity(tiles::Gecko)]             = SpriteAlias{EntityID, olc::vi2d(9, 0)};
-    // m_aliases[aliasOfEntity(tiles::DarkAnubis)]        = SpriteAlias{EntityID, olc::vi2d(10, 0)};
-    // m_aliases[aliasOfEntity(tiles::Cyclope)]           = SpriteAlias{EntityID, olc::vi2d(11, 0)};
-    // m_aliases[aliasOfEntity(tiles::Fool)]              = SpriteAlias{EntityID, olc::vi2d(12, 0)};
-    // m_aliases[aliasOfEntity(tiles::Beast)]             = SpriteAlias{EntityID, olc::vi2d(13, 0)};
-    // m_aliases[aliasOfEntity(tiles::BlueAvenger)]       = SpriteAlias{EntityID, olc::vi2d(14, 0)};
-    // m_aliases[aliasOfEntity(tiles::SoulEater)]         = SpriteAlias{EntityID, olc::vi2d(15, 0)};
-    // m_aliases[aliasOfEntity(tiles::Valkyrie)]          = SpriteAlias{EntityID, olc::vi2d(0, 1)};
-    // m_aliases[aliasOfEntity(tiles::Guardian)]          = SpriteAlias{EntityID, olc::vi2d(1, 1)};
-    // m_aliases[aliasOfEntity(tiles::Blob)]              = SpriteAlias{EntityID, olc::vi2d(2, 1)};
-    // m_aliases[aliasOfEntity(tiles::CosmicThreat)]      = SpriteAlias{EntityID, olc::vi2d(3, 1)};
-    // m_aliases[aliasOfEntity(tiles::Gorgone)]           = SpriteAlias{EntityID, olc::vi2d(4, 1)};
-    // m_aliases[aliasOfEntity(tiles::DemonBat)]          = SpriteAlias{EntityID, olc::vi2d(5, 1)};
-    // m_aliases[aliasOfEntity(tiles::Griffin)]           = SpriteAlias{EntityID, olc::vi2d(6, 1)};
-    // m_aliases[aliasOfEntity(tiles::Executioner)]       = SpriteAlias{EntityID, olc::vi2d(8, 1)};
-    // m_aliases[aliasOfEntity(tiles::MindlessGolem)]     = SpriteAlias{EntityID, olc::vi2d(9, 1)};
-    // m_aliases[aliasOfEntity(tiles::IncaOverlord)]      = SpriteAlias{EntityID, olc::vi2d(10, 1)};
-    // m_aliases[aliasOfEntity(tiles::Hydra)]             = SpriteAlias{EntityID, olc::vi2d(11, 1)};
-    // m_aliases[aliasOfEntity(tiles::Dragon)]            = SpriteAlias{EntityID, olc::vi2d(2, 2)};
-    // m_aliases[aliasOfEntity(tiles::Sorcerer)]          = SpriteAlias{EntityID, olc::vi2d(13, 2)};
-    // m_aliases[aliasOfEntity(tiles::Satyr)]             = SpriteAlias{EntityID, olc::vi2d(14, 2)};
-    // m_aliases[aliasOfEntity(tiles::TwoHeadedWarrior)]  = SpriteAlias{EntityID, olc::vi2d(15, 2)};
-    // m_aliases[aliasOfEntity(tiles::FireKnight)]        = SpriteAlias{EntityID, olc::vi2d(0, 3)};
-
-    // m_aliases[aliasOfEffect(tiles::Fire)]      = SpriteAlias{VFXID, olc::vi2d(0, 0)};
-    // m_aliases[aliasOfEffect(tiles::Lightning)] = SpriteAlias{VFXID, olc::vi2d(3, 0)};
-    // m_aliases[aliasOfEffect(tiles::Poison)]    = SpriteAlias{VFXID, olc::vi2d(6, 0)};
-    // m_aliases[aliasOfEffect(tiles::Smoke)]     = SpriteAlias{VFXID, olc::vi2d(9, 0)};
-
-    // m_aliases[spritesCount] = SpriteAlias{CursorID, olc::vi2d(0, 0)};
+    m_sprites[GroundID] = olc::VERY_DARK_GREY;
+    m_sprites[SolidID] = olc::DARK_GREY;
+    m_sprites[PortalID] = olc::GREY;
+    m_sprites[EntityID] = olc::VERY_DARK_CYAN;
+    m_sprites[VFXID] = olc::VERY_DARK_RED;
+    m_sprites[CursorID] = olc::YELLOW;
   }
 
   void
@@ -106,14 +46,14 @@ namespace new_frontiers {
     // Draw ground.
     for (int y = 0 ; y < res.wit->h() ; ++y) {
       for (int x = 0 ; x < res.wit->w() ; ++x) {
-        drawSprite(res.cf.tileCoordsToPixels(x, y), res.cf.tileSize(), tiles::Empty, 0);
+        drawSprite(res.cf.tileCoordsToPixels(x, y), res.cf.tileSize(), GroundID, ALPHA_OPAQUE - std::rand() % 50);
       }
     }
 
     // Draw solid tiles.
     for (int id = 0 ; id < res.wit->blocksCount() ; ++id) {
       BlockDesc t = res.wit->block(id);
-      drawSprite(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y), res.cf.tileSize(), t.tile.type);
+      drawSprite(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y), res.cf.tileSize(), SolidID);
       drawHealthBar(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y), res.cf.tileSize(), t.health);
     }
 
@@ -125,7 +65,7 @@ namespace new_frontiers {
         drawSprite(
           res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
           res.cf.tileSize(),
-          t.tile.type,
+          VFXID,
           ALPHA_SEMI_OPAQUE
         );
       }
@@ -133,7 +73,7 @@ namespace new_frontiers {
         drawSprite(
           res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
           res.cf.tileSize(),
-          t.tile.type,
+          VFXID,
           ALPHA_SEMI_OPAQUE
         );
       }
@@ -141,7 +81,7 @@ namespace new_frontiers {
       drawSprite(
         res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
         res.cf.tileSize(),
-        t.tile.type
+        EntityID
       );
 
       drawHealthBar(
@@ -157,16 +97,15 @@ namespace new_frontiers {
       drawSprite(
         res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
         res.cf.tileSize(),
-        t.tile.type,
+        VFXID,
         static_cast<int>(std::round(ALPHA_OPAQUE * t.amount))
       );
     }
 
     // Draw cursor.
-    // TODO: Replace with actual cursor.
-    // olc::vi2d mp = GetMousePos();
-    // olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp);
-    // drawSprite(res.cf.tileCoordsToPixels(mtp.x, mtp.y), res.cf.tileSize(), m_aliases.size() - 1, 0);
+    olc::vi2d mp = GetMousePos();
+    olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp);
+    drawSprite(res.cf.tileCoordsToPixels(mtp.x, mtp.y), res.cf.tileSize(), CursorID, ALPHA_SEMI_OPAQUE);
 
     SetPixelMode(olc::Pixel::NORMAL);
   }
@@ -241,17 +180,16 @@ namespace new_frontiers {
     for (int id = 0 ; id < res.wit->entitiesCount() ; ++id) {
       EntityDesc ed = res.wit->entity(id);
 
-      olc::vf2d o = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, Cell::Center);
-      olc::vf2d t = res.cf.tileCoordsToPixels(ed.xT, ed.yT, Cell::Center);
+      olc::vf2d t = res.cf.tileCoordsToPixels(ed.xT, ed.yT);
       olc::vf2d tl = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, Cell::CenterLeft);
-      olc::vf2d bc = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, Cell::Center);
+      olc::vf2d bc = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y);
 
       for (unsigned id = 0u ; id < ed.cPoints.size() / 2u ; ++id) {
-        olc::vf2d p = res.cf.tileCoordsToPixels(ed.cPoints[2 * id], ed.cPoints[2 * id + 1], Cell::Center);
+        olc::vf2d p = res.cf.tileCoordsToPixels(ed.cPoints[2 * id], ed.cPoints[2 * id + 1]);
         FillCircle(p, 3, olc::CYAN);
       }
 
-      DrawLine(o, t, olc::WHITE);
+      DrawLine(bc, t, olc::WHITE);
       DrawRect(tl, res.cf.tileSize(), olc::MAGENTA);
       FillCircle(bc, 5, olc::YELLOW);
     }

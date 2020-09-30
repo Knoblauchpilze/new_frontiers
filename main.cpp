@@ -43,6 +43,7 @@
 # include <core_utils/LoggerLocator.hh>
 # include <core_utils/CoreException.hh>
 # include "app/IsometricApp.hh"
+# include "app/TopViewApp.hh"
 
 int main(int /*argc*/, char** /*argv*/) {
   // Create the logger.
@@ -78,7 +79,12 @@ int main(int /*argc*/, char** /*argv*/) {
 
     t.size = olc::vi2d(64, 64);
 
+// # define ISOMETRIC
+# ifdef ISOMETRIC
     new_frontiers::IsometricApp demo(olc::vi2d(640, 480), t);
+# else
+    new_frontiers::TopViewApp demo(olc::vi2d(640, 480));
+# endif
     demo.Start();
   }
   catch (const utils::CoreException& e) {

@@ -134,7 +134,8 @@ namespace new_frontiers {
        * @brief - Used to draw the tile referenced by its alias index
        *          and at the coordinate `cell`.
        * @param pos - the position at which the tile should be drawn.
-       * @param tileSize - the size of the tile in pixels.
+       * @param tileScale - the scale of the tile compared to its
+       *                    canonical value.
        * @param alias - the index of the tile in the tile atlas.
        * @param id - the index of the variation of this sprite.
        * @param alpha - a value of `255` to indicate that the sprite
@@ -143,7 +144,7 @@ namespace new_frontiers {
        */
       void
       drawSprite(const olc::vf2d& pos,
-                 const olc::vf2d& tileSize,
+                 const olc::vf2d& tileScale,
                  int alias,
                  int id,
                  int alpha = ALPHA_OPAQUE);
@@ -153,14 +154,15 @@ namespace new_frontiers {
        *          or block at position (x, y) in cells coordinates. It
        *          is displayed with the specified alpha transparency.
        * @param pos - the position at which the tile should be drawn.
-       * @param tileSize - the size of the tile in pixels.
+       * @param tileScale - the scaling to apply to the initial tile
+       *                    size to obtain the current display size.
        * @param ratio - a value in the range `[0; 1]` representing the
        *                health of the element.
        * @param alpha - additional alpha modifier to blend the display.
        */
       void
       drawHealthBar(const olc::vf2d& pos,
-                    const olc::vf2d& tileSize,
+                    const olc::vf2d& tileScale,
                     float ratio,
                     int alpha = ALPHA_SEMI_OPAQUE);
 

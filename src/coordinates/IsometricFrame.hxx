@@ -20,7 +20,7 @@ namespace new_frontiers {
     x -= m_cViewport.p.x;
     y -= m_cViewport.p.y;
 
-    // The isomectric representation yields the
+    // The isometric representation yields the
     // formula below which takes into account a
     // scaling factor to apply to the tiles.
     olc::vf2d tp(
