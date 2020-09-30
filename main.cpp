@@ -42,7 +42,7 @@
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>
 # include <core_utils/CoreException.hh>
-# include "IsometricApp.hh"
+# include "app/IsometricApp.hh"
 
 int main(int /*argc*/, char** /*argv*/) {
   // Create the logger.

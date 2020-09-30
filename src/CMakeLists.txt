@@ -16,12 +16,14 @@ add_subdirectory(
 add_subdirectory(
   ${CMAKE_CURRENT_SOURCE_DIR}/coordinates
   )
+add_subdirectory(
+  ${CMAKE_CURRENT_SOURCE_DIR}/app
+  )
 
 set (SOURCES
   ${SOURCES}
   olcEngine.cc
   PGEApp.cc
-  IsometricApp.cc
   )
 
 add_library (new_frontiers_lib SHARED

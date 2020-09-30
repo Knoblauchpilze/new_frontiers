@@ -3,7 +3,6 @@
 
 # include <core_utils/CoreObject.hh>
 # include "olcPixelGameEngine.h"
-# include <random>
 # include "World.hh"
 # include "Controls.hh"
 # include "AppDesc.hh"
@@ -110,6 +109,20 @@ namespace new_frontiers {
 
       bool
       hasDebug() const noexcept;
+
+      /**
+       * @brief - Used to compute a valid color based on the input ratio.
+       *          The color is taken from a range going from pure green
+       *          to yellow, then orange and finally red for decreasing
+       *          values of the ratio in the range `[0; 1]`.
+       * @param ratio - a value in the range `[0; 1]` (clamped if it is
+       *                not the case).
+       * @param alpha - additional alpha channel information to generate
+       *                the color.
+       * @return - a color representing the ratio.
+       */
+      olc::Pixel
+      redToGreenGradient(float ratio, int alpha = ALPHA_SEMI_OPAQUE) const noexcept;
 
       /**
        * @brief - Interface method to display the main content

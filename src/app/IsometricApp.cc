@@ -1,7 +1,6 @@
 
 # include "IsometricApp.hh"
 # include "utils.hh"
-# include "Controls.hh"
 # include "coordinates/IsometricFrame.hh"
 
 namespace new_frontiers {
