@@ -36,6 +36,15 @@ namespace new_frontiers {
        * @return - the scaling factor to apply to the tiles.
        */
       const olc::vf2d&
+      tileScale() const noexcept;
+
+      /**
+       * @brief - Returns the actual size of the tile by applying the
+       *          current scaling factor (as returned by `tileScale`)
+       *          to the initial tile size.
+       * @return - the size of the tile in pixels.
+       */
+      olc::vf2d
       tileSize() const noexcept;
 
       /**

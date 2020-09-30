@@ -41,7 +41,7 @@ namespace new_frontiers {
       newTile(tiles::Portal, id, x, y), // spawner display
       toMilliseconds(500),              // spawn interval
       ent,                              // mob
-      1,                                // mob variant
+      0,                                // mob variant
       1                                 // stock
     );
 # else

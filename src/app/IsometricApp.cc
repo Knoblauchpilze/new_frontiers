@@ -128,15 +128,15 @@ namespace new_frontiers {
     // Draw ground.
     for (int y = 0 ; y < res.wit->h() ; ++y) {
       for (int x = 0 ; x < res.wit->w() ; ++x) {
-        drawSprite(res.cf.tileCoordsToPixels(x, y), res.cf.tileSize(), tiles::Empty, 0);
+        drawSprite(res.cf.tileCoordsToPixels(x, y), res.cf.tileScale(), tiles::Empty, 0);
       }
     }
 
     // Draw solid tiles.
     for (int id = 0 ; id < res.wit->blocksCount() ; ++id) {
       BlockDesc t = res.wit->block(id);
-      drawSprite(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y), res.cf.tileSize(), aliasOfBlock(t.tile.type), t.tile.id);
-      drawHealthBar(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y), res.cf.tileSize(), t.health);
+      drawSprite(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y), res.cf.tileScale(), aliasOfBlock(t.tile.type), t.tile.id);
+      drawHealthBar(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y), res.cf.tileScale(), t.health);
     }
 
     // Draw entities.
@@ -146,7 +146,7 @@ namespace new_frontiers {
       if (t.state.glowing) {
         drawSprite(
           res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
-          res.cf.tileSize(),
+          res.cf.tileScale(),
           aliasOfEffect(tiles::Fire),
           2,
           ALPHA_SEMI_OPAQUE
@@ -155,7 +155,7 @@ namespace new_frontiers {
       if (t.state.exhausted) {
         drawSprite(
           res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
-          res.cf.tileSize(),
+          res.cf.tileScale(),
           aliasOfEffect(tiles::Poison),
           2,
           ALPHA_SEMI_OPAQUE
@@ -164,14 +164,14 @@ namespace new_frontiers {
 
       drawSprite(
         res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
-        res.cf.tileSize(),
+        res.cf.tileScale(),
         aliasOfEntity(t.tile.type),
         t.tile.id
       );
 
       drawHealthBar(
         res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
-        res.cf.tileSize(),
+        res.cf.tileScale(),
         t.health
       );
     }
@@ -181,7 +181,7 @@ namespace new_frontiers {
       VFXDesc t = res.wit->vfx(id);
       drawSprite(
         res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
-        res.cf.tileSize(),
+        res.cf.tileScale(),
         aliasOfEffect(t.tile.type),
         t.tile.id,
         static_cast<int>(std::round(ALPHA_OPAQUE * t.amount))
@@ -191,7 +191,7 @@ namespace new_frontiers {
     // Draw cursor.
     olc::vi2d mp = GetMousePos();
     olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp);
-    drawSprite(res.cf.tileCoordsToPixels(mtp.x, mtp.y), res.cf.tileSize(), m_aliases.size() - 1, 0);
+    drawSprite(res.cf.tileCoordsToPixels(mtp.x, mtp.y), res.cf.tileScale(), m_aliases.size() - 1, 0);
 
     SetPixelMode(olc::Pixel::NORMAL);
   }
@@ -277,7 +277,7 @@ namespace new_frontiers {
       }
 
       DrawLine(o, t, olc::WHITE);
-      DrawRect(tl, m_ss * res.cf.tileSize(), olc::MAGENTA);
+      DrawRect(tl, res.cf.tileScale() * m_ss, olc::MAGENTA);
       FillCircle(bc, 5, olc::YELLOW);
     }
 

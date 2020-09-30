@@ -55,7 +55,7 @@ namespace new_frontiers {
 
   inline
   void
-  IsometricApp::drawSprite(const olc::vf2d& pos, const olc::vf2d& tileSize, int alias, int id, int alpha) {
+  IsometricApp::drawSprite(const olc::vf2d& pos, const olc::vf2d& tileScale, int alias, int id, int alpha) {
     const SpriteAlias& sa = m_aliases[alias];
     const SpritesPack& sp = m_sprites[sa.type];
 
@@ -64,14 +64,14 @@ namespace new_frontiers {
       sp.res,
       spriteCoordsToPixels(sa.alias, sp.layout, id),
       m_ss,
-      tileSize,
+      tileScale,
       olc::Pixel(255, 255, 255, alpha)
     );
   }
 
   inline
   void
-  IsometricApp::drawHealthBar(const olc::vf2d& pos, const olc::vf2d& tileSize, float ratio, int alpha) {
+  IsometricApp::drawHealthBar(const olc::vf2d& pos, const olc::vf2d& tileScale, float ratio, int alpha) {
     // Fetch a color based on the input ratio.
     olc::Pixel hbc = redToGreenGradient(ratio, alpha);
 
@@ -93,7 +93,7 @@ namespace new_frontiers {
     float hbWRatio = 0.7f;
     float hbHRatio = 0.1f;
     float hbHOffset = 0.1f;
-    olc::vf2d s = m_ss * tileSize;
+    olc::vf2d s = m_ss * tileScale;
 
     FillRectDecal(
       olc::vf2d(pos.x + (1.0f - hbWRatio) * s.x / 2.0f, pos.y - s.y * hbHOffset),

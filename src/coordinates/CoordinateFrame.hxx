@@ -8,8 +8,14 @@ namespace new_frontiers {
 
   inline
   const olc::vf2d&
-  CoordinateFrame::tileSize() const noexcept {
+  CoordinateFrame::tileScale() const noexcept {
     return m_scale;
+  }
+
+  inline
+  olc::vf2d
+  CoordinateFrame::tileSize() const noexcept {
+    return m_scale * m_ts;
   }
 
   inline

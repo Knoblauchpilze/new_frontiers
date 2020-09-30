@@ -2,6 +2,7 @@
 # define   TOPVIEW_APP_HXX
 
 # include "TopViewApp.hh"
+# include "utils.hh"
 
 namespace new_frontiers {
 
