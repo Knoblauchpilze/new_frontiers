@@ -42,12 +42,16 @@ namespace new_frontiers {
 
       /**
        * @brief - Create a new default pixel game engine app.
-       * @param desc - the base description for the canvas to
-       *               be used by this app.
+       * @param dims - the dimensions of the application's main
+       *               canvas in pixels. The ratio will be set
+       *               to `1x1`.
        * @param theme - the description of the theme to use
        *                for sprites in this application.
+       * @param name - the name of the application.
        */
-      IsometricApp(const AppDesc& desc, const Theme& theme);
+      IsometricApp(const olc::vi2d& dims,
+                   const Theme& theme,
+                   const std::string& name = "new_frontiers");
 
       /**
        * @brief - Desctruction of the object.

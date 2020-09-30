@@ -2,25 +2,8 @@
 # define   PGE_APP_HXX
 
 # include "PGEApp.hh"
-# include "coordinates/IsometricFrame.hh"
 
 namespace new_frontiers {
-
-  inline
-  AppDesc
-  newDesc() noexcept {
-    return AppDesc{
-      olc::vi2d(640, 480),
-      olc::vi2d(1, 1),
-
-      "pge_app",
-      std::make_shared<IsometricFrame>(
-        Viewport{olc::vf2d(-1.0f, 1.0f), olc::vf2d(10.0f, 15.0f)},
-        Viewport{olc::vf2d(400.0f, 100.0f), olc::vf2d(640.0f, 480.0f)},
-        olc::vi2d(64, 32)
-      )
-    };
-  }
 
   inline
   bool

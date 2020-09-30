@@ -78,9 +78,7 @@ int main(int /*argc*/, char** /*argv*/) {
 
     t.size = olc::vi2d(64, 64);
 
-    new_frontiers::AppDesc desc = new_frontiers::newDesc();
-
-    new_frontiers::IsometricApp demo(desc, t);
+    new_frontiers::IsometricApp demo(olc::vi2d(640, 480), t);
     demo.Start();
   }
   catch (const utils::CoreException& e) {
