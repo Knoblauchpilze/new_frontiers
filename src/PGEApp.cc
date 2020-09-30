@@ -26,10 +26,17 @@ namespace new_frontiers {
     m_state(State::Running),
     m_first(true)
   {
-
     // Initialize the application settings.
     sAppName = desc.name;
     setService("app");
+
+    // Make sure that a coordinate frame is provided.
+    if (m_cf == nullptr) {
+      error(
+        std::string("Unable to create PGE application"),
+        std::string("Invalid null coordinate frame provided")
+      );
+    }
 
     // Generate and construct the window.
     initialize(desc.dims, desc.pixRatio);

@@ -2,11 +2,24 @@
 # include "IsometricApp.hh"
 # include "utils.hh"
 # include "Controls.hh"
+# include "coordinates/IsometricFrame.hh"
 
 namespace new_frontiers {
 
-  IsometricApp::IsometricApp(const AppDesc& desc, const Theme& theme):
-    PGEApp(desc),
+  IsometricApp::IsometricApp(const olc::vi2d& dims,
+                             const Theme& theme,
+                             const std::string& name):
+    PGEApp(
+      newDesc(
+        dims,
+        std::make_shared<IsometricFrame>(
+          Viewport{olc::vf2d(-1.0f, 1.0f), olc::vf2d(10.0f, 15.0f)},
+          Viewport{olc::vf2d(400.0f, 100.0f), olc::vf2d(640.0f, 480.0f)},
+          olc::vi2d(64, 32)
+        ),
+        name
+      )
+    ),
 
     m_ss(theme.size),
     m_sprites(),

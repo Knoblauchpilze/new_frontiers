@@ -6,24 +6,11 @@
 # include <random>
 # include "World.hh"
 # include "Controls.hh"
+# include "AppDesc.hh"
 # include "coordinates/CoordinateFrame.hh"
 # include "ui/GameMenu.hh"
 
 namespace new_frontiers {
-
-  /**
-   * @brief - Convenience description of settings to define
-   *          the canvas used by an app. This allows to be
-   *          concise and easily add info if needed.
-   */
-  struct AppDesc {
-    olc::vi2d dims;
-    olc::vi2d pixRatio;
-
-    std::string name;
-
-    CoordinateFrameShPtr frame;
-  };
 
   /**
    * @brief - Convenience structure defining the resources
@@ -37,13 +24,6 @@ namespace new_frontiers {
     CoordinateFrame& cf;
     GameMenuShPtr ui;
   };
-
-  /**
-   * @brief - Creates a default app description.
-   * @return - the default description of an app.
-   */
-  AppDesc
-  newDesc() noexcept;
 
   class PGEApp: public utils::CoreObject, public olc::PixelGameEngine {
     public:
