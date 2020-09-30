@@ -60,11 +60,11 @@ namespace new_frontiers {
     const SpritesPack& sp = m_sprites[sa.type];
 
     DrawPartialDecal(
-      pos, // m_cf.tileCoordsToPixels(x, y, location)
+      pos,
       sp.res,
       spriteCoordsToPixels(sa.alias, sp.layout, id),
       m_ss,
-      tileSize, //m_cf.tileScale()
+      tileSize,
       olc::Pixel(255, 255, 255, alpha)
     );
   }
@@ -73,7 +73,7 @@ namespace new_frontiers {
   void
   IsometricApp::drawHealthBar(const olc::vf2d& pos, const olc::vf2d& tileSize, float ratio, int alpha) {
     // Fetch a color based on the input ratio.
-    olc::Pixel hbc = ratioGradient(ratio, alpha);
+    olc::Pixel hbc = redToGreenGradient(ratio, alpha);
 
     // Darken it for the empty portion of the
     // healthbar.
@@ -104,48 +104,6 @@ namespace new_frontiers {
       olc::vf2d(pos.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, pos.y - s.y * hbHOffset),
       olc::vf2d(s.x * hbWRatio * (1.0f - ratio), s.y * hbHRatio),
       bc
-    );
-  }
-
-  inline
-  olc::Pixel
-  IsometricApp::ratioGradient(float ratio, int alpha) const noexcept {
-    // Go from red to orange to yellow to green
-    // based on the value of the ratio. It fits
-    // nicely in the range `[0; 1]` where each
-    // `0.33` we have a new color.
-    ratio = std::min(std::max(ratio, 0.0f), 1.0f);
-
-    float t = 0.0f;
-    olc::Pixel l, h;
-
-    if (ratio <= 0.33f) {
-      // Red to orange.
-      t = ratio / 0.33f;
-
-      l = olc::Pixel(255u, 0u, 0u);
-      h = olc::Pixel(255u, 128u, 0u);
-    }
-    else if (ratio <= 0.66f) {
-      // Orange to yellow.
-      t = (ratio - 0.33f) / 0.33f;
-
-      l = olc::Pixel(255u, 128u, 0u);
-      h = olc::Pixel(255u, 255u, 0u);
-    }
-    else {
-      // Yellow to green
-      t = (ratio - 0.66f) / 0.34f;
-
-      l = olc::Pixel(255u, 255u, 0u);
-      h = olc::Pixel(0u, 255u, 0u);
-    }
-
-    return olc::Pixel(
-      static_cast<int>((1.0f - t) * l.r + t * h.r),
-      static_cast<int>((1.0f - t) * l.g + t * h.g),
-      static_cast<int>((1.0f - t) * l.b + t * h.b),
-      alpha
     );
   }
 

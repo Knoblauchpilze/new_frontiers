@@ -1,7 +1,6 @@
 #ifndef    ISOMETRIC_APP_HH
 # define   ISOMETRIC_APP_HH
 
-# include <random>
 # include "PGEApp.hh"
 
 namespace new_frontiers {
@@ -138,10 +137,6 @@ namespace new_frontiers {
        * @param tileSize - the size of the tile in pixels.
        * @param alias - the index of the tile in the tile atlas.
        * @param id - the index of the variation of this sprite.
-       * @param location - defines which part of the cell is described
-       *                   by the input `(x, y)` coordinates. It allows
-       *                   to precisely define where the sprite should
-       *                   be displayed in the cell.
        * @param alpha - a value of `255` to indicate that the sprite
        *                should be completely opaque and `0` for fully
        *                transparent.
@@ -168,21 +163,6 @@ namespace new_frontiers {
                     const olc::vf2d& tileSize,
                     float ratio,
                     int alpha = ALPHA_SEMI_OPAQUE);
-
-      /**
-       * @brief - Used to compute a valid color based on the input ratio.
-       *          The color is taken from a range going from pure green
-       *          to yellow, then orange and finally red for decreasing
-       *          values of the ratio in the range `[0; 1]`.
-       * @param ratio - a value in the range `[0; 1]` (clamped if it is
-       *                not the case).
-       * @param alpha - additional alpha channel information to generate
-       *                the color.
-       * @return - a color representing the ratio.
-       */
-      olc::Pixel
-      ratioGradient(float ratio, int alpha = ALPHA_SEMI_OPAQUE) const noexcept;
-
 
       /**
        * @brief - Definition of the interface method to perform the
