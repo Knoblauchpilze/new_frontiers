@@ -67,7 +67,7 @@ namespace new_frontiers {
       virtual olc::vf2d
       tileCoordsToPixels(float x,
                          float y,
-                         const Cell& pos = Cell::TopLeft) const noexcept = 0;
+                         const Cell& pos = Cell::CenterLeft) const noexcept = 0;
 
       /**
        * @brief - Convert from pixels coordinates to tile coords.

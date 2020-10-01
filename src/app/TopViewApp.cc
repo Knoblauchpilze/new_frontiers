@@ -63,7 +63,7 @@ namespace new_frontiers {
 
       if (t.state.glowing) {
         drawSprite(
-          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
+          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
           res.cf.tileSize(),
           VFXID,
           ALPHA_SEMI_OPAQUE
@@ -71,7 +71,7 @@ namespace new_frontiers {
       }
       if (t.state.exhausted) {
         drawSprite(
-          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
+          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
           res.cf.tileSize(),
           VFXID,
           ALPHA_SEMI_OPAQUE
@@ -79,13 +79,13 @@ namespace new_frontiers {
       }
 
       drawSprite(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
+        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
         res.cf.tileSize(),
         EntityID
       );
 
       drawHealthBar(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
+        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
         res.cf.tileSize(),
         t.health
       );
@@ -95,7 +95,7 @@ namespace new_frontiers {
     for (int id = 0 ; id < res.wit->vfxCount() ; ++id) {
       VFXDesc t = res.wit->vfx(id);
       drawSprite(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::CenterLeft),
+        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
         res.cf.tileSize(),
         VFXID,
         static_cast<int>(std::round(ALPHA_OPAQUE * t.amount))
@@ -181,7 +181,7 @@ namespace new_frontiers {
       EntityDesc ed = res.wit->entity(id);
 
       olc::vf2d t = res.cf.tileCoordsToPixels(ed.xT, ed.yT);
-      olc::vf2d tl = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, Cell::CenterLeft);
+      olc::vf2d tl = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, Cell::TopLeft);
       olc::vf2d bc = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y);
 
       for (unsigned id = 0u ; id < ed.cPoints.size() / 2u ; ++id) {
