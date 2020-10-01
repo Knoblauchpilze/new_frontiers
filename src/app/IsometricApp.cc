@@ -204,49 +204,6 @@ namespace new_frontiers {
     if (res.ui != nullptr) {
       res.ui->render(this);
     }
-    else {
-      int mHeight = 150;
-      int mBarHeight = 20;
-      // int barToMenuGap = 15;
-
-      int w = ScreenWidth();
-      int h = ScreenHeight();
-
-      olc::vf2d mPos(0.0f, h - mHeight);
-      olc::vf2d mSize(w, mHeight);
-
-      // Top bar of the menu (where quick access icons are).
-      olc::Pixel c1(196, 162, 116);
-      olc::Pixel c2(30, 17, 11);
-      olc::Pixel c3(66, 48, 34);
-
-      GradientFillRectDecal(
-        mPos,
-        olc::vf2d(mSize.x, mBarHeight * 0.66f),
-        c1, c2, c2, c1
-      );
-
-      GradientFillRectDecal(
-        mPos + olc::vf2d(0.0f, mBarHeight * 0.66f),
-        olc::vf2d(mSize.x, mBarHeight * 0.34f),
-        c2, c3, c3, c2
-      );
-
-      // Draw the minimap.
-      // float mS = std::min(
-      //   1.0f * m_mSprites.minimap->sprite->width,
-      //   1.0f * mMainSize / m_mSprites.minimap->sprite->height
-      // );
-
-      // DrawDecal(
-      //   mPos + olc::vf2d(0.0f, mBarHeight + barToMenuGap),
-      //   m_mSprites.minimap,
-      //   olc::vf2d(mS, mS)
-      // );
-      // Load the minimap image.
-      // spr = new olc::Sprite("data/img/minimap.png");
-      // m_mSprites.minimap = new olc::Decal(spr);
-    }
 
     SetPixelMode(olc::Pixel::NORMAL);
   }
