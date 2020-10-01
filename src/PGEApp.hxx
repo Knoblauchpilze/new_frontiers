@@ -45,7 +45,7 @@ namespace new_frontiers {
   bool
   PGEApp::OnUserUpdate(float fElapsedTime) {
     // Handle inputs.
-    bool r = handleInputs();
+    InputChanges ic = handleInputs();
 
     // Handle game logic if needed.
     switch (m_state) {
@@ -85,15 +85,31 @@ namespace new_frontiers {
     SetDrawTarget(m_mLayer);
     draw(res);
 
-    SetDrawTarget(m_uiLayer);
-    drawUI(res);
+    if (hasUI()) {
+      SetDrawTarget(m_uiLayer);
+      drawUI(res);
+    }
 
-    // Note that as the debug layer is the
-    // layer `0`, we always have to display
-    // it, we just need to not draw anything
-    // if the debug mode is deactivated.
-    SetDrawTarget(m_dLayer);
-    drawDebug(res);
+    // Draw the debug layer. As it is saved
+    // in the layer `0` we need to clear it
+    // when it is not displayed as it will
+    // be rendered on top of any other layer
+    // and thus we would still display the
+    // last frame when it is inactive.
+    // Note that we also clear it in case
+    // the debug is set to `false` from the
+    // beginning of the rendering: if we
+    // don't do this nothing will be visible
+    // as the `0`-th layer would never be
+    // updated.
+    if (hasDebug()) {
+      SetDrawTarget(m_dLayer);
+      drawDebug(res);
+    }
+    if (!hasDebug() && (ic.debugLayerToggled || isFirstFrame())) {
+      SetDrawTarget(m_dLayer);
+      clearDebug(res);
+    }
 
     // Restore the target.
     SetDrawTarget(base);
@@ -101,7 +117,7 @@ namespace new_frontiers {
     // Not the first frame anymore.
     m_first = false;
 
-    return r;
+    return !ic.quit;
   }
 
   inline
@@ -137,6 +153,13 @@ namespace new_frontiers {
   PGEApp::hasDebug() const noexcept {
     return m_debugOn;
   }
+
+  inline
+  bool
+  PGEApp::hasUI() const noexcept {
+    return m_uiOn;
+  }
+
   inline
   olc::Pixel
   PGEApp::redToGreenGradient(float ratio, int alpha) const noexcept {
@@ -177,6 +200,15 @@ namespace new_frontiers {
       static_cast<int>((1.0f - t) * l.b + t * h.b),
       alpha
     );
+  }
+
+  inline
+  void
+  PGEApp::clearDebug(const RenderDesc& /*res*/) {
+    // Clear the canvas with a neutral fully transparent color.
+    SetPixelMode(olc::Pixel::ALPHA);
+    Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
+    SetPixelMode(olc::Pixel::NORMAL);
   }
 
   inline

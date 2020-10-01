@@ -110,6 +110,9 @@ namespace new_frontiers {
       bool
       hasDebug() const noexcept;
 
+      bool
+      hasUI() const noexcept;
+
       /**
        * @brief - Used to compute a valid color based on the input ratio.
        *          The color is taken from a range going from pure green
@@ -152,6 +155,18 @@ namespace new_frontiers {
       virtual void
       drawDebug(const RenderDesc& res) = 0;
 
+      /**
+       * @brief - Another interface method allowing to clear
+       *          the debug layer when it's disabled. This
+       *          comes from the fact that we have the debug
+       *          layer be the first one and if we do not
+       *          clear it we never get rid of the last frame
+       *          displayed.
+       * @param res - the resources that can be drawn.
+       */
+      virtual void
+      clearDebug(const RenderDesc& res);
+
     private:
 
       /**
@@ -163,6 +178,18 @@ namespace new_frontiers {
         Pausing,
         Paused,
         Resuming
+      };
+
+      /**
+       * @brief - Used to keep track of the changes in the input
+       *          that were processed during a frame. It helps
+       *          determining whether some unique processes need
+       *          to be triggered, such as cleaning of rendering
+       *          layers that will not be updated anymore.
+       */
+      struct InputChanges {
+        bool quit;
+        bool debugLayerToggled;
       };
 
       /**
@@ -189,12 +216,11 @@ namespace new_frontiers {
        * @brief - Used to perform the necessary update based on
        *          the controls that the user might have used in
        *          the game.
-       * @return - `true` if no interruption was detected (and
-       *           thus the execution should continue). Meant
-       *           as a way to provide the return value for the
-       *           `OnUserUpdate` method.
+       * @return - a state describing the changes processed in
+       *           this method. It includes any exit request of
+       *           the user and changes to the UI.
        */
-      bool
+      InputChanges
       handleInputs();
 
     private:
@@ -267,6 +293,12 @@ namespace new_frontiers {
        *          for this app.
        */
       bool m_debugOn;
+
+      /**
+       * @brief - Similar to the `m_debugOn` but controls whether
+       *          the UI is active or not.
+       */
+      bool m_uiOn;
 
       /**
        * @brief - Indicates that the simulation of the game is
