@@ -22,7 +22,9 @@ namespace new_frontiers {
     m_dLayer(0u),
     m_uiLayer(0u),
 
-    m_debugOn(true),
+    m_debugOn(false),
+    m_uiOn(true),
+
     m_state(State::Running),
     m_first(true)
   {
@@ -57,12 +59,15 @@ namespace new_frontiers {
     m_menu = std::make_shared<GameMenu>(mPos, mSize);
   }
 
-  bool
+  PGEApp::InputChanges
   PGEApp::handleInputs() {
+    InputChanges ic{false, false};
+
     // Detect press on `Escape` key to shutdown the app.
     olc::HWButton esc = GetKey(olc::ESCAPE);
     if (esc.bReleased) {
-      return false;
+      ic.quit = true;
+      return ic;
     }
 
     // In case we're dragging the right mouse button we
@@ -115,7 +120,12 @@ namespace new_frontiers {
     // handle general simulation control options.
     if (GetKey(olc::D).bReleased) {
       m_debugOn = !m_debugOn;
+      ic.debugLayerToggled = true;
     }
+    if (GetKey(olc::U).bReleased) {
+      m_uiOn = !m_uiOn;
+    }
+
     if (GetKey(olc::P).bReleased) {
       switch (m_state) {
         case State::Running:
@@ -131,7 +141,7 @@ namespace new_frontiers {
       }
     }
 
-    return true;
+    return ic;
   }
 
 }
