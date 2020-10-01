@@ -38,7 +38,7 @@ namespace new_frontiers {
       olc::vf2d
       tileCoordsToPixels(float x,
                          float y,
-                         const Cell& pos = Cell::TopLeft) const noexcept override;
+                         const Cell& pos = Cell::CenterLeft) const noexcept override;
 
       /**
        * @brief - Implementation of the interface method to
