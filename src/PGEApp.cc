@@ -22,8 +22,8 @@ namespace new_frontiers {
     m_dLayer(0u),
     m_uiLayer(0u),
 
-    m_debugOn(false),
-    m_uiOn(true),
+    m_debugOn(true),
+    m_uiOn(false),
 
     m_state(State::Running),
     m_first(true)

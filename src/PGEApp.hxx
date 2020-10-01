@@ -89,6 +89,10 @@ namespace new_frontiers {
       SetDrawTarget(m_uiLayer);
       drawUI(res);
     }
+    if (!hasUI() && isFirstFrame()) {
+      SetDrawTarget(m_uiLayer);
+      clearLayer(res);
+    }
 
     // Draw the debug layer. As it is saved
     // in the layer `0` we need to clear it
@@ -108,7 +112,7 @@ namespace new_frontiers {
     }
     if (!hasDebug() && (ic.debugLayerToggled || isFirstFrame())) {
       SetDrawTarget(m_dLayer);
-      clearDebug(res);
+      clearLayer(res);
     }
 
     // Restore the target.
@@ -204,7 +208,7 @@ namespace new_frontiers {
 
   inline
   void
-  PGEApp::clearDebug(const RenderDesc& /*res*/) {
+  PGEApp::clearLayer(const RenderDesc& /*res*/) {
     // Clear the canvas with a neutral fully transparent color.
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
