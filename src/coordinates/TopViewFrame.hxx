@@ -14,7 +14,7 @@ namespace new_frontiers {
 
   inline
   olc::vf2d
-  TopViewFrame::tileCoordsToPixels(float x, float y, const Cell& pos) const noexcept {
+  TopViewFrame::tileCoordsToPixels(float x, float y, float radius, const Cell& pos) const noexcept {
     // Offset the input coordinates based on the
     // current position of the cell's viewport.
     x -= m_cViewport.p.x;
@@ -31,19 +31,20 @@ namespace new_frontiers {
     // of the cell we can adjust based on the
     // display mode desired by the user.
     switch (pos) {
-      case Cell::Center:
-        tp.x += m_tScaled.x / 2.0f;
-        tp.y += m_tScaled.y / 2.0f;
+      case Cell::CenterLeft:
+        tp.x -= radius * m_tScaled.x / 2.0f;
+        tp.y -= radius * m_tScaled.y / 2.0f;
         break;
       case Cell::CenterBottom:
-        tp.x += m_tScaled.x / 2.0f;
-        tp.y += m_tScaled.y;
+        tp.x -= radius * m_tScaled.x / 2.0f;
+        tp.y -= radius * m_tScaled.y;
+        break;
+      case Cell::UpperLeft:
+        // TODO: Test this with healthbar for example.
+        tp.x -= radius * m_tScaled.x / 2.0f;
+        tp.y -= 3.0f * radius * m_tScaled.y / 2.0f;
         break;
       case Cell::TopLeft:
-        tp.x -= m_tScaled.x / 2.0f;
-        tp.y -= m_tScaled.y;
-        break;
-      case Cell::CenterLeft:
       default:
         break;
     }
@@ -75,7 +76,7 @@ namespace new_frontiers {
     // Compute the intra-tile offset by converting
     // the tile position to pixels and comparing the
     // input value.
-    olc::vf2d tlp = tileCoordsToPixels(rt.x, rt.y);
+    olc::vf2d tlp = tileCoordsToPixels(rt.x, rt.y, 1.0f, Cell::TopLeft);
 
     if (intraTile != nullptr) {
       intraTile->x = pixels.x - tlp.x;

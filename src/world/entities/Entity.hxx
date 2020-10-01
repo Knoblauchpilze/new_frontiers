@@ -33,9 +33,12 @@ namespace new_frontiers {
 
   inline
   Entity::Entity(const EntityTile& desc,
+                 float radius,
                  float health):
     Element(desc, health, "entity"),
 
+    // Make sure to set the radius to a valid value.
+    m_radius(radius < 0.0f ? 1.0f : radius),
     m_speed(-1.0f),
     m_rArrival(0.05f),
     m_pathLength(3.0f),
@@ -89,6 +92,12 @@ namespace new_frontiers {
       m_path.start = t - m_passed;
       m_path.end = m_path.start + toMilliseconds(static_cast<int>(1000.0f * m_path.length() / m_speed));
     }
+  }
+
+  inline
+  float
+  Entity::getRadius() const noexcept {
+    return m_radius;
   }
 
   inline
