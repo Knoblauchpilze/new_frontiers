@@ -22,21 +22,6 @@ namespace new_frontiers {
     MenuContentDesc mcd = newTextContent("");
     setContent(mcd);
 
-    // Register the minimap.
-    // TODO: Restore this.
-    // int mbw = 150;
-    // olc::vi2d mbSize(mbw, 0);
-    // MenuShPtr minimap = std::make_shared<Menu>(
-    //   m_pos, mbSize,
-    //   newTiledBackground(
-    //     "data/img/menu/minimap.png",
-    //     olc::vi2d(mbw, 0)
-    //   ),
-    //   "minimap"
-    // );
-
-    // addMenu(minimap);
-
     // Register building categories.
     olc::vi2d bDims(40, 40);
     MenuShPtr creature = std::make_shared<Menu>(olc::vi2d(), bDims, "creature_menu");
