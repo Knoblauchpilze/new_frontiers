@@ -93,7 +93,7 @@ namespace new_frontiers {
     float hbWRatio = 0.7f;
     float hbHRatio = 0.1f;
     float hbHOffset = 0.1f;
-    olc::vf2d s = m_ss * tileScale;
+    olc::vf2d s = tileScale * m_ss;
 
     FillRectDecal(
       olc::vf2d(pos.x + (1.0f - hbWRatio) * s.x / 2.0f, pos.y - s.y * hbHOffset),

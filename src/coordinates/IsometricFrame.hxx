@@ -14,7 +14,7 @@ namespace new_frontiers {
 
   inline
   olc::vf2d
-  IsometricFrame::tileCoordsToPixels(float x, float y, const Cell& pos) const noexcept {
+  IsometricFrame::tileCoordsToPixels(float x, float y, float /*radius*/, const Cell& pos) const noexcept {
     // Offset the input coordinates based on the
     // current position of the cell's viewport.
     x -= m_cViewport.p.x;
@@ -32,18 +32,17 @@ namespace new_frontiers {
     // of the cell we can adjust based on the
     // display mode desired by the user.
     switch (pos) {
-      case Cell::Center:
-        tp.x += (m_tScaled.x / 2.0f);
+      case Cell::CenterLeft:
         tp.y += m_tScaled.y;
         break;
       case Cell::CenterBottom:
         tp.x += (m_tScaled.x / 2.0f);
-        tp.y += 2.0f * m_tScaled.y;
+        tp.y += m_tScaled.y;
         break;
-      case Cell::TopLeft:
+      case Cell::UpperLeft:
         tp.y -= m_tScaled.y;
         break;
-      case Cell::CenterLeft:
+      case Cell::TopLeft:
       default:
         break;
     }

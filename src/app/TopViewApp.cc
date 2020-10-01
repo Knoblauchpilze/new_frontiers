@@ -13,7 +13,7 @@ namespace new_frontiers {
         std::make_shared<TopViewFrame>(
           Viewport{olc::vf2d(0.0f, 0.0f), olc::vf2d(10.0f, 15.0f)},
           Viewport{olc::vf2d(100.0f, 50.0f), olc::vf2d(640.0f, 480.0f)},
-          olc::vi2d(64, 32)
+          olc::vi2d(16, 32)
         ),
         name
       )
@@ -46,15 +46,15 @@ namespace new_frontiers {
     // Draw ground.
     for (int y = 0 ; y < res.wit->h() ; ++y) {
       for (int x = 0 ; x < res.wit->w() ; ++x) {
-        drawSprite(res.cf.tileCoordsToPixels(x, y), res.cf.tileSize(), GroundID, ALPHA_OPAQUE - std::rand() % 50);
+        drawSprite(res.cf.tileCoordsToPixels(x, y, 1.0f, Cell::TopLeft), res.cf.tileSize(), GroundID, ALPHA_OPAQUE - std::rand() % 50);
       }
     }
 
     // Draw solid tiles.
     for (int id = 0 ; id < res.wit->blocksCount() ; ++id) {
       BlockDesc t = res.wit->block(id);
-      drawSprite(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y), res.cf.tileSize(), SolidID);
-      drawHealthBar(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y), res.cf.tileSize(), t.health);
+      drawSprite(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, 1.0f, Cell::TopLeft), res.cf.tileSize(), SolidID);
+      drawHealthBar(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, 1.0f, Cell::TopLeft), res.cf.tileSize(), t.health);
     }
 
     // Draw entities.
@@ -63,7 +63,7 @@ namespace new_frontiers {
 
       if (t.state.glowing) {
         drawSprite(
-          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
+          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius),
           res.cf.tileSize(),
           VFXID,
           ALPHA_SEMI_OPAQUE
@@ -71,7 +71,7 @@ namespace new_frontiers {
       }
       if (t.state.exhausted) {
         drawSprite(
-          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
+          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius),
           res.cf.tileSize(),
           VFXID,
           ALPHA_SEMI_OPAQUE
@@ -79,14 +79,14 @@ namespace new_frontiers {
       }
 
       drawSprite(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
-        res.cf.tileSize(),
+        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius),
+        t.radius * res.cf.tileSize(),
         EntityID
       );
 
       drawHealthBar(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
-        res.cf.tileSize(),
+        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius),
+        t.radius * res.cf.tileSize(),
         t.health
       );
     }
@@ -95,7 +95,7 @@ namespace new_frontiers {
     for (int id = 0 ; id < res.wit->vfxCount() ; ++id) {
       VFXDesc t = res.wit->vfx(id);
       drawSprite(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, Cell::TopLeft),
+        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, 1.0f),
         res.cf.tileSize(),
         VFXID,
         static_cast<int>(std::round(ALPHA_OPAQUE * t.amount))
@@ -105,7 +105,7 @@ namespace new_frontiers {
     // Draw cursor.
     olc::vi2d mp = GetMousePos();
     olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp);
-    drawSprite(res.cf.tileCoordsToPixels(mtp.x, mtp.y), res.cf.tileSize(), CursorID, ALPHA_SEMI_OPAQUE);
+    drawSprite(res.cf.tileCoordsToPixels(mtp.x, mtp.y, 1.0f, Cell::TopLeft), res.cf.tileSize(), CursorID, ALPHA_SEMI_OPAQUE);
 
     SetPixelMode(olc::Pixel::NORMAL);
   }
@@ -127,28 +127,23 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
 
-    // If the debug mode is deactivated, return
-    // now as we don't want to display anything.
-    if (!hasDebug()) {
-      return;
-    }
 
     // Render entities path and position
     for (int id = 0 ; id < res.wit->entitiesCount() ; ++id) {
       EntityDesc ed = res.wit->entity(id);
 
-      olc::vf2d t = res.cf.tileCoordsToPixels(ed.xT, ed.yT);
-      olc::vf2d tl = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, Cell::TopLeft);
-      olc::vf2d bc = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y);
+      olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius);
+      olc::vf2d ttl = res.cf.tileCoordsToPixels(ed.xT, ed.yT, ed.radius, Cell::TopLeft);
+      olc::vf2d tl = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::TopLeft);
 
       for (unsigned id = 0u ; id < ed.cPoints.size() / 2u ; ++id) {
-        olc::vf2d p = res.cf.tileCoordsToPixels(ed.cPoints[2 * id], ed.cPoints[2 * id + 1]);
+        olc::vf2d p = res.cf.tileCoordsToPixels(ed.cPoints[2 * id], ed.cPoints[2 * id + 1], 1.0f, Cell::TopLeft);
         FillCircle(p, 3, olc::CYAN);
       }
 
-      DrawLine(bc, t, olc::WHITE);
-      DrawRect(tl, res.cf.tileSize(), olc::MAGENTA);
-      FillCircle(bc, 5, olc::YELLOW);
+      DrawLine(tl, ttl, olc::WHITE);
+      DrawRect(cb, ed.radius * res.cf.tileSize(), olc::MAGENTA);
+      FillCircle(tl, 5, olc::YELLOW);
     }
 
     // Render mouse and world cell coordinates.

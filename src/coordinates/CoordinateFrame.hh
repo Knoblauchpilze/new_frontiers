@@ -59,6 +59,8 @@ namespace new_frontiers {
        *          classes for their specific purposes.
        * @param x - the cell coordinate along the `x` axis.
        * @param y - the cell coordinate along the `y` axis.
+       * @param radius - the size of the elements for which the
+       *                 pixels coordinates should be computed.
        * @param pos - defines which position of the cell should
        *              be computed in pixels.
        * @return - the coordinates in pixels of the tile defined
@@ -67,7 +69,8 @@ namespace new_frontiers {
       virtual olc::vf2d
       tileCoordsToPixels(float x,
                          float y,
-                         const Cell& pos = Cell::CenterLeft) const noexcept = 0;
+                         float radius = 1.0f,
+                         const Cell& pos = Cell::CenterBottom) const noexcept = 0;
 
       /**
        * @brief - Convert from pixels coordinates to tile coords.

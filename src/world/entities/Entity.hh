@@ -57,9 +57,12 @@ namespace new_frontiers {
        *          to use for the visual representation.
        * @param tile - the visual representation of the entity
        *               along with its position.
+       * @param radius - the radius for this entity expressed
+       *                 in blocks.
        * @param health - the health pool of this entity.
        */
       Entity(const EntityTile& tile,
+             float radius = 1.0f,
              float health = 10.0f);
 
       /**
@@ -89,6 +92,13 @@ namespace new_frontiers {
        */
       void
       resume(const TimeStamp& t) override;
+
+      /**
+       * @brief - Return the radius for this entity.
+       * @return - the radius for this entity in blocks.
+       */
+      float
+      getRadius() const noexcept;
 
       /**
        * @brief - Used to retrieve the current state of this entity.
@@ -201,6 +211,13 @@ namespace new_frontiers {
       choosePath(StepInfo& info);
 
     protected:
+
+      /**
+       * @brief - Define the size of the entity expressed in
+       *          blocks. This value is guaranteed to be at
+       *          least `0`.
+       */
+      float m_radius;
 
       /**
        * @brief - Speed of the entity in cells per second.
