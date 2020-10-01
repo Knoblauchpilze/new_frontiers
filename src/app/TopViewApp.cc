@@ -11,8 +11,8 @@ namespace new_frontiers {
       newDesc(
         dims,
         std::make_shared<TopViewFrame>(
-          Viewport{olc::vf2d(0.0f, 0.0f), olc::vf2d(10.0f, 15.0f)},
-          Viewport{olc::vf2d(100.0f, 50.0f), olc::vf2d(640.0f, 480.0f)},
+          Viewport{olc::vf2d(1.0f, 1.0f), olc::vf2d(10.0f, 15.0f)},
+          Viewport{olc::vf2d(150.0f, 50.0f), olc::vf2d(640.0f, 480.0f)},
           olc::vi2d(16, 32)
         ),
         name
