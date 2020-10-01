@@ -12,8 +12,8 @@ namespace new_frontiers {
       newDesc(
         dims,
         std::make_shared<IsometricFrame>(
-          Viewport{olc::vf2d(0.0f, 0.0f), olc::vf2d(10.0f, 15.0f)},
-          Viewport{olc::vf2d(200.0f, 0.0f), olc::vf2d(640.0f, 480.0f)},
+          Viewport{olc::vf2d(1.0f, 1.0f), olc::vf2d(10.0f, 15.0f)},
+          Viewport{olc::vf2d(300.0f, 50.0f), olc::vf2d(640.0f, 480.0f)},
           olc::vi2d(64, 32)
         ),
         name
@@ -161,7 +161,7 @@ namespace new_frontiers {
       if (t.state.glowing) {
         drawSprite(
           res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius, Cell::UpperLeft),
-          res.cf.tileScale(),
+          t.radius * res.cf.tileScale(),
           aliasOfEffect(tiles::Fire),
           2,
           ALPHA_SEMI_OPAQUE
@@ -170,7 +170,7 @@ namespace new_frontiers {
       if (t.state.exhausted) {
         drawSprite(
           res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius, Cell::UpperLeft),
-          res.cf.tileScale(),
+          t.radius * res.cf.tileScale(),
           aliasOfEffect(tiles::Poison),
           2,
           ALPHA_SEMI_OPAQUE
@@ -179,18 +179,14 @@ namespace new_frontiers {
 
       drawSprite(
         res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius, Cell::UpperLeft),
-        res.cf.tileScale(),
+        t.radius * res.cf.tileScale(),
         aliasOfEntity(t.tile.type),
         t.tile.id
       );
 
-      if (t.tile.type == tiles::DarkAnubis) {
-        log("P: " + toString(olc::vf2d(t.tile.x, t.tile.y)));
-      }
-
       drawHealthBar(
         res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius, Cell::UpperLeft),
-        res.cf.tileScale(),
+        t.radius * res.cf.tileScale(),
         t.health
       );
     }
@@ -246,7 +242,7 @@ namespace new_frontiers {
       }
 
       DrawLine(cb, tcb, olc::WHITE);
-      DrawRect(ul, res.cf.tileScale() * m_ss, olc::MAGENTA);
+      DrawRect(ul, ed.radius * res.cf.tileScale() * m_ss, olc::MAGENTA);
       FillCircle(cb, 5, olc::YELLOW);
     }
 

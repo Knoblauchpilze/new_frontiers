@@ -31,16 +31,11 @@ namespace new_frontiers {
     // of the cell we can adjust based on the
     // display mode desired by the user.
     switch (pos) {
-      case Cell::CenterLeft:
-        tp.x -= radius * m_tScaled.x / 2.0f;
-        tp.y -= radius * m_tScaled.y / 2.0f;
-        break;
       case Cell::CenterBottom:
         tp.x -= radius * m_tScaled.x / 2.0f;
         tp.y -= radius * m_tScaled.y;
         break;
       case Cell::UpperLeft:
-        // TODO: Test this with healthbar for example.
         tp.x -= radius * m_tScaled.x / 2.0f;
         tp.y -= 3.0f * radius * m_tScaled.y / 2.0f;
         break;
