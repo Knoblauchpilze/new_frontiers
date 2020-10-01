@@ -157,15 +157,14 @@ namespace new_frontiers {
 
       /**
        * @brief - Another interface method allowing to clear
-       *          the debug layer when it's disabled. This
-       *          comes from the fact that we have the debug
-       *          layer be the first one and if we do not
-       *          clear it we never get rid of the last frame
-       *          displayed.
+       *          a rendering layer when it's disabled. This
+       *          allows to make sure that we won't keep old
+       *          frames displayed on top of some content if
+       *          an option is toggled.
        * @param res - the resources that can be drawn.
        */
       virtual void
-      clearDebug(const RenderDesc& res);
+      clearLayer(const RenderDesc& res);
 
     private:
 
