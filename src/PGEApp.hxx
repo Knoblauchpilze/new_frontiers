@@ -9,7 +9,7 @@ namespace new_frontiers {
   bool
   PGEApp::OnUserCreate() {
     // Create the world.
-# define WORLD_FROM_FILE
+// # define WORLD_FROM_FILE
 # ifdef WORLD_FROM_FILE
     m_world = std::make_shared<World>(100, std::string("data/worlds/level_1.lvl"));
 # else
@@ -230,15 +230,17 @@ namespace new_frontiers {
     float hbWRatio = 0.7f;
     float hbHRatio = 0.1f;
     float hbHOffset = 0.1f;
-    olc::vf2d s = cf.tileSize();
+    olc::vf2d s = tile.radius * cf.tileSize();
+
+    olc::vf2d p = cf.tileCoordsToPixels(tile.x, tile.y, tile.radius, tile.location);
 
     FillRectDecal(
-      olc::vf2d(tile.x + (1.0f - hbWRatio) * s.x / 2.0f, tile.y - s.y * hbHOffset),
+      olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f, p.y - s.y * hbHOffset),
       olc::vf2d(s.x * hbWRatio * ratio, s.y * hbHRatio),
       hbc
     );
     FillRectDecal(
-      olc::vf2d(tile.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, tile.y - s.y * hbHOffset),
+      olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, p.y - s.y * hbHOffset),
       olc::vf2d(s.x * hbWRatio * (1.0f - ratio), s.y * hbHRatio),
       bc
     );
