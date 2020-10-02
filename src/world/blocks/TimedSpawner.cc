@@ -6,9 +6,10 @@ namespace new_frontiers {
   TimedSpawner::TimedSpawner(const BlockTile& tile,
                              const Duration& interval,
                              const tiles::Entity& mob,
+                             const mob::Type& agent,
                              int id,
                              int stock):
-    Spawner(tile, 2.0f, mob, id),
+    Spawner(tile, 2.0f, mob, agent, id),
 
     // Make sure the stock is at least `1` (if it is
     // not set to an unlimited amount).

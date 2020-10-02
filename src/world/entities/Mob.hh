@@ -1,21 +1,20 @@
-#ifndef    HOSTILE_MOB_HH
-# define   HOSTILE_MOB_HH
+#ifndef    MOB_HH
+# define   MOB_HH
 
 # include "Entity.hh"
 # include "../effects/Pheromon.hh"
 
 namespace new_frontiers {
 
-  class HostileMob: public Entity {
+  class Mob: public Entity {
     public:
 
       /**
-       * @brief - Creates a new mob with the specified tile
-       *          and a default VFX to emit.
+       * @brief - Creates a new mob with the specified tile.
        * @param tile - the visual representation of the entity
        *               along with its position.
        */
-      HostileMob(const EntityTile& tile);
+      Mob(const EntityTile& tile);
 
       /**
        * @brief - Implementation of the interface method to pause
@@ -53,8 +52,9 @@ namespace new_frontiers {
        * @param info - info to pick the target.
        * @param x - the output abscissa of the chosen location.
        * @param y - the output ordinate of the chosen location.
+       * @return - `true` if the mob took an action.
        */
-      void
+      bool
       takeAction(StepInfo& info, float& x, float& y) override;
 
       /**
@@ -64,6 +64,21 @@ namespace new_frontiers {
        */
       void
       postStep(StepInfo& info) override;
+
+      virtual bool
+      chase(StepInfo& info, float& x, float& y);
+
+      virtual bool
+      fight(StepInfo& info, float& x, float& y);
+
+      virtual bool
+      collect(StepInfo& info, float& x, float& y);
+
+      virtual bool
+      getBack(StepInfo& info, float& x, float& y);
+
+      virtual bool
+      wander(StepInfo& info, float& x, float& y);
 
     private:
 
@@ -81,6 +96,15 @@ namespace new_frontiers {
         Return
       };
 
+      /**
+       * @brief - Convenience structure to regroup the result of
+       *          the thinking process of this mob.
+       */
+      struct Thought {
+        bool behaviorChanged;
+        bool actionTaken;
+      };
+
       static
       pheromon::Type
       behaviorToPheromon(const Behavior& b) noexcept;
@@ -93,27 +117,10 @@ namespace new_frontiers {
        *          of the entity and select the appropriate behavior to
        *          execute.
        * @param info - information about the surroundings of the mob.
-       * @return -  `true` if the behavior of the entity was changed
-       *            by this function. It allows to react when an entity
-       *            find an enemy, etc.
+       * @return - a coherent thought result for this mob.
        */
-      bool
+      Thought
       behave(StepInfo& info, float& x, float&y) noexcept;
-
-      void
-      chase(StepInfo& info, float& x, float&y);
-
-      void
-      fight(StepInfo& info, float& x, float&y);
-
-      void
-      collect(StepInfo& info, float& x, float&y);
-
-      void
-      getBack(StepInfo& info, float& x, float&y);
-
-      void
-      wander(StepInfo& info, float& x, float&y);
 
     private:
 
@@ -148,9 +155,9 @@ namespace new_frontiers {
       Behavior m_behavior;
   };
 
-  using HostileMobShPtr = std::shared_ptr<HostileMob>;
+  using MobShPtr = std::shared_ptr<Mob>;
 }
 
-# include "HostileMob.hxx"
+# include "Mob.hxx"
 
-#endif    /* HOSTILE_MOB_HH */
+#endif    /* MOB_HH */

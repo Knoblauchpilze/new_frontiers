@@ -8,9 +8,10 @@ namespace new_frontiers {
                                float stock,
                                const Duration& interval,
                                const tiles::Entity& mob,
+                               const mob::Type& agent,
                                int id,
                                float refill):
-    TimedSpawner(tile, interval, mob, id),
+    TimedSpawner(tile, interval, mob, agent, id),
 
     m_stock(stock),
     m_threshold(threshold),

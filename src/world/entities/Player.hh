@@ -63,8 +63,9 @@ namespace new_frontiers {
        *            chosen location.
        * @param y - output argument representing the ordinate of the
        *            chosen location.
+       * @return - `true` if an action was taken.
        */
-      void
+      bool
       takeAction(StepInfo& info, float& x, float& y) override;
 
       /**

@@ -164,8 +164,9 @@ namespace new_frontiers {
        *               decision process.
        * @param x - the output abscissa of the chosen coordinate.
        * @param y - the output ordinate of the chosen coordinate.
+       * @return - `true` if an action was taken.
        */
-      virtual void
+      virtual bool
       takeAction(StepInfo& info, float& x, float& y) = 0;
 
       /**

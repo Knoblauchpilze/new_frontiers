@@ -1,61 +1,18 @@
 
-# include "HostileMob.hh"
+# include "Worker.hh"
 # include "Locator.hh"
+# include "StepInfo.hh"
 
 namespace new_frontiers {
 
-  HostileMob::HostileMob(const EntityTile& tile):
-    Entity(tile, 0.5f),
-
-    m_vfxDelay(toMilliseconds(8000)),
-    m_last(now() - m_vfxDelay),
-
-    m_passed(),
-
-    m_behavior(Behavior::Wander)
-  {}
-
-  void
-  HostileMob::takeAction(StepInfo& info, float& x, float& y) {
-    // TODO: We should refine this method: it should select
-    // a path based on the current behavior and on the
-    // pheromons visible.
-
-    // First, we need to update the behavior of the
-    // entity: it is relevant because we just reached
-    // the destination we previously picked.
-    bool changed = behave(info, x, y);
-
-    // Once this is done, we may need to emit a new
-    // pheromon: this allow to make sure that we
-    // indicate any change of state for this entity.
-    if (changed) {
-      emitPheromon(info);
-    }
+  Worker::Worker(const EntityTile& tile):
+    Mob(tile)
+  {
+    setService("worker");
   }
 
-  void
-  HostileMob::chase(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
-    // TODO: Implement chase behavior.
-  }
-
-  void
-  HostileMob::fight(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
-    // TODO: Implement fight behavior.
-  }
-
-  void
-  HostileMob::collect(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
-    // TODO: Implement collect behavior.
-  }
-
-  void
-  HostileMob::getBack(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
-    // TODO: Implement return behavior.
-  }
-
-  void
-  HostileMob::wander(StepInfo& info, float& x, float& y) {
+  bool
+  Worker::wander(StepInfo& info, float& x, float& y) {
     // Pick a random location within the radius of the
     // motion for this entity. We will use the locator
     // to determine if any element is obstructing the
@@ -111,6 +68,8 @@ namespace new_frontiers {
     // Save the picked location.
     x = m_tile.x + r * xDir;
     y = m_tile.y + r * yDir;
+
+    return true;
   }
 
 }

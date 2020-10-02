@@ -41,6 +41,7 @@ namespace new_frontiers {
       newTile(tiles::Portal, id, x, y), // spawner display
       toMilliseconds(500),              // spawn interval
       ent,                              // mob
+      mob::Type::Worker,                // agent type
       0,                                // mob variant
       1                                 // stock
     );
@@ -51,6 +52,7 @@ namespace new_frontiers {
       8.0f,                             // stock
       toMilliseconds(100),              // interval
       ent,                              // mob
+      mob::Type::Worker,                // agent type
       2,                                // mob variant,
       0.5f                              // refill
     );
