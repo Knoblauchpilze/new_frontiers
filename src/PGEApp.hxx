@@ -9,7 +9,7 @@ namespace new_frontiers {
   bool
   PGEApp::OnUserCreate() {
     // Create the world.
-// # define WORLD_FROM_FILE
+# define WORLD_FROM_FILE
 # ifdef WORLD_FROM_FILE
     m_world = std::make_shared<World>(100, std::string("data/worlds/level_1.lvl"));
 # else
@@ -203,6 +203,44 @@ namespace new_frontiers {
       static_cast<int>((1.0f - t) * l.g + t * h.g),
       static_cast<int>((1.0f - t) * l.b + t * h.b),
       alpha
+    );
+  }
+
+  inline
+  void
+  PGEApp::drawHealthBar(const SpriteDesc& tile, float ratio, const CoordinateFrame& cf) {
+    // Fetch a color based on the input ratio.
+    olc::Pixel hbc = redToGreenGradient(ratio, tile.alpha);
+
+    // Darken it for the empty portion of the
+    // healthbar.
+    olc::Pixel bc(
+      static_cast<int>(hbc.r * 0.5f),
+      static_cast<int>(hbc.g * 0.5f),
+      static_cast<int>(hbc.b * 0.5f),
+      hbc.a
+    );
+
+    // Draw both parts of the healthbar. The
+    // combined length of both elements will
+    // be placed close to the position of the
+    // actual element and have a size of 7/10th
+    // of a tile in width, and 1/10th of a tile
+    // in height.
+    float hbWRatio = 0.7f;
+    float hbHRatio = 0.1f;
+    float hbHOffset = 0.1f;
+    olc::vf2d s = cf.tileSize();
+
+    FillRectDecal(
+      olc::vf2d(tile.x + (1.0f - hbWRatio) * s.x / 2.0f, tile.y - s.y * hbHOffset),
+      olc::vf2d(s.x * hbWRatio * ratio, s.y * hbHRatio),
+      hbc
+    );
+    FillRectDecal(
+      olc::vf2d(tile.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, tile.y - s.y * hbHOffset),
+      olc::vf2d(s.x * hbWRatio * (1.0f - ratio), s.y * hbHRatio),
+      bc
     );
   }
 

@@ -157,6 +157,17 @@ namespace new_frontiers {
       aliasOfEffect(const tiles::Effect& vfx);
 
       /**
+       * @brief - Used to draw the tile referenced by the input
+       *          struct to the screen using the corresponding
+       *          visual representation.
+       * @param tile - the description of the tile to draw.
+       * @param cf - the coordinate frame to use to perform the
+       *             conversion from tile position to pixels.
+       */
+      void
+      drawSprite(const SpriteDesc& tile, const CoordinateFrame& cf);
+
+      /**
        * @brief - Used to draw the tile referenced by its alias index
        *          and at the coordinate `cell`.
        * @param pos - the position at which the tile should be drawn.
@@ -167,30 +178,12 @@ namespace new_frontiers {
        * @param alpha - a value of `255` to indicate that the sprite
        *                should be completely opaque and `0` for fully
        *                transparent.
+       * TODO: Comment.
        */
       void
-      drawSprite(const olc::vf2d& pos,
-                 const olc::vf2d& tileScale,
-                 int alias,
-                 int id,
-                 int alpha = ALPHA_OPAQUE);
-
-      /**
-       * @brief - Used to draw a minimalistic health bar for an entity
-       *          or block at position (x, y) in cells coordinates. It
-       *          is displayed with the specified alpha transparency.
-       * @param pos - the position at which the tile should be drawn.
-       * @param tileScale - the scaling to apply to the initial tile
-       *                    size to obtain the current display size.
-       * @param ratio - a value in the range `[0; 1]` representing the
-       *                health of the element.
-       * @param alpha - additional alpha modifier to blend the display.
-       */
-      void
-      drawHealthBar(const olc::vf2d& pos,
-                    const olc::vf2d& tileScale,
-                    float ratio,
-                    int alpha = ALPHA_SEMI_OPAQUE);
+      drawSprite(const SpriteDesc& tile,
+                 const CoordinateFrame& cf,
+                 int id);
 
     private:
 
