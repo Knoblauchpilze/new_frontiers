@@ -66,19 +66,6 @@ namespace new_frontiers {
     private:
 
       /**
-       * @brief - Convenience structure regrouping needed props
-       *          to draw a sprite.
-       */
-      struct SpriteDesc {
-        float x;
-        float y;
-        float radius;
-        int type;
-        int alpha;
-        Cell location;
-      };
-
-      /**
        * @brief - Used to draw the tile referenced by the input
        *          struct to the screen using the corresponding
        *          visual representation.
@@ -88,18 +75,6 @@ namespace new_frontiers {
        */
       void
       drawSprite(const SpriteDesc& tile, const CoordinateFrame& cf);
-
-      /**
-       * @brief - Used to draw a minimalistic health bar for an entity
-       *          or block at position (x, y) in cells coordinates. It
-       *          is displayed with the specified alpha transparency.
-       * @param tile - the description of the tile to draw.
-       * @param ratio - the ratio of the healthbar that is still full.
-       * @param cf - the coordinate frame to use to perform the
-       *             conversion from tile position to pixels.
-       */
-      void
-      drawHealthBar(const SpriteDesc& tile, float ratio, const CoordinateFrame& cf);
 
     private:
 

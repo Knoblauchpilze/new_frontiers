@@ -124,89 +124,97 @@ namespace new_frontiers {
     Clear(olc::BLACK);
 
     // Draw elements of the world.
+    SpriteDesc sd;
 
     // Draw ground.
+    sd.type = tiles::Empty;
+    sd.alpha = ALPHA_OPAQUE;
+    sd.radius = 1.0f;
+    sd.location = Cell::TopLeft;
+
     for (int y = 0 ; y < res.wit->h() ; ++y) {
       for (int x = 0 ; x < res.wit->w() ; ++x) {
-        drawSprite(
-          res.cf.tileCoordsToPixels(x, y, 1.0f, Cell::TopLeft),
-          res.cf.tileScale(),
-          tiles::Empty,
-          0
-        );
+        sd.x = x;
+        sd.y = y;
+
+        drawSprite(sd, res.cf, 0);
       }
     }
 
     // Draw solid tiles.
+    sd.alpha = ALPHA_OPAQUE;
+    sd.radius = 1.0f;
+    sd.location = Cell::TopLeft;
+
     for (int id = 0 ; id < res.wit->blocksCount() ; ++id) {
       BlockDesc t = res.wit->block(id);
-      drawSprite(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, 1.0f, Cell::TopLeft),
-        res.cf.tileScale(),
-        aliasOfBlock(t.tile.type),
-        t.tile.id
-      );
 
-      drawHealthBar(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, 1.0f, Cell::TopLeft),
-        res.cf.tileScale(),
-        t.health
-      );
+      sd.x = t.tile.x;
+      sd.y = t.tile.y;
+      sd.type = aliasOfBlock(t.tile.type);
+
+      drawSprite(sd, res.cf, t.tile.id);
+      drawHealthBar(sd, t.health, res.cf);
     }
 
     // Draw entities.
+    sd.location = Cell::UpperLeft;
+
     for (int id = 0 ; id < res.wit->entitiesCount() ; ++id) {
       EntityDesc t = res.wit->entity(id);
 
+      sd.x = t.tile.x;
+      sd.y = t.tile.y;
+      sd.radius = t.radius;
+
       if (t.state.glowing) {
-        drawSprite(
-          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius, Cell::UpperLeft),
-          t.radius * res.cf.tileScale(),
-          aliasOfEffect(tiles::Fire),
-          2,
-          ALPHA_SEMI_OPAQUE
-        );
+        sd.type = aliasOfEffect(tiles::Fire);
+        sd.alpha = ALPHA_SEMI_OPAQUE;
+
+        drawSprite(sd, res.cf, 2);
       }
       if (t.state.exhausted) {
-        drawSprite(
-          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius, Cell::UpperLeft),
-          t.radius * res.cf.tileScale(),
-          aliasOfEffect(tiles::Poison),
-          2,
-          ALPHA_SEMI_OPAQUE
-        );
+        sd.type = aliasOfEffect(tiles::Poison);
+        sd.alpha = ALPHA_SEMI_OPAQUE;
+
+        drawSprite(sd, res.cf, 2);
       }
 
-      drawSprite(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius, Cell::UpperLeft),
-        t.radius * res.cf.tileScale(),
-        aliasOfEntity(t.tile.type),
-        t.tile.id
-      );
+      sd.type = aliasOfEntity(t.tile.type);
+      sd.alpha = ALPHA_OPAQUE;
 
-      drawHealthBar(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius, Cell::UpperLeft),
-        t.radius * res.cf.tileScale(),
-        t.health
-      );
+      drawSprite(sd, res.cf, t.tile.id);
+      drawHealthBar(sd, t.health, res.cf);
     }
 
     // Draw vfx.
+    sd.type = VFXID;
+    sd.location = Cell::UpperLeft;
+
     for (int id = 0 ; id < res.wit->vfxCount() ; ++id) {
       VFXDesc t = res.wit->vfx(id);
-      drawSprite(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, 1.0f, Cell::UpperLeft),
-        res.cf.tileScale(),
-        aliasOfEffect(t.tile.type),
-        t.tile.id,
-        static_cast<int>(std::round(ALPHA_OPAQUE * t.amount))
-      );
+
+      sd.x = t.tile.x;
+      sd.y = t.tile.y;
+      sd.type = aliasOfEffect(t.tile.type);
+      sd.alpha = static_cast<int>(std::round(ALPHA_OPAQUE * t.amount));
+      sd.radius = t.radius;
+
+      drawSprite(sd, res.cf, t.tile.id);
     }
 
     // Draw cursor.
     olc::vi2d mp = GetMousePos();
     olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp);
-    drawSprite(res.cf.tileCoordsToPixels(mtp.x, mtp.y, 1.0f, Cell::TopLeft), res.cf.tileScale(), m_aliases.size() - 1, 0);
+
+    sd.x = mtp.x;
+    sd.y = mtp.y;
+    sd.type = m_aliases.size() - 1;
+    sd.alpha = ALPHA_OPAQUE;
+    sd.radius = 1.0f;
+    sd.location = Cell::TopLeft;
+
+    drawSprite(sd, res.cf, 0);
 
     SetPixelMode(olc::Pixel::NORMAL);
   }
