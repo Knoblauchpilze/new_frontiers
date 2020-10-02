@@ -33,7 +33,6 @@
  *          Enemies would follow the same principle to get
  *          to the mother nest and attack it.
  */
-// TODO: Create warrior and worker entity classes.
 // TODO: Provide a way to select portals with the mouse: it
 // would make spawn raw icons to select the priority of the
 // entities that would be spawned (between warrior and the

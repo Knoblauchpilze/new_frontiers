@@ -6,7 +6,7 @@
 # include "blocks/Spawner.hh"
 # include "blocks/BlockFactory.hh"
 # include "entities/Player.hh"
-# include "entities/HostileMob.hh"
+# include "entities/Mob.hh"
 
 namespace {
 
@@ -49,7 +49,7 @@ namespace {
 
     // Interpret the brain.
     if (kind == "hostile") {
-      return std::make_shared<new_frontiers::HostileMob>(et);
+      return std::make_shared<new_frontiers::Mob>(et);
     }
     if (kind == "player") {
       return std::make_shared<new_frontiers::Player>(et);

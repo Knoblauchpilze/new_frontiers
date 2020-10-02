@@ -7,6 +7,18 @@
 
 namespace new_frontiers {
 
+  namespace mob {
+
+    /**
+     * @brief - The general type of mobs that can be spawned.
+     */
+    enum class Type {
+      Worker,
+      Warrior
+    };
+
+  }
+
   class Spawner: public Block {
     public:
 
@@ -39,11 +51,14 @@ namespace new_frontiers {
        * @param radius - the radius of the circle into which the
        *                 spawner is allowed to create entities.
        * @param mob - the type of mob spawned by this element.
+       * @param agent - the IA to plug to the body of entities
+       *                spawned by this element.
        * @param id - the variant of mob spawned.
        */
       Spawner(const BlockTile& tile,
               float radius,
               const tiles::Entity& mob,
+              const mob::Type& agent,
               int id = 0);
 
       /**
@@ -102,6 +117,12 @@ namespace new_frontiers {
        *          spawner.
        */
       tiles::Entity m_mob;
+
+      /**
+       * @brief - The type of IA to plug to the bodies of the
+       *          entities spawned by this object.
+       */
+      mob::Type m_type;
 
       /**
        * @brief - The variant of the mob spawned by this object.

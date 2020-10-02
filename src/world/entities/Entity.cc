@@ -60,7 +60,13 @@ namespace new_frontiers {
     // Make the entity take an action: this will
     // provide a coordinate to go to.
     float x = 0.0f, y = 0.0f;
-    takeAction(info, x, y);
+    bool ha = takeAction(info, x, y);
+
+    // In case no action was chosen, nothing will
+    // happen.
+    if (!ha) {
+      return;
+    }
 
     // Build the path information from the location
     // that was picked: basically this means clamp

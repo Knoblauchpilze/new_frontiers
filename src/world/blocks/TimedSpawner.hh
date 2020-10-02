@@ -18,6 +18,8 @@ namespace new_frontiers {
        * @param interval - the time interval between consecutive
        *                   spawns of entities.
        * @param mob - the type of mob spawned by this element.
+       * @param agent - the IA to plug to the body of entities
+       *                spawned by this element.
        * @param id - the variant of mob spawned.
        * @param stock - a value indicating how many entities can
        *                be spawned by this portal. The default
@@ -27,6 +29,7 @@ namespace new_frontiers {
       TimedSpawner(const BlockTile& tile,
                    const Duration& interval,
                    const tiles::Entity& mob,
+                   const mob::Type& agent,
                    int id = 0,
                    int stock = -1);
 

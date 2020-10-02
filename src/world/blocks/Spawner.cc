@@ -1,6 +1,8 @@
 
 # include "Spawner.hh"
-# include "../entities/HostileMob.hh"
+# include "../entities/Mob.hh"
+# include "../entities/Worker.hh"
+# include "../entities/Warrior.hh"
 
 namespace new_frontiers {
 
@@ -27,7 +29,22 @@ namespace new_frontiers {
     // boundaries.
     info.clampCoord(e.x, e.y);
 
-    return std::make_shared<HostileMob>(e);
+    // Depending on the agent's to plug to the bodies,
+    // create the corresponding pointer.
+    MobShPtr mp = nullptr;
+
+    switch (m_type) {
+      case mob::Type::Warrior:
+        mp = std::make_shared<Warrior>(e);
+        break;
+      case mob::Type::Worker:
+        // Assume default type is a worker.
+      default:
+        mp = std::make_shared<Worker>(e);
+        break;
+    }
+
+    return mp;
   }
 
 }

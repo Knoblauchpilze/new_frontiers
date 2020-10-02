@@ -168,17 +168,13 @@ namespace new_frontiers {
       drawSprite(const SpriteDesc& tile, const CoordinateFrame& cf);
 
       /**
-       * @brief - Used to draw the tile referenced by its alias index
-       *          and at the coordinate `cell`.
-       * @param pos - the position at which the tile should be drawn.
-       * @param tileScale - the scale of the tile compared to its
-       *                    canonical value.
-       * @param alias - the index of the tile in the tile atlas.
+       * @brief - Used to draw the tile referenced by the input
+       *          struct to the screen using the corresponding
+       *          visual representation.
+       * @param tile - the description of the tile to draw.
+       * @param cf - the coordinate frame to use to perform the
+       *             conversion from tile position to pixels.
        * @param id - the index of the variation of this sprite.
-       * @param alpha - a value of `255` to indicate that the sprite
-       *                should be completely opaque and `0` for fully
-       *                transparent.
-       * TODO: Comment.
        */
       void
       drawSprite(const SpriteDesc& tile,

@@ -9,10 +9,12 @@ namespace new_frontiers {
   Spawner::Spawner(const BlockTile& tile,
                    float radius,
                    const tiles::Entity& mob,
+                   const mob::Type& agent,
                    int id):
     Block(tile, "spawner"),
 
     m_mob(mob),
+    m_type(agent),
     m_mobID(id),
 
     m_radius(std::max(radius, 0.0f))
@@ -33,6 +35,11 @@ namespace new_frontiers {
 
     // Spawn a new entity and prepare it.
     EntityShPtr ent = spawn(info);
+    if (ent == nullptr) {
+      log("Spawner generated null entity, discarding it");
+      return false;
+    }
+
     preSpawn(info, ent);
 
     info.eSpawned.push_back(ent);

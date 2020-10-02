@@ -1,13 +1,13 @@
-#ifndef    HOSTILE_MOB_HXX
-# define   HOSTILE_MOB_HXX
+#ifndef    MOB_HXX
+# define   MOB_HXX
 
-# include "HostileMob.hh"
+# include "Mob.hh"
 
 namespace new_frontiers {
 
   inline
   void
-  HostileMob::pause(const TimeStamp& t) {
+  Mob::pause(const TimeStamp& t) {
     // Save the duration passed since the last
     // time a vfx was emitted by this mob.
     m_passed = t - m_last;
@@ -18,7 +18,7 @@ namespace new_frontiers {
 
   inline
   void
-  HostileMob::resume(const TimeStamp& t) {
+  Mob::resume(const TimeStamp& t) {
     // Restore the `last` time an effect was
     // produced to be the same duration in the
     // past as when the pause occurred.
@@ -30,7 +30,7 @@ namespace new_frontiers {
 
   inline
   void
-  HostileMob::prepareForStep(const StepInfo& info) {
+  Mob::prepareForStep(const StepInfo& info) {
     // Select a speed if not already done.
     if (m_speed < 0.0f) {
       m_speed = info.rng.rndFloat(0.1f, 3.0f);
@@ -39,7 +39,7 @@ namespace new_frontiers {
 
   inline
   void
-  HostileMob::postStep(StepInfo& info) {
+  Mob::postStep(StepInfo& info) {
     // Emit a new VFX if needed.
     if (m_last + m_vfxDelay <= info.moment) {
       pheromon::Type pt = behaviorToPheromon(m_behavior);
@@ -50,8 +50,43 @@ namespace new_frontiers {
   }
 
   inline
+  bool
+  Mob::chase(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // Empty base implementation.
+    return false;
+  }
+
+  inline
+  bool
+  Mob::fight(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // Empty base implementation.
+    return false;
+  }
+
+  inline
+  bool
+  Mob::collect(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // Empty base implementation.
+    return false;
+  }
+
+  inline
+  bool
+  Mob::getBack(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // Empty base implementation.
+    return false;
+  }
+
+  inline
+  bool
+  Mob::wander(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // Empty base implementation.
+    return false;
+  }
+
+  inline
   pheromon::Type
-  HostileMob::behaviorToPheromon(const Behavior& b) noexcept {
+  Mob::behaviorToPheromon(const Behavior& b) noexcept {
     switch (b) {
       case Behavior::Chase:
         return pheromon::Type::Chase;
@@ -69,7 +104,7 @@ namespace new_frontiers {
 
   inline
   void
-  HostileMob::emitPheromon(StepInfo& info) noexcept {
+  Mob::emitPheromon(StepInfo& info) noexcept {
     // Emit a pheromon based on the current behavior.
     pheromon::Type pt = behaviorToPheromon(m_behavior);
     info.vSpawned.push_back(spawnPheromon(pt));
@@ -80,31 +115,35 @@ namespace new_frontiers {
   }
 
   inline
-  bool
-  HostileMob::behave(StepInfo& info, float& x, float&y) noexcept {
+  Mob::Thought
+  Mob::behave(StepInfo& info, float& x, float&y) noexcept {
     // Save the current behavior.
     Behavior s = m_behavior;
 
+    Thought t{false, false};
+
     switch (s) {
       case Behavior::Chase:
-        chase(info, x, y);
+        t.actionTaken = chase(info, x, y);
         break;
       case Behavior::Fight:
-        fight(info, x, y);
+        t.actionTaken = fight(info, x, y);
         break;
       case Behavior::Collect:
-        collect(info, x, y);
+        t.actionTaken = collect(info, x, y);
         break;
       case Behavior::Return:
-        getBack(info, x, y);
+        t.actionTaken = getBack(info, x, y);
         break;
       case Behavior::Wander:
       default:
-        wander(info, x, y);
+        t.actionTaken = wander(info, x, y);
         break;
     }
 
-    return (s != m_behavior);
+    t.behaviorChanged = (s != m_behavior);
+
+    return t;
   }
 
 }
