@@ -36,11 +36,13 @@ namespace new_frontiers {
        * @param vfx - the visual representation for this
        *              pheromon. It will be passed on to the
        *              base class constructor.
+       * @param radius - the visual radius for this item.
        * @param evaporation - the speed at which this item
        *                      is evaporating away.
        */
       Pheromon(const pheromon::Type& type,
                const VFXTile& vfx,
+               float radius,
                float evaporation);
 
     private:

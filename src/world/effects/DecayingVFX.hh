@@ -15,10 +15,13 @@ namespace new_frontiers {
        * @param tile - the visual display for this effect which
        *               also contain the position at which the
        *               effect should be spawned.
+       * @param radius - the radius for this VFX.
        * @param phases - the list of phases that this effect has
        *                 to traverse before finally decaying.
        */
-      DecayingVFX(const VFXTile& tile, const std::vector<Duration>& phases);
+      DecayingVFX(const VFXTile& tile,
+                  float radius,
+                  const std::vector<Duration>& phases);
 
       void
       pause(const TimeStamp& t) override;

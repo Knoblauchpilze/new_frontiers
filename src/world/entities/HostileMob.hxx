@@ -6,18 +6,6 @@
 namespace new_frontiers {
 
   inline
-  HostileMob::HostileMob(const EntityTile& tile):
-    Entity(tile),
-
-    m_vfxDelay(toMilliseconds(8000)),
-    m_last(now() - m_vfxDelay),
-
-    m_passed(),
-
-    m_behavior(Behavior::Wander)
-  {}
-
-  inline
   void
   HostileMob::pause(const TimeStamp& t) {
     // Save the duration passed since the last

@@ -15,10 +15,13 @@ namespace new_frontiers {
        * @param tile - the visual display for this effect which
        *               also contain the position at which the
        *               effect should be spawned.
+       * @param radius - the radius for this VFX.
        * @param evaporation - defines the evaporation rate for
        *                      this effect in unit per second.
        */
-      EvaporatingVFX(const VFXTile& tile, float evaporation);
+      EvaporatingVFX(const VFXTile& tile,
+                     float radius,
+                     float evaporation);
 
     protected:
 

@@ -10,7 +10,7 @@ namespace new_frontiers {
 
       static
       PheromonShPtr
-      newPheromon(const pheromon::Type& type, float x, float y) noexcept;
+      newPheromon(const pheromon::Type& type, float x, float y, float radius = 1.0f) noexcept;
 
     private:
 

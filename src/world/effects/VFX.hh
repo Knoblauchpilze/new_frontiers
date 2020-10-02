@@ -58,9 +58,12 @@ namespace new_frontiers {
        * @param tile - the visual display for this effect which
        *               also contain the position at which the
        *               effect should be spawned.
+       * @param radius - the radius for this vfx.
        * @param name - the name of this VFX in logs.
        */
-      VFX(const VFXTile& tile, const std::string& name);
+      VFX(const VFXTile& tile,
+          float radius,
+          const std::string& name);
 
       /**
        * @brief - Interface method defining whether or not the

@@ -27,6 +27,13 @@ namespace new_frontiers {
       getTile() noexcept;
 
       /**
+       * @brief - Return the radius for this entity.
+       * @return - the radius for this entity in blocks.
+       */
+      float
+      getRadius() const noexcept;
+
+      /**
        * @brief - Retrieve the ratio of current health over
        *          total health for this element. This value
        *          is in the range `[0; 1]` and allows to
@@ -80,11 +87,14 @@ namespace new_frontiers {
        * @param tile - the tile to associate to this object. It
        *               defines the visual along with the coords
        *               of the element.
+       * @param radius - the radius for this entity expressed
+       *                 in blocks.
        * @param health - the health pool for this element.
        * @param name - the name of the object (mainly used for
        *               logging purposes).
        */
       Element(const Tile<TileType>& tile,
+              float radius,
               float health,
               const std::string& name);
 
@@ -95,6 +105,13 @@ namespace new_frontiers {
        *          the coordinates at which it should be displayed.
        */
       Tile<TileType> m_tile;
+
+      /**
+       * @brief - Define the size of the entity expressed in
+       *          blocks. This value is guaranteed to be at
+       *          least `0`.
+       */
+      float m_radius;
 
       /**
        * @brief - The health pool for this element.

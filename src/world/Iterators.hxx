@@ -96,6 +96,7 @@ namespace new_frontiers {
 
     return VFXDesc{
       v->getTile(),
+      v->getRadius(),
       v->getAmount()
     };
   }

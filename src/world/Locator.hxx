@@ -13,7 +13,6 @@ namespace new_frontiers {
     // are stored for easy access and then inserted in
     // a quadtree or something allowing easy spatial
     // sorting.
-
     if (update == Update::Full) {
       m_blocksIDs.clear();
 

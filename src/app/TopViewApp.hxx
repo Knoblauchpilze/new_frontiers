@@ -14,18 +14,22 @@ namespace new_frontiers {
 
   inline
   void
-  TopViewApp::drawSprite(const olc::vf2d& pos, const olc::vf2d& tileSize, int type, int alpha) {
-    olc::Pixel c = m_sprites[type];
-    c.a = alpha;
+  TopViewApp::drawSprite(const SpriteDesc& tile, const CoordinateFrame& cf) {
+    olc::Pixel c = m_sprites[tile.type];
+    c.a = tile.alpha;
 
-    FillRectDecal(pos, tileSize, c);
+    FillRectDecal(
+      cf.tileCoordsToPixels(tile.x, tile.y, tile.radius, tile.location),
+      tile.radius * cf.tileSize(),
+      c
+    );
   }
 
   inline
   void
-  TopViewApp::drawHealthBar(const olc::vf2d& pos, const olc::vf2d& tileSize, float ratio, int alpha) {
+  TopViewApp::drawHealthBar(const SpriteDesc& tile, float ratio, const CoordinateFrame& cf) {
     // Fetch a color based on the input ratio.
-    olc::Pixel hbc = redToGreenGradient(ratio, alpha);
+    olc::Pixel hbc = redToGreenGradient(ratio, tile.alpha);
 
     // Darken it for the empty portion of the
     // healthbar.
@@ -45,15 +49,15 @@ namespace new_frontiers {
     float hbWRatio = 0.7f;
     float hbHRatio = 0.1f;
     float hbHOffset = 0.1f;
-    olc::vf2d s = tileSize;
+    olc::vf2d s = cf.tileSize();
 
     FillRectDecal(
-      olc::vf2d(pos.x + (1.0f - hbWRatio) * s.x / 2.0f, pos.y - s.y * hbHOffset),
+      olc::vf2d(tile.x + (1.0f - hbWRatio) * s.x / 2.0f, tile.y - s.y * hbHOffset),
       olc::vf2d(s.x * hbWRatio * ratio, s.y * hbHRatio),
       hbc
     );
     FillRectDecal(
-      olc::vf2d(pos.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, pos.y - s.y * hbHOffset),
+      olc::vf2d(tile.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, tile.y - s.y * hbHOffset),
       olc::vf2d(s.x * hbWRatio * (1.0f - ratio), s.y * hbHRatio),
       bc
     );
