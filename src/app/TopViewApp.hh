@@ -40,39 +40,6 @@ namespace new_frontiers {
       cleanResources() override;
 
       /**
-       * @brief - Used to draw the tile referenced by its alias index
-       *          and at the coordinate `cell`.
-       * @param pos - the position at which the tile should be drawn.
-       * @param tileSize - the size of the tile in pixels.
-       * @param type - the type of the tile to draw.
-       * @param alpha - a value of `255` to indicate that the sprite
-       *                should be completely opaque and `0` for fully
-       *                transparent.
-       */
-      void
-      drawSprite(const olc::vf2d& pos,
-                 const olc::vf2d& tileSize,
-                 int type,
-                 int alpha = ALPHA_OPAQUE);
-
-      /**
-       * @brief - Used to draw a minimalistic health bar for an entity
-       *          or block at position (x, y) in cells coordinates. It
-       *          is displayed with the specified alpha transparency.
-       * @param pos - the position at which the tile should be drawn.
-       * @param tileSize - the size of the tile in pixels.
-       * @param ratio - a value in the range `[0; 1]` representing the
-       *                health of the element.
-       * @param alpha - additional alpha modifier to blend the display.
-       */
-      void
-      drawHealthBar(const olc::vf2d& pos,
-                    const olc::vf2d& tileSize,
-                    float ratio,
-                    int alpha = ALPHA_SEMI_OPAQUE);
-
-
-      /**
        * @brief - Definition of the interface method to perform the
        *          drawing of the game's logic.
        * @param res - the resources that can be drawn.
@@ -95,6 +62,44 @@ namespace new_frontiers {
        */
       void
       drawDebug(const RenderDesc& res) override;
+
+    private:
+
+      /**
+       * @brief - Convenience structure regrouping needed props
+       *          to draw a sprite.
+       */
+      struct SpriteDesc {
+        float x;
+        float y;
+        float radius;
+        int type;
+        int alpha;
+        Cell location;
+      };
+
+      /**
+       * @brief - Used to draw the tile referenced by the input
+       *          struct to the screen using the corresponding
+       *          visual representation.
+       * @param tile - the description of the tile to draw.
+       * @param cf - the coordinate frame to use to perform the
+       *             conversion from tile position to pixels.
+       */
+      void
+      drawSprite(const SpriteDesc& tile, const CoordinateFrame& cf);
+
+      /**
+       * @brief - Used to draw a minimalistic health bar for an entity
+       *          or block at position (x, y) in cells coordinates. It
+       *          is displayed with the specified alpha transparency.
+       * @param tile - the description of the tile to draw.
+       * @param ratio - the ratio of the healthbar that is still full.
+       * @param cf - the coordinate frame to use to perform the
+       *             conversion from tile position to pixels.
+       */
+      void
+      drawHealthBar(const SpriteDesc& tile, float ratio, const CoordinateFrame& cf);
 
     private:
 

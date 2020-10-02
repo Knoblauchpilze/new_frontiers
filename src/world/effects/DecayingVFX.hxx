@@ -6,8 +6,10 @@
 namespace new_frontiers {
 
   inline
-  DecayingVFX::DecayingVFX(const VFXTile& tile, const std::vector<Duration>& phases):
-    VFX(tile, "decaying"),
+  DecayingVFX::DecayingVFX(const VFXTile& tile,
+                           float radius,
+                           const std::vector<Duration>& phases):
+    VFX(tile, radius, "decaying"),
 
     m_phases(phases),
     m_transition(0u),

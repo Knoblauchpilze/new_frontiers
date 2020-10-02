@@ -46,6 +46,7 @@ namespace new_frontiers {
    */
   struct VFXDesc {
     VFXTile tile;
+    float radius;
     float amount;
   };
 

@@ -6,8 +6,10 @@
 namespace new_frontiers {
 
   inline
-  EvaporatingVFX::EvaporatingVFX(const VFXTile& tile, float evaporation):
-    VFX(tile, "evaporating"),
+  EvaporatingVFX::EvaporatingVFX(const VFXTile& tile,
+                                 float radius,
+                                 float evaporation):
+    VFX(tile, radius, "evaporating"),
 
     m_evaporation(std::max(evaporation, 0.0f))
   {}

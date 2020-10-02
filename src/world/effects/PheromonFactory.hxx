@@ -7,14 +7,14 @@ namespace new_frontiers {
 
   inline
   PheromonShPtr
-  PheromonFactory::newPheromon(const pheromon::Type& type, float x, float y) noexcept {
+  PheromonFactory::newPheromon(const pheromon::Type& type, float x, float y, float radius) noexcept {
     // Deduce the VFX type from the pheromon type.
     tiles::Effect vt = pheromonToVFX(type);
     VFXTile vfx = newTile(vt);
     vfx.x = x; vfx.y = y;
 
     // Evaporation time is fixed for now.
-    return std::shared_ptr<Pheromon>(new Pheromon(type, vfx, 0.1f));
+    return std::shared_ptr<Pheromon>(new Pheromon(type, vfx, radius, 0.1f));
   }
 
   inline

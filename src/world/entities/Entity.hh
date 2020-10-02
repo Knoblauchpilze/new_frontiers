@@ -94,13 +94,6 @@ namespace new_frontiers {
       resume(const TimeStamp& t) override;
 
       /**
-       * @brief - Return the radius for this entity.
-       * @return - the radius for this entity in blocks.
-       */
-      float
-      getRadius() const noexcept;
-
-      /**
        * @brief - Used to retrieve the current state of this entity.
        *          The state provide some useful indications about
        *          how the entity needs to be represented.
@@ -211,13 +204,6 @@ namespace new_frontiers {
       choosePath(StepInfo& info);
 
     protected:
-
-      /**
-       * @brief - Define the size of the entity expressed in
-       *          blocks. This value is guaranteed to be at
-       *          least `0`.
-       */
-      float m_radius;
 
       /**
        * @brief - Speed of the entity in cells per second.

@@ -42,70 +42,96 @@ namespace new_frontiers {
     Clear(olc::BLACK);
 
     // Draw elements of the world.
+    SpriteDesc sd;
 
     // Draw ground.
+    sd.type = GroundID;
+    sd.alpha = ALPHA_OPAQUE;
+    sd.radius = 1.0f;
+    sd.location = Cell::TopLeft;
+
     for (int y = 0 ; y < res.wit->h() ; ++y) {
       for (int x = 0 ; x < res.wit->w() ; ++x) {
-        drawSprite(res.cf.tileCoordsToPixels(x, y, 1.0f, Cell::TopLeft), res.cf.tileSize(), GroundID, ALPHA_OPAQUE - std::rand() % 50);
+        sd.x = x;
+        sd.y = y;
+
+        drawSprite(sd, res.cf);
       }
     }
 
     // Draw solid tiles.
+    sd.type = SolidID;
+    sd.alpha = ALPHA_OPAQUE;
+    sd.radius = 1.0f;
+    sd.location = Cell::TopLeft;
+
     for (int id = 0 ; id < res.wit->blocksCount() ; ++id) {
       BlockDesc t = res.wit->block(id);
-      drawSprite(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, 1.0f, Cell::TopLeft), res.cf.tileSize(), SolidID);
-      drawHealthBar(res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, 1.0f, Cell::TopLeft), res.cf.tileSize(), t.health);
+
+      sd.x = t.tile.x;
+      sd.y = t.tile.y;
+
+      drawSprite(sd, res.cf);
+      drawHealthBar(sd, t.health, res.cf);
     }
 
     // Draw entities.
+    sd.location = Cell::CenterBottom;
+
     for (int id = 0 ; id < res.wit->entitiesCount() ; ++id) {
       EntityDesc t = res.wit->entity(id);
 
+      sd.x = t.tile.x;
+      sd.y = t.tile.y;
+      sd.radius = t.radius;
+
       if (t.state.glowing) {
-        drawSprite(
-          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius),
-          res.cf.tileSize(),
-          VFXID,
-          ALPHA_SEMI_OPAQUE
-        );
+        sd.type = VFXID;
+        sd.alpha = ALPHA_SEMI_OPAQUE;
+
+        drawSprite(sd, res.cf);
       }
       if (t.state.exhausted) {
-        drawSprite(
-          res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius),
-          res.cf.tileSize(),
-          VFXID,
-          ALPHA_SEMI_OPAQUE
-        );
+        sd.type = VFXID;
+        sd.alpha = ALPHA_SEMI_OPAQUE;
+
+        drawSprite(sd, res.cf);
       }
 
-      drawSprite(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius),
-        t.radius * res.cf.tileSize(),
-        EntityID
-      );
+      sd.type = EntityID;
+      sd.alpha = ALPHA_OPAQUE;
 
-      drawHealthBar(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, t.radius),
-        t.radius * res.cf.tileSize(),
-        t.health
-      );
+      drawSprite(sd, res.cf);
+      drawHealthBar(sd, t.health, res.cf);
     }
 
     // Draw vfx.
+    sd.type = VFXID;
+    sd.location = Cell::CenterBottom;
+
     for (int id = 0 ; id < res.wit->vfxCount() ; ++id) {
       VFXDesc t = res.wit->vfx(id);
-      drawSprite(
-        res.cf.tileCoordsToPixels(t.tile.x, t.tile.y, 1.0f),
-        res.cf.tileSize(),
-        VFXID,
-        static_cast<int>(std::round(ALPHA_OPAQUE * t.amount))
-      );
+
+      sd.x = t.tile.x;
+      sd.y = t.tile.y;
+      sd.alpha = static_cast<int>(std::round(ALPHA_OPAQUE * t.amount));
+      sd.radius = t.radius;
+
+      drawSprite(sd, res.cf);
     }
 
     // Draw cursor.
     olc::vi2d mp = GetMousePos();
     olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp);
-    drawSprite(res.cf.tileCoordsToPixels(mtp.x, mtp.y, 1.0f, Cell::TopLeft), res.cf.tileSize(), CursorID, ALPHA_SEMI_OPAQUE);
+
+    sd.x = mtp.x;
+    sd.y = mtp.y;
+    sd.type = CursorID;
+    sd.alpha = ALPHA_SEMI_OPAQUE;
+    sd.radius = 1.0f;
+    sd.location = Cell::TopLeft;
+
+    drawSprite(sd, res.cf);
 
     SetPixelMode(olc::Pixel::NORMAL);
   }

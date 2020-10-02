@@ -74,6 +74,32 @@ namespace new_frontiers {
       cleanResources() override;
 
       /**
+       * @brief - Definition of the interface method to perform the
+       *          drawing of the game's logic.
+       * @param res - the resources that can be drawn.
+       */
+      void
+      draw(const RenderDesc& res) override;
+
+      /**
+       * @brief - Similar to the `draw` method but performs the
+       *          drawing of the app's interface.
+       * @param res - the resources that can be drawn.
+       */
+      void
+      drawUI(const RenderDesc& res) override;
+
+      /**
+       * @brief - Draws the debug layer for this app through the
+       *          definition of the corresponding interface method.
+       * @param res - the resources that can be drawn.
+       */
+      void
+      drawDebug(const RenderDesc& res) override;
+
+    private:
+
+      /**
        * @brief - Used to convert from sprite coordinates to the
        *          corresponding pixels coordinates. This method
        *          should mostly be used to locate a sprite in a
@@ -165,30 +191,6 @@ namespace new_frontiers {
                     const olc::vf2d& tileScale,
                     float ratio,
                     int alpha = ALPHA_SEMI_OPAQUE);
-
-      /**
-       * @brief - Definition of the interface method to perform the
-       *          drawing of the game's logic.
-       * @param res - the resources that can be drawn.
-       */
-      void
-      draw(const RenderDesc& res) override;
-
-      /**
-       * @brief - Similar to the `draw` method but performs the
-       *          drawing of the app's interface.
-       * @param res - the resources that can be drawn.
-       */
-      void
-      drawUI(const RenderDesc& res) override;
-
-      /**
-       * @brief - Draws the debug layer for this app through the
-       *          definition of the corresponding interface method.
-       * @param res - the resources that can be drawn.
-       */
-      void
-      drawDebug(const RenderDesc& res) override;
 
     private:
 

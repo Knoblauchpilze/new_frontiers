@@ -35,10 +35,8 @@ namespace new_frontiers {
   Entity::Entity(const EntityTile& desc,
                  float radius,
                  float health):
-    Element(desc, health, "entity"),
+    Element(desc, radius, health, "entity"),
 
-    // Make sure to set the radius to a valid value.
-    m_radius(radius < 0.0f ? 1.0f : radius),
     m_speed(-1.0f),
     m_rArrival(0.05f),
     m_pathLength(3.0f),
@@ -95,12 +93,6 @@ namespace new_frontiers {
   }
 
   inline
-  float
-  Entity::getRadius() const noexcept {
-    return m_radius;
-  }
-
-  inline
   const State&
   Entity::getState() const noexcept {
     return m_state;
@@ -133,7 +125,7 @@ namespace new_frontiers {
   inline
   PheromonShPtr
   Entity::spawnPheromon(const pheromon::Type& type) const noexcept {
-    return PheromonFactory::newPheromon(type, m_tile.x, m_tile.y);
+    return PheromonFactory::newPheromon(type, m_tile.x, m_tile.y, getRadius());
   }
 
   inline

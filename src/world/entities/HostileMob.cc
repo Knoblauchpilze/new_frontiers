@@ -4,6 +4,17 @@
 
 namespace new_frontiers {
 
+  HostileMob::HostileMob(const EntityTile& tile):
+    Entity(tile, 0.5f),
+
+    m_vfxDelay(toMilliseconds(8000)),
+    m_last(now() - m_vfxDelay),
+
+    m_passed(),
+
+    m_behavior(Behavior::Wander)
+  {}
+
   void
   HostileMob::takeAction(StepInfo& info, float& x, float& y) {
     // TODO: We should refine this method: it should select
