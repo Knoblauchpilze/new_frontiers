@@ -7,7 +7,7 @@ namespace new_frontiers {
 
   inline
   Player::Player(const EntityTile& tile):
-    Entity(tile),
+    Entity(tile, 1.0f, 0.2f),
 
     m_sprintSpeed(3.0f),
     m_recoverySpeed(m_sprintSpeed / 4.0f),

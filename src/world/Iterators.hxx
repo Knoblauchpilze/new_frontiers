@@ -81,6 +81,7 @@ namespace new_frontiers {
     return EntityDesc{
       e->getTile(),
       e->getRadius(),
+      e->getPerceptionRadius(),
       e->getHealthRatio(),
       e->getState(),
       e->getPathX(),

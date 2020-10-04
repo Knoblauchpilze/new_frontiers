@@ -34,10 +34,12 @@ namespace new_frontiers {
   inline
   Entity::Entity(const EntityTile& desc,
                  float radius,
+                 float perception,
                  float health):
     Element(desc, radius, health, "entity"),
 
     m_speed(-1.0f),
+    m_perceptionRadius(perception < 0.0f ? 1.0f : perception),
     m_rArrival(0.05f),
     m_pathLength(3.0f),
 
@@ -96,6 +98,12 @@ namespace new_frontiers {
   const State&
   Entity::getState() const noexcept {
     return m_state;
+  }
+
+  inline
+  float
+  Entity::getPerceptionRadius() const noexcept {
+    return m_perceptionRadius;
   }
 
   inline

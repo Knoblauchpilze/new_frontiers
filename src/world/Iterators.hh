@@ -30,6 +30,7 @@ namespace new_frontiers {
   struct EntityDesc {
     EntityTile tile;
     float radius;
+    float percepRadius;
     float health;
     State state;
     float xT;
