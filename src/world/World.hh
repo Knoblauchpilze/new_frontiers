@@ -10,6 +10,7 @@
 # include "Iterators.hh"
 # include "Locator.hh"
 # include "Controls.hh"
+# include "Influence.hh"
 
 namespace new_frontiers {
 
@@ -108,6 +109,15 @@ namespace new_frontiers {
        */
       void
       generateElements();
+
+      /**
+       * @brief - Used to process the input list of influences
+       *          which usually mean deleting elements marked
+       *          for deletion and registering new ones.
+       * @param influences - the list of influences to process.
+       */
+      void
+      processInfluences(const std::vector<InfluenceShPtr>& influences);
 
       /**
        * @brief - Attempt to load a world from the file as

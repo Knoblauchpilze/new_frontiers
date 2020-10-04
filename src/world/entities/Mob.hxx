@@ -43,7 +43,7 @@ namespace new_frontiers {
     // Emit a new VFX if needed.
     if (m_last + m_vfxDelay <= info.moment) {
       pheromon::Type pt = behaviorToPheromon(m_behavior);
-      info.vSpawned.push_back(spawnPheromon(pt));
+      info.spawnVFX(spawnPheromon(pt));
 
       m_last = info.moment;
     }
@@ -107,7 +107,7 @@ namespace new_frontiers {
   Mob::emitPheromon(StepInfo& info) noexcept {
     // Emit a pheromon based on the current behavior.
     pheromon::Type pt = behaviorToPheromon(m_behavior);
-    info.vSpawned.push_back(spawnPheromon(pt));
+    info.spawnVFX(spawnPheromon(pt));
 
     // Register this as the last moment we produced
     // a pheromon.

@@ -42,7 +42,7 @@ namespace new_frontiers {
 
     preSpawn(info, ent);
 
-    info.eSpawned.push_back(ent);
+    info.spawnEntity(ent);
 
     return true;
   }
