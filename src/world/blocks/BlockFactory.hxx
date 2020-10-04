@@ -3,8 +3,8 @@
 
 # include "BlockFactory.hh"
 # include "Block.hh"
-// # include "TimedSpawner.hh"
 # include "SpawnerOMeter.hh"
+# include "Deposit.hh"
 
 namespace new_frontiers {
 
@@ -57,6 +57,12 @@ namespace new_frontiers {
       0.5f                              // refill
     );
 # endif
+  }
+
+  inline
+  BlockShPtr
+  BlockFactory::newDeposit(float x, float y, float stock) noexcept {
+    return std::make_shared<Deposit>(newTile(tiles::Portal, 14, x, y), stock);
   }
 
   inline
