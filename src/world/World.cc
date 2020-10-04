@@ -125,12 +125,11 @@ namespace new_frontiers {
       0.0f,
       1.0f * m_w - 1.0f,
       0.0f,
-          1.0f * m_h - 1.0f,
+      1.0f * m_h - 1.0f,
 
       m_rng,
 
-      std::vector<EntityShPtr>(),
-      std::vector<VFXShPtr>(),
+      std::vector<InfluenceShPtr>(),
 
       now(),
       tDelta,
@@ -140,64 +139,21 @@ namespace new_frontiers {
       controls
     };
 
-    // Spawn entities from spawner that can do so.
+    // Make elements evolve.
     for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
-      BlockShPtr b = m_blocks[id];
-
-      b->step(si);
+      m_blocks[id]->step(si);
     }
 
-    // Register entities that have been spawned.
-    m_entities.insert(m_entities.end(), si.eSpawned.cbegin(), si.eSpawned.cend());
-
-    // Make entities evolve.
-    bool eMoved = false;
     for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
-      EntityShPtr ep = m_entities[id];
-
-      if (ep->step(si)) {
-        // TODO: This might be a real issue in case
-        // there are a lot of entities because we're
-        // effectively asking a full re-sort on each
-        // frame.
-        // Maybe we could separate re-sort at the
-        // very least.
-        eMoved = true;
-      }
+      m_entities[id]->step(si);
     }
-
-    // Register vfx that have been created.
-    m_vfx.insert(m_vfx.end(), si.vSpawned.cbegin(), si.vSpawned.cend());
-
-    // Make vfx evolve.
-    std::vector<int> toRm;
 
     for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
-      VFXShPtr v = m_vfx[id];
-
-      if (v->step(si)) {
-        toRm.push_back(id);
-      }
+      m_vfx[id]->step(si);
     }
 
-    // Remove dead effects. We use reverse iterators as
-    // we want to traverse the vector from end to front
-    // (so as to keep indices valid while removing) and
-    // using a classic for loop would lead to issue if
-    // we use an `unsigned` value (we could static_cast
-    // but it seems less pretty).
-    for (std::vector<int>::reverse_iterator it = toRm.rbegin() ;
-         it != toRm.rend() ;
-         ++it)
-    {
-      m_vfx.erase(m_vfx.begin() + toRm[*it]);
-    }
-
-    // In case something has been modified, refresh
-    // the iterator on this world.
-    if (!si.eSpawned.empty() || eMoved || !si.vSpawned.empty() || !toRm.empty()) {
-      m_it->refresh();
-    }
+    // Process influences.
+    processInfluences(si.influences);
   }
 
   void
@@ -255,6 +211,71 @@ namespace new_frontiers {
     EntityTile et = newTile(tiles::Knight, 0);
     et.x = 1.0f; et.y = 1.0f;
     m_entities.push_back(std::make_shared<Player>(et));
+  }
+
+  void
+  World::processInfluences(const std::vector<InfluenceShPtr>& influences) {
+    // Process each influence.
+    for (unsigned id = 0; id < influences.size() ; ++id) {
+      InfluenceShPtr i = influences[id];
+
+      switch (i->getType()) {
+        case influence::Type::BlockSpawn:
+          m_blocks.push_back(i->getShPBlock());
+          break;
+        case influence::Type::BlockRemoval: {
+          auto toRm = std::find_if(
+            m_blocks.cbegin(),
+            m_blocks.cend(),
+            [&i](const BlockShPtr& blo) {
+              return blo != nullptr && blo.get() == i->getBlock();
+            }
+          );
+          if (toRm != m_blocks.end()) {
+            m_blocks.erase(toRm);
+          }
+          } break;
+        case influence::Type::EntitySpawn:
+          m_entities.push_back(i->getShPEntity());
+          break;
+        case influence::Type::EntityRemoval: {
+          auto toRm = std::find_if(
+            m_entities.cbegin(),
+            m_entities.cend(),
+            [&i](const EntityShPtr& ent) {
+              return ent != nullptr && ent.get() == i->getEntity();
+            }
+          );
+          if (toRm != m_entities.end()) {
+            m_entities.erase(toRm);
+          }
+          } break;
+        case influence::Type::VFXSpawn:
+          m_vfx.push_back(i->getShPVFX());
+          break;
+        case influence::Type::VFXRemoval: {
+          auto toRm = std::find_if(
+            m_vfx.cbegin(),
+            m_vfx.cend(),
+            [&i](const VFXShPtr& vfx) {
+              return vfx != nullptr && vfx.get() == i->getVFX();
+            }
+          );
+          if (toRm != m_vfx.end()) {
+            m_vfx.erase(toRm);
+          }
+          } break;
+        default:
+          log("Unhandled influence with type " + std::to_string(static_cast<int>(i->getType())), utils::Level::Warning);
+          break;
+      }
+    }
+
+    // In case an influence was perform, we need to
+    // refresh the spatial sorting of elements.
+    if (!influences.empty()) {
+      m_it->refresh();
+    }
   }
 
   void

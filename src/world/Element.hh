@@ -8,6 +8,8 @@
 
 namespace new_frontiers {
 
+  class StepInfo;
+
   template <typename TileType>
   class Element: public utils::CoreObject {
     public:

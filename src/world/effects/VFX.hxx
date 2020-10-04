@@ -28,6 +28,9 @@ namespace new_frontiers {
     // Check whether the vfx should decay in its
     // next form.
     if (isTerminated(info.moment)) {
+      // Mark this vfx for deletion.
+      info.removeVFX(this);
+
       return true;
     }
     
