@@ -29,7 +29,7 @@ namespace new_frontiers {
 
     m_sprites[GroundID] = olc::VERY_DARK_GREY;
     m_sprites[SolidID] = olc::DARK_GREY;
-    m_sprites[PortalID] = olc::GREY;
+    m_sprites[PortalID] = olc::Pixel(255, 128, 0);
     m_sprites[EntityID] = olc::VERY_DARK_CYAN;
     m_sprites[VFXID] = olc::VERY_DARK_RED;
     m_sprites[CursorID] = olc::YELLOW;
@@ -70,6 +70,17 @@ namespace new_frontiers {
 
       sd.x = t.tile.x;
       sd.y = t.tile.y;
+
+      switch (t.tile.type) {
+        case tiles::Portal:
+          sd.type = PortalID;
+          break;
+        case tiles::Wall:
+        case tiles::Door:
+        default:
+          sd.type = SolidID;
+          break;
+      }
 
       drawSprite(sd, res.cf);
       drawHealthBar(sd, t.health, res.cf);

@@ -247,11 +247,8 @@ namespace new_frontiers {
     // Generate mob portal.
     m_blocks.push_back(BlockFactory::newSpawner(3, 3.0f, 4.0f, tiles::DarkAnubis));
 
-    // Generate entry portal.
-    m_blocks.push_back(BlockFactory::newEntrance(6, 1.0f, 1.0f));
-
-    // Generate exit portal.
-    m_blocks.push_back(BlockFactory::newExit(1, 6.0f, 3.0f));
+    // Generate resource deposit.
+    m_blocks.push_back(BlockFactory::newDeposit(1.0f, 5.0f, 20.0f));
 
     // Generate the player at the same location
     // as the entry portal.

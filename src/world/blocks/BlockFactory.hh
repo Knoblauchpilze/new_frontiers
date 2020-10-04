@@ -28,6 +28,10 @@ namespace new_frontiers {
       BlockShPtr
       newSpawner(int id, float x, float y, const tiles::Entity& ent) noexcept;
 
+      static
+      BlockShPtr
+      newDeposit(float x, float y, float stock = 10.0f) noexcept;
+
     private:
 
       static
