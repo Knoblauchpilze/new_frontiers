@@ -252,6 +252,12 @@ namespace new_frontiers {
       DrawLine(cb, tcb, olc::WHITE);
       DrawRect(ul, ed.radius * res.cf.tileScale() * m_ss, olc::MAGENTA);
       FillCircle(cb, 5, olc::YELLOW);
+
+      // TODO: In case the size of the tile is different in
+      // one direction and the other it means that we should
+      // in fact draw an ellipse.
+      olc::vf2d tlpr = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.percepRadius);
+      DrawCircle(tlpr, ed.percepRadius * res.cf.tileSize().x, olc::BLUE);
     }
 
     // Render mouse and world cell coordinates.

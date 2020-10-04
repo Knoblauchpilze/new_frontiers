@@ -59,10 +59,13 @@ namespace new_frontiers {
        *               along with its position.
        * @param radius - the radius for this entity expressed
        *                 in blocks.
+       * @param perception - the perception radius expressed in
+       *                     units for this entity.
        * @param health - the health pool of this entity.
        */
       Entity(const EntityTile& tile,
              float radius = 1.0f,
+             float perception = 1.0f,
              float health = 10.0f);
 
       /**
@@ -101,6 +104,9 @@ namespace new_frontiers {
        */
       const State&
       getState() const noexcept;
+
+      float
+      getPerceptionRadius() const noexcept;
 
       /**
        * @brief - Returns the target abscissa of the path segment
@@ -210,6 +216,15 @@ namespace new_frontiers {
        * @brief - Speed of the entity in cells per second.
        */
       float m_speed;
+
+      /**
+       * @brief - Definition of the perception radius that
+       *          this entity has. It is expressed in units
+       *          of the world.
+       *          We make sure that this value is at least
+       *          a positive value.
+       */
+      float m_perceptionRadius;
 
       /**
        * @brief - Defines the arrival radius for this entity when
