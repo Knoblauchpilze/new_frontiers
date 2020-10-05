@@ -176,6 +176,17 @@ namespace new_frontiers {
     return (m_blocksIDs.count(yi * m_w + xi) > 0);
   }
 
+  std::vector<BlockShPtr>
+  Locator::getBlocks(float /*x*/,
+                     float /*y*/,
+                     float /*r*/,
+                     const tiles::Block& /*block*/,
+                     int /*id*/) const noexcept
+  {
+    // TODO: Implement this.
+    return std::vector<BlockShPtr>();
+  }
+
   void
   Locator::initialize() {
     // Register each solid tile in the map.

@@ -37,6 +37,29 @@ namespace new_frontiers {
     protected:
 
       /**
+       * @brief - Defines the mode in which this entity is currently
+       *          in. The mode defins which type of behavior it will
+       *          exhibit. Behaviors are controlled by the elements
+       *          visible in the field of view of the entity.
+       */
+      enum class Behavior {
+        Wander,
+        Chase,
+        Fight,
+        Collect,
+        Return
+      };
+
+      /**
+       * @brief - Define a new behavior as provided in input and
+       *          assign it as the current behavior. No checks
+       *          are performed so any assignment is valid.
+       * @param b - the new behavior to define.
+       */
+      void
+      setBehavior(const Behavior& b) noexcept;
+
+      /**
        * @brief - Implementation of the interface method to select
        *          a speed for this entity.
        * @param info - an object describing (among other things) a
@@ -92,20 +115,6 @@ namespace new_frontiers {
       pickRandomTarget(StepInfo& info, float& x, float& y) noexcept;
 
     private:
-
-      /**
-       * @brief - Defines the mode in which this entity is currently
-       *          in. The mode defins which type of behavior it will
-       *          exhibit. Behaviors are controlled by the elements
-       *          visible in the field of view of the entity.
-       */
-      enum class Behavior {
-        Wander,
-        Chase,
-        Fight,
-        Collect,
-        Return
-      };
 
       /**
        * @brief - Convenience structure to regroup the result of

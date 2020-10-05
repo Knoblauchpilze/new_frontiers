@@ -30,6 +30,12 @@ namespace new_frontiers {
 
   inline
   void
+  Mob::setBehavior(const Behavior& b) noexcept {
+    m_behavior = b;
+  }
+
+  inline
+  void
   Mob::prepareForStep(const StepInfo& info) {
     // Select a speed if not already done.
     if (m_speed < 0.0f) {
