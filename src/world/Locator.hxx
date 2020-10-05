@@ -2,6 +2,7 @@
 # define   LOCATOR_HXX
 
 # include "Locator.hh"
+# include <algorithm>
 
 namespace new_frontiers {
 
@@ -30,6 +31,26 @@ namespace new_frontiers {
   float
   Locator::d2(float x1, float y1, float x2, float y2) const noexcept {
     return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+  }
+
+  inline
+  BlockShPtr
+  Locator::getClosest(float x,
+                      float y,
+                      const tiles::Block& block,
+                      int id) const noexcept
+  {
+    // Use the dedicated handler.
+    std::vector<BlockShPtr> all = getBlocks(x, y, -1.0f, block, id, true);
+
+    // Return the closest one.
+    if (all.empty()) {
+      return nullptr;
+    }
+
+    // We requested blocks to be sorted, we can
+    // pick the first.
+    return all.front();
   }
 
 }

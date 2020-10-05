@@ -181,7 +181,8 @@ namespace new_frontiers {
                      float y,
                      float r,
                      const tiles::Block& block,
-                     int id) const noexcept
+                     int id,
+                     bool sort) const noexcept
   {
     std::vector<BlockShPtr> out;
 
@@ -198,9 +199,26 @@ namespace new_frontiers {
       float dx = b.x - x;
       float dy = b.y - y;
 
-      if (dx * dx + dy * dy < r2) {
+      if (r < 0.0f || dx * dx + dy * dy < r2) {
         out.push_back(m_blocks[i]);
       }
+    }
+
+    // Sort if needed.
+    if (sort) {
+      std::sort(
+        out.begin(),
+        out.end(),
+        [&x, &y](const BlockShPtr& lhs, const BlockShPtr& rhs) {
+          float dx1 = lhs->getTile().x - x;
+          float dy1 = lhs->getTile().y - y;
+
+          float dx2 = rhs->getTile().x - x;
+          float dy2 = rhs->getTile().y - y;
+
+          return (dx1 * dx1 + dy1 * dy1) < (dx2 * dx2 + dy2 * dy2);
+        }
+      );
     }
 
     return out;
