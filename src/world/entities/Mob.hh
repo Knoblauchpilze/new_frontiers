@@ -80,6 +80,17 @@ namespace new_frontiers {
       virtual bool
       wander(StepInfo& info, float& x, float& y);
 
+      /**
+       * @brief - Interface method used to pick a random target
+       *          where we can draw an unobstructed path from
+       *          the current position of the entity.
+       * @param info - a random number generator.
+       * @param x - the target abscissa of the mob.
+       * @param y - the target ordinate of the mob.
+       */
+      void
+      pickRandomTarget(StepInfo& info, float& x, float& y) noexcept;
+
     private:
 
       /**
@@ -103,6 +114,9 @@ namespace new_frontiers {
       struct Thought {
         bool behaviorChanged;
         bool actionTaken;
+
+        float xT;
+        float yT;
       };
 
       static
@@ -120,7 +134,7 @@ namespace new_frontiers {
        * @return - a coherent thought result for this mob.
        */
       Thought
-      behave(StepInfo& info, float& x, float&y) noexcept;
+      behave(StepInfo& info) noexcept;
 
     private:
 

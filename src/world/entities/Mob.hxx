@@ -116,28 +116,28 @@ namespace new_frontiers {
 
   inline
   Mob::Thought
-  Mob::behave(StepInfo& info, float& x, float&y) noexcept {
+  Mob::behave(StepInfo& info) noexcept {
     // Save the current behavior.
     Behavior s = m_behavior;
 
-    Thought t{false, false};
+    Thought t{false, false, m_tile.x, m_tile.y};
 
     switch (s) {
       case Behavior::Chase:
-        t.actionTaken = chase(info, x, y);
+        t.actionTaken = chase(info, t.xT, t.yT);
         break;
       case Behavior::Fight:
-        t.actionTaken = fight(info, x, y);
+        t.actionTaken = fight(info, t.xT, t.yT);
         break;
       case Behavior::Collect:
-        t.actionTaken = collect(info, x, y);
+        t.actionTaken = collect(info, t.xT, t.yT);
         break;
       case Behavior::Return:
-        t.actionTaken = getBack(info, x, y);
+        t.actionTaken = getBack(info, t.xT, t.yT);
         break;
       case Behavior::Wander:
       default:
-        t.actionTaken = wander(info, x, y);
+        t.actionTaken = wander(info, t.xT, t.yT);
         break;
     }
 
