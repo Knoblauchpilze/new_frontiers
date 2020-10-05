@@ -201,10 +201,10 @@ namespace new_frontiers {
   void
   World::generateElements() {
     // Generate mob portal.
-    m_blocks.push_back(BlockFactory::newSpawner(3, 3.0f, 4.0f, tiles::DarkAnubis));
+    m_blocks.push_back(BlockFactory::newSpawner(3, 1.0f, 5.0f, tiles::DarkAnubis));
 
     // Generate resource deposit.
-    m_blocks.push_back(BlockFactory::newDeposit(1.0f, 5.0f, 20.0f));
+    m_blocks.push_back(BlockFactory::newDeposit(3.0f, 4.0f, 20.0f));
 
     // Generate the player at the same location
     // as the entry portal.

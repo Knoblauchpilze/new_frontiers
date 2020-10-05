@@ -12,6 +12,12 @@ namespace new_frontiers {
   }
 
   bool
+  Worker::collect(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // TODO: Implement this.
+    return false;
+  }
+
+  bool
   Worker::wander(StepInfo& info, float& x, float& y) {
     // Check whether we can find any deposit in the
     // surroudings of the entity.
