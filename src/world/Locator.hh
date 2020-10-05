@@ -151,11 +151,16 @@ namespace new_frontiers {
        *            to search for.
        * @param y - the ordinate of the center of the area
        *            to search for.
-       * @param r - the radius of the area to search for.
+       * @param r - the radius of the area to search for. If
+       *            this value is negative there's no limits
+       *            to the distance between the block and the
+       *            input position.
        * @param block - the type of element to search for.
        * @param id - the variant of the block to search for.
        *             If a negative value is specified all
        *             variants will be considered valid.
+       * @param sort - `true` if the list of blocks should be
+       *               sorted from closest to farthest.
        * @return - the list of blocks corresponding in the
        *           specified area.
        */
@@ -164,7 +169,33 @@ namespace new_frontiers {
                 float y,
                 float r,
                 const tiles::Block& block,
-                int id = 0) const noexcept;
+                int id = 0,
+                bool sort = false) const noexcept;
+
+      /**
+       * @brief - Similar to the `getBlocks` method but
+       *          only returns the closest block from
+       *          the list return.
+       *          In case there are no blocks existing
+       *          the return value will be `null`.
+       * @param x - the abscissa of the position from
+       *            which the closest block should be
+       *            found.
+       * @param y - the ordinate of the position from
+       *            which the closest block should be
+       *            found.
+       * @param block - the block to search for.
+       * @param id - the variant of the block to search
+       *             for, or `-1` in case the variant
+       *             does not matter.
+       * @return - the corresponding block or `null` if
+       *           none can be found.
+       */
+      BlockShPtr
+      getClosest(float x,
+                 float y,
+                 const tiles::Block& block,
+                 int id = 0) const noexcept;
 
     private:
 
