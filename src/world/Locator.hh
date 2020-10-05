@@ -135,7 +135,36 @@ namespace new_frontiers {
        *           solid element.
        */
       bool
-      obstructed(float x, float y, float xDir, float yDir, float d, std::vector<float>& cPoints) const noexcept;
+      obstructed(float x,
+                 float y,
+                 float xDir,
+                 float yDir,
+                 float d,
+                 std::vector<float>& cPoints) const noexcept;
+
+      /**
+       * @brief - Retrieve the list of elements with a type
+       *          identical to the one provided in input. A
+       *          definition of a circle (through a position
+       *          and an area) is also provided.
+       * @param x - the abscissa of the center of the 
+       *            to search for.
+       * @param y - the ordinate of the center of the area
+       *            to search for.
+       * @param r - the radius of the area to search for.
+       * @param block - the type of element to search for.
+       * @param id - the variant of the block to search for.
+       *             If a negative value is specified all
+       *             variants will be considered valid.
+       * @return - the list of blocks corresponding in the
+       *           specified area.
+       */
+      std::vector<BlockShPtr>
+      getBlocks(float x,
+                float y,
+                float r,
+                const tiles::Block& block,
+                int id = 0) const noexcept;
 
     private:
 

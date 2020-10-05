@@ -78,7 +78,7 @@ int main(int /*argc*/, char** /*argv*/) {
 
     t.size = olc::vi2d(64, 64);
 
-// # define ISOMETRIC
+# define ISOMETRIC
 # ifdef ISOMETRIC
     new_frontiers::IsometricApp demo(olc::vi2d(640, 480), t);
 # else
