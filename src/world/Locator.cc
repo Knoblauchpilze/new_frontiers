@@ -177,14 +177,33 @@ namespace new_frontiers {
   }
 
   std::vector<BlockShPtr>
-  Locator::getBlocks(float /*x*/,
-                     float /*y*/,
-                     float /*r*/,
-                     const tiles::Block& /*block*/,
-                     int /*id*/) const noexcept
+  Locator::getBlocks(float x,
+                     float y,
+                     float r,
+                     const tiles::Block& block,
+                     int id) const noexcept
   {
-    // TODO: Implement this.
-    return std::vector<BlockShPtr>();
+    std::vector<BlockShPtr> out;
+
+    float r2 = r * r;
+
+    // Search for the block in the internal list.
+    for (unsigned i = 0u ; i < m_blocks.size() ; ++i) {
+      const BlockTile& b = m_blocks[i]->getTile();
+
+      if (b.type != block || (id >= 0 && b.id != id)) {
+        continue;
+      }
+
+      float dx = b.x - x;
+      float dy = b.y - y;
+
+      if (dx * dx + dy * dy < r2) {
+        out.push_back(m_blocks[i]);
+      }
+    }
+
+    return out;
   }
 
   void
