@@ -57,8 +57,6 @@ namespace new_frontiers {
 
     m_carrying += toCarry;
 
-    // TODO: Register debug for this.
-
     return std::max(cargo - toCarry, 0.0f);
   }
 
