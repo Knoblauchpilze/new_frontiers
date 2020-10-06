@@ -6,11 +6,15 @@ namespace new_frontiers {
 
   Mob::Mob(const EntityTile& tile,
            float homeX,
-           float homeY):
+           float homeY,
+           float carrying):
     Entity(tile, 0.5f),
 
     m_homeX(homeX),
     m_homeY(homeY),
+
+    m_carrying(0.0f),
+    m_cargo(std::max(carrying, 0.0f)),
 
     m_vfxDelay(toMilliseconds(8000)),
     m_last(now() - m_vfxDelay),

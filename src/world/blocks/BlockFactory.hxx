@@ -49,7 +49,7 @@ namespace new_frontiers {
     return std::make_shared<SpawnerOMeter>(
       newTile(tiles::Portal, id, x, y), // spawner display
       10.0f,                            // threshold
-      8.0f,                             // stock
+      9.5f,                             // stock
       toMilliseconds(100),              // interval
       ent,                              // mob
       mob::Type::Worker,                // agent type

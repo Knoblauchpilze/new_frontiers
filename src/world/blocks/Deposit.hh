@@ -22,6 +22,14 @@ namespace new_frontiers {
       Deposit(const BlockTile& tile, float stock);
 
       /**
+       * @brief - Used to retrieve the current stock for this
+       *          deposit.
+       * @return - the current stock in this deposit.
+       */
+      float
+      getStock() const noexcept;
+
+      /**
        * @brief - Used to change the amount of the resource
        *          contained by this deposit by the specified
        *          amount.
