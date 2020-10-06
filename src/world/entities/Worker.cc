@@ -3,6 +3,9 @@
 # include "StepInfo.hh"
 # include "Locator.hh"
 # include "../blocks/Deposit.hh"
+# include "../blocks/SpawnerOMeter.hh"
+
+# include <cxxabi.h>
 
 namespace new_frontiers {
 
@@ -25,7 +28,6 @@ namespace new_frontiers {
       // For some reason the deposit does not exist,
       // return to wandering.
       setBehavior(Behavior::Wander);
-
       pickRandomTarget(info, x, y);
 
       return true;
@@ -36,12 +38,11 @@ namespace new_frontiers {
       // Not able to convert to a valid deposit,
       // use wander again.
       log(
-        std::string("Reached block that is not deposit in collect behavior"),
+        "Reached block that is not deposit in collect behavior",
         utils::Level::Warning
       );
 
       setBehavior(Behavior::Wander);
-
       pickRandomTarget(info, x, y);
 
       return true;
@@ -65,6 +66,51 @@ namespace new_frontiers {
     m_cPoints.push_back(m_tile.y);
     m_cPoints.push_back(x);
     m_cPoints.push_back(y);
+
+    return true;
+  }
+
+  bool
+  Worker::getBack(StepInfo& info, float& x, float& y) {
+    // This method is called when the worker reaches
+    // its home location. At this point we need to
+    // dump the resources in the home of the entity
+    // and get back to wandering.
+    BlockShPtr b = info.frustum->getClosest(m_tile.x, m_tile.y, tiles::Portal, -1);
+
+    if (b == nullptr) {
+      // For some reason the home of the entity does
+      // not exist, return to wandering.
+      setBehavior(Behavior::Wander);
+      pickRandomTarget(info, x, y);
+
+      return true;
+    }
+
+    SpawnerOMeterShPtr s = std::dynamic_pointer_cast<SpawnerOMeter>(b);
+    if (s == nullptr) {
+      // Not able to convert to a valid deposit,
+      // use wander again.
+      log(
+        "Reached block that is not a spawner in return behavior",
+        utils::Level::Warning
+      );
+
+      setBehavior(Behavior::Wander);
+      pickRandomTarget(info, x, y);
+
+      return true;
+    }
+
+    // Refill the home spawner with the amount we
+    // scraped from the deposit.
+    float a = 5.0f;
+    log(std::string("Should refill with ") + std::to_string(a));
+    s->refill(5.0f);
+
+    // Re-wander again.
+    setBehavior(Behavior::Wander);
+    pickRandomTarget(info, x, y);
 
     return true;
   }
