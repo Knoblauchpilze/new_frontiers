@@ -141,6 +141,15 @@ namespace new_frontiers {
       };
 
       /**
+       * @brief - Describe a possible orientation for the health
+       *          bar.
+       */
+      enum class Orientation {
+        Horizontal,
+        Vertical
+      };
+
+      /**
        * @brief - Used to draw a minimalistic health bar for an entity
        *          or block at position (x, y) in cells coordinates. It
        *          is displayed with the specified alpha transparency.
@@ -148,9 +157,17 @@ namespace new_frontiers {
        * @param ratio - the ratio of the healthbar that is still full.
        * @param cf - the coordinate frame to use to perform the
        *             conversion from tile position to pixels.
+       * @param o - the orientation for the health bar. If this value
+       *            is horizontal the bar will be displayed from left
+       *            to right starting from the position and if the
+       *            value is set to vertical it will be displayed by
+       *            starting from the position and going up.
        */
       void
-      drawHealthBar(const SpriteDesc& tile, float ratio, const CoordinateFrame& cf);
+      drawHealthBar(const SpriteDesc& tile,
+                    float ratio,
+                    const CoordinateFrame& cf,
+                    const Orientation& o = Orientation::Horizontal);
 
       /**
        * @brief - Interface method to display the main content

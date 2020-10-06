@@ -39,6 +39,9 @@ namespace new_frontiers {
         tp.x -= radius * m_tScaled.x / 2.0f;
         tp.y -= 3.0f * radius * m_tScaled.y / 2.0f;
         break;
+      case Cell::BottomLeft:
+        tp.x -= radius * m_tScaled.x / 2.0f;
+        break;
       case Cell::TopLeft:
       default:
         break;

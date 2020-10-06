@@ -32,6 +32,8 @@ namespace new_frontiers {
     float radius;
     float percepRadius;
     float health;
+    float carrying;
+    float cargo;
     State state;
     float xT;
     float yT;

@@ -114,6 +114,13 @@ namespace new_frontiers {
 
       drawSprite(sd, res.cf);
       drawHealthBar(sd, t.health, res.cf);
+
+      if (t.cargo > 0.0f) {
+        sd.location = Cell::BottomLeft;
+        float r = t.carrying / t.cargo;
+        drawHealthBar(sd, r, res.cf, Orientation::Vertical);
+        sd.location = Cell::UpperLeft;
+      }
     }
 
     // Draw vfx.

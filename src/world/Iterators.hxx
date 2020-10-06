@@ -2,6 +2,7 @@
 # define   ITERATORS_HXX
 
 # include "Iterators.hh"
+# include "entities/Mob.hh"
 
 namespace new_frontiers {
 
@@ -78,16 +79,26 @@ namespace new_frontiers {
   Iterator::entity(int id) const noexcept {
     EntityShPtr e = m_entities[m_sortedEntities[id].id];
 
-    return EntityDesc{
+    EntityDesc ed{
       e->getTile(),
       e->getRadius(),
       e->getPerceptionRadius(),
       e->getHealthRatio(),
+      0.0f,
+      0.0f,
       e->getState(),
       e->getPathX(),
       e->getPathY(),
       e->m_cPoints
     };
+
+    MobShPtr m = std::dynamic_pointer_cast<Mob>(e);
+    if (m != nullptr) {
+      ed.cargo = m->getCarryingCapacity();
+      ed.carrying = m->getCarried();
+    }
+
+    return ed;
   }
 
   inline

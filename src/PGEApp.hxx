@@ -3,6 +3,8 @@
 
 # include "PGEApp.hh"
 
+# include "utils.hh"
+
 namespace new_frontiers {
 
   inline
@@ -208,7 +210,11 @@ namespace new_frontiers {
 
   inline
   void
-  PGEApp::drawHealthBar(const SpriteDesc& tile, float ratio, const CoordinateFrame& cf) {
+  PGEApp::drawHealthBar(const SpriteDesc& tile,
+                        float ratio,
+                        const CoordinateFrame& cf,
+                        const Orientation& o)
+  {
     // Fetch a color based on the input ratio.
     olc::Pixel hbc = redToGreenGradient(ratio, tile.alpha);
 
@@ -232,18 +238,36 @@ namespace new_frontiers {
     float hbHOffset = 0.1f;
     olc::vf2d s = tile.radius * cf.tileSize();
 
-    olc::vf2d p = cf.tileCoordsToPixels(tile.x, tile.y, tile.radius, tile.location);
+    if (o == Orientation::Horizontal) {
+      olc::vf2d p = cf.tileCoordsToPixels(tile.x, tile.y, tile.radius, tile.location);
 
-    FillRectDecal(
-      olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f, p.y - s.y * hbHOffset),
-      olc::vf2d(s.x * hbWRatio * ratio, s.y * hbHRatio),
-      hbc
-    );
-    FillRectDecal(
-      olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, p.y - s.y * hbHOffset),
-      olc::vf2d(s.x * hbWRatio * (1.0f - ratio), s.y * hbHRatio),
-      bc
-    );
+      FillRectDecal(
+        olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f, p.y - s.y * hbHOffset),
+        olc::vf2d(s.x * hbWRatio * ratio, s.y * hbHRatio),
+        hbc
+      );
+      FillRectDecal(
+        olc::vf2d(p.x + (1.0f - hbWRatio) * s.x / 2.0f + s.x * hbWRatio * ratio, p.y - s.y * hbHOffset),
+        olc::vf2d(s.x * hbWRatio * (1.0f - ratio), s.y * hbHRatio),
+        bc
+      );
+    }
+
+    if (o == Orientation::Vertical) {
+      olc::vf2d p = cf.tileCoordsToPixels(tile.x, tile.y, tile.radius, tile.location);
+
+      FillRectDecal(
+        olc::vf2d(p.x + s.x * hbHOffset, p.y - s.y * hbWRatio),
+        olc::vf2d(s.x * hbHRatio, s.y * hbWRatio * (1.0f - ratio)),
+        bc
+      );
+
+      FillRectDecal(
+        olc::vf2d(p.x + s.x * hbHOffset, p.y - s.y * hbWRatio * ratio),
+        olc::vf2d(s.x * hbHRatio, s.y * hbWRatio * ratio),
+        hbc
+      );
+    }
   }
 
   inline

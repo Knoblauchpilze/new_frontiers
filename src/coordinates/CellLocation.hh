@@ -24,8 +24,10 @@ namespace new_frontiers {
                   //< to the top left corner of the tile.
     CenterBottom, //< The input position refers to the bottom
                   //< center of the tile.
-    UpperLeft     //< Corresponds to the left side of the tile
+    UpperLeft,    //< Corresponds to the left side of the tile
                   //< half a tile above the top left corner.
+    BottomLeft    //< Corresponds to the bottom left corner
+                  //< of the tile.
   };
 
 }
