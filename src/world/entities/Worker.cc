@@ -6,8 +6,10 @@
 
 namespace new_frontiers {
 
-  Worker::Worker(const EntityTile& tile):
-    Mob(tile)
+  Worker::Worker(const EntityTile& tile,
+                 float homeX,
+                 float homeY):
+    Mob(tile, homeX, homeY)
   {
     setService("worker");
   }
@@ -54,7 +56,17 @@ namespace new_frontiers {
     // And then return to the colony.
     setBehavior(Behavior::Return);
 
-    return false;
+    x = m_homeX;
+    y = m_homeY;
+
+    // Update debug elements.
+    m_cPoints.clear();
+    m_cPoints.push_back(m_tile.x);
+    m_cPoints.push_back(m_tile.y);
+    m_cPoints.push_back(x);
+    m_cPoints.push_back(y);
+
+    return true;
   }
 
   bool
@@ -87,7 +99,7 @@ namespace new_frontiers {
     x = deposits.front()->getTile().x;
     y = deposits.front()->getTile().y;
 
-    // Clear debug elements.
+    // Update debug elements.
     m_cPoints.clear();
     m_cPoints.push_back(m_tile.x);
     m_cPoints.push_back(m_tile.y);

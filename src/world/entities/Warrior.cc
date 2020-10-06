@@ -4,8 +4,10 @@
 
 namespace new_frontiers {
 
-  Warrior::Warrior(const EntityTile& tile):
-    Mob(tile)
+  Warrior::Warrior(const EntityTile& tile,
+                   float homeX,
+                   float homeY):
+    Mob(tile, homeX, homeY)
   {
     setService("warrior");
   }

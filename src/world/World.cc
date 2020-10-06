@@ -49,7 +49,10 @@ namespace {
 
     // Interpret the brain.
     if (kind == "hostile") {
-      return std::make_shared<new_frontiers::Mob>(et);
+      // Note that we assume a default position for the
+      // home location of the entity.
+      // TODO: This might need to be changed ?
+      return std::make_shared<new_frontiers::Mob>(et, 0.0f, 0.0f);
     }
     if (kind == "player") {
       return std::make_shared<new_frontiers::Player>(et);

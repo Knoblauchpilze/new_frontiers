@@ -35,12 +35,12 @@ namespace new_frontiers {
 
     switch (m_type) {
       case mob::Type::Warrior:
-        mp = std::make_shared<Warrior>(e);
+        mp = std::make_shared<Warrior>(e, m_tile.x, m_tile.y);
         break;
       case mob::Type::Worker:
         // Assume default type is a worker.
       default:
-        mp = std::make_shared<Worker>(e);
+        mp = std::make_shared<Worker>(e, m_tile.x, m_tile.y);
         break;
     }
 
