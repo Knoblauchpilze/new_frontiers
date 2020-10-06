@@ -10,11 +10,18 @@ namespace new_frontiers {
     public:
 
       /**
-       * @brief - Creates a new mob with the specified tile.
+       * @brief - Creates a new mob with the specified tile and
+       *          home position.
        * @param tile - the visual representation of the entity
        *               along with its position.
+       * @param homeX - the abscissa of the home position for
+       *                this mob.
+       * @param homeY - the abscissa of the home position for
+       *                this mob.
        */
-      Mob(const EntityTile& tile);
+      Mob(const EntityTile& tile,
+          float homeX,
+          float homeY);
 
       /**
        * @brief - Implementation of the interface method to pause
@@ -145,7 +152,18 @@ namespace new_frontiers {
       Thought
       behave(StepInfo& info) noexcept;
 
-    private:
+    protected:
+
+      /**
+       * @brief - The home abscissa of this mob. Used when the
+       *          entity needs to come back home.
+       */
+      float m_homeX;
+
+      /**
+       * @brief - Ordniate of the home position of the mob.
+       */
+      float m_homeY;
 
       /**
        * @brief - Duration between two consecutives emission of

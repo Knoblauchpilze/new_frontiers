@@ -4,8 +4,13 @@
 
 namespace new_frontiers {
 
-  Mob::Mob(const EntityTile& tile):
+  Mob::Mob(const EntityTile& tile,
+           float homeX,
+           float homeY):
     Entity(tile, 0.5f),
+
+    m_homeX(homeX),
+    m_homeY(homeY),
 
     m_vfxDelay(toMilliseconds(8000)),
     m_last(now() - m_vfxDelay),

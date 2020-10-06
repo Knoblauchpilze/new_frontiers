@@ -12,8 +12,14 @@ namespace new_frontiers {
        * @brief - Creates a new mob with the specified tile.
        * @param tile - the visual representation of the entity
        *               along with its position.
+       * @param homeX - the abscissa of the home position for
+       *                this mob.
+       * @param homeY - the abscissa of the home position for
+       *                this mob.
        */
-      Warrior(const EntityTile& tile);
+      Warrior(const EntityTile& tile,
+              float homeX,
+              float homeY);
 
     protected:
 
