@@ -20,6 +20,10 @@ namespace {
    * @param id - the variant of the main display.
    * @param x - the abscissa of the entity in cells.
    * @param y - the ordinate of the entity in cells.
+   * @param homeX - the home position of the entity in
+   *                cells: defines only the abscissa.
+   * @param homeY - the home position of the entity in
+   *                cells: defines only the ordinate.
    * @return - the pointer on the created entity or a
    *           null pointer if one of the parameter is
    *           not recognized.
@@ -30,7 +34,9 @@ namespace {
                const std::string& type,
                int id,
                float x,
-               float y)
+               float y,
+               float homeX,
+               float homeY)
   {
     // Retrieve the visual display type for the entity.
     new_frontiers::tiles::Entity e = new_frontiers::strToEntity(type);
@@ -49,10 +55,7 @@ namespace {
 
     // Interpret the brain.
     if (kind == "hostile") {
-      // Note that we assume a default position for the
-      // home location of the entity.
-      // TODO: This might need to be changed ?
-      return std::make_shared<new_frontiers::Mob>(et, 0.0f, 0.0f);
+      return std::make_shared<new_frontiers::Mob>(et, homeX, homeY);
     }
     if (kind == "player") {
       return std::make_shared<new_frontiers::Player>(et);
@@ -594,7 +597,7 @@ namespace new_frontiers {
     std::string kind;
     std::string type;
     int id;
-    float x, y;
+    float x, y, xH, yH;
 
     while (!in.eof() && section != "end") {
       in >> section;
@@ -625,9 +628,9 @@ namespace new_frontiers {
         continue;
       }
 
-      in >> kind >> type >> id >> x >> y;
+      in >> kind >> type >> id >> x >> y >> xH >> yH;
 
-      EntityShPtr e = createEntity(kind, type, id, x, y);
+      EntityShPtr e = createEntity(kind, type, id, x, y, xH, yH);
       if (e == nullptr) {
         log(
           std::string("Could not decode entity with unknown kind \"") + kind +

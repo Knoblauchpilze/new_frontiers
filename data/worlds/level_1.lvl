@@ -120,7 +120,7 @@ wall 9 8 7
 wall 1 8 8
 end
 entities
-entity hostile Vampire 0 12 12
-entity player Blob 0 12 13
-entity player Executioner 0 8 13
+entity hostile Vampire 0 12 12 3 4
+entity player Blob 0 12 13 0 0
+entity player Executioner 0 8 13 0 0
 end
