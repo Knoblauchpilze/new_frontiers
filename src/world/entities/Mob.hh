@@ -18,10 +18,21 @@ namespace new_frontiers {
        *                this mob.
        * @param homeY - the abscissa of the home position for
        *                this mob.
+       * @param carrying - the capacity of a resource that this
+       *                   mob can carry. It is used when some
+       *                   resource should be picked from the
+       *                   ground or pillaged.
        */
       Mob(const EntityTile& tile,
           float homeX,
-          float homeY);
+          float homeY,
+          float carrying = 10.0f);
+
+      float
+      getCarryingCapacity() const noexcept;
+
+      float
+      getCarried() const noexcept;
 
       /**
        * @brief - Implementation of the interface method to pause
@@ -65,6 +76,21 @@ namespace new_frontiers {
        */
       void
       setBehavior(const Behavior& b) noexcept;
+
+      /**
+       * @brief - Used to register the `cargo` as a carried amount
+       *          for this mob. We check against the amount already
+       *          carried and return what could not be registered.
+       * @param cargo - the amount of the resource that should be
+       *                additionally carried by the mob.
+       * @return - a value representing the amount that cannot be
+       *           carried by the mob.
+       */
+      float
+      carry(float cargo) noexcept;
+
+      float
+      availableCargo() const noexcept;
 
       /**
        * @brief - Implementation of the interface method to select
@@ -164,6 +190,20 @@ namespace new_frontiers {
        * @brief - Ordniate of the home position of the mob.
        */
       float m_homeY;
+
+      /**
+       * @brief - The amount of a resource that is carried by
+       *          the mob. This value is guaranteed to be at
+       *          least `0`.
+       */
+      float m_carrying;
+
+      /**
+       * @brief - The maximum carrying capacity for this mob
+       *          for any resource.
+       *          At any moment we have `m_carrying <= m_cargo`.
+       */
+      float m_cargo;
 
       /**
        * @brief - Duration between two consecutives emission of

@@ -6,6 +6,18 @@
 namespace new_frontiers {
 
   inline
+  float
+  Mob::getCarryingCapacity() const noexcept {
+    return m_cargo;
+  }
+
+  inline
+  float
+  Mob::getCarried() const noexcept {
+    return m_carrying;
+  }
+
+  inline
   void
   Mob::pause(const TimeStamp& t) {
     // Save the duration passed since the last
@@ -32,6 +44,28 @@ namespace new_frontiers {
   void
   Mob::setBehavior(const Behavior& b) noexcept {
     m_behavior = b;
+  }
+
+  inline
+  float
+  Mob::carry(float cargo) noexcept {
+    // Compute the maximum amount still carryable
+    // based on the available cargo space and the
+    // actual amount to carry.
+    float carryable = m_cargo - m_carrying;
+    float toCarry = std::min(cargo, carryable);
+
+    m_carrying += toCarry;
+
+    // TODO: Register debug for this.
+
+    return std::max(cargo - toCarry, 0.0f);
+  }
+
+  inline
+  float
+  Mob::availableCargo() const noexcept {
+    return std::max(m_cargo - m_carrying, 0.0f);
   }
 
   inline

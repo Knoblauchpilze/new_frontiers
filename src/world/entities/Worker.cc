@@ -48,11 +48,30 @@ namespace new_frontiers {
       return true;
     }
 
-    // TODO: Handle collecting.
+    // Collect the maximum amount possible given
+    // the stock of the deposit and the available
+    // carrying capacity.
+    float toFetch = std::min(availableCargo(), d->getStock());
     log(
-      "Should collect on deposit at " +
+      "Collecting " +
+      std::to_string(toFetch) + "/" + std::to_string(d->getStock()) +
+      " on deposit at " +
       std::to_string(d->getTile().x) + "x" + std::to_string(d->getTile().y)
     );
+
+    // In case we can't fetch anything, return to
+    // wander behavior.
+    if (toFetch <= 0.0f) {
+      log("Deposit is empty");
+
+      setBehavior(Behavior::Wander);
+      pickRandomTarget(info, x, y);
+
+      return true;
+    }
+
+    d->refill(-toFetch);
+    carry(toFetch);
 
     // And then return to the colony.
     setBehavior(Behavior::Return);
@@ -104,9 +123,9 @@ namespace new_frontiers {
 
     // Refill the home spawner with the amount we
     // scraped from the deposit.
-    float a = 5.0f;
-    log(std::string("Should refill with ") + std::to_string(a));
-    s->refill(5.0f);
+    log(std::string("Should refill with ") + std::to_string(m_carrying));
+    s->refill(m_carrying);
+    m_carrying = 0.0f;
 
     // Re-wander again.
     setBehavior(Behavior::Wander);

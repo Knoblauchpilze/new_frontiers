@@ -6,6 +6,12 @@
 namespace new_frontiers {
 
   inline
+  float
+  Deposit::getStock() const noexcept {
+    return m_stock;
+  }
+
+  inline
   bool
   Deposit::refill(float delta, bool force) {
     // In case the `delta` is positive the operation
@@ -22,13 +28,13 @@ namespace new_frontiers {
     // stock no matter if it becomes negative. If we
     // don't force the update then we only make the
     // stock `0`.
-    if (m_stock < delta && force) {
-      m_stock -= delta;
+    if (m_stock < std::abs(delta) && force) {
+      m_stock += delta;
 
       return false;
     }
 
-    m_stock = std::max(m_stock - delta, 0.0f);
+    m_stock = std::max(m_stock + delta, 0.0f);
 
     return true;
   }
