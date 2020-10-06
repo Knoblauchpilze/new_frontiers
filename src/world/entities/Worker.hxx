@@ -5,13 +5,6 @@
 
 namespace new_frontiers {
 
-  inline
-  bool
-  Worker::getBack(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
-    // TODO: Implement this.
-    return false;
-  }
-
 }
 
 #endif    /* WORKER_HXX */

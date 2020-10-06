@@ -35,7 +35,7 @@ namespace new_frontiers {
   inline
   BlockShPtr
   BlockFactory::newSpawner(int id, float x, float y, const tiles::Entity& ent) noexcept {
-# define TIMED_SPAWNER
+// # define TIMED_SPAWNER
 # ifdef TIMED_SPAWNER
     return std::make_shared<TimedSpawner>(
       newTile(tiles::Portal, id, x, y), // spawner display
