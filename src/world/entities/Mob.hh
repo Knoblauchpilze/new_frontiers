@@ -222,7 +222,7 @@ namespace new_frontiers {
        *          time a vfx was emitted in case a pause event is
        *          received.
        *          Used to be able to restore the vfx production as
-       *          if nothins happened.
+       *          if nothing happened.
        */
       Duration m_passed;
 

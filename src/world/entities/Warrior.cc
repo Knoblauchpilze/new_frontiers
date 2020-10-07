@@ -7,7 +7,13 @@ namespace new_frontiers {
   Warrior::Warrior(const EntityTile& tile,
                    float homeX,
                    float homeY):
-    Mob(tile, homeX, homeY)
+    Mob(tile, homeX, homeY),
+
+    m_attack(2.0f),
+
+    m_attackDelay(toMilliseconds(500)),
+    m_last(now() - m_attackDelay),
+    m_passed()
   {
     setService("warrior");
   }
