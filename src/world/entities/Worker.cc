@@ -51,7 +51,7 @@ namespace new_frontiers {
     // Collect the maximum amount possible given
     // the stock of the deposit and the available
     // carrying capacity.
-    float toFetch = std::min(availableCargo() / 2.0f, d->getStock());
+    float toFetch = std::min(availableCargo(), d->getStock());
     log(
       "Collecting " +
       std::to_string(toFetch) + "/" + std::to_string(d->getStock()) +

@@ -13,6 +13,24 @@ namespace new_frontiers {
   }
 
   bool
+  Warrior::chase(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // TODO: Implement this.
+    return false;
+  }
+
+  bool
+  Warrior::fight(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // TODO: Implement this.
+    return false;
+  }
+
+  bool
+  Warrior::getBack(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+    // TODO: Implement this.
+    return false;
+  }
+
+  bool
   Warrior::wander(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
     // Use the base handler.
     // pickRandomTarget(info, x, y);

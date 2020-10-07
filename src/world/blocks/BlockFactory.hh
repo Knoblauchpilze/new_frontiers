@@ -26,7 +26,21 @@ namespace new_frontiers {
 
       static
       BlockShPtr
-      newSpawner(int id, float x, float y, const tiles::Entity& ent) noexcept;
+      newTimedSpawner(int id,
+                      const mob::Type& type,
+                      float x,
+                      float y,
+                      const tiles::Entity& ent,
+                      int variant = 0) noexcept;
+
+      static
+      BlockShPtr
+      newSpawnerOMeter(int id,
+                       const mob::Type& type,
+                       float x,
+                       float y,
+                       const tiles::Entity& ent,
+                       int variant = 0) noexcept;
 
       static
       BlockShPtr
