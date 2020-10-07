@@ -33,7 +33,7 @@ namespace new_frontiers {
 
       return true;
     }
-    
+
     // Make this effect progress in time.
     update(info);
 

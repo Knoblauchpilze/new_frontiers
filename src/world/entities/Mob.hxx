@@ -71,7 +71,7 @@ namespace new_frontiers {
   Mob::prepareForStep(const StepInfo& info) {
     // Select a speed if not already done.
     if (m_speed < 0.0f) {
-      m_speed = info.rng.rndFloat(0.1f, 3.0f);
+      m_speed = info.rng.rndFloat(0.1f, 1.5f);
     }
   }
 

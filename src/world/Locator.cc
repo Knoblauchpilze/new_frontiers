@@ -224,6 +224,54 @@ namespace new_frontiers {
     return out;
   }
 
+  std::vector<EntityShPtr>
+  Locator::getEntities(float x,
+                       float y,
+                       float r,
+                       const tiles::Entity& ent,
+                       int id,
+                       bool sort) const noexcept
+  {
+    std::vector<EntityShPtr> out;
+
+    float r2 = r * r;
+
+    // Search for the block in the internal list.
+    for (unsigned i = 0u ; i < m_entities.size() ; ++i) {
+      const EntityTile& e = m_entities[i]->getTile();
+
+      if (e.type != ent || (id >= 0 && e.id != id)) {
+        continue;
+      }
+
+      float dx = e.x - x;
+      float dy = e.y - y;
+
+      if (r < 0.0f || dx * dx + dy * dy < r2) {
+        out.push_back(m_entities[i]);
+      }
+    }
+
+    // Sort if needed.
+    if (sort) {
+      std::sort(
+        out.begin(),
+        out.end(),
+        [&x, &y](const EntityShPtr& lhs, const EntityShPtr& rhs) {
+          float dx1 = lhs->getTile().x - x;
+          float dy1 = lhs->getTile().y - y;
+
+          float dx2 = rhs->getTile().x - x;
+          float dy2 = rhs->getTile().y - y;
+
+          return (dx1 * dx1 + dy1 * dy1) < (dx2 * dx2 + dy2 * dy2);
+        }
+      );
+    }
+
+    return out;
+  }
+
   void
   Locator::initialize() {
     // Register each solid tile in the map.

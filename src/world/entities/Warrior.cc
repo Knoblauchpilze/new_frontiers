@@ -1,6 +1,7 @@
 
 # include "Warrior.hh"
 # include "StepInfo.hh"
+# include "Locator.hh"
 
 namespace new_frontiers {
 
@@ -37,12 +38,44 @@ namespace new_frontiers {
   }
 
   bool
-  Warrior::wander(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
-    // Use the base handler.
-    // pickRandomTarget(info, x, y);
+  Warrior::wander(StepInfo& info, float& x, float& y) {
+    // Check whether we can find any deposit in the
+    // surroudings of the entity.
+    std::vector<EntityShPtr> entities = info.frustum->getEntities(
+      x,
+      y,
+      m_perceptionRadius,
+      tiles::Executioner,
+      0,
+      true
+    );
 
-    // TODO: Reactivate this.
-    return false;
+    // In case there are no entities, continue the
+    // wandering around process.
+    // TODO: Should take pheromon into account.
+    if (entities.empty()) {
+      pickRandomTarget(info, x, y);
+
+      return true;
+    }
+
+    // Change to chasing behavior.
+    setBehavior(Behavior::Chase);
+
+    // Assign the target to the closest entities:
+    // as we requested the list to be sorted we
+    // can pick the first one.
+    x = entities.front()->getTile().x;
+    y = entities.front()->getTile().y;
+
+    // Update debug elements.
+    m_cPoints.clear();
+    m_cPoints.push_back(m_tile.x);
+    m_cPoints.push_back(m_tile.y);
+    m_cPoints.push_back(x);
+    m_cPoints.push_back(y);
+
+    return true;
   }
 
 }
