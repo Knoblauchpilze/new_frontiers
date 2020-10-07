@@ -21,6 +21,23 @@ namespace new_frontiers {
               float homeX,
               float homeY);
 
+      /**
+       * @brief - Implementation of the interface method to pause
+       *          the internal processes for this warrior. It is
+       *          mostly linked to the attacking process.
+       * @param t - the timestamp at which the pause occur.
+       */
+      void
+      pause(const TimeStamp& t) override;
+
+      /**
+       * @brief - Implementation of the interface method to resume
+       *          the internal processes for this warrior.
+       * @param t - the timestamp at which the resume occur.
+       */
+      void
+      resume(const TimeStamp& t) override;
+
     protected:
 
       bool
@@ -36,6 +53,35 @@ namespace new_frontiers {
       wander(StepInfo& info, float& x, float& y) override;
 
     private:
+
+      /**
+       * @brief - The damage value for this warrior. Each
+       *          attack will inflict that many damage.
+       */
+      float m_attack;
+
+      /**
+       * @brief - The duration between two consecutive
+       *          attacks given other conditions are met.
+       *          Expressed in milliseconds.
+       */
+      Duration m_attackDelay;
+
+      /**
+       * @brief - The timestamp at which the last attack
+       *          took place. Allow to make sure that we
+       *          do not attack too often.
+       */
+      TimeStamp m_last;
+
+      /**
+       * @brief - Hold the duration that has passed since
+       *          the last time an attack was performed in
+       *          case a pause event is received.
+       *          Used to be able to restore the attacking
+       *          behavior as if nothing happened.
+       */
+      Duration m_passed;
   };
 
   using WarriorShPtr = std::shared_ptr<Warrior>;
