@@ -17,6 +17,20 @@ namespace new_frontiers {
       Warrior
     };
 
+    /**
+     * @brief - Used to convert a string into a valid
+     *          mob type value. In case the string does
+     *          not correspond to any known mob type a
+     *          `Worker` value is returned and the error
+     *          flag is set to `true`.
+     * @param str - the string to convert.
+     * @param error - `true` if the string could not be
+     *                decoded.
+     * @return - the corresponding mob type.
+     */
+    Type
+    strToType(const std::string& str, bool& error) noexcept;
+
   }
 
   class Spawner: public Block {

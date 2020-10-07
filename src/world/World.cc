@@ -206,8 +206,15 @@ namespace new_frontiers {
 
   void
   World::generateElements() {
-    // Generate mob portal.
-    m_blocks.push_back(BlockFactory::newSpawner(3, 1.0f, 5.0f, tiles::DarkAnubis));
+    // Generate mob portals.
+// # define TIMED_SPAWNER
+# ifdef TIMED_SPAWNER
+    m_blocks.push_back(BlockFactory::newTImedSpawner(3, mob::Type::Worker, 1.0f, 5.0f, tiles::IncaOverlord, 0));
+    m_blocks.push_back(BlockFactory::newTImedSpawner(3, mob::Type::Warrior, 5.0f, 1.0f, tiles::DemonBat, 0));
+# else
+    m_blocks.push_back(BlockFactory::newSpawnerOMeter(3, mob::Type::Worker, 1.0f, 5.0f, tiles::IncaOverlord, 0));
+    m_blocks.push_back(BlockFactory::newSpawnerOMeter(3, mob::Type::Warrior, 5.0f, 1.0f, tiles::DemonBat, 0));
+# endif
 
     // Generate resource deposit.
     m_blocks.push_back(BlockFactory::newDeposit(3.0f, 4.0f, 20.0f));
@@ -222,12 +229,15 @@ namespace new_frontiers {
   void
   World::processInfluences(const std::vector<InfluenceShPtr>& influences) {
     // Process each influence.
+    bool addedBlocks = false;
+
     for (unsigned id = 0; id < influences.size() ; ++id) {
       InfluenceShPtr i = influences[id];
 
       switch (i->getType()) {
         case influence::Type::BlockSpawn:
           m_blocks.push_back(i->getShPBlock());
+          addedBlocks = true;
           break;
         case influence::Type::BlockRemoval: {
           auto toRm = std::find_if(
@@ -281,6 +291,7 @@ namespace new_frontiers {
     // refresh the spatial sorting of elements.
     if (!influences.empty()) {
       m_it->refresh();
+      m_loc->refresh(addedBlocks ? Update::Full : Update::Light);
     }
   }
 
@@ -472,6 +483,8 @@ namespace new_frontiers {
     int type;
     float x, y;
     std::string entStr;
+    std::string mobStr;
+    int mobVariant;
 
     while (!in.eof() && section != "end") {
       in >> section;
@@ -502,12 +515,24 @@ namespace new_frontiers {
         continue;
       }
 
-      in >> type >> x >> y >> entStr;
+      in >> type >> x >> y >> mobStr >> entStr >> mobVariant;
 
       tiles::Entity e = strToEntity(entStr);
       if (e == tiles::EntitiesCount) {
         log(
           std::string("Could not decode portal spawning unknown entity \"") + entStr +
+          "\" at " + std::to_string(x) + "x" + std::to_string(y),
+          utils::Level::Warning
+        );
+
+        continue;
+      }
+
+      bool err = false;
+      mob::Type mt = mob::strToType(mobStr, err);
+      if (err) {
+        log(
+          std::string("Could not decode portal spawning unknown entity type \"") + mobStr +
           "\" at " + std::to_string(x) + "x" + std::to_string(y),
           utils::Level::Warning
         );
@@ -522,7 +547,9 @@ namespace new_frontiers {
         utils::Level::Verbose
       );
 
-      m_blocks.push_back(BlockFactory::newSpawner(type, x, y, e));
+      // Note that we only allow creation of portals
+      // with a spawner-o-meter type for now.
+      m_blocks.push_back(BlockFactory::newSpawnerOMeter(type, mt, x, y, e, mobVariant));
     }
   }
 

@@ -5,6 +5,28 @@
 
 namespace new_frontiers {
 
+  namespace mob {
+
+    inline
+    Type
+    strToType(const std::string& str, bool& error) noexcept {
+      // Assume no error.
+      error = false;
+
+      if (str == "Worker") {
+        return Type::Worker;
+      }
+      if (str == "Warrior") {
+        return Type::Warrior;
+      }
+
+      // Return the default `Worker` value.
+      error = true;
+      return Type::Worker;
+    }
+
+  }
+
   inline
   Spawner::Spawner(const BlockTile& tile,
                    float radius,

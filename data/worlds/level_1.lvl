@@ -10,9 +10,9 @@ exit 1 1 4
 exit 1 4 5
 end
 portals
-portal 3 14 2 IncaOverlord
-portal 3 8 15 DarkAnubis
-portal 3 16 9 Griffin
+portal 3 14 2 Worker IncaOverlord 0
+portal 3 8 15 Warrior DarkAnubis 1
+portal 3 16 9 Warrior Griffin 0
 end
 walls
 # Corners

@@ -34,29 +34,42 @@ namespace new_frontiers {
 
   inline
   BlockShPtr
-  BlockFactory::newSpawner(int id, float x, float y, const tiles::Entity& ent) noexcept {
-// # define TIMED_SPAWNER
-# ifdef TIMED_SPAWNER
+  BlockFactory::newTimedSpawner(int id,
+                                const mob::Type& type,
+                                float x,
+                                float y,
+                                const tiles::Entity& ent,
+                                int variant) noexcept
+  {
     return std::make_shared<TimedSpawner>(
       newTile(tiles::Portal, id, x, y), // spawner display
       toMilliseconds(500),              // spawn interval
       ent,                              // mob
-      mob::Type::Worker,                // agent type
-      0,                                // mob variant
+      type,                             // agent type
+      variant,                          // mob variant
       1                                 // stock
     );
-# else
+  }
+
+  inline
+  BlockShPtr
+  BlockFactory::newSpawnerOMeter(int id,
+                           const mob::Type& type,
+                           float x,
+                           float y,
+                           const tiles::Entity& ent,
+                           int variant) noexcept
+  {
     return std::make_shared<SpawnerOMeter>(
       newTile(tiles::Portal, id, x, y), // spawner display
       10.0f,                            // threshold
       9.5f,                             // stock
       toMilliseconds(100),              // interval
       ent,                              // mob
-      mob::Type::Worker,                // agent type
-      2,                                // mob variant,
+      type,                             // agent type
+      variant,                          // mob variant,
       0.5f                              // refill
     );
-# endif
   }
 
   inline
