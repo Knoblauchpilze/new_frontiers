@@ -53,6 +53,26 @@ namespace new_frontiers {
     return all.front();
   }
 
+  inline
+  EntityShPtr
+  Locator::getClosest(float x,
+                      float y,
+                      const tiles::Entity& ent,
+                      int id) const noexcept
+  {
+    // Use the dedicated handler.
+    std::vector<EntityShPtr> all = getEntities(x, y, -1.0f, ent, id, true);
+
+    // Return the closest one.
+    if (all.empty()) {
+      return nullptr;
+    }
+
+    // We requested entities to be sorted, we can
+    // pick the first.
+    return all.front();
+  }
+
 }
 
 #endif    /* LOCATOR_HXX */

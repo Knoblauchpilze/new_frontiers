@@ -78,7 +78,7 @@ namespace new_frontiers {
           o.x += bgWrap.x;
           xR -= 1.0f;
         }
-          
+
         if (xR > 0.0f) {
           pge->DrawPartialDecal(
             pos + o,

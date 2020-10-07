@@ -147,7 +147,7 @@ namespace new_frontiers {
        *          identical to the one provided in input. A
        *          definition of a circle (through a position
        *          and an area) is also provided.
-       * @param x - the abscissa of the center of the 
+       * @param x - the abscissa of the center of the area
        *            to search for.
        * @param y - the ordinate of the center of the area
        *            to search for.
@@ -175,7 +175,7 @@ namespace new_frontiers {
       /**
        * @brief - Similar to the `getBlocks` method but
        *          only returns the closest block from
-       *          the list return.
+       *          the list returned.
        *          In case there are no blocks existing
        *          the return value will be `null`.
        * @param x - the abscissa of the position from
@@ -195,6 +195,61 @@ namespace new_frontiers {
       getClosest(float x,
                  float y,
                  const tiles::Block& block,
+                 int id = 0) const noexcept;
+
+      /**
+       * @brief - Retrieve the list of entities with a type
+       *          identical to the one provided in input. A
+       *          definition of a circle (through a position
+       *          and an area) is also provided.
+       * @param x - the abscissa of the center of the area
+       *            to search for.
+       * @param y - the ordinate of the center of the area
+       *            to search for.
+       * @param r - the radius of the area to search for. If
+       *            this value is negative there's no limits
+       *            to the distance between the block and the
+       *            input position.
+       * @param ent - the type of entity to search for.
+       * @param id - the variant of the entity to search for.
+       *             If a negative value is specified all
+       *             variants will be considered valid.
+       * @param sort - `true` if the list of entities should
+       *               be sorted from closest to farthest.
+       * @return - the list of entities corresponding in the
+       *           specified area.
+       */
+      std::vector<EntityShPtr>
+      getEntities(float x,
+                  float y,
+                  float r,
+                  const tiles::Entity& ent,
+                  int id = 0,
+                  bool sort = false) const noexcept;
+
+      /**
+       * @brief - Similar to the `getEntities` method but
+       *          only returns the closest entity from
+       *          the list returned.
+       *          In case there are no entities existing
+       *          the return value will be `null`.
+       * @param x - the abscissa of the position from
+       *            which the closest entity should be
+       *            found.
+       * @param y - the ordinate of the position from
+       *            which the closest entity should be
+       *            found.
+       * @param ent - the entity to search for.
+       * @param id - the variant of the entity to search
+       *             for, or `-1` in case the variant
+       *             does not matter.
+       * @return - the corresponding entity or `null` if
+       *           none can be found.
+       */
+      EntityShPtr
+      getClosest(float x,
+                 float y,
+                 const tiles::Entity& ent,
                  int id = 0) const noexcept;
 
     private:
