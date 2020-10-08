@@ -29,6 +29,7 @@ namespace new_frontiers {
     // next form.
     if (isTerminated(info.moment)) {
       // Mark this vfx for deletion.
+      markForDeletion(true);
       info.removeVFX(this);
 
       return true;

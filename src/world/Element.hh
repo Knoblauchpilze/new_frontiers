@@ -46,6 +46,29 @@ namespace new_frontiers {
       getHealthRatio();
 
       /**
+       * @brief - Return `true` in case this element is marked
+       *          for deletion and will probably be removed in
+       *          the next execution of the influences.
+       * @return - `true` if the block is marked for deletion.
+       */
+      bool
+      isDead() const noexcept;
+
+      /**
+       * @brief - Used to hit the element with the specified
+       *          amount of damage. We clamp the amount of
+       *          health to `0` and the return value tells
+       *          whether or not the element is still alive.
+       *          Note that in case the `hit` is negative
+       *          it will correspond to some healing done
+       *          to the element.
+       * @param hit - the amount of damage to apply to the
+       *              element.
+       */
+      bool
+      damage(float hit);
+
+      /**
        * @brief - Interface method allowing for a world element
        *          to evolve based on its surroundings. We use a
        *          struct gathering the current state of the
@@ -100,6 +123,15 @@ namespace new_frontiers {
               float health,
               const std::string& name);
 
+      /**
+       * @brief - Used to mark or remove this element from
+       *          deletion.
+       * @param toDelete - `true` if the element should be
+       *                   marked for deletion.
+       */
+      void
+      markForDeletion(bool toDelete);
+
     protected:
 
       /**
@@ -127,6 +159,14 @@ namespace new_frontiers {
        *          it.
        */
       float m_totalHealth;
+
+      /**
+       * @brief - Used to indicate that this element is marked
+       *          for deletion. Interesting to allow inheriting
+       *          classes to determine whether this block is
+       *          still relevant.
+       */
+      bool m_toBeDeleted;
   };
 
 }

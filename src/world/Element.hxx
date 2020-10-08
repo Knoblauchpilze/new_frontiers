@@ -3,7 +3,6 @@
 
 # include "Element.hh"
 
-
 namespace new_frontiers {
 
   template <typename TileType>
@@ -40,6 +39,31 @@ namespace new_frontiers {
 
   template <typename TileType>
   inline
+  bool
+  Element<TileType>::isDead() const noexcept {
+    return m_toBeDeleted;
+  }
+
+  template <typename TileType>
+  bool
+  Element<TileType>::damage(float hit) {
+    // In case the `hit` is in fact a healing
+    // we can do that in the limit of the health
+    // pool for this element.
+    if (hit < 0.0f) {
+      m_health = std::min(m_health - hit, m_totalHealth);
+
+      return true;
+    }
+
+    // Otherwise, clamp to a null health.
+    m_health = std::max(m_health - hit, 0.0f);
+
+    return (m_health > 0.0f);
+  }
+
+  template <typename TileType>
+  inline
   Element<TileType>::Element(const Tile<TileType>& desc,
                              float radius,
                              float health,
@@ -55,6 +79,13 @@ namespace new_frontiers {
     m_totalHealth(m_health)
   {
     setService("element");
+  }
+
+  template <typename TileType>
+  inline
+  void
+  Element<TileType>::markForDeletion(bool toDelete) {
+    m_toBeDeleted = toDelete;
   }
 
 }

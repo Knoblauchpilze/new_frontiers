@@ -193,7 +193,7 @@ namespace new_frontiers {
     for (unsigned i = 0u ; i < m_blocks.size() ; ++i) {
       const BlockTile& b = m_blocks[i]->getTile();
 
-      if (b.type != block || (id >= 0 && b.id != id)) {
+      if (b.type != block || (id >= 0 && b.id != id) || m_blocks[i]->isDead()) {
         continue;
       }
 
@@ -241,7 +241,7 @@ namespace new_frontiers {
     for (unsigned i = 0u ; i < m_entities.size() ; ++i) {
       const EntityTile& e = m_entities[i]->getTile();
 
-      if (e.type != ent || (id >= 0 && e.id != id)) {
+      if (e.type != ent || (id >= 0 && e.id != id) || m_entities[i]->isDead()) {
         continue;
       }
 
