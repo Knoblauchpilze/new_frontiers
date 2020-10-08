@@ -126,6 +126,16 @@ namespace new_frontiers {
       float
       getPathY() const noexcept;
 
+      /**
+       * @brief - Return `true` in case this entity is already on
+       *          a path to reach a target. We assume that this is
+       *          the case if the distance to the target is larger
+       *          than the distance to arrival.
+       * @return - `true` if the entity is en route to a target.
+       */
+      bool
+      isEnRoute() const noexcept;
+
     protected:
 
       /**
@@ -237,12 +247,6 @@ namespace new_frontiers {
        *          entity. Expressed in cells.
        */
       float m_pathLength;
-
-      /**
-       * @brief - Boolean allowing to determine whether a path
-       *          has already been selected.
-       */
-      bool m_hasPath;
 
       /**
        * @brief - The current path followed by this entity.
