@@ -20,8 +20,19 @@ namespace new_frontiers {
   bool
   Worker::collect(StepInfo& info, float& x, float& y) {
     // The collect behavior is called when the worker
-    // reach a destination close enough of the source
-    // and so we just need to collect the resources.
+    // has spotted a deposit close enough and is now
+    // moving towards it.
+    // We don't need to do anything until we reach
+    // the position of the deposit: then we need to
+    // collect the resources and get back home.
+    if (isEnRoute()) {
+      // Still en route, do nothing until we reach
+      // the deposit.
+      return false;
+    }
+
+    // We have reached the deposit, attempt to pick
+    // some resource and get back.
     BlockShPtr b = info.frustum->getClosest(m_tile.x, m_tile.y, tiles::Portal, 14);
 
     if (b == nullptr) {
@@ -62,7 +73,7 @@ namespace new_frontiers {
     // In case we can't fetch anything, return to
     // wander behavior.
     if (toFetch <= 0.0f) {
-      log("Deposit is empty");
+      log("Deposit has been emptied while en route");
 
       setBehavior(Behavior::Wander);
       pickRandomTarget(info, x, y);
@@ -91,10 +102,21 @@ namespace new_frontiers {
 
   bool
   Worker::getBack(StepInfo& info, float& x, float& y) {
-    // This method is called when the worker reaches
-    // its home location. At this point we need to
-    // dump the resources in the home of the entity
-    // and get back to wandering.
+    // This method is called when the worker has
+    // collected some resources and need to get
+    // back home.
+    // We need first to locate the home and set
+    // the target to go there, before depositing
+    // the resources in it.
+    if (isEnRoute()) {
+      // Still en route, do nothing until we reach
+      // home.
+      return false;
+    }
+    
+    // We have reached home, attempt to dump the
+    // resource we're transporting and get back
+    // to wandering.
     BlockShPtr b = info.frustum->getClosest(m_tile.x, m_tile.y, tiles::Portal, -1);
 
     if (b == nullptr) {
@@ -123,7 +145,7 @@ namespace new_frontiers {
 
     // Refill the home spawner with the amount we
     // scraped from the deposit.
-    log(std::string("Should refill with ") + std::to_string(m_carrying));
+    log("Refilling home with " + std::to_string(m_carrying) + " resource(s)");
     s->refill(m_carrying);
     m_carrying = 0.0f;
 
@@ -148,9 +170,25 @@ namespace new_frontiers {
     );
 
     // In case there are no deposits, continue the
-    // wandering around process.
-    // TODO: Should take pheromon into account.
-    if (deposits.empty()) {
+    // wandering around process. We also need to
+    // do that in case the first deposit is empty.
+    DepositShPtr d = nullptr;
+    if (!deposits.empty()) {
+      d = std::dynamic_pointer_cast<Deposit>(deposits.front());
+    }
+
+    if (d == nullptr || d->getStock() <= 0.0f) {
+      // In case we already have a target, continue
+      // towards this target.
+      if (isEnRoute()) {
+        return false;
+      }
+
+      if (d != nullptr) {
+        log("Deposit is empty");
+      }
+
+      // TODO: Should take pheromon into account.
       pickRandomTarget(info, x, y);
 
       return true;

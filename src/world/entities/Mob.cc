@@ -38,11 +38,8 @@ namespace new_frontiers {
       emitPheromon(info);
     }
 
-    // Initialize the selected position and set it
-    // to the picked target if any.
-    x = m_tile.x;
-    y = m_tile.y;
-
+    // Set the output position to the picked target
+    // if any has been chosen.
     if (t.actionTaken) {
       x = t.xT;
       y = t.yT;
