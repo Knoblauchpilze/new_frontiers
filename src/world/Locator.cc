@@ -1,5 +1,6 @@
 
 # include "Locator.hxx"
+# include "LocationUtils.hh"
 
 namespace {
 
@@ -47,7 +48,7 @@ namespace new_frontiers {
     for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
       const EntityTile& et = m_entities[id]->getTile();
 
-      if (et.type == ent && d2(x, y, et.x, et.y) <= r2) {
+      if (et.type == ent && distance::d2(x, y, et.x, et.y) <= r2) {
         ++count;
       }
     }

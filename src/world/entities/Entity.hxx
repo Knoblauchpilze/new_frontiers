@@ -32,42 +32,6 @@ namespace new_frontiers {
   }
 
   inline
-  Entity::Entity(const EntityTile& desc,
-                 float radius,
-                 float perception,
-                 float health):
-    Element(desc, radius, health, "entity"),
-
-    m_speed(-1.0f),
-    m_perceptionRadius(perception < 0.0f ? 1.0f : perception),
-    m_rArrival(0.05f),
-    m_pathLength(3.0f),
-
-    m_hasPath(false),
-    m_path(),
-
-    m_state{
-      false, // Glowing.
-      false  // Exhausted.
-    },
-
-    m_passed(),
-
-    m_cPoints()
-  {
-    // Assign the path with initial position
-    // of the entity.
-    m_path.xO = m_tile.x;
-    m_path.yO = m_tile.y;
-
-    m_path.xT = m_tile.x;
-    m_path.yT = m_tile.y;
-
-    m_path.start = now();
-    m_path.end = now();
-  }
-
-  inline
   void
   Entity::pause(const TimeStamp& t) {
     // We need to make sure that the path can be
@@ -79,7 +43,7 @@ namespace new_frontiers {
     // a path.
     m_passed = Duration::zero();
 
-    if (m_hasPath) {
+    if (isEnRoute()) {
       m_passed = t - m_path.start;
     }
   }
@@ -109,13 +73,13 @@ namespace new_frontiers {
   inline
   float
   Entity::getPathX() const noexcept {
-    return (m_hasPath ? m_path.xT : m_tile.x);
+    return (isEnRoute() ? m_path.xT : m_tile.x);
   }
 
   inline
   float
   Entity::getPathY() const noexcept {
-    return (m_hasPath ? m_path.yT : m_tile.y);
+    return (isEnRoute() ? m_path.yT : m_tile.y);
   }
 
   inline
