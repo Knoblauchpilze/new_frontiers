@@ -54,6 +54,13 @@ namespace new_frontiers {
     // wandering around process.
     // TODO: Should take pheromon into account.
     if (entities.empty()) {
+      // In case we already have a target, continue
+      // towards this target.
+      if (isEnRoute()) {
+        return false;
+      }
+
+      // TODO: Should take pheromon into account.
       pickRandomTarget(info, x, y);
 
       return true;
