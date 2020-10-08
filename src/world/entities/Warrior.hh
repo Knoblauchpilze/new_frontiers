@@ -44,9 +44,6 @@ namespace new_frontiers {
       chase(StepInfo& info, float& x, float& y) override;
 
       bool
-      fight(StepInfo& info, float& x, float& y) override;
-
-      bool
       getBack(StepInfo& info, float& x, float& y) override;
 
       bool
