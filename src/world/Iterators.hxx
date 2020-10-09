@@ -3,6 +3,7 @@
 
 # include "Iterators.hh"
 # include "entities/Mob.hh"
+# include "blocks/SpawnerOMeter.hh"
 
 namespace new_frontiers {
 
@@ -68,10 +69,18 @@ namespace new_frontiers {
   Iterator::block(int id) const noexcept {
     BlockShPtr b = m_blocks[m_sortedBlocks[id].id];
 
-    return BlockDesc{
+    BlockDesc bd{
       b->getTile(),
-      b->getHealthRatio()
+      b->getHealthRatio(),
+      -1.0f
     };
+
+    SpawnerOMeterShPtr som = std::dynamic_pointer_cast<SpawnerOMeter>(b);
+    if (som != nullptr) {
+      bd.ratio = som->getCompletion();
+    }
+
+    return bd;
   }
 
   inline

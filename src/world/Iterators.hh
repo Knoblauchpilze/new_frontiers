@@ -18,6 +18,7 @@ namespace new_frontiers {
   struct BlockDesc {
     BlockTile tile;
     float health;
+    float ratio;
   };
 
   /**
