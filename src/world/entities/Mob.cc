@@ -8,7 +8,7 @@ namespace new_frontiers {
            float homeX,
            float homeY,
            float carrying):
-    Entity(tile, 0.5f),
+    Entity(tile, 0.5f, 3.0f),
 
     m_homeX(homeX),
     m_homeY(homeY),

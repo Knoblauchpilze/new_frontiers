@@ -212,7 +212,7 @@ namespace new_frontiers {
     m_blocks.push_back(BlockFactory::newTImedSpawner(3, mob::Type::Worker, 1.0f, 5.0f, tiles::IncaOverlord, 0));
     m_blocks.push_back(BlockFactory::newTImedSpawner(3, mob::Type::Warrior, 5.0f, 1.0f, tiles::DemonBat, 0));
 # else
-    m_blocks.push_back(BlockFactory::newSpawnerOMeter(3, mob::Type::Worker, 1.0f, 5.0f, tiles::IncaOverlord, 0));
+    m_blocks.push_back(BlockFactory::newSpawnerOMeter(3, mob::Type::Worker, 1.0f, 4.0f, tiles::IncaOverlord, 0));
     m_blocks.push_back(BlockFactory::newSpawnerOMeter(3, mob::Type::Worker, 2.0f, 2.0f, tiles::Executioner, 0));
     m_blocks.push_back(BlockFactory::newSpawnerOMeter(3, mob::Type::Warrior, 5.0f, 1.0f, tiles::DemonBat, 0));
 # endif
