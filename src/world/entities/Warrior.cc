@@ -68,13 +68,6 @@ namespace new_frontiers {
       }
     }
 
-    // TODO: Doing this effectively immobilizes the
-    // warrior because we are chosing a new path at
-    // each frame which does not play well with the
-    // animate path strategy. We should somehow try
-    // to maintain the current progression on the
-    // path.
-
     return true;
   }
 
