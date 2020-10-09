@@ -80,7 +80,7 @@ namespace new_frontiers {
       // home.
       return false;
     }
-    
+
     // We have reached home, attempt to dump the
     // resource we're transporting and get back
     // to wandering.

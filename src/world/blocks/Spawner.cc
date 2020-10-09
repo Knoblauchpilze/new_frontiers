@@ -22,8 +22,8 @@ namespace new_frontiers {
     e.x = std::sqrt(r) * std::cos(theta);
     e.y = std::sqrt(r) * std::sin(theta);
 
-    e.x += m_tile.x;
-    e.y += m_tile.y;
+    e.x += (m_tile.x + 0.5f);
+    e.y += (m_tile.y + 0.5f);
 
     // Clamp the coordinates to be inside the world's
     // boundaries.
