@@ -26,8 +26,13 @@ namespace new_frontiers {
                   //< center of the tile.
     UpperLeft,    //< Corresponds to the left side of the tile
                   //< half a tile above the top left corner.
-    BottomLeft    //< Corresponds to the bottom left corner
+    UpperEast,    //< Corresponds to half a tile on the left
+                  //< of the top left corner.
+    BottomLeft,   //< Corresponds to the bottom left corner
                   //< of the tile.
+    UpperTopLeft  //< Corresponds to a position half a tile on
+                  //< the left of the top left corner and a
+                  //< complete tile above it.
   };
 
 }

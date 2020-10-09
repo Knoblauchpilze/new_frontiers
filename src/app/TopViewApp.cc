@@ -84,10 +84,16 @@ namespace new_frontiers {
 
       drawSprite(sd, res.cf);
       drawHealthBar(sd, t.health, res.cf);
+
+      if (t.ratio > 0.0f) {
+        sd.location = Cell::BottomLeft;
+        drawHealthBar(sd, t.ratio, res.cf, Orientation::Vertical);
+        sd.location = Cell::TopLeft;
+      }
     }
 
     // Draw entities.
-    sd.location = Cell::CenterBottom;
+    sd.location = Cell::UpperTopLeft;
 
     for (int id = 0 ; id < res.wit->entitiesCount() ; ++id) {
       EntityDesc t = res.wit->entity(id);
@@ -116,16 +122,16 @@ namespace new_frontiers {
       drawHealthBar(sd, t.health, res.cf);
 
       if (t.cargo > 0.0f) {
-        sd.location = Cell::BottomLeft;
+        sd.location = Cell::UpperEast;
         float r = t.carrying / t.cargo;
         drawHealthBar(sd, r, res.cf, Orientation::Vertical);
-        sd.location = Cell::UpperLeft;
+        sd.location = Cell::UpperTopLeft;
       }
     }
 
     // Draw vfx.
     sd.type = VFXID;
-    sd.location = Cell::CenterBottom;
+    sd.location = Cell::UpperTopLeft;
 
     for (int id = 0 ; id < res.wit->vfxCount() ; ++id) {
       VFXDesc t = res.wit->vfx(id);
@@ -176,7 +182,7 @@ namespace new_frontiers {
     for (int id = 0 ; id < res.wit->entitiesCount() ; ++id) {
       EntityDesc ed = res.wit->entity(id);
 
-      olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius);
+      olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::UpperTopLeft);
       olc::vf2d ttl = res.cf.tileCoordsToPixels(ed.xT, ed.yT, ed.radius, Cell::TopLeft);
       olc::vf2d tl = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::TopLeft);
 
