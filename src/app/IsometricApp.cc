@@ -12,7 +12,7 @@ namespace new_frontiers {
       newDesc(
         dims,
         std::make_shared<IsometricFrame>(
-          Viewport{olc::vf2d(1.0f, 1.0f), olc::vf2d(10.0f, 15.0f)},
+          Viewport{olc::vf2d(1.0f, 1.0f), olc::vf2d(10.0f, 10.0f)},
           Viewport{olc::vf2d(300.0f, 50.0f), olc::vf2d(640.0f, 480.0f)},
           olc::vi2d(64, 32)
         ),
@@ -264,7 +264,7 @@ namespace new_frontiers {
       // one direction and the other it means that we should
       // in fact draw an ellipse.
       olc::vf2d tlpr = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.percepRadius);
-      DrawCircle(tlpr, ed.percepRadius * res.cf.tileSize().x, olc::BLUE);
+      DrawCircle(tlpr, ed.percepRadius * res.cf.tileSize().y, olc::BLUE);
     }
 
     // Render mouse and world cell coordinates.
