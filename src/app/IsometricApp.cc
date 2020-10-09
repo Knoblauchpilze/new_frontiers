@@ -155,6 +155,12 @@ namespace new_frontiers {
 
       drawSprite(sd, res.cf, t.tile.id);
       drawHealthBar(sd, t.health, res.cf);
+
+      if (t.ratio > 0.0f) {
+        sd.location = Cell::BottomLeft;
+        drawHealthBar(sd, t.ratio, res.cf, Orientation::Vertical);
+        sd.location = Cell::TopLeft;
+      }
     }
 
     // Draw entities.

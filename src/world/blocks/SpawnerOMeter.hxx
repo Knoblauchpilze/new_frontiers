@@ -6,6 +6,18 @@
 namespace new_frontiers {
 
   inline
+  float
+  SpawnerOMeter::getCompletion() const noexcept {
+    // Trivial case where there is no threshold.
+    if (m_threshold <= 0.0f) {
+      return m_stock < 0.0f ? 0.0f : 1.0f;
+    }
+
+    // General case.
+    return std::min(std::max(m_stock / m_threshold, 0.0f), 1.0f);
+  }
+
+  inline
   bool
   SpawnerOMeter::refill(float delta, bool force) {
     // In case the `delta` is positive the operation

@@ -44,6 +44,18 @@ namespace new_frontiers {
                     float refill = 0.0f);
 
       /**
+       * @brief - Return a floating point value measuring the
+       *          progress made in the spawn of a new entity.
+       *          It does not take the time into account but
+       *          only the stock of resource compared to the
+       *          threshold required to spawn a mob.
+       * @return - a value in the range `[0; 1]` measuring a
+       *           progress towards spawning a new mob.
+       */
+      float
+      getCompletion() const noexcept;
+
+      /**
        * @brief - Used to change the amount of the resource that
        *          is managed by this spawner by the specified
        *          value. It can be either used to refill this
