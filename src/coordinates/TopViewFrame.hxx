@@ -32,15 +32,21 @@ namespace new_frontiers {
     // display mode desired by the user.
     switch (pos) {
       case Cell::CenterBottom:
-        tp.x -= radius * m_tScaled.x / 2.0f;
-        tp.y -= radius * m_tScaled.y;
+        tp.x += radius * m_tScaled.x / 2.0f;
+        tp.y += radius * m_tScaled.y;
         break;
       case Cell::UpperLeft:
+        tp.y -= radius * m_tScaled.y / 2.0f;
+        break;
+      case Cell::UpperEast:
         tp.x -= radius * m_tScaled.x / 2.0f;
-        tp.y -= 3.0f * radius * m_tScaled.y / 2.0f;
         break;
       case Cell::BottomLeft:
+        tp.y += radius * m_tScaled.y;
+        break;
+      case Cell::UpperTopLeft:
         tp.x -= radius * m_tScaled.x / 2.0f;
+        tp.y -= radius * m_tScaled.y;
         break;
       case Cell::TopLeft:
       default:
