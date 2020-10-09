@@ -7,55 +7,9 @@
 namespace new_frontiers {
 
   inline
-  void
-  PathSegment::animate(const TimeStamp& moment, float& x, float& y) const {
-    // Compute the ratio between this moment and
-    // the total time and use this as a percentage
-    // of completion for the path.
-    float p = 1.0f;
-
-    if (start != end) {
-      Duration d = moment - start;
-      Duration t = end - start;
-
-      p = std::min(std::max(1.0f * d.count() / t.count(), 0.0f), 1.0f);
-    }
-
-    x = (1.0f - p) * xO + p * xT;
-    y = (1.0f - p) * yO + p * yT;
-  }
-
-  inline
   float
   PathSegment::length() const noexcept {
     return std::sqrt((xT - xO) * (xT - xO) + (yT - yO) * (yT - yO));
-  }
-
-  inline
-  void
-  Entity::pause(const TimeStamp& t) {
-    // We need to make sure that the path can be
-    // continued in good conditions after pausing
-    // the simulation. This means that we want to
-    // restore the percentage of progression as
-    // it is at the moment of the pause.
-    // Of course it only applies in case we have
-    // a path.
-    m_passed = Duration::zero();
-
-    if (isEnRoute()) {
-      m_passed = t - m_path.start;
-    }
-  }
-
-  inline
-  void
-  Entity::resume(const TimeStamp& t) {
-    // In case there's something to resume.
-    if (m_passed != Duration::zero()) {
-      m_path.start = t - m_passed;
-      m_path.end = m_path.start + toMilliseconds(static_cast<int>(1000.0f * m_path.length() / m_speed));
-    }
   }
 
   inline

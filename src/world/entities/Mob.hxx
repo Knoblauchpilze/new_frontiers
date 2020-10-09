@@ -23,9 +23,6 @@ namespace new_frontiers {
     // Save the duration passed since the last
     // time a vfx was emitted by this mob.
     m_passed = t - m_last;
-
-    // Call the pause method from the base class.
-    Entity::pause(t);
   }
 
   inline
@@ -35,9 +32,6 @@ namespace new_frontiers {
     // produced to be the same duration in the
     // past as when the pause occurred.
     m_last = t - m_passed;
-
-    // Call the resume method from the base class.
-    Entity::resume(t);
   }
 
   inline
