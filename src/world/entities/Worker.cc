@@ -88,10 +88,8 @@ namespace new_frontiers {
     // And then return to the colony.
     setBehavior(Behavior::Return);
 
-    x = m_homeX + 0.5f;
-    y = m_homeY + 0.5f;
-
-    log("Going back home at " + std::to_string(x) + "x" + std::to_string(y));
+    x = m_homeX;
+    y = m_homeY;
 
     // Update debug elements.
     m_cPoints.clear();
