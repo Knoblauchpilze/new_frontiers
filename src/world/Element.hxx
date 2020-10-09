@@ -76,7 +76,9 @@ namespace new_frontiers {
     m_radius(radius < 0.0f ? 1.0f : radius),
     // Clamp to at least `0`.
     m_health(std::max(health, 0.0f)),
-    m_totalHealth(m_health)
+    m_totalHealth(m_health),
+
+    m_toBeDeleted(false)
   {
     setService("element");
   }
