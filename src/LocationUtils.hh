@@ -3,7 +3,7 @@
 
 namespace new_frontiers {
   namespace distance {
-    
+
     /**
      * @brief - Used to compute the distance between point
      *          `(x1, y1)` and `(x2, y2)`.
