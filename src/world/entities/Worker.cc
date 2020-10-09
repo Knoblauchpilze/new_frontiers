@@ -6,6 +6,7 @@
 # include "../blocks/SpawnerOMeter.hh"
 
 # include <cxxabi.h>
+# include "LocationUtils.hh"
 
 namespace new_frontiers {
 
@@ -87,8 +88,10 @@ namespace new_frontiers {
     // And then return to the colony.
     setBehavior(Behavior::Return);
 
-    x = m_homeX;
-    y = m_homeY;
+    x = m_homeX + 0.5f;
+    y = m_homeY + 0.5f;
+
+    log("Going back home at " + std::to_string(x) + "x" + std::to_string(y));
 
     // Update debug elements.
     m_cPoints.clear();
@@ -113,7 +116,7 @@ namespace new_frontiers {
       // home.
       return false;
     }
-    
+
     // We have reached home, attempt to dump the
     // resource we're transporting and get back
     // to wandering.
@@ -200,8 +203,8 @@ namespace new_frontiers {
     // Assign the target to the closest deposit:
     // as we requested the list to be sorted we
     // can pick the first one.
-    x = deposits.front()->getTile().x;
-    y = deposits.front()->getTile().y;
+    x = deposits.front()->getTile().x + 0.5f;
+    y = deposits.front()->getTile().y + 0.5f;
 
     // Update debug elements.
     m_cPoints.clear();
