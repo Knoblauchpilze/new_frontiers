@@ -35,8 +35,8 @@ namespace new_frontiers {
     m_path.xT = m_tile.x;
     m_path.yT = m_tile.y;
 
-    m_path.start = now();
-    m_path.end = now();
+    m_path.xD = 0.0f;
+    m_path.yD = 0.0f;
   }
 
   bool
@@ -66,7 +66,13 @@ namespace new_frontiers {
     // Move along the path.
     bool moved = false;
     if (isEnRoute()) {
-      m_path.animate(info.moment, m_tile.x, m_tile.y);
+      // We know the elapsed time since the
+      // last frame, we know the speed of
+      // the entity, we can determine the
+      // new position.
+      m_tile.x += info.elapsed * m_speed * m_path.xD;
+      m_tile.y += info.elapsed * m_speed * m_path.yD;
+
       moved = true;
     }
 
@@ -109,16 +115,8 @@ namespace new_frontiers {
     m_path.xT = m_path.xO + d * xDir;
     m_path.yT = m_path.yO + d * yDir;
 
-    // We start right now: the end time depends on the
-    // speed of the entity and the length of the path.
-    // Note: we might run into some issues in case the
-    // start and end duration are the same: typically
-    // the entity will 'jump' from the starting point
-    // to the end point. It should not be an issue as
-    // the endpoints will be close anyways but still.
-    // Remember that.
-    m_path.start = info.moment;
-    m_path.end = m_path.start + toMilliseconds(static_cast<int>(1000.0f * m_path.length() / m_speed));
+    m_path.xD = xDir;
+    m_path.yD = yDir;
   }
 
 }

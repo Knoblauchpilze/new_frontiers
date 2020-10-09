@@ -10,26 +10,14 @@ namespace new_frontiers {
 
   /**
    * @brief - Convenience structure defining a path segment with
-   *          its endpoints, a starting and an end time to allow
-   *          for some sort of animation in between.
+   *          its endpoints, a starting and a direction to easily
+   *          make entities following the path move.
    */
   struct PathSegment {
     float xO, yO;
     float xT, yT;
 
-    TimeStamp start;
-    TimeStamp end;
-
-    /**
-     * @brief - Compute the coordinates along this path at the
-     *          time defined by `moment`.
-     * @param moment - the moment in time where this path is
-     *                 evaluated.
-     * @param x - the absicssa at this moment in time.
-     * @param y - the ordinate at this moment in time.
-     */
-    void
-    animate(const TimeStamp& moment, float& x, float& y) const;
+    float xD, yD;
 
     /**
      * @brief - Computes the length of this path in cells.
@@ -79,22 +67,6 @@ namespace new_frontiers {
        */
       bool
       step(StepInfo& info) override;
-
-      /**
-       * @brief - Implementation of the interface method to pause
-       *          the internal processes for this entity.
-       * @param t - the timestamp at which the pause occur.
-       */
-      void
-      pause(const TimeStamp& t) override;
-
-      /**
-       * @brief - Implementation of the interface method to resume
-       *          the internal processes for this entity.
-       * @param t - the timestamp at which the resume occur.
-       */
-      void
-      resume(const TimeStamp& t) override;
 
       /**
        * @brief - Used to retrieve the current state of this entity.
