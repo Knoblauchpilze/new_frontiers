@@ -2,26 +2,13 @@
 # include "Locator.hxx"
 # include "LocationUtils.hh"
 
-namespace {
-
-  template <typename T>
-  inline
-  void
-  swap(T& t1, T& t2) {
-    T tmp = t1;
-    t1 = t2;
-    t2 = tmp;
-  }
-
-}
-
 namespace new_frontiers {
 
   Locator::Locator(int width,
                    int height,
                    const std::vector<BlockShPtr>& blocks,
                    const std::vector<EntityShPtr>& entities,
-                   const std::vector<VFXShPtr>& vfx):
+                   const std::vector<VFXShPtr>& vfxs):
     utils::CoreObject("locator"),
 
     m_w(width),
@@ -29,9 +16,13 @@ namespace new_frontiers {
 
     m_blocks(blocks),
     m_entities(entities),
-    m_vfx(vfx),
+    m_vfxs(vfxs),
 
-    m_blocksIDs()
+    m_blocksIDs(),
+
+    m_sortedBlocks(),
+    m_sortedEntities(),
+    m_sortedVFXs()
   {
     setService("world");
 
@@ -177,6 +168,93 @@ namespace new_frontiers {
     return (m_blocksIDs.count(yi * m_w + xi) > 0);
   }
 
+  std::vector<world::ItemEntry>
+  Locator::getVisible(float xMin,
+                      float yMin,
+                      float xMax,
+                      float yMax,
+                      world::ItemType* type,
+                      bool sort) const noexcept
+  {
+    std::vector<world::ItemEntry> out;
+    std::vector<SortEntry> entries;
+
+    world::ItemEntry ie;
+
+    // Traverse first the blocks if needed.
+    if (type == nullptr || *type == world::ItemType::Block) {
+      ie.type = world::ItemType::Block;
+
+      for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
+        const BlockTile& t = m_blocks[id]->getTile();
+
+        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+          continue;
+        }
+
+        ie.index = id;
+        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        out.push_back(ie);
+      }
+    }
+
+    // Then entities.
+    if (type == nullptr || *type == world::ItemType::Entity) {
+      ie.type = world::ItemType::Entity;
+
+      for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
+        const EntityTile& t = m_entities[id]->getTile();
+
+        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+          continue;
+        }
+
+        ie.index = id;
+        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        out.push_back(ie);
+      }
+    }
+
+    // And finally vfxs.
+    if (type == nullptr || *type == world::ItemType::VFX) {
+      ie.type = world::ItemType::VFX;
+
+      for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
+        const VFXTile& t = m_vfxs[id]->getTile();
+
+        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+          continue;
+        }
+
+        ie.index = id;
+        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        out.push_back(ie);
+      }
+    }
+
+    // Check whether we need to sort the output
+    // vector.
+    if (sort) {
+      // Sort the entries by ascending `z` order.
+      auto cmp = [](const SortEntry& lhs, const SortEntry& rhs) {
+        return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
+      };
+
+      std::sort(entries.begin(), entries.end(), cmp);
+
+      // Reorder the output vector based on the
+      // result of the sort.
+      std::vector<world::ItemEntry> sorted;
+      sorted.swap(out);
+
+      for (unsigned id = 0u ; id < entries.size() ; ++id) {
+        out.push_back(sorted[entries[id].id]);
+      }
+    }
+
+    return out;
+  }
+
   std::vector<BlockShPtr>
   Locator::getBlocks(float x,
                      float y,
@@ -302,7 +380,7 @@ namespace new_frontiers {
       m_sortedBlocks[id] = SortEntry{
         m_blocks[id]->getTile().x,
         m_blocks[id]->getTile().y,
-        static_cast<int>(id)
+        id
       };
     }
 
@@ -311,16 +389,16 @@ namespace new_frontiers {
       m_sortedEntities[id] = SortEntry{
         m_entities[id]->getTile().x,
         m_entities[id]->getTile().y,
-        static_cast<int>(id)
+        id
       };
     }
 
-    m_sortedVFX.resize(m_vfx.size());
-    for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
-      m_sortedVFX[id] = SortEntry{
-        m_vfx[id]->getTile().x,
-        m_vfx[id]->getTile().y,
-        static_cast<int>(id)
+    m_sortedVFXs.resize(m_vfxs.size());
+    for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
+      m_sortedVFXs[id] = SortEntry{
+        m_vfxs[id]->getTile().x,
+        m_vfxs[id]->getTile().y,
+        id
       };
     }
 
@@ -330,7 +408,7 @@ namespace new_frontiers {
 
     std::sort(m_sortedBlocks.begin(), m_sortedBlocks.end(), cmp);
     std::sort(m_sortedEntities.begin(), m_sortedEntities.end(), cmp);
-    std::sort(m_sortedVFX.begin(), m_sortedVFX.end(), cmp);
+    std::sort(m_sortedVFXs.begin(), m_sortedVFXs.end(), cmp);
   }
 
 }
