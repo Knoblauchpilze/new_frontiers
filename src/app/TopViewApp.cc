@@ -66,7 +66,7 @@ namespace new_frontiers {
     sd.location = Cell::TopLeft;
 
     for (int id = 0 ; id < res.loc->blocksCount() ; ++id) {
-      BlockDesc t = res.loc->block(id);
+      world::Block t = res.loc->block(id);
 
       sd.x = t.tile.x;
       sd.y = t.tile.y;
@@ -96,7 +96,7 @@ namespace new_frontiers {
     sd.location = Cell::UpperTopLeft;
 
     for (int id = 0 ; id < res.loc->entitiesCount() ; ++id) {
-      EntityDesc t = res.loc->entity(id);
+      world::Entity t = res.loc->entity(id);
 
       sd.x = t.tile.x;
       sd.y = t.tile.y;
@@ -134,7 +134,7 @@ namespace new_frontiers {
     sd.location = Cell::UpperTopLeft;
 
     for (int id = 0 ; id < res.loc->vfxCount() ; ++id) {
-      VFXDesc t = res.loc->vfx(id);
+      world::VFX t = res.loc->vfx(id);
 
       sd.x = t.tile.x;
       sd.y = t.tile.y;
@@ -177,10 +177,9 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
 
-
-    // Render entities path and position
+    // Render entities path and position.
     for (int id = 0 ; id < res.loc->entitiesCount() ; ++id) {
-      EntityDesc ed = res.loc->entity(id);
+      world::Entity ed = res.loc->entity(id);
 
       olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::UpperTopLeft);
       olc::vf2d ttl = res.cf.tileCoordsToPixels(ed.xT, ed.yT, ed.radius, Cell::TopLeft);

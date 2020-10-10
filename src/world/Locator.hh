@@ -19,63 +19,76 @@ namespace new_frontiers {
   using EntityShPtr = std::shared_ptr<Entity>;
   using VFXShPtr = std::shared_ptr<VFX>;
 
-  /**
-   * @brief - Indicates the type of update to perform on this
-   *          elements locator. A `Full` update usually says
-   *          that some elements have either be added or have
-   *          been deleted meaning that the structure might
-   *          be better off completely rebuilt. A `Light`
-   *          indicates that only motions have been performed.
-   *          It is merely an indication to the locator so
-   *          that it can perform the most suited update.
-   */
-  enum class Update {
-    Full,
-    Light
-  };
+  namespace world {
 
-  /**
-   * @brief - Convenience wrapper describing common props
-   *          for blocks that can be used for display.
-   */
-  struct BlockDesc {
-    BlockTile tile;
-    float health;
-    float ratio;
-  };
+    /**
+     * @brief - Convenience wrapper describing common props
+     *          for blocks that can be used for display.
+     */
+    struct Block {
+      BlockTile tile;
+      float health;
+      float ratio;
+    };
 
-  /**
-   * @brief - Convenience wrapper to retrieve information
-   *          about an entity. This is passed as return
-   *          value for elements querying entities from
-   *          this iterator in order to have all public
-   *          info of an entity avaiable.
-   */
-  struct EntityDesc {
-    EntityTile tile;
-    float radius;
-    float percepRadius;
-    float health;
-    float carrying;
-    float cargo;
-    State state;
-    float xT;
-    float yT;
-    std::vector<float> cPoints;
-  };
+    /**
+     * @brief - Convenience wrapper to retrieve information
+     *          about an entity. This is passed as return
+     *          value for elements querying entities from
+     *          this iterator in order to have all public
+     *          info of an entity avaiable.
+     */
+    struct Entity {
+      EntityTile tile;
+      float radius;
+      float percepRadius;
+      float health;
+      float carrying;
+      float cargo;
+      State state;
+      float xT;
+      float yT;
+      std::vector<float> cPoints;
+    };
 
-  /**
-   * @brief - Similar to the `EntityDesc` but for effects.
-   *          Contains an indication on the amount of the
-   *          initial quantity of the effect that is still
-   *          existing.
-   *          The amount is always in the range `[0; 1]`.
-   */
-  struct VFXDesc {
-    VFXTile tile;
-    float radius;
-    float amount;
-  };
+    /**
+     * @brief - Similar to the `EntityDesc` but for effects.
+     *          Contains an indication on the amount of the
+     *          initial quantity of the effect that is still
+     *          existing.
+     *          The amount is always in the range `[0; 1]`.
+     */
+    struct VFX {
+      VFXTile tile;
+      float radius;
+      float amount;
+    };
+
+    /**
+     * @brief - Convenience enumeration defining the possible
+     *          types for an item visible in the frustum of
+     *          the locator.
+     */
+    enum class ItemType {
+      Block,
+      Entity,
+      VFX
+    };
+
+    /**
+     * @brief - Convenience structure defining an entry in the
+     *          visibility frustum returned by the locator. It
+     *          defines the type of the object along with its
+     *          index which can then be used to fetch it from
+     *          the locator itself (and thus retrieve more info
+     *          on it).
+     */
+    struct ItemEntry {
+      ItemType type;
+      int index;
+    };
+
+  }
 
   class Locator: public utils::CoreObject {
     public:
@@ -96,13 +109,13 @@ namespace new_frontiers {
        * @param blocks - the list of tiles registered in the
        *                 world.
        * @param entities - the list of entities of the world.
-       * @param vfx - the list of visual effects of the world.
+       * @param vfxs - the list of visual effects of the world.
        */
       Locator(int width,
               int height,
               const std::vector<BlockShPtr>& blocks,
               const std::vector<EntityShPtr>& entities,
-              const std::vector<VFXShPtr>& vfx);
+              const std::vector<VFXShPtr>& vfxs);
 
       /**
        * @brief - Return the width of the world in cells.
@@ -128,7 +141,7 @@ namespace new_frontiers {
        * @param id - index of the tile to access.
        * @return - the tile at the specified index.
        */
-      BlockDesc
+      world::Block
       block(int id) const noexcept;
 
       /**
@@ -137,7 +150,7 @@ namespace new_frontiers {
        * @param id - the index of the entity to get.
        * @return - the corresponding entity.
        */
-      EntityDesc
+      world::Entity
       entity(int id) const noexcept;
 
       /**
@@ -145,7 +158,7 @@ namespace new_frontiers {
        * @param id - the index of the VFX to get.
        * @return - the corresponding VFX.
        */
-      VFXDesc
+      world::VFX
       vfx(int id) const noexcept;
 
       /**
@@ -155,14 +168,9 @@ namespace new_frontiers {
        *          An internal system is used to detect items
        *          that have changed so it's somewhat safe to
        *          call this more often than needed.
-       * @param update - the type of update to perform. It is
-       *                 indicating the type of modifications
-       *                 that have been performed on tiles or
-       *                 entities compared to when the struct
-       *                 of this object was built.
        */
       void
-      refresh(const Update& update);
+      refresh();
 
       /**
        * @brief - Used to count how many entities of the input
@@ -204,6 +212,37 @@ namespace new_frontiers {
                  float d,
                  std::vector<float>& cPoints) const noexcept;
 
+      /**
+       * @brief - Return the list of items that are visible
+       *          in the view frustum defined by the AABB
+       *          from the input values.
+       *          All items are included (blocks, entities
+       *          and VFXs) and the user can request items
+       *          to be sorted.
+       * @param xMin - the abscissa of the top left corner
+       *               of the view frustum.
+       * @param yMin - the ordinate of the top left corner
+       *               of the view frustum.
+       * @param xMax - the abscissa of the bottom right
+       *               corner of the view frustum.
+       * @param yMax - the ordinate of the bottom right
+       *               corner of the view frustum.
+       * @param type - the type of elements to consider. If
+       *               this value is set to `null` all the
+       *               item types will be included.
+       * @param sort - `true` if the items should be sorted
+       *               in the output vector. The sort occurs
+       *               based on the `z` order of the items.
+       * @return - the list of items that are visible in the
+       *           input view frustum.
+       */
+      std::vector<world::ItemEntry>
+      getVisible(float xMin,
+                 float yMin,
+                 float xMax,
+                 float yMax,
+                 world::ItemType* type = nullptr,
+                 bool sort = false) const noexcept;
       /**
        * @brief - Retrieve the list of elements with a type
        *          identical to the one provided in input. A
@@ -344,7 +383,7 @@ namespace new_frontiers {
       struct SortEntry {
         float x;
         float y;
-        int id;
+        unsigned id;
       };
 
       /**
@@ -362,7 +401,7 @@ namespace new_frontiers {
        */
       const std::vector<BlockShPtr>& m_blocks;
       const std::vector<EntityShPtr>& m_entities;
-      const std::vector<VFXShPtr>& m_vfx;
+      const std::vector<VFXShPtr>& m_vfxs;
 
       /**
        * @brief - A map referencing the unique indices for
@@ -375,7 +414,7 @@ namespace new_frontiers {
 
       std::vector<SortEntry> m_sortedBlocks;
       std::vector<SortEntry> m_sortedEntities;
-      std::vector<SortEntry> m_sortedVFX;
+      std::vector<SortEntry> m_sortedVFXs;
   };
 
   using LocatorShPtr = std::shared_ptr<Locator>;

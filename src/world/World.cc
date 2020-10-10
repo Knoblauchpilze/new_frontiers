@@ -228,15 +228,12 @@ namespace new_frontiers {
   void
   World::processInfluences(const std::vector<InfluenceShPtr>& influences) {
     // Process each influence.
-    bool addedBlocks = false;
-
     for (unsigned id = 0; id < influences.size() ; ++id) {
       InfluenceShPtr i = influences[id];
 
       switch (i->getType()) {
         case influence::Type::BlockSpawn:
           m_blocks.push_back(i->getShPBlock());
-          addedBlocks = true;
           break;
         case influence::Type::BlockRemoval: {
           auto toRm = std::find_if(
@@ -289,7 +286,7 @@ namespace new_frontiers {
     // In case an influence was perform, we need to
     // refresh the spatial sorting of elements.
     if (!influences.empty()) {
-      m_loc->refresh(addedBlocks ? Update::Full : Update::Light);
+      m_loc->refresh();
     }
   }
 

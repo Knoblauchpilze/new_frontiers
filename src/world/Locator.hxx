@@ -21,11 +21,11 @@ namespace new_frontiers {
   }
 
   inline
-  BlockDesc
+  world::Block
   Locator::block(int id) const noexcept {
     BlockShPtr b = m_blocks[m_sortedBlocks[id].id];
 
-    BlockDesc bd{
+    world::Block bd{
       b->getTile(),
       b->getHealthRatio(),
       -1.0f
@@ -40,11 +40,11 @@ namespace new_frontiers {
   }
 
   inline
-  EntityDesc
+  world::Entity
   Locator::entity(int id) const noexcept {
     EntityShPtr e = m_entities[m_sortedEntities[id].id];
 
-    EntityDesc ed{
+    world::Entity ed{
       e->getTile(),
       e->getRadius(),
       e->getPerceptionRadius(),
@@ -67,11 +67,11 @@ namespace new_frontiers {
   }
 
   inline
-  VFXDesc
+  world::VFX
   Locator::vfx(int id) const noexcept {
-    VFXShPtr v = m_vfx[m_sortedVFX[id].id];
+    VFXShPtr v = m_vfxs[m_sortedVFXs[id].id];
 
-    return VFXDesc{
+    return world::VFX{
       v->getTile(),
       v->getRadius(),
       v->getAmount()
@@ -80,12 +80,9 @@ namespace new_frontiers {
 
   inline
   void
-  Locator::refresh(const Update& update) {
-    if (update == Update::Full) {
-      m_blocksIDs.clear();
-
-      initialize();
-    }
+  Locator::refresh() {
+    m_blocksIDs.clear();
+    initialize();
   }
 
   inline
