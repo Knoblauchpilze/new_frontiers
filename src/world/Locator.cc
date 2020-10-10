@@ -195,6 +195,12 @@ namespace new_frontiers {
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
         out.push_back(ie);
+
+        log(
+          "Block " + std::to_string(t.type) +
+          " is at " + std::to_string(t.x) + "x" + std::to_string(t.y) +
+          " with id " + std::to_string(out.size() - 1)
+        );
       }
     }
 
@@ -212,6 +218,12 @@ namespace new_frontiers {
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
         out.push_back(ie);
+
+        log(
+          "Entity " + std::to_string(t.type) +
+          " is at " + std::to_string(t.x) + "x" + std::to_string(t.y) +
+          " with id " + std::to_string(out.size() - 1)
+        );
       }
     }
 
@@ -229,6 +241,12 @@ namespace new_frontiers {
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
         out.push_back(ie);
+
+        log(
+          "VFX " + std::to_string(t.type) +
+          " is at " + std::to_string(t.x) + "x" + std::to_string(t.y) +
+          " with id " + std::to_string(out.size() - 1)
+        );
       }
     }
 

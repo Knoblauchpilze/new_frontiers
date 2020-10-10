@@ -41,10 +41,29 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::BLACK);
 
-    // Draw elements of the world.
+    // Draw elements of the world. We will first
+    // fetch the visible elements and then paint
+    // them.
+    Viewport v = res.cf.cellsViewport();
+    std::vector<world::ItemEntry> items = res.loc->getVisible(
+      v.p.x,
+      v.p.y,
+      v.p.x + v.dims.x,
+      v.p.y + v.dims.y,
+      nullptr,
+      true
+    );
+
+    log(
+      "Fetched " + std::to_string(items.size()) + " element(s)" +
+      " in viewport [" + std::to_string(v.p.x) + "," + std::to_string(v.p.y) +
+      " : " + std::to_string(v.dims.x) + "x" + std::to_string(v.dims.y) + "]"
+    );
+
     SpriteDesc sd;
 
-    // Draw ground.
+    // No matter what happens we can draw the ground
+    // so that we always see something on screen.
     sd.type = GroundID;
     sd.alpha = ALPHA_OPAQUE;
     sd.radius = 1.0f;
@@ -59,89 +78,90 @@ namespace new_frontiers {
       }
     }
 
-    // Draw solid tiles.
-    sd.type = SolidID;
-    sd.alpha = ALPHA_OPAQUE;
-    sd.radius = 1.0f;
-    sd.location = Cell::TopLeft;
+    // Then iterate over the visible items and draw
+    // them in order (as we requested the entries to
+    // be sorted in ascending `z` order).
+    for (unsigned id = 0u ; id < items.size() ; ++id) {
+      const world::ItemEntry& ie = items[id];
 
-    for (int id = 0 ; id < res.loc->blocksCount() ; ++id) {
-      world::Block t = res.loc->block(id);
+      // Case of a block.
+      if (ie.type == world::ItemType::Block) {
+        world::Block t = res.loc->block(ie.index);
 
-      sd.x = t.tile.x;
-      sd.y = t.tile.y;
-
-      switch (t.tile.type) {
-        case tiles::Portal:
-          sd.type = PortalID;
-          break;
-        case tiles::Wall:
-        case tiles::Door:
-        default:
-          sd.type = SolidID;
-          break;
-      }
-
-      drawSprite(sd, res.cf);
-      drawHealthBar(sd, t.health, res.cf);
-
-      if (t.ratio > 0.0f) {
-        sd.location = Cell::BottomLeft;
-        drawHealthBar(sd, t.ratio, res.cf, Orientation::Vertical);
+        sd.alpha = ALPHA_OPAQUE;
+        sd.radius = 1.0f;
         sd.location = Cell::TopLeft;
-      }
-    }
+        sd.x = t.tile.x;
+        sd.y = t.tile.y;
 
-    // Draw entities.
-    sd.location = Cell::UpperTopLeft;
-
-    for (int id = 0 ; id < res.loc->entitiesCount() ; ++id) {
-      world::Entity t = res.loc->entity(id);
-
-      sd.x = t.tile.x;
-      sd.y = t.tile.y;
-      sd.radius = t.radius;
-
-      if (t.state.glowing) {
-        sd.type = VFXID;
-        sd.alpha = ALPHA_SEMI_OPAQUE;
+        switch (t.tile.type) {
+          case tiles::Portal:
+            sd.type = PortalID;
+            break;
+          case tiles::Wall:
+          case tiles::Door:
+          default:
+            sd.type = SolidID;
+            break;
+        }
 
         drawSprite(sd, res.cf);
+        drawHealthBar(sd, t.health, res.cf);
+
+        if (t.ratio > 0.0f) {
+          sd.location = Cell::BottomLeft;
+          drawHealthBar(sd, t.ratio, res.cf, Orientation::Vertical);
+        }
       }
-      if (t.state.exhausted) {
-        sd.type = VFXID;
-        sd.alpha = ALPHA_SEMI_OPAQUE;
 
-        drawSprite(sd, res.cf);
-      }
+      // Case of an entity.
+      if (ie.type == world::ItemType::Entity) {
+        world::Entity t = res.loc->entity(ie.index);
 
-      sd.type = EntityID;
-      sd.alpha = ALPHA_OPAQUE;
-
-      drawSprite(sd, res.cf);
-      drawHealthBar(sd, t.health, res.cf);
-
-      if (t.cargo > 0.0f) {
-        sd.location = Cell::UpperEast;
-        float r = t.carrying / t.cargo;
-        drawHealthBar(sd, r, res.cf, Orientation::Vertical);
+        sd.radius = t.radius;
         sd.location = Cell::UpperTopLeft;
+        sd.x = t.tile.x;
+        sd.y = t.tile.y;
+
+        if (t.state.glowing) {
+          sd.alpha = ALPHA_SEMI_OPAQUE;
+          sd.type = VFXID;
+
+          drawSprite(sd, res.cf);
+        }
+        if (t.state.exhausted) {
+          sd.alpha = ALPHA_SEMI_OPAQUE;
+          sd.type = VFXID;
+
+          drawSprite(sd, res.cf);
+        }
+
+        sd.alpha = ALPHA_OPAQUE;
+        sd.type = EntityID;
+
+        drawSprite(sd, res.cf);
+        drawHealthBar(sd, t.health, res.cf);
+
+        if (t.cargo > 0.0f) {
+          sd.location = Cell::UpperEast;
+          float r = t.carrying / t.cargo;
+          drawHealthBar(sd, r, res.cf, Orientation::Vertical);
+        }
       }
-    }
 
-    // Draw vfx.
-    sd.type = VFXID;
-    sd.location = Cell::UpperTopLeft;
+      // Case of a VFX.
+      if (ie.type == world::ItemType::VFX) {
+        world::VFX t = res.loc->vfx(ie.index);
 
-    for (int id = 0 ; id < res.loc->vfxCount() ; ++id) {
-      world::VFX t = res.loc->vfx(id);
+        sd.alpha = static_cast<int>(std::round(ALPHA_OPAQUE * t.amount));
+        sd.radius = t.radius;
+        sd.location = Cell::UpperTopLeft;
+        sd.x = t.tile.x;
+        sd.y = t.tile.y;
+        sd.type = VFXID;
 
-      sd.x = t.tile.x;
-      sd.y = t.tile.y;
-      sd.alpha = static_cast<int>(std::round(ALPHA_OPAQUE * t.amount));
-      sd.radius = t.radius;
-
-      drawSprite(sd, res.cf);
+        drawSprite(sd, res.cf);
+      }
     }
 
     // Draw cursor.
@@ -178,8 +198,31 @@ namespace new_frontiers {
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
 
     // Render entities path and position.
-    for (int id = 0 ; id < res.loc->entitiesCount() ; ++id) {
-      world::Entity ed = res.loc->entity(id);
+    Viewport v = res.cf.cellsViewport();
+    world::ItemType ie = world::ItemType::Entity;
+    std::vector<world::ItemEntry> items = res.loc->getVisible(
+      v.p.x,
+      v.p.y,
+      v.p.x + v.dims.x,
+      v.p.y + v.dims.y,
+      &ie,
+      true
+    );
+
+    for (unsigned i = 0 ; i < items.size() ; ++i) {
+      const world::ItemEntry& ie = items[i];
+
+      // Be on the safe side.
+      if (ie.type != world::ItemType::Entity) {
+        log(
+          "Fetched item with type " + std::to_string(static_cast<int>(ie.type)) + " while requesting only entities",
+          utils::Level::Warning
+        );
+
+        continue;
+      }
+
+      world::Entity ed = res.loc->entity(ie.index);
 
       olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::UpperTopLeft);
       olc::vf2d ttl = res.cf.tileCoordsToPixels(ed.xT, ed.yT, ed.radius, Cell::TopLeft);
