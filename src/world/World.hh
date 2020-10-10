@@ -7,7 +7,6 @@
 # include "RNG.hh"
 # include "Tiles.hh"
 # include "Element.hh"
-# include "Iterators.hh"
 # include "Locator.hh"
 # include "Controls.hh"
 # include "Influence.hh"
@@ -47,11 +46,13 @@ namespace new_frontiers {
       h() const noexcept;
 
       /**
-       * @brief - Used to return an iterator on this world.
-       * @return - an iterator on the objects of this world.
+       * @brief - Used to return a locator object to allow easy
+       *          access to elements of this world.
+       * @return - a locator allowing to filter and efficiently
+       *           access objects of this world.
        */
-      IteratorShPtr
-      iterator() const noexcept;
+      LocatorShPtr
+      locator() const noexcept;
 
       /**
        * @brief - Used to move one step ahead in time in this
@@ -184,13 +185,6 @@ namespace new_frontiers {
        *          list.
        */
       std::vector<VFXShPtr> m_vfx;
-
-      /**
-       * @brief - The iterator on this world. Will be used as a return
-       *          value in the `iterator` method so that everyone gets
-       *          the same one.
-       */
-      IteratorShPtr m_it;
 
       /**
        * @brief - An object to hold all the tiles and entities that

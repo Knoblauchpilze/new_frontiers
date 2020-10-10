@@ -12,7 +12,7 @@ namespace new_frontiers {
     m_menu(nullptr),
 
     m_world(nullptr),
-    m_wit(nullptr),
+    m_loc(nullptr),
 
     m_cf(desc.frame),
 

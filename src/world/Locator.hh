@@ -34,6 +34,49 @@ namespace new_frontiers {
     Light
   };
 
+  /**
+   * @brief - Convenience wrapper describing common props
+   *          for blocks that can be used for display.
+   */
+  struct BlockDesc {
+    BlockTile tile;
+    float health;
+    float ratio;
+  };
+
+  /**
+   * @brief - Convenience wrapper to retrieve information
+   *          about an entity. This is passed as return
+   *          value for elements querying entities from
+   *          this iterator in order to have all public
+   *          info of an entity avaiable.
+   */
+  struct EntityDesc {
+    EntityTile tile;
+    float radius;
+    float percepRadius;
+    float health;
+    float carrying;
+    float cargo;
+    State state;
+    float xT;
+    float yT;
+    std::vector<float> cPoints;
+  };
+
+  /**
+   * @brief - Similar to the `EntityDesc` but for effects.
+   *          Contains an indication on the amount of the
+   *          initial quantity of the effect that is still
+   *          existing.
+   *          The amount is always in the range `[0; 1]`.
+   */
+  struct VFXDesc {
+    VFXTile tile;
+    float radius;
+    float amount;
+  };
+
   class Locator: public utils::CoreObject {
     public:
 
@@ -60,6 +103,50 @@ namespace new_frontiers {
               const std::vector<BlockShPtr>& blocks,
               const std::vector<EntityShPtr>& entities,
               const std::vector<VFXShPtr>& vfx);
+
+      /**
+       * @brief - Return the width of the world in cells.
+       * @return - the number of cell in width for the
+       *           world attached to this locator.
+       */
+      int
+      w() const noexcept;
+
+      /**
+       * @brief - Return the height of the world in cells.
+       * @return - the number of cell in height for the
+       *           world attached to this locator.
+       */
+      int
+      h() const noexcept;
+
+      /**
+       * @brief - Retrieve the tile at the specified index. Note
+       *          that no checks are performed to verify that it
+       *          is indeed possible to access to this tile: if
+       *          it is not UB will arise.
+       * @param id - index of the tile to access.
+       * @return - the tile at the specified index.
+       */
+      BlockDesc
+      block(int id) const noexcept;
+
+      /**
+       * @brief - Similar to the `solidTile` method but to get
+       *          the entity at the specified index.
+       * @param id - the index of the entity to get.
+       * @return - the corresponding entity.
+       */
+      EntityDesc
+      entity(int id) const noexcept;
+
+      /**
+       * @brief - Very similar but for VFX.
+       * @param id - the index of the VFX to get.
+       * @return - the corresponding VFX.
+       */
+      VFXDesc
+      vfx(int id) const noexcept;
 
       /**
        * @brief - Used to indicate that the locator should be
@@ -237,7 +324,28 @@ namespace new_frontiers {
       void
       initialize();
 
+      /**
+       * @brief - Used to perform the sorting of tiles, entities
+       *          and vfx. Indeed to make sure that all tiles are
+       *          displayed in order and are correctly hidden by
+       *          tiles that are in front of them, we need to
+       *          sort the tiles by increasing `x` value and by
+       *          increasing `y` value.
+       */
+      void
+      sort();
+
     private:
+
+      /**
+       * @brief - Define a convenience structure to perform the
+       *          sorting of tiles and entities.
+       */
+      struct SortEntry {
+        float x;
+        float y;
+        int id;
+      };
 
       /**
        * @brief - The width of the world in cells.
@@ -264,6 +372,10 @@ namespace new_frontiers {
        *          a block exists.
        */
       std::unordered_set<int> m_blocksIDs;
+
+      std::vector<SortEntry> m_sortedBlocks;
+      std::vector<SortEntry> m_sortedEntities;
+      std::vector<SortEntry> m_sortedVFX;
   };
 
   using LocatorShPtr = std::shared_ptr<Locator>;

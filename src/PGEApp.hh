@@ -4,6 +4,7 @@
 # include <core_utils/CoreObject.hh>
 # include "olcPixelGameEngine.h"
 # include "World.hh"
+# include "Locator.hh"
 # include "Controls.hh"
 # include "AppDesc.hh"
 # include "coordinates/CoordinateFrame.hh"
@@ -19,7 +20,7 @@ namespace new_frontiers {
    *          world coordinates and the UI.
    */
   struct RenderDesc {
-    IteratorShPtr wit;
+    LocatorShPtr loc;
     CoordinateFrame& cf;
     GameMenuShPtr ui;
   };
@@ -280,11 +281,14 @@ namespace new_frontiers {
       WorldShPtr m_world;
 
       /**
-       * @brief - The world iterator retrieved on the world: used
-       *          to traverse the elements defined in the world to
-       *          display them.
+       * @brief - An element to use to interact with elements from
+       *          the world. This object provide convenience methods
+       *          to access in an efficient way elements that are
+       *          within a particular region or in a way that allow
+       *          efficient drawing on screen (such as in ascending
+       *          `z` order).
        */
-      IteratorShPtr m_wit;
+      LocatorShPtr m_loc;
 
       /**
        * @brief - Holds an object allowing to convert between the

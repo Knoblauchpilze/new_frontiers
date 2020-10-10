@@ -124,7 +124,6 @@ namespace new_frontiers {
         return false;
       }
 
-      // TODO: Should take pheromon into account.
       pickRandomTarget(info, x, y);
 
       return true;

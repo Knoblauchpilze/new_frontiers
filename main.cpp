@@ -33,10 +33,11 @@
  *          Enemies would follow the same principle to get
  *          to the mother nest and attack it.
  */
-// TODO: Provide a way to select portals with the mouse: it
-// would make spawn raw icons to select the priority of the
-// entities that would be spawned (between warrior and the
-// worker).
+// TODO: Quadtree system to represent the elements of the world (in Locator class).
+// TODO: Colony mechanism to regroup entities in faction.
+// TODO: Better display of entities/blocks based on depth.
+// TODO: Behavior based on pheromons.
+// TODO: Control of colony's priorities through UI.
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>

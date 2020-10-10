@@ -18,9 +18,9 @@ namespace new_frontiers {
   }
 
   inline
-  IteratorShPtr
-  World::iterator() const noexcept {
-    return m_it;
+  LocatorShPtr
+  World::locator() const noexcept {
+    return m_loc;
   }
 
   inline
@@ -29,8 +29,8 @@ namespace new_frontiers {
     // Generate elements.
     generateElements();
 
-    // Create an iterator and a locator service from this.
-    m_it = std::make_shared<Iterator>(m_w, m_h, m_blocks, m_entities, m_vfx);
+    // Create the locator service from the
+    // elements of this world.
     m_loc = std::make_shared<Locator>(m_w, m_h, m_blocks, m_entities, m_vfx);
   }
 
