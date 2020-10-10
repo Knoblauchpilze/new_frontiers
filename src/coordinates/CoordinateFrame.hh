@@ -48,6 +48,13 @@ namespace new_frontiers {
       tileSize() const noexcept;
 
       /**
+       * @brief - Return the current viewport expressed in cells.
+       * @return - the viewport of this coordinate frame in cells.
+       */
+      Viewport
+      cellsViewport() const noexcept;
+
+      /**
        * @brief - Used to convert from tile coordinates to pixel
        *          coordinates. This method can be used when some
        *          tile is to be displayed on the screen. We make
