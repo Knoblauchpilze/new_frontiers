@@ -81,7 +81,6 @@ namespace new_frontiers {
     m_entities(),
     m_vfx(),
 
-    m_it(nullptr),
     m_loc(nullptr)
   {
     setService("world");
@@ -110,7 +109,6 @@ namespace new_frontiers {
     m_entities(),
     m_vfx(),
 
-    m_it(nullptr),
     m_loc(nullptr)
   {
     // Check dimensions.
@@ -291,7 +289,6 @@ namespace new_frontiers {
     // In case an influence was perform, we need to
     // refresh the spatial sorting of elements.
     if (!influences.empty()) {
-      m_it->refresh();
       m_loc->refresh(addedBlocks ? Update::Full : Update::Light);
     }
   }
@@ -367,8 +364,6 @@ namespace new_frontiers {
       );
     }
 
-    // Create an iterator and a locator service from this.
-    m_it = std::make_shared<Iterator>(m_w, m_h, m_blocks, m_entities, m_vfx);
     m_loc = std::make_shared<Locator>(m_w, m_h, m_blocks, m_entities, m_vfx);
   }
 

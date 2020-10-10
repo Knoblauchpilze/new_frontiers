@@ -17,7 +17,7 @@ namespace new_frontiers {
 # else
     m_world = std::make_shared<World>(100);
 # endif
-    m_wit = m_world->iterator();
+    m_loc = m_world->locator();
 
     // Load the menu resources.
     loadMenuResources();
@@ -79,7 +79,7 @@ namespace new_frontiers {
     olc::Sprite* base = GetDrawTarget();
 
     RenderDesc res{
-      m_wit,
+      m_loc,
       *m_cf,
       m_menu
     };

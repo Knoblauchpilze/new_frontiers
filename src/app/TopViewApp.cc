@@ -50,8 +50,8 @@ namespace new_frontiers {
     sd.radius = 1.0f;
     sd.location = Cell::TopLeft;
 
-    for (int y = 0 ; y < res.wit->h() ; ++y) {
-      for (int x = 0 ; x < res.wit->w() ; ++x) {
+    for (int y = 0 ; y < res.loc->h() ; ++y) {
+      for (int x = 0 ; x < res.loc->w() ; ++x) {
         sd.x = x;
         sd.y = y;
 
@@ -65,8 +65,8 @@ namespace new_frontiers {
     sd.radius = 1.0f;
     sd.location = Cell::TopLeft;
 
-    for (int id = 0 ; id < res.wit->blocksCount() ; ++id) {
-      BlockDesc t = res.wit->block(id);
+    for (int id = 0 ; id < res.loc->blocksCount() ; ++id) {
+      BlockDesc t = res.loc->block(id);
 
       sd.x = t.tile.x;
       sd.y = t.tile.y;
@@ -95,8 +95,8 @@ namespace new_frontiers {
     // Draw entities.
     sd.location = Cell::UpperTopLeft;
 
-    for (int id = 0 ; id < res.wit->entitiesCount() ; ++id) {
-      EntityDesc t = res.wit->entity(id);
+    for (int id = 0 ; id < res.loc->entitiesCount() ; ++id) {
+      EntityDesc t = res.loc->entity(id);
 
       sd.x = t.tile.x;
       sd.y = t.tile.y;
@@ -133,8 +133,8 @@ namespace new_frontiers {
     sd.type = VFXID;
     sd.location = Cell::UpperTopLeft;
 
-    for (int id = 0 ; id < res.wit->vfxCount() ; ++id) {
-      VFXDesc t = res.wit->vfx(id);
+    for (int id = 0 ; id < res.loc->vfxCount() ; ++id) {
+      VFXDesc t = res.loc->vfx(id);
 
       sd.x = t.tile.x;
       sd.y = t.tile.y;
@@ -179,8 +179,8 @@ namespace new_frontiers {
 
 
     // Render entities path and position
-    for (int id = 0 ; id < res.wit->entitiesCount() ; ++id) {
-      EntityDesc ed = res.wit->entity(id);
+    for (int id = 0 ; id < res.loc->entitiesCount() ; ++id) {
+      EntityDesc ed = res.loc->entity(id);
 
       olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::UpperTopLeft);
       olc::vf2d ttl = res.cf.tileCoordsToPixels(ed.xT, ed.yT, ed.radius, Cell::TopLeft);

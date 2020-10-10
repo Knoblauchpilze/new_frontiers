@@ -189,7 +189,6 @@ namespace new_frontiers {
         log("Deposit is empty");
       }
 
-      // TODO: Should take pheromon into account.
       pickRandomTarget(info, x, y);
 
       return true;
