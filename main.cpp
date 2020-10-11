@@ -35,7 +35,6 @@
  */
 // TODO: Quadtree system to represent the elements of the world (in Locator class).
 // TODO: Colony mechanism to regroup entities in faction.
-// TODO: Better display of entities/blocks based on depth.
 // TODO: Behavior based on pheromons.
 // TODO: Control of colony's priorities through UI.
 
