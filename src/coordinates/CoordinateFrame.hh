@@ -49,10 +49,13 @@ namespace new_frontiers {
 
       /**
        * @brief - Return the current viewport expressed in cells.
+       *          This interface should be specialized by inheriting
+       *          classes to account for the precise layout of the
+       *          coordinates system they define.
        * @return - the viewport of this coordinate frame in cells.
        */
-      Viewport
-      cellsViewport() const noexcept;
+      virtual Viewport
+      cellsViewport() const noexcept = 0;
 
       /**
        * @brief - Used to convert from tile coordinates to pixel

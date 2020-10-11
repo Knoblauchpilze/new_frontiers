@@ -19,13 +19,6 @@ namespace new_frontiers {
   }
 
   inline
-  Viewport
-  CoordinateFrame::cellsViewport() const noexcept {
-    // TODO: Should compute that.
-    return m_cViewport;
-  }
-
-  inline
   void
   CoordinateFrame::zoomIn(const olc::vf2d& pos) {
     zoom(0.5f, pos);
