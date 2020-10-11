@@ -363,17 +363,6 @@ namespace new_frontiers {
       void
       initialize();
 
-      /**
-       * @brief - Used to perform the sorting of tiles, entities
-       *          and vfx. Indeed to make sure that all tiles are
-       *          displayed in order and are correctly hidden by
-       *          tiles that are in front of them, we need to
-       *          sort the tiles by increasing `x` value and by
-       *          increasing `y` value.
-       */
-      void
-      sort();
-
     private:
 
       /**
@@ -411,10 +400,6 @@ namespace new_frontiers {
        *          a block exists.
        */
       std::unordered_set<int> m_blocksIDs;
-
-      std::vector<SortEntry> m_sortedBlocks;
-      std::vector<SortEntry> m_sortedEntities;
-      std::vector<SortEntry> m_sortedVFXs;
   };
 
   using LocatorShPtr = std::shared_ptr<Locator>;

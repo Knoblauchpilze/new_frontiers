@@ -282,12 +282,6 @@ namespace new_frontiers {
           break;
       }
     }
-
-    // In case an influence was perform, we need to
-    // refresh the spatial sorting of elements.
-    if (!influences.empty()) {
-      m_loc->refresh();
-    }
   }
 
   void

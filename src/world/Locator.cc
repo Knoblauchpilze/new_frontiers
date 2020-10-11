@@ -18,11 +18,7 @@ namespace new_frontiers {
     m_entities(entities),
     m_vfxs(vfxs),
 
-    m_blocksIDs(),
-
-    m_sortedBlocks(),
-    m_sortedEntities(),
-    m_sortedVFXs()
+    m_blocksIDs()
   {
     setService("world");
 
@@ -169,10 +165,10 @@ namespace new_frontiers {
   }
 
   std::vector<world::ItemEntry>
-  Locator::getVisible(float xMin,
-                      float yMin,
-                      float xMax,
-                      float yMax,
+  Locator::getVisible(float /*xMin*/,
+                      float /*yMin*/,
+                      float /*xMax*/,
+                      float /*yMax*/,
                       world::ItemType* type,
                       bool sort) const noexcept
   {
@@ -188,9 +184,9 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
         const BlockTile& t = m_blocks[id]->getTile();
 
-        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
-          continue;
-        }
+        // if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+        //   continue;
+        // }
 
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
@@ -211,9 +207,9 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
         const EntityTile& t = m_entities[id]->getTile();
 
-        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
-          continue;
-        }
+        // if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+        //   continue;
+        // }
 
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
@@ -234,9 +230,9 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
         const VFXTile& t = m_vfxs[id]->getTile();
 
-        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
-          continue;
-        }
+        // if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+        //   continue;
+        // }
 
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
@@ -266,6 +262,12 @@ namespace new_frontiers {
       sorted.swap(out);
 
       for (unsigned id = 0u ; id < entries.size() ; ++id) {
+        log(
+          "Item " + std::to_string(id) +
+          " has relative index " + std::to_string(sorted[entries[id].id].index) +
+          " has type " + std::to_string(static_cast<int>(sorted[entries[id].id].type)) +
+          " and pos " + std::to_string(entries[id].x) + "x" + std::to_string(entries[id].y)
+        );
         out.push_back(sorted[entries[id].id]);
       }
     }
@@ -384,49 +386,6 @@ namespace new_frontiers {
 
       m_blocksIDs.insert(static_cast<int>(bt.y) * m_w + static_cast<int>(bt.x));
     }
-
-    // Perform the sort of the elements based
-    // on their `z` order.
-    sort();
-  }
-
-  void
-  Locator::sort() {
-    // Generate the entries to sort.
-    m_sortedBlocks.resize(m_blocks.size());
-    for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
-      m_sortedBlocks[id] = SortEntry{
-        m_blocks[id]->getTile().x,
-        m_blocks[id]->getTile().y,
-        id
-      };
-    }
-
-    m_sortedEntities.resize(m_entities.size());
-    for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
-      m_sortedEntities[id] = SortEntry{
-        m_entities[id]->getTile().x,
-        m_entities[id]->getTile().y,
-        id
-      };
-    }
-
-    m_sortedVFXs.resize(m_vfxs.size());
-    for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
-      m_sortedVFXs[id] = SortEntry{
-        m_vfxs[id]->getTile().x,
-        m_vfxs[id]->getTile().y,
-        id
-      };
-    }
-
-    auto cmp = [](const SortEntry& lhs, const SortEntry& rhs) {
-      return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
-    };
-
-    std::sort(m_sortedBlocks.begin(), m_sortedBlocks.end(), cmp);
-    std::sort(m_sortedEntities.begin(), m_sortedEntities.end(), cmp);
-    std::sort(m_sortedVFXs.begin(), m_sortedVFXs.end(), cmp);
   }
 
 }

@@ -23,7 +23,7 @@ namespace new_frontiers {
   inline
   world::Block
   Locator::block(int id) const noexcept {
-    BlockShPtr b = m_blocks[m_sortedBlocks[id].id];
+    BlockShPtr b = m_blocks[id];
 
     world::Block bd{
       b->getTile(),
@@ -42,7 +42,7 @@ namespace new_frontiers {
   inline
   world::Entity
   Locator::entity(int id) const noexcept {
-    EntityShPtr e = m_entities[m_sortedEntities[id].id];
+    EntityShPtr e = m_entities[id];
 
     world::Entity ed{
       e->getTile(),
@@ -69,7 +69,7 @@ namespace new_frontiers {
   inline
   world::VFX
   Locator::vfx(int id) const noexcept {
-    VFXShPtr v = m_vfxs[m_sortedVFXs[id].id];
+    VFXShPtr v = m_vfxs[id];
 
     return world::VFX{
       v->getTile(),
