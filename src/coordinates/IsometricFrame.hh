@@ -24,6 +24,14 @@ namespace new_frontiers {
       ~IsometricFrame() = default;
 
       /**
+       * @brief - Implementation of the interface method to get
+       *          the viewport in cells for this isometric frame.
+       * @return - the viewport of this coordinate frame in cells.
+       */
+      Viewport
+      cellsViewport() const noexcept override;
+
+      /**
        * @brief - Implementation of the interface method that
        *          define the conversion from tile coords to
        *          pixels. We apply an isometric projection to

@@ -13,6 +13,43 @@ namespace new_frontiers {
   {}
 
   inline
+  Viewport
+  IsometricFrame::cellsViewport() const noexcept {
+    // We know the position of the origin point
+    // in pixels. We also know the size of each
+    // cell in pixels.
+    // From there we can convert the position
+    // `(0, 0)` in pixels to tiles. Note that as
+    // we actually have isometric projection we
+    // need to project all four corners:
+    // the top left and bottom right will give
+    // the extent in `y` coordinate while the
+    // bottom left and top right will give the
+    // extent in the `x` coordinate.
+    olc::vi2d tl = pixelCoordsToTiles(olc::vi2d(0, 0));
+    olc::vi2d tr = pixelCoordsToTiles(olc::vi2d(m_pViewport.dims.x, 0));
+    olc::vi2d br = pixelCoordsToTiles(olc::vi2d(m_pViewport.dims.x, m_pViewport.dims.y));
+    olc::vi2d bl = pixelCoordsToTiles(olc::vi2d(0, m_pViewport.dims.y));
+
+    Viewport out;
+    out.p = olc::vf2d(tr.x, tl.y);
+    // The `+1` comes from the fact that the
+    // difference between corners account for
+    // the tiles in between corners but not
+    // the `tr.x` tile.
+    // It's similar to the well-known example:
+    // `how many integer numbers are there in
+    // the range [0; 2] ?`
+    // The answer is not `2 - 0 = 2` but `3`
+    // as `2 - 0` only counts the number that
+    // are greater than the lower bound and
+    // note the lower bound itself.
+    out.dims = olc::vf2d(bl.x - tr.x + 1, br.y - tl.y + 1);
+
+    return out;
+  }
+
+  inline
   olc::vf2d
   IsometricFrame::tileCoordsToPixels(float x, float y, float radius, const Cell& pos) const noexcept {
     // Offset the input coordinates based on the

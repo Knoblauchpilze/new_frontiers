@@ -165,10 +165,10 @@ namespace new_frontiers {
   }
 
   std::vector<world::ItemEntry>
-  Locator::getVisible(float /*xMin*/,
-                      float /*yMin*/,
-                      float /*xMax*/,
-                      float /*yMax*/,
+  Locator::getVisible(float xMin,
+                      float yMin,
+                      float xMax,
+                      float yMax,
                       world::ItemType* type,
                       bool sort) const noexcept
   {
@@ -184,19 +184,13 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
         const BlockTile& t = m_blocks[id]->getTile();
 
-        // if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
-        //   continue;
-        // }
+        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+          continue;
+        }
 
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
         out.push_back(ie);
-
-        log(
-          "Block " + std::to_string(t.type) +
-          " is at " + std::to_string(t.x) + "x" + std::to_string(t.y) +
-          " with id " + std::to_string(out.size() - 1)
-        );
       }
     }
 
@@ -207,19 +201,13 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
         const EntityTile& t = m_entities[id]->getTile();
 
-        // if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
-        //   continue;
-        // }
+        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+          continue;
+        }
 
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
         out.push_back(ie);
-
-        log(
-          "Entity " + std::to_string(t.type) +
-          " is at " + std::to_string(t.x) + "x" + std::to_string(t.y) +
-          " with id " + std::to_string(out.size() - 1)
-        );
       }
     }
 
@@ -230,19 +218,13 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
         const VFXTile& t = m_vfxs[id]->getTile();
 
-        // if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
-        //   continue;
-        // }
+        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+          continue;
+        }
 
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
         out.push_back(ie);
-
-        log(
-          "VFX " + std::to_string(t.type) +
-          " is at " + std::to_string(t.x) + "x" + std::to_string(t.y) +
-          " with id " + std::to_string(out.size() - 1)
-        );
       }
     }
 
@@ -262,12 +244,6 @@ namespace new_frontiers {
       sorted.swap(out);
 
       for (unsigned id = 0u ; id < entries.size() ; ++id) {
-        log(
-          "Item " + std::to_string(id) +
-          " has relative index " + std::to_string(sorted[entries[id].id].index) +
-          " has type " + std::to_string(static_cast<int>(sorted[entries[id].id].type)) +
-          " and pos " + std::to_string(entries[id].x) + "x" + std::to_string(entries[id].y)
-        );
         out.push_back(sorted[entries[id].id]);
       }
     }

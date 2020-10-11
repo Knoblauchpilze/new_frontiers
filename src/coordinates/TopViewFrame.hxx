@@ -13,6 +13,28 @@ namespace new_frontiers {
   {}
 
   inline
+  Viewport
+  TopViewFrame::cellsViewport() const noexcept {
+    // We know the position of the origin point
+    // in pixels. We also know the size of each
+    // cell in pixels.
+    // From there we can convert the position
+    // `(0, 0)` in pixels to tiles.
+    olc::vi2d tl = pixelCoordsToTiles(olc::vi2d(0, 0));
+    olc::vi2d br = pixelCoordsToTiles(olc::vi2d(m_pViewport.dims.x, m_pViewport.dims.y));
+
+    Viewport out;
+    out.p = tl;
+    // The `+1` comes from the fact that the
+    // `br.x - tl.x` accounts for the number
+    // of tiles in difference but does not
+    // count the actual `tl.x` tile.
+    out.dims = olc::vf2d(br.x - tl.x + 1, br.y - tl.y + 1);
+
+    return out;
+  }
+
+  inline
   olc::vf2d
   TopViewFrame::tileCoordsToPixels(float x, float y, float radius, const Cell& pos) const noexcept {
     // Offset the input coordinates based on the
