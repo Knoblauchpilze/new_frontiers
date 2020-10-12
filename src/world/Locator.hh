@@ -299,36 +299,108 @@ namespace new_frontiers {
                  const world::ItemType& type) const noexcept;
 
       /**
-       * @brief - Retrieve the list of elements with a type
-       *          as defined in input or all the elements if
-       *          no type is provided.
-       *          The area in which elements should be fetched
-       *          is described through a circle with a center
-       *          and a radius.
-       * @param x - the abscissa of the center of the area to
-       *            search for.
-       * @param y - the ordinate of the center of the area to
-       *            search for.
-       * @param r - the radius of the area to search for. If
-       *            this value is negative there's no limits
-       *            to the distance between the element and the
-       *            input position.
-       * @param block - the type of element to search for.
-       * @param id - the variant of the block to search for.
-       *             If a negative value is specified all
-       *             variants will be considered valid.
-       * @param sort - `true` if the list of blocks should be
-       *               sorted from closest to farthest.
-       * @return - the list of blocks corresponding in the
-       *           specified area.
+       * @brief - Specialization of the `getVisible` method
+       *          to fetch visible blocks in a certain area
+       *          and return this as a list of blocks.
+       * @param x - the abscissa of the center of the area
+       *            to consider.
+       * @param y - the ordinate of the center of the area
+       *            to consider.
+       * @param r - the radius of the area to consider.
+       * @param bTile - the type of the blocks to consider.
+       *                If this value is `null` any block
+       *                will be considered.
+       * @param id - the variant of the block to consider.
+       *             If this value is `-1` any variant is
+       *             considered.
+       * @param sort - whether or not the output vector
+       *               should be sorted so that blocks are
+       *               in ascending order compared to the
+       *               center of the area.
+       * @return - the list of blocks.
        */
-      std::vector<world::ItemEntry>
+      std::vector<BlockShPtr>
       getVisible(float x,
-                float y,
-                float r,
-                const tiles::Block& block,
-                int id = 0,
-                bool sort = false) const noexcept;
+                 float y,
+                 float r,
+                 const tiles::Block* bTile,
+                 int id = -1,
+                 bool sort = false) const noexcept;
+
+      /**
+       * @brief - Specialization of the `getVisible` method
+       *          to fetch visible entities in a certain area
+       *          and return this as a list of entities.
+       * @param x - the abscissa of the center of the area
+       *            to consider.
+       * @param y - the ordinate of the center of the area
+       *            to consider.
+       * @param r - the radius of the area to consider.
+       * @param bTile - the type of the entity to consider.
+       *                If this value is `null` any entity
+       *                will be considered.
+       * @param id - the variant of the entity to consider.
+       *             If this value is `-1` any variant is
+       *             considered.
+       * @param sort - whether or not the output vector
+       *               should be sorted so that entities
+       *               are in ascending order compared to
+       *               the center of the area.
+       * @return - the list of entities.
+       */
+      std::vector<EntityShPtr>
+      getVisible(float x,
+                 float y,
+                 float r,
+                 const tiles::Entity* eTile,
+                 int id = -1,
+                 bool sort = false) const noexcept;
+
+      /**
+       * @brief - Similar to the `getVisible` but only returns
+       *          the closest block from the total visible list.
+       * @param x - the abscissa of the center of the area to
+       *            consider.
+       * @param y - the ordinate of the center of the area to
+       *            consider.
+       * @param bTile - the type of the blocks to consider. If
+       *                this value is `null` any block will be
+       *                considered.
+       * @param r - a limit for the radius for entities to be
+       *            considered.
+       * @param id - the variant of the block to consider. If
+       *             this value is `-1` any variant is considered.
+       * @return - the list of blocks.
+       */
+      BlockShPtr
+      getClosest(float x,
+                 float y,
+                 const tiles::Block& bTile,
+                 float r = -1.0f,
+                 int id = -1) const noexcept;
+
+      /**
+       * @brief - Similar to the `getVisible` but only returns
+       *          the closest entity from the total visible list.
+       * @param x - the abscissa of the center of the area to
+       *            consider.
+       * @param y - the ordinate of the center of the area to
+       *            consider.
+       * @param bTile - the type of the entities to consider. If
+       *                this value is `null` any entity will be
+       *                considered.
+       * @param r - a limit for the radius for entities to be
+       *            considered.
+       * @param id - the variant of the entity to consider. If
+       *             this value is `-1` any variant is considered.
+       * @return - the list of entities.
+       */
+      EntityShPtr
+      getClosest(float x,
+                 float y,
+                 const tiles::Entity& eTile,
+                 float r = -1.0f,
+                 int id = -1) const noexcept;
 
     private:
 

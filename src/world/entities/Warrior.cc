@@ -110,18 +110,11 @@ namespace new_frontiers {
   Warrior::wander(StepInfo& info, float& x, float& y) {
     // Check whether we can find any deposit in the
     // surroudings of the entity.
-    std::vector<EntityShPtr> entities = info.frustum->getEntities(
-      x,
-      y,
-      m_perceptionRadius,
-      tiles::Executioner,
-      0,
-      true
-    );
+    EntityShPtr entity = info.frustum->getClosest(x, y, tiles::Executioner, m_perceptionRadius, 0);
 
     // In case there are no entities, continue the
     // wandering around process.
-    if (entities.empty()) {
+    if (entity == nullptr) {
       // In case we already have a target, continue
       // towards this target.
       if (isEnRoute()) {
@@ -139,8 +132,8 @@ namespace new_frontiers {
     // Assign the target to the closest entities:
     // as we requested the list to be sorted we
     // can pick the first one.
-    x = entities.front()->getTile().x;
-    y = entities.front()->getTile().y;
+    x = entity->getTile().x;
+    y = entity->getTile().y;
 
     // Update debug elements.
     m_cPoints.clear();
