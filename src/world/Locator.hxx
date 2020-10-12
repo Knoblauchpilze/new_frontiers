@@ -105,6 +105,108 @@ namespace new_frontiers {
     return all.front();
   }
 
+  inline
+  std::vector<BlockShPtr>
+  Locator::getVisible(float x,
+                      float y,
+                      float r,
+                      const tiles::Block* bTile,
+                      int id,
+                      bool sort) const noexcept
+  {
+    // Fetch visible blocks descriptions.
+    world::ItemType t = world::ItemType::Block;
+    std::vector<world::ItemEntry> bds = getVisible(x, y, r, &t, sort);
+
+    std::vector<BlockShPtr> bs;
+    for (unsigned i = 0u ; i < bds.size() ; ++i) {
+      BlockShPtr b = m_blocks[bds[i].index];
+
+      // Not the same tile.
+      if (bTile != nullptr && b->getTile().type != *bTile) {
+        continue;
+      }
+      
+      // Not the same variant.
+      if (id != -1 && b->getTile().id != id) {
+        continue;
+      }
+
+      // The block should be considered.
+      bs.push_back(b);
+    }
+
+    return bs;
+  }
+
+  inline
+  std::vector<EntityShPtr>
+  Locator::getVisible(float x,
+                      float y,
+                      float r,
+                      const tiles::Entity* eTile,
+                      int id,
+                      bool sort) const noexcept
+  {
+    // Fetch visible entities descriptions.
+    world::ItemType t = world::ItemType::Entity;
+    std::vector<world::ItemEntry> eds = getVisible(x, y, r, &t, sort);
+
+    std::vector<EntityShPtr> es;
+    for (unsigned i = 0u ; i < eds.size() ; ++i) {
+      EntityShPtr e = m_entities[eds[i].index];
+
+      // Not the same tile.
+      if (eTile != nullptr && e->getTile().type != *eTile) {
+        continue;
+      }
+      
+      // Not the same variant.
+      if (id != -1 && e->getTile().id != id) {
+        continue;
+      }
+
+      // The entity should be considered.
+      es.push_back(e);
+    }
+
+    return es;
+  }
+
+  inline
+  BlockShPtr
+  Locator::getClosest(float x,
+                      float y,
+                      const tiles::Block& bTile,
+                      float r,
+                      int id) const noexcept
+  {
+    std::vector<BlockShPtr> bs = getVisible(x, y, r, &bTile, id, true);
+
+    if (bs.empty()) {
+      return nullptr;
+    }
+
+    return bs.front();
+  }
+
+  inline
+  EntityShPtr
+  Locator::getClosest(float x,
+                      float y,
+                      const tiles::Entity& eTile,
+                      float r,
+                      int id) const noexcept
+  {
+    std::vector<EntityShPtr> es = getVisible(x, y, r, &eTile, id, true);
+
+    if (es.empty()) {
+      return nullptr;
+    }
+
+    return es.front();
+  }
+
 }
 
 #endif    /* LOCATOR_HXX */

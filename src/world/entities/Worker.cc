@@ -161,21 +161,14 @@ namespace new_frontiers {
   Worker::wander(StepInfo& info, float& x, float& y) {
     // Check whether we can find any deposit in the
     // surroudings of the entity.
-    std::vector<BlockShPtr> deposits = info.frustum->getBlocks(
-      x,
-      y,
-      m_perceptionRadius,
-      tiles::Portal,
-      14,
-      true
-    );
+    BlockShPtr deposit = info.frustum->getClosest(x, y, tiles::Portal, 14, m_perceptionRadius);
 
     // In case there are no deposits, continue the
     // wandering around process. We also need to
     // do that in case the first deposit is empty.
     DepositShPtr d = nullptr;
-    if (!deposits.empty()) {
-      d = std::dynamic_pointer_cast<Deposit>(deposits.front());
+    if (deposit != nullptr) {
+      d = std::dynamic_pointer_cast<Deposit>(deposit);
     }
 
     if (d == nullptr || d->getStock() <= 0.0f) {
@@ -200,8 +193,8 @@ namespace new_frontiers {
     // Assign the target to the closest deposit:
     // as we requested the list to be sorted we
     // can pick the first one.
-    x = deposits.front()->getTile().x + 0.5f;
-    y = deposits.front()->getTile().y + 0.5f;
+    x = d->getTile().x + 0.5f;
+    y = d->getTile().y + 0.5f;
 
     // Update debug elements.
     m_cPoints.clear();
