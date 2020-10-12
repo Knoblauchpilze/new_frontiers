@@ -81,14 +81,18 @@ namespace new_frontiers {
       return false;
     }
 
-    // We have reached home, attempt to dump the
-    // resource we're transporting and get back
-    // to wandering.
-    BlockShPtr b = info.frustum->getClosest(m_tile.x, m_tile.y, tiles::Portal, -1);
+    // We have reached home, do nothing and wait for
+    // new instructions. We need to make sure that
+    // we are actually close to home (and that it did
+    // not get destroyed for some reasons).
+    world::ItemEntry ie = info.frustum->getClosest(m_tile.x, m_tile.y, world::ItemType::Block);
+    world::Block b;
+    
+    if (ie.index >= 0 && ie.type == world::ItemType::Block) {
+      b = info.frustum->block(ie.index);
+    }
 
-    if (b == nullptr) {
-      // For some reason the home of the entity does
-      // not exist, return to wandering.
+    if (ie.index < 0 || ie.type != world::ItemType::Block || b.tile.type != tiles::Portal) {
       setBehavior(Behavior::Wander);
       pickRandomTarget(info, x, y);
 

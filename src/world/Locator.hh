@@ -241,20 +241,77 @@ namespace new_frontiers {
                  float yMin,
                  float xMax,
                  float yMax,
-                 world::ItemType* type = nullptr,
+                 const world::ItemType* type = nullptr,
                  bool sort = false) const noexcept;
+
       /**
        * @brief - Retrieve the list of elements with a type
-       *          identical to the one provided in input. A
-       *          definition of a circle (through a position
-       *          and an area) is also provided.
-       * @param x - the abscissa of the center of the area
-       *            to search for.
-       * @param y - the ordinate of the center of the area
-       *            to search for.
+       *          as defined in input or all the elements if
+       *          no type is provided.
+       *          The area in which elements should be fetched
+       *          is described through a circle with a center
+       *          and a radius.
+       * @param x - the abscissa of the center of the area to
+       *            search for.
+       * @param y - the ordinate of the center of the area to
+       *            search for.
        * @param r - the radius of the area to search for. If
        *            this value is negative there's no limits
-       *            to the distance between the block and the
+       *            to the distance between the element and the
+       *            input position.
+       * @param type - the type of elements to consider. If
+       *               this value is set to `null` all the
+       *               item types will be included.
+       * @param sort - `true` if the items should be sorted
+       *               in the output vector. The sort occurs
+       *               based on the `z` order of the items.
+       * @return - the list of elements corresponding in the
+       *           specified area.
+       */
+      std::vector<world::ItemEntry>
+      getVisible(float x,
+                 float y,
+                 float r,
+                 const world::ItemType* type = nullptr,
+                 bool sort = false) const noexcept;
+
+      /**
+       * @brief - Similar to the `getVisible` method but
+       *          only returns the closest element from
+       *          the available items.
+       *          In case there are no elements to return
+       *          the output will have a negative index.
+       * @param x - the abscissa of the position from
+       *            which the closest block should be
+       *            found.
+       * @param y - the ordinate of the position from
+       *            which the closest block should be
+       *            found.
+       * @param type - the type of the element to search
+       *               for.
+       * @return - the corresponding element's description
+       *           or a negative index if none can be
+       *           found.
+       */
+      world::ItemEntry
+      getClosest(float x,
+                 float y,
+                 const world::ItemType& type) const noexcept;
+
+      /**
+       * @brief - Retrieve the list of elements with a type
+       *          as defined in input or all the elements if
+       *          no type is provided.
+       *          The area in which elements should be fetched
+       *          is described through a circle with a center
+       *          and a radius.
+       * @param x - the abscissa of the center of the area to
+       *            search for.
+       * @param y - the ordinate of the center of the area to
+       *            search for.
+       * @param r - the radius of the area to search for. If
+       *            this value is negative there's no limits
+       *            to the distance between the element and the
        *            input position.
        * @param block - the type of element to search for.
        * @param id - the variant of the block to search for.
@@ -265,93 +322,13 @@ namespace new_frontiers {
        * @return - the list of blocks corresponding in the
        *           specified area.
        */
-      std::vector<BlockShPtr>
-      getBlocks(float x,
+      std::vector<world::ItemEntry>
+      getVisible(float x,
                 float y,
                 float r,
                 const tiles::Block& block,
                 int id = 0,
                 bool sort = false) const noexcept;
-
-      /**
-       * @brief - Similar to the `getBlocks` method but
-       *          only returns the closest block from
-       *          the list returned.
-       *          In case there are no blocks existing
-       *          the return value will be `null`.
-       * @param x - the abscissa of the position from
-       *            which the closest block should be
-       *            found.
-       * @param y - the ordinate of the position from
-       *            which the closest block should be
-       *            found.
-       * @param block - the block to search for.
-       * @param id - the variant of the block to search
-       *             for, or `-1` in case the variant
-       *             does not matter.
-       * @return - the corresponding block or `null` if
-       *           none can be found.
-       */
-      BlockShPtr
-      getClosest(float x,
-                 float y,
-                 const tiles::Block& block,
-                 int id = 0) const noexcept;
-
-      /**
-       * @brief - Retrieve the list of entities with a type
-       *          identical to the one provided in input. A
-       *          definition of a circle (through a position
-       *          and an area) is also provided.
-       * @param x - the abscissa of the center of the area
-       *            to search for.
-       * @param y - the ordinate of the center of the area
-       *            to search for.
-       * @param r - the radius of the area to search for. If
-       *            this value is negative there's no limits
-       *            to the distance between the block and the
-       *            input position.
-       * @param ent - the type of entity to search for.
-       * @param id - the variant of the entity to search for.
-       *             If a negative value is specified all
-       *             variants will be considered valid.
-       * @param sort - `true` if the list of entities should
-       *               be sorted from closest to farthest.
-       * @return - the list of entities corresponding in the
-       *           specified area.
-       */
-      std::vector<EntityShPtr>
-      getEntities(float x,
-                  float y,
-                  float r,
-                  const tiles::Entity& ent,
-                  int id = 0,
-                  bool sort = false) const noexcept;
-
-      /**
-       * @brief - Similar to the `getEntities` method but
-       *          only returns the closest entity from
-       *          the list returned.
-       *          In case there are no entities existing
-       *          the return value will be `null`.
-       * @param x - the abscissa of the position from
-       *            which the closest entity should be
-       *            found.
-       * @param y - the ordinate of the position from
-       *            which the closest entity should be
-       *            found.
-       * @param ent - the entity to search for.
-       * @param id - the variant of the entity to search
-       *             for, or `-1` in case the variant
-       *             does not matter.
-       * @return - the corresponding entity or `null` if
-       *           none can be found.
-       */
-      EntityShPtr
-      getClosest(float x,
-                 float y,
-                 const tiles::Entity& ent,
-                 int id = 0) const noexcept;
 
     private:
 

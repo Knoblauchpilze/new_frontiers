@@ -169,7 +169,7 @@ namespace new_frontiers {
                       float yMin,
                       float xMax,
                       float yMax,
-                      world::ItemType* type,
+                      const world::ItemType* type,
                       bool sort) const noexcept
   {
     std::vector<world::ItemEntry> out;
@@ -251,104 +251,88 @@ namespace new_frontiers {
     return out;
   }
 
-  std::vector<BlockShPtr>
-  Locator::getBlocks(float x,
-                     float y,
-                     float r,
-                     const tiles::Block& block,
-                     int id,
-                     bool sort) const noexcept
+  std::vector<world::ItemEntry>
+  Locator::getVisible(float x,
+                      float y,
+                      float r,
+                      const world::ItemType* type,
+                      bool sort) const noexcept
   {
-    std::vector<BlockShPtr> out;
+    std::vector<world::ItemEntry> out;
+    std::vector<SortEntry> entries;
 
+    world::ItemEntry ie;
     float r2 = r * r;
 
-    // Search for the block in the internal list.
-    for (unsigned i = 0u ; i < m_blocks.size() ; ++i) {
-      const BlockTile& b = m_blocks[i]->getTile();
+    // Traverse first the blocks if needed.
+    if (type == nullptr || *type == world::ItemType::Block) {
+      ie.type = world::ItemType::Block;
 
-      if (b.type != block || (id >= 0 && b.id != id) || m_blocks[i]->isDead()) {
-        continue;
-      }
+      for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
+        const BlockTile& t = m_blocks[id]->getTile();
 
-      // Consider the center of the block for the
-      // distance to the input `x` and `y` coords.
-      if (r < 0.0f || distance::d2(b.x + 0.5f, b.y + 0.5f, x, y) < r2) {
-        out.push_back(m_blocks[i]);
-      }
-    }
-
-    // Sort if needed.
-    if (sort) {
-      std::sort(
-        out.begin(),
-        out.end(),
-        [&x, &y](const BlockShPtr& lhs, const BlockShPtr& rhs) {
-          float d1 = distance::d2(
-            lhs->getTile().x + 0.5f,
-            lhs->getTile().y + 0.5f,
-            x,
-            y
-          );
-
-          float d2 = distance::d2(
-            rhs->getTile().x + 0.5f,
-            rhs->getTile().y + 0.5f,
-            x,
-            y
-          );
-
-          return d1 < d2;
+        if (r > 0.0f && distance::d2(t.x + 0.5f, t.y + 0.5f, x, y) > r2) {
+          continue;
         }
-      );
-    }
 
-    return out;
-  }
-
-  std::vector<EntityShPtr>
-  Locator::getEntities(float x,
-                       float y,
-                       float r,
-                       const tiles::Entity& ent,
-                       int id,
-                       bool sort) const noexcept
-  {
-    std::vector<EntityShPtr> out;
-
-    float r2 = r * r;
-
-    // Search for the block in the internal list.
-    for (unsigned i = 0u ; i < m_entities.size() ; ++i) {
-      const EntityTile& e = m_entities[i]->getTile();
-
-      if (e.type != ent || (id >= 0 && e.id != id) || m_entities[i]->isDead()) {
-        continue;
-      }
-
-      float dx = e.x - x;
-      float dy = e.y - y;
-
-      if (r < 0.0f || dx * dx + dy * dy < r2) {
-        out.push_back(m_entities[i]);
+        ie.index = id;
+        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        out.push_back(ie);
       }
     }
 
-    // Sort if needed.
-    if (sort) {
-      std::sort(
-        out.begin(),
-        out.end(),
-        [&x, &y](const EntityShPtr& lhs, const EntityShPtr& rhs) {
-          float dx1 = lhs->getTile().x - x;
-          float dy1 = lhs->getTile().y - y;
+    // Then entities.
+    if (type == nullptr || *type == world::ItemType::Entity) {
+      ie.type = world::ItemType::Entity;
 
-          float dx2 = rhs->getTile().x - x;
-          float dy2 = rhs->getTile().y - y;
+      for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
+        const EntityTile& t = m_entities[id]->getTile();
 
-          return (dx1 * dx1 + dy1 * dy1) < (dx2 * dx2 + dy2 * dy2);
+        if (r > 0.0f && distance::d2(t.x, t.y, x, y) > r2) {
+          continue;
         }
-      );
+
+        ie.index = id;
+        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        out.push_back(ie);
+      }
+    }
+
+    // And finally vfxs.
+    if (type == nullptr || *type == world::ItemType::VFX) {
+      ie.type = world::ItemType::VFX;
+
+      for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
+        const VFXTile& t = m_vfxs[id]->getTile();
+
+        if (r > 0.0f && distance::d2(t.x, t.y, x, y) > r2) {
+          continue;
+        }
+
+        ie.index = id;
+        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        out.push_back(ie);
+      }
+    }
+
+    // Check whether we need to sort the output
+    // vector.
+    if (sort) {
+      // Sort the entries by ascending `z` order.
+      auto cmp = [](const SortEntry& lhs, const SortEntry& rhs) {
+        return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
+      };
+
+      std::sort(entries.begin(), entries.end(), cmp);
+
+      // Reorder the output vector based on the
+      // result of the sort.
+      std::vector<world::ItemEntry> sorted;
+      sorted.swap(out);
+
+      for (unsigned id = 0u ; id < entries.size() ; ++id) {
+        out.push_back(sorted[entries[id].id]);
+      }
     }
 
     return out;

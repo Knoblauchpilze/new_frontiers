@@ -86,42 +86,22 @@ namespace new_frontiers {
   }
 
   inline
-  BlockShPtr
+  world::ItemEntry
   Locator::getClosest(float x,
                       float y,
-                      const tiles::Block& block,
-                      int id) const noexcept
+                      const world::ItemType& type) const noexcept
   {
     // Use the dedicated handler.
-    std::vector<BlockShPtr> all = getBlocks(x, y, -1.0f, block, id, true);
+    std::vector<world::ItemEntry> all = getVisible(x, y, -1.0f, &type, true);
 
-    // Return the closest one.
+    // Return the closest one if any has
+    // been found or an invalid entry. As
+    // we requested the list to be sorted
+    // we can pick the first element.
     if (all.empty()) {
-      return nullptr;
+      return world::ItemEntry{type, -1};
     }
 
-    // We requested blocks to be sorted, we can
-    // pick the first.
-    return all.front();
-  }
-
-  inline
-  EntityShPtr
-  Locator::getClosest(float x,
-                      float y,
-                      const tiles::Entity& ent,
-                      int id) const noexcept
-  {
-    // Use the dedicated handler.
-    std::vector<EntityShPtr> all = getEntities(x, y, -1.0f, ent, id, true);
-
-    // Return the closest one.
-    if (all.empty()) {
-      return nullptr;
-    }
-
-    // We requested entities to be sorted, we can
-    // pick the first.
     return all.front();
   }
 
