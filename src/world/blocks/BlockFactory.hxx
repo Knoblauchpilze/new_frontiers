@@ -10,26 +10,20 @@ namespace new_frontiers {
 
   inline
   BlockShPtr
-  BlockFactory::newPortal(int id, float x, float y) noexcept {
-    return newBlock(tiles::Portal, id, x, y, "portal");
+  BlockFactory::newEntrance(float x, float y, int id) noexcept {
+    return newPortal(x, y, id);
   }
 
   inline
   BlockShPtr
-  BlockFactory::newEntrance(int id, float x, float y) noexcept {
+  BlockFactory::newExit(float x, float y, int id) noexcept {
     return newPortal(id, x, y);
   }
 
   inline
   BlockShPtr
-  BlockFactory::newExit(int id, float x, float y) noexcept {
-    return newPortal(id, x, y);
-  }
-
-  inline
-  BlockShPtr
-  BlockFactory::newWall(int id, float x, float y) noexcept {
-    return newBlock(tiles::Wall, id, x, y, "wall");
+  BlockFactory::newWall(float x, float y, int id) noexcept {
+    return newBlock(newTile(tiles::Wall, id, x, y), "wall");
   }
 
   inline
@@ -54,11 +48,11 @@ namespace new_frontiers {
   inline
   BlockShPtr
   BlockFactory::newSpawnerOMeter(int id,
-                           const mob::Type& type,
-                           float x,
-                           float y,
-                           const tiles::Entity& ent,
-                           int variant) noexcept
+                                 const mob::Type& type,
+                                 float x,
+                                 float y,
+                                 const tiles::Entity& ent,
+                                 int variant) noexcept
   {
     return std::make_shared<SpawnerOMeter>(
       newTile(tiles::Portal, id, x, y), // spawner display
@@ -86,8 +80,14 @@ namespace new_frontiers {
 
   inline
   BlockShPtr
-  BlockFactory::newBlock(const tiles::Block& block, int id, float x, float y, const std::string& name) noexcept {
-    return std::shared_ptr<Block>(new Block(newTile(block, id, x, y), name));
+  BlockFactory::newBlock(const BlockTile& bt, const std::string& name) noexcept {
+    return std::shared_ptr<Block>(new Block(bt, name));
+  }
+
+  inline
+  BlockShPtr
+  BlockFactory::newPortal(float x, float y, int id) noexcept {
+    return newBlock(newTile(tiles::Portal, id, x, y), "portal");
   }
 
 }
