@@ -24,7 +24,7 @@ namespace new_frontiers {
     // for this entity.
     // In case no entities can be found, we will return
     // to the wandering behavior.
-    EntityShPtr e = info.frustum->getClosest(x, y, tiles::Executioner, 0);
+    EntityShPtr e = info.frustum->getClosest(x, y, tiles::Executioner, m_perceptionRadius, 0);
 
     if (e == nullptr) {
       // Couldn't find the entity we were chasing, get
