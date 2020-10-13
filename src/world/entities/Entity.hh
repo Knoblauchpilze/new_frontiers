@@ -41,20 +41,29 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create an entity. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct Props {
+        EntityTile tile;
+        float radius;
+
+        float perception;
+        float health;
+
+        float arrival;
+        float pathLength;
+      };
+
+      /**
        * @brief - Creates a new entity with the specified tile
        *          to use for the visual representation.
-       * @param tile - the visual representation of the entity
-       *               along with its position.
-       * @param radius - the radius for this entity expressed
-       *                 in blocks.
-       * @param perception - the perception radius expressed in
-       *                     units for this entity.
-       * @param health - the health pool of this entity.
+       * @param props - the properties describing the entity
+       *                to create.
        */
-      Entity(const EntityTile& tile,
-             float radius = 1.0f,
-             float perception = 1.0f,
-             float health = 10.0f);
+      Entity(const Props& props);
 
       /**
        * @brief - Implementation of the interface method to evolve

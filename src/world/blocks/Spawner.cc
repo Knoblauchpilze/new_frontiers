@@ -44,14 +44,53 @@ namespace new_frontiers {
     MobShPtr mp = nullptr;
 
     switch (m_type) {
-      case mob::Type::Warrior:
-        mp = std::make_shared<Warrior>(e, m_tile.x + 0.5f, m_tile.y + 0.5f);
-        break;
+      case mob::Type::Warrior: {
+        Warrior::WProps pp;
+        pp.tile = e;
+        pp.radius = 0.5f;
+
+        pp.perception = 4.0f;
+        pp.health = 12.0f;
+
+        pp.arrival = 0.01f;
+        pp.pathLength = 3.0f;
+
+        pp.homeX = m_tile.x + 0.5f;
+        pp.homeY = m_tile.y + 0.5f;
+
+        pp.carrying = 0.0f;
+        pp.cargo = 10.0f;
+
+        pp.vfxDelay = toMilliseconds(3000);
+
+        pp.attack = 2.0f;
+        pp.attackDelay = toMilliseconds(2000);
+
+        mp = std::make_shared<Warrior>(pp);
+        } break;
       case mob::Type::Worker:
         // Assume default type is a worker.
-      default:
-        mp = std::make_shared<Worker>(e, m_tile.x + 0.5f, m_tile.y + 0.5f);
-        break;
+      default: {
+        Mob::MProps pp;
+        pp.tile = e;
+        pp.radius = 0.5f;
+
+        pp.perception = 4.0f;
+        pp.health = 12.0f;
+
+        pp.arrival = 0.01f;
+        pp.pathLength = 3.0f;
+
+        pp.homeX = m_tile.x + 0.5f;
+        pp.homeY = m_tile.y + 0.5f;
+
+        pp.carrying = 0.0f;
+        pp.cargo = 10.0f;
+
+        pp.vfxDelay = toMilliseconds(3000);
+
+        mp = std::make_shared<Worker>(pp);
+        } break;
     }
 
     return mp;

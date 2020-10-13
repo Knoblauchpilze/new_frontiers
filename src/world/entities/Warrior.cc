@@ -5,14 +5,12 @@
 
 namespace new_frontiers {
 
-  Warrior::Warrior(const EntityTile& tile,
-                   float homeX,
-                   float homeY):
-    Mob(tile, homeX, homeY),
+  Warrior::Warrior(const WProps& props):
+    Mob(props),
 
-    m_attack(2.0f),
+    m_attack(props.attack),
 
-    m_attackDelay(toMilliseconds(500)),
+    m_attackDelay(props.attackDelay),
     m_last(now() - m_attackDelay),
     m_passed()
   {

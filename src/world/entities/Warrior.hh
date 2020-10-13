@@ -9,17 +9,21 @@ namespace new_frontiers {
     public:
 
       /**
-       * @brief - Creates a new mob with the specified tile.
-       * @param tile - the visual representation of the entity
-       *               along with its position.
-       * @param homeX - the abscissa of the home position for
-       *                this mob.
-       * @param homeY - the abscissa of the home position for
-       *                this mob.
+       * @brief - Convenience structure to regroup the info
+       *          needed to create an entity. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
        */
-      Warrior(const EntityTile& tile,
-              float homeX,
-              float homeY);
+      struct WProps: MProps {
+        float attack;
+        Duration attackDelay;
+      };
+
+      /**
+       * @brief - Creates a new mob with the specified tile.
+       * @param props - the properties describing this mob.
+       */
+      Warrior(const WProps& props);
 
       /**
        * @brief - Implementation of the interface method to pause

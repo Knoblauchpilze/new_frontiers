@@ -6,22 +6,6 @@
 namespace new_frontiers {
 
   inline
-  Player::Player(const EntityTile& tile):
-    Entity(tile, 1.0f, 0.2f),
-
-    m_sprintSpeed(3.0f),
-    m_recoverySpeed(m_sprintSpeed / 4.0f),
-
-    m_exhaustion(toMilliseconds(3000)),
-    m_recovery(toMilliseconds(1000)),
-
-    m_origin(),
-    m_remaining()
-  {
-    m_speed = m_sprintSpeed / 2.0f;
-  }
-
-  inline
   void
   Player::pause(const TimeStamp& t) {
     // In case the player has an effect applied, save

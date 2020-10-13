@@ -4,19 +4,16 @@
 
 namespace new_frontiers {
 
-  Mob::Mob(const EntityTile& tile,
-           float homeX,
-           float homeY,
-           float carrying):
-    Entity(tile, 0.5f, 3.0f),
+  Mob::Mob(const MProps& props):
+    Entity(props),
 
-    m_homeX(homeX),
-    m_homeY(homeY),
+    m_homeX(props.homeX),
+    m_homeY(props.homeY),
 
-    m_carrying(0.0f),
-    m_cargo(std::max(carrying, 0.0f)),
+    m_carrying(std::max(std::min(props.cargo, props.carrying), 0.0f)),
+    m_cargo(std::max(props.cargo, 0.0f)),
 
-    m_vfxDelay(toMilliseconds(8000)),
+    m_vfxDelay(props.vfxDelay),
     m_last(now() - m_vfxDelay),
 
     m_passed(),

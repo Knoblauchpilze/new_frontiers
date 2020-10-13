@@ -5,16 +5,13 @@
 
 namespace new_frontiers {
 
-  Entity::Entity(const EntityTile& desc,
-                 float radius,
-                 float perception,
-                 float health):
-    Element(desc, radius, health, "entity"),
+  Entity::Entity(const Props& props):
+    Element(props.tile, props.radius, props.health, "entity"),
 
     m_speed(-1.0f),
-    m_perceptionRadius(perception < 0.0f ? 1.0f : perception),
-    m_rArrival(0.05f),
-    m_pathLength(3.0f),
+    m_perceptionRadius(props.perception < 0.0f ? 1.0f : props.perception),
+    m_rArrival(props.arrival),
+    m_pathLength(props.pathLength),
 
     m_path(),
 
