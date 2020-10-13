@@ -28,21 +28,6 @@ namespace new_frontiers {
   }
 
   inline
-  Spawner::Spawner(const BlockTile& tile,
-                   float radius,
-                   const tiles::Entity& mob,
-                   const mob::Type& agent,
-                   int id):
-    Block(tile, "spawner"),
-
-    m_mob(mob),
-    m_type(agent),
-    m_mobID(id),
-
-    m_radius(std::max(radius, 0.0f))
-  {}
-
-  inline
   bool
   Spawner::step(StepInfo& info) {
     // Check whether the spawner is allowed to spawn

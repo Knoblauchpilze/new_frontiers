@@ -6,6 +6,16 @@
 
 namespace new_frontiers {
 
+  Spawner::Spawner(const Props& props):
+    Block(props.tile, "spawner"),
+
+    m_mob(props.mob),
+    m_type(props.agent),
+    m_mobID(props.mVariant),
+
+    m_radius(std::max(props.radius, 0.0f))
+  {}
+
   EntityShPtr
   Spawner::spawn(StepInfo& info) noexcept {
     EntityTile e;

@@ -3,20 +3,13 @@
 
 namespace new_frontiers {
 
-  SpawnerOMeter::SpawnerOMeter(const BlockTile& tile,
-                               float threshold,
-                               float stock,
-                               const Duration& interval,
-                               const tiles::Entity& mob,
-                               const mob::Type& agent,
-                               int id,
-                               float refill):
-    TimedSpawner(tile, interval, mob, agent, id),
+  SpawnerOMeter::SpawnerOMeter(const SOMProps& props):
+    TimedSpawner(props),
 
-    m_stock(stock),
-    m_threshold(threshold),
+    m_stock(props.reserve),
+    m_threshold(props.threshold),
 
-    m_refill(refill)
+    m_refill(props.refill)
   {}
 
   void

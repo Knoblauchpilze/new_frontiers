@@ -10,28 +10,24 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a spawner. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct TSProps: public Props {
+        Duration interval;
+        int stock;
+      };
+
+      /**
        * @brief - Create a new portal that is able to spawn new
        *          entities on a countdown. The amount of entities
        *          that can be spawned can be limited if needed.
-       * @param tile - the visual representation of the spawner
-       *               along with its position.
-       * @param interval - the time interval between consecutive
-       *                   spawns of entities.
-       * @param mob - the type of mob spawned by this element.
-       * @param agent - the IA to plug to the body of entities
-       *                spawned by this element.
-       * @param id - the variant of mob spawned.
-       * @param stock - a value indicating how many entities can
-       *                be spawned by this portal. The default
-       *                value of `-1` indicate that an infinite
-       *                amount of entities can be spawned.
+       * @param props - the description of the properties to use
+       *                when instantiating the spawner.
        */
-      TimedSpawner(const BlockTile& tile,
-                   const Duration& interval,
-                   const tiles::Entity& mob,
-                   const mob::Type& agent,
-                   int id = 0,
-                   int stock = -1);
+      TimedSpawner(const TSProps& props);
 
       void
       pause(const TimeStamp& t) override;

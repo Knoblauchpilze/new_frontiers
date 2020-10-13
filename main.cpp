@@ -37,6 +37,7 @@
 // TODO: Colony mechanism to regroup entities in faction.
 // TODO: Behavior based on pheromons.
 // TODO: Control of colony's priorities through UI.
+// TODO: SpawnerOMeter could derive directly from Spawner.
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>
