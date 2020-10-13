@@ -55,14 +55,13 @@ namespace new_frontiers {
        *          as a way to reduce the number of arguments
        *          provided to the constructor of this class.
        */
-      struct Props {
-        BlockTile tile;
-        float radius;
-
+      struct SProps: Props {
         tiles::Entity mob;
         int mVariant;
 
         mob::Type agent;
+
+        float spawnRadius;
       };
 
       /**
@@ -74,7 +73,7 @@ namespace new_frontiers {
        *          additional information to generate the spawner.
        * @param props - a struct describing the spawner's behavior.
        */
-      Spawner(const Props& props);
+      Spawner(const SProps& props);
 
       /**
        * @brief - Interface method to allow inheriting classes
@@ -151,7 +150,7 @@ namespace new_frontiers {
        *          that mobs should be spawn inside the portal.
        *          This value is clamped to `0`.
        */
-      float m_radius;
+      float m_spawnRadius;
   };
 
   using SpawnerShPtr = std::shared_ptr<Spawner>;

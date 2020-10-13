@@ -36,20 +36,21 @@ namespace new_frontiers {
                                 const tiles::Entity& ent,
                                 int variant) noexcept
   {
-    TimedSpawner::TSProps props;
-    props.tile = newTile(tiles::Portal, id, x, y);
-    props.radius = 1.0f;
+    TimedSpawner::TSProps pp;
+    pp.tile = newTile(tiles::Portal, id, x, y);
 
-    props.mob = ent;
-    props.mVariant = variant;
+    pp.radius = 1.0f;
+    pp.health = 10.0f;
 
-    props.agent = type;
+    pp.mob = ent;
+    pp.mVariant = variant;
 
-    props.interval = toMilliseconds(500);
-    props.stock = 1;
+    pp.agent = type;
 
+    pp.interval = toMilliseconds(500);
+    pp.stock = 1;
 
-    return std::make_shared<TimedSpawner>(props);
+    return std::make_shared<TimedSpawner>(pp);
   }
 
   inline
@@ -61,26 +62,36 @@ namespace new_frontiers {
                                  const tiles::Entity& ent,
                                  int variant) noexcept
   {
-    SpawnerOMeter::SOMProps props;
-    props.tile = newTile(tiles::Portal, id, x, y);
-    props.radius = 1.0f;
+    SpawnerOMeter::SOMProps pp;
+    pp.tile = newTile(tiles::Portal, id, x, y);
 
-    props.mob = ent;
-    props.mVariant = variant;
+    pp.radius = 1.0f;
+    pp.health = 10.0f;
 
-    props.agent = type;
+    pp.mob = ent;
+    pp.mVariant = variant;
 
-    props.threshold = 10.0f;
-    props.reserve = 9.5f;
-    props.refill = 0.5f;
+    pp.agent = type;
 
-    return std::make_shared<SpawnerOMeter>(props);
+    pp.threshold = 10.0f;
+    pp.reserve = 9.5f;
+    pp.refill = 0.5f;
+
+    return std::make_shared<SpawnerOMeter>(pp);
   }
 
   inline
   BlockShPtr
   BlockFactory::newDeposit(float x, float y, float stock) noexcept {
-    return std::make_shared<Deposit>(newTile(tiles::Portal, 14, x, y), stock);
+    Deposit::DProps pp;
+    pp.tile = newTile(tiles::Portal, 14, x, y);
+
+    pp.radius = 1.0f;
+    pp.health = 10.0f;
+
+    pp.stock = stock;
+
+    return std::make_shared<Deposit>(pp);
   }
 
   inline
@@ -92,7 +103,13 @@ namespace new_frontiers {
   inline
   BlockShPtr
   BlockFactory::newBlock(const BlockTile& bt, const std::string& name) noexcept {
-    return std::shared_ptr<Block>(new Block(bt, name));
+    Block::Props pp;
+    pp.tile = bt;
+
+    pp.radius = 1.0f;
+    pp.health = 10.0f;
+
+    return std::shared_ptr<Block>(new Block(pp, name));
   }
 
   inline

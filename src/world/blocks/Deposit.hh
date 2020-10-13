@@ -10,16 +10,23 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a deposit. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct DProps: Props {
+        float stock;
+      };
+
+      /**
        * @brief - Create a new deposit that contains some amount
        *          of a resource. Each deposit comes with a certain
        *          amount of resource and can be refilled with the
        *          appropriate method.
-       * @param tile - the visual representation of the deposit
-       *               along with its position.
-       * @param stock - a value indicating the initiam amount of
-       *                resource that exist in the deposit.
+       * @param props - the properties describing this deposit.
        */
-      Deposit(const BlockTile& tile, float stock);
+      Deposit(const DProps& props);
 
       /**
        * @brief - Used to retrieve the current stock for this

@@ -6,13 +6,6 @@
 namespace new_frontiers {
 
   inline
-  Block::Block(const BlockTile& tile,
-               const std::string& name,
-               float health):
-    Element(tile, 1.0f, health, name)
-  {}
-
-  inline
   bool
   Block::step(StepInfo& /*info*/) {
     return false;

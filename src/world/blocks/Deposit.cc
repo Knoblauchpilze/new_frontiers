@@ -3,10 +3,10 @@
 
 namespace new_frontiers {
 
-  Deposit::Deposit(const BlockTile& tile, float stock):
-    Block(tile, "deposit", 1.0f),
+  Deposit::Deposit(const DProps& props):
+    Block(props, "deposit"),
 
-    m_stock(stock)
+    m_stock(props.stock)
   {}
 
 }
