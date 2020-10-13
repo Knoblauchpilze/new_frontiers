@@ -35,14 +35,20 @@ namespace new_frontiers {
                                 const tiles::Entity& ent,
                                 int variant) noexcept
   {
-    return std::make_shared<TimedSpawner>(
-      newTile(tiles::Portal, id, x, y), // spawner display
-      toMilliseconds(500),              // spawn interval
-      ent,                              // mob
-      type,                             // agent type
-      variant,                          // mob variant
-      1                                 // stock
-    );
+    TimedSpawner::TSProps props;
+    props.tile = newTile(tiles::Portal, id, x, y);
+    props.radius = 1.0f;
+
+    props.mob = ent;
+    props.mVariant = variant;
+
+    props.agent = type;
+
+    props.interval = toMilliseconds(500);
+    props.stock = 1;
+
+
+    return std::make_shared<TimedSpawner>(props);
   }
 
   inline
@@ -54,16 +60,23 @@ namespace new_frontiers {
                                  const tiles::Entity& ent,
                                  int variant) noexcept
   {
-    return std::make_shared<SpawnerOMeter>(
-      newTile(tiles::Portal, id, x, y), // spawner display
-      10.0f,                            // threshold
-      9.5f,                             // stock
-      toMilliseconds(100),              // interval
-      ent,                              // mob
-      type,                             // agent type
-      variant,                          // mob variant,
-      0.5f                              // refill
-    );
+    SpawnerOMeter::SOMProps props;
+    props.tile = newTile(tiles::Portal, id, x, y);
+    props.radius = 1.0f;
+
+    props.mob = ent;
+    props.mVariant = variant;
+
+    props.agent = type;
+
+    props.interval = toMilliseconds(100);
+    props.stock = -1;
+
+    props.threshold = 10.0f;
+    props.reserve = 9.5f;
+    props.refill = 0.5f;
+
+    return std::make_shared<SpawnerOMeter>(props);
   }
 
   inline

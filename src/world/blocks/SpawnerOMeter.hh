@@ -10,38 +10,27 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a spawner. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct SOMProps: public TSProps {
+        float threshold;
+        float reserve;
+        float refill;
+      };
+
+      /**
        * @brief - Create a new portal that is able to spawn new
        *          entities based on the amount of resources that
        *          is stored in it. Each spawn consumes certain
        *          quantity of resource and there's an additional
        *          interval that can be set to avoid spawning all
        *          entities at once.
-       * @param tile - the visual representation of the spawner
-       *               along with its position.
-       * @param threshold - the cost of each entity expressed in
-       *                    unit of the stock.
-       * @param stock - a value indicating how many entities can
-       *                be spawned by this portal. The default
-       *                value of `-1` indicate that an infinite
-       *                amount of entities can be spawned.
-       * @param interval - the time interval between consecutive
-       *                   spawns of entities.
-       * @param mob - the type of mob spawned by this element.
-       * @param agent - the IA to plug to the body of entities
-       *                spawned by this element.
-       * @param id - the variant of mob spawned.
-       * @param refill - a value indicating how fast the spawner
-       *                 is automatically refilling its stock
-       *                 over time.
+       * @param props - the list of props to create the spawner.
        */
-      SpawnerOMeter(const BlockTile& tile,
-                    float threshold,
-                    float stock,
-                    const Duration& interval,
-                    const tiles::Entity& mob,
-                    const mob::Type& agent,
-                    int id = 0,
-                    float refill = 0.0f);
+      SpawnerOMeter(const SOMProps& props);
 
       /**
        * @brief - Return a floating point value measuring the

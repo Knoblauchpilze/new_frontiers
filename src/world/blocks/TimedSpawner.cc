@@ -3,20 +3,15 @@
 
 namespace new_frontiers {
 
-  TimedSpawner::TimedSpawner(const BlockTile& tile,
-                             const Duration& interval,
-                             const tiles::Entity& mob,
-                             const mob::Type& agent,
-                             int id,
-                             int stock):
-    Spawner(tile, 2.0f, mob, agent, id),
+  TimedSpawner::TimedSpawner(const TSProps& props):
+    Spawner(props),
 
     // Make sure the stock is at least `1` (if it is
     // not set to an unlimited amount).
-    m_reserve(stock < 0 ? -1 : std::max(stock, 1)),
+    m_reserve(props.stock < 0 ? -1 : std::max(props.stock, 1)),
     m_spawned(0),
 
-    m_interval(interval),
+    m_interval(props.interval),
     m_last(now() - m_interval),
 
     m_passed(Duration::zero())

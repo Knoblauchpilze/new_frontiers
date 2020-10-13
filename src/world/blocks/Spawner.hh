@@ -50,30 +50,31 @@ namespace new_frontiers {
     protected:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a spawner. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct Props {
+        BlockTile tile;
+        float radius;
+
+        tiles::Entity mob;
+        int mVariant;
+
+        mob::Type agent;
+      };
+
+      /**
        * @brief - Build a new portal with its associated visual
        *          display. A portal is a device allowed to spawn
        *          new mobs into the game using a custom strategy.
-       *          Also defines the type of mob spawned by this
-       *          element, along with its variant.
-       *          The user should also provide a radius which is
-       *          used to spawn entities on a circle around the
-       *          portal. In case it is not needed the value of
-       *          `0` indicates that entities should be spawned
-       *          in the portal.
-       * @param tile - the visual representation of the spawner
-       *               along with its position.
-       * @param radius - the radius of the circle into which the
-       *                 spawner is allowed to create entities.
-       * @param mob - the type of mob spawned by this element.
-       * @param agent - the IA to plug to the body of entities
-       *                spawned by this element.
-       * @param id - the variant of mob spawned.
+       *          The `props` argument defines the properties to
+       *          use to describe the spawning strategy and some
+       *          additional information to generate the spawner.
+       * @param props - a struct describing the spawner's behavior.
        */
-      Spawner(const BlockTile& tile,
-              float radius,
-              const tiles::Entity& mob,
-              const mob::Type& agent,
-              int id = 0);
+      Spawner(const Props& props);
 
       /**
        * @brief - Interface method to allow inheriting classes
