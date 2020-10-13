@@ -9,42 +9,6 @@ namespace new_frontiers {
 
   inline
   bool
-  PGEApp::OnUserCreate() {
-    // Create the world.
-// # define WORLD_FROM_FILE
-# ifdef WORLD_FROM_FILE
-    m_world = std::make_shared<World>(100, std::string("data/worlds/level_1.lvl"));
-# else
-    m_world = std::make_shared<World>(100);
-# endif
-    m_loc = m_world->locator();
-
-    // Load the menu resources.
-    loadMenuResources();
-
-    // And other resources.
-    loadResources();
-
-    // The debug layer is the default layer: it is always
-    // provided by the pixel game engine.
-    m_dLayer = 0u;
-
-    // Create a layer for the UI elements and enable it.
-    m_uiLayer = CreateLayer();
-    EnableLayer(m_uiLayer, true);
-
-    // And finally create a layer for the main content: as
-    // the pixel game engine draws layers from back to front
-    // the main content should be at the back so that all
-    // other elements are displayed on top of it.
-    m_mLayer = CreateLayer();
-    EnableLayer(m_mLayer, true);
-
-    return true;
-  }
-
-  inline
-  bool
   PGEApp::OnUserUpdate(float fElapsedTime) {
     // Handle inputs.
     InputChanges ic = handleInputs();

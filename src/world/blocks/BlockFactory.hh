@@ -10,19 +10,15 @@ namespace new_frontiers {
 
       static
       BlockShPtr
-      newPortal(int id, float x, float y) noexcept;
+      newEntrance(float x, float y, int id = 0) noexcept;
 
       static
       BlockShPtr
-      newEntrance(int id, float x, float y) noexcept;
+      newExit(float x, float y, int id = 0) noexcept;
 
       static
       BlockShPtr
-      newExit(int id, float x, float y) noexcept;
-
-      static
-      BlockShPtr
-      newWall(int id, float x, float y) noexcept;
+      newWall(float x, float y, int id = 0) noexcept;
 
       static
       BlockShPtr
@@ -54,7 +50,11 @@ namespace new_frontiers {
 
       static
       BlockShPtr
-      newBlock(const tiles::Block& block, int id, float x, float y, const std::string& name) noexcept;
+      newBlock(const BlockTile& bt, const std::string& name) noexcept;
+
+      static
+      BlockShPtr
+      newPortal(float x, float y, int id = 0) noexcept;
   };
 
 }
