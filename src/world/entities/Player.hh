@@ -10,11 +10,24 @@ namespace new_frontiers {
     public:
 
       /**
-       * @brief - Creates a new player at the specified location.
-       * @param tile - the visual representation of the player
-       *               along with its position.
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a player. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
        */
-      Player(const EntityTile& tile);
+      struct PProps: public Props {
+        float sprintSpeed;
+        float recoverySpeed;
+
+        Duration exhaustion;
+        Duration recovery;
+      };
+
+      /**
+       * @brief - Creates a new player at the specified location.
+       * @param props - the properties describing the player.
+       */
+      Player(const PProps& props);
 
       /**
        * @brief - Override the base class implementation to be

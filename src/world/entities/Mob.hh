@@ -10,23 +10,28 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a mob. It is meant as a
+       *          way to reduce the number of arguments that
+       *          are needed for building an instance of this
+       *          class.
+       */
+      struct MProps: public Props {
+        float homeX;
+        float homeY;
+
+        float carrying;
+        float cargo;
+
+        Duration vfxDelay;
+      };
+
+      /**
        * @brief - Creates a new mob with the specified tile and
        *          home position.
-       * @param tile - the visual representation of the entity
-       *               along with its position.
-       * @param homeX - the abscissa of the home position for
-       *                this mob.
-       * @param homeY - the abscissa of the home position for
-       *                this mob.
-       * @param carrying - the capacity of a resource that this
-       *                   mob can carry. It is used when some
-       *                   resource should be picked from the
-       *                   ground or pillaged.
+       * @param props - the properties describing this mob.
        */
-      Mob(const EntityTile& tile,
-          float homeX,
-          float homeY,
-          float carrying = 10.0f);
+      Mob(const MProps& props);
 
       float
       getCarryingCapacity() const noexcept;

@@ -4,6 +4,21 @@
 
 namespace new_frontiers {
 
+  Player::Player(const PProps& props):
+    Entity(props),
+
+    m_sprintSpeed(props.sprintSpeed),
+    m_recoverySpeed(props.recoverySpeed),
+
+    m_exhaustion(props.exhaustion),
+    m_recovery(props.recovery),
+
+    m_origin(),
+    m_remaining()
+  {
+    m_speed = m_sprintSpeed / 2.0f;
+  }
+
   bool
   Player::step(StepInfo& info) {
     // Check whether any of the control keys

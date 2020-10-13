@@ -9,18 +9,10 @@ namespace new_frontiers {
     public:
 
       /**
-       * @brief - Creates a new mob with the specified tile
-       *          and a default VFX to emit.
-       * @param tile - the visual representation of the entity
-       *               along with its position.
-       * @param homeX - the abscissa of the home position for
-       *                this mob.
-       * @param homeY - the abscissa of the home position for
-       *                this mob.
+       * @brief - Creates a new mob with the specified props.
+       * @param props - the properties describing this mob.
        */
-      Worker(const EntityTile& tile,
-             float homeX,
-             float homeY);
+      Worker(const MProps& props);
 
     protected:
 

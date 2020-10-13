@@ -7,6 +7,7 @@
 # include "blocks/BlockFactory.hh"
 # include "entities/Player.hh"
 # include "entities/Mob.hh"
+# include "TimeUtils.hh"
 
 namespace {
 
@@ -55,10 +56,45 @@ namespace {
 
     // Interpret the brain.
     if (kind == "hostile") {
-      return std::make_shared<new_frontiers::Mob>(et, homeX, homeY);
+      new_frontiers::Mob::MProps pp;
+
+      pp.tile = et;
+      pp.radius = 0.5f;
+
+      pp.perception = 4.0f;
+      pp.health = 10.0f;
+
+      pp.arrival = 0.01f;
+      pp.pathLength = 3.0f;
+
+      pp.homeX = homeX;
+      pp.homeY = homeY;
+
+      pp.carrying = 0.0f;
+      pp.cargo = 10.0f;
+
+      pp.vfxDelay = new_frontiers::toMilliseconds(3000);
+
+      return std::make_shared<new_frontiers::Mob>(pp);
     }
     if (kind == "player") {
-      return std::make_shared<new_frontiers::Player>(et);
+      new_frontiers::Player::PProps pp;
+      pp.tile = et;
+      pp.radius = 1.0f;
+
+      pp.perception = 2.0f;
+      pp.health = 15.0f;
+
+      pp.arrival = 0.01f;
+      pp.pathLength = 3.0f;
+
+      pp.sprintSpeed = 4.0f;
+      pp.recoverySpeed = 0.5f;
+
+      pp.exhaustion = new_frontiers::toMilliseconds(3000);
+      pp.recovery = new_frontiers::toMilliseconds(6000);
+
+      return std::make_shared<new_frontiers::Player>(pp);
     }
 
     // Could not interpret the brain.
@@ -220,9 +256,25 @@ namespace new_frontiers {
 
     // Generate the player at the same location
     // as the entry portal.
-    EntityTile et = newTile(tiles::Knight, 0);
-    et.x = 1.0f; et.y = 1.0f;
-    m_entities.push_back(std::make_shared<Player>(et));
+    Player::PProps pp;
+    pp.tile = newTile(tiles::Knight, 0);
+    pp.tile.x = 1.0f; pp.tile.y = 1.0f;
+
+    pp.radius = 1.0f;
+
+    pp.perception = 2.0f;
+    pp.health = 15.0f;
+
+    pp.arrival = 0.01f;
+    pp.pathLength = 3.0f;
+
+    pp.sprintSpeed = 4.0f;
+    pp.recoverySpeed = 0.5f;
+
+    pp.exhaustion = new_frontiers::toMilliseconds(3000);
+    pp.recovery = new_frontiers::toMilliseconds(6000);
+
+    m_entities.push_back(std::make_shared<Player>(pp));
   }
 
   void

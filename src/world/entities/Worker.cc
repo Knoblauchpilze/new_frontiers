@@ -10,10 +10,8 @@
 
 namespace new_frontiers {
 
-  Worker::Worker(const EntityTile& tile,
-                 float homeX,
-                 float homeY):
-    Mob(tile, homeX, homeY)
+  Worker::Worker(const MProps& props):
+    Mob(props)
   {
     setService("worker");
   }
