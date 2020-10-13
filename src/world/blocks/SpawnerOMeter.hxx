@@ -59,10 +59,10 @@ namespace new_frontiers {
 
   inline
   bool
-  SpawnerOMeter::canSpawn(StepInfo& info) const noexcept {
-    // We need to meet the conditions of the base class
-    // and have enough resources.
-    return (m_stock >= m_threshold) && TimedSpawner::canSpawn(info);
+  SpawnerOMeter::canSpawn(StepInfo& /*info*/) const noexcept {
+    // We need to have enough resources to spawn a
+    // new mob.
+    return m_stock >= m_threshold;
   }
 
 }

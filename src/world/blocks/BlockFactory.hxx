@@ -3,6 +3,7 @@
 
 # include "BlockFactory.hh"
 # include "Block.hh"
+# include "TimedSpawner.hh"
 # include "SpawnerOMeter.hh"
 # include "Deposit.hh"
 
@@ -68,9 +69,6 @@ namespace new_frontiers {
     props.mVariant = variant;
 
     props.agent = type;
-
-    props.interval = toMilliseconds(100);
-    props.stock = -1;
 
     props.threshold = 10.0f;
     props.reserve = 9.5f;

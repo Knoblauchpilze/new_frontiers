@@ -2,11 +2,11 @@
 # define   SPAWNER_OMETER_HH
 
 # include <memory>
-# include "TimedSpawner.hh"
+# include "Spawner.hh"
 
 namespace new_frontiers {
 
-  class SpawnerOMeter: public TimedSpawner {
+  class SpawnerOMeter: public Spawner {
     public:
 
       /**
@@ -15,7 +15,7 @@ namespace new_frontiers {
        *          as a way to reduce the number of arguments
        *          provided to the constructor of this class.
        */
-      struct SOMProps: public TSProps {
+      struct SOMProps: public Props {
         float threshold;
         float reserve;
         float refill;
