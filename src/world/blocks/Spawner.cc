@@ -6,14 +6,14 @@
 
 namespace new_frontiers {
 
-  Spawner::Spawner(const Props& props):
-    Block(props.tile, "spawner"),
+  Spawner::Spawner(const SProps& props):
+    Block(props, "spawner"),
 
     m_mob(props.mob),
     m_type(props.agent),
     m_mobID(props.mVariant),
 
-    m_radius(std::max(props.radius, 0.0f))
+    m_spawnRadius(std::max(props.spawnRadius, 0.0f))
   {}
 
   EntityShPtr
@@ -26,7 +26,7 @@ namespace new_frontiers {
     // Spawn the entity within `radius` of the spawner,
     // using the provided rng to pick a point. Don't
     // forget to add the position of the spawner itself.
-    float r = info.rng.rndFloat(0, m_radius * m_radius);
+    float r = info.rng.rndFloat(0, m_spawnRadius * m_spawnRadius);
     float theta = info.rng.rndAngle();
 
     e.x = std::sqrt(r) * std::cos(theta);

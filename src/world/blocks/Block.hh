@@ -41,17 +41,27 @@ namespace new_frontiers {
     protected:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a block. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct Props {
+        BlockTile tile;
+
+        float radius;
+        float health;
+      };
+
+      /**
        * @brief - Create a new solid element with the tile
        *          and name. Only used to forward the args
        *          to the base class.
-       * @param tile - the visual representation of this
-       *               element along with its position.
+       * @param props - the properties describing the block.
        * @param name - the name of the object.
-       * @param health - the health pool for this block.
        */
-      Block(const BlockTile& tile,
-            const std::string& name,
-            float health = 10.0f);
+      Block(const Props& props,
+            const std::string& name);
 
     private:
 

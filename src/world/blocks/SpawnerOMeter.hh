@@ -15,7 +15,7 @@ namespace new_frontiers {
        *          as a way to reduce the number of arguments
        *          provided to the constructor of this class.
        */
-      struct SOMProps: public Props {
+      struct SOMProps: public SProps {
         float threshold;
         float reserve;
         float refill;
