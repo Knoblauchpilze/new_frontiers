@@ -57,7 +57,6 @@ namespace {
     // Interpret the brain.
     if (kind == "hostile") {
       new_frontiers::Mob::MProps pp;
-
       pp.tile = et;
       pp.radius = 0.5f;
 
@@ -67,8 +66,8 @@ namespace {
       pp.arrival = 0.01f;
       pp.pathLength = 3.0f;
 
-      pp.homeX = homeX;
-      pp.homeY = homeY;
+      pp.homeX = homeX + 0.5f;
+      pp.homeY = homeY + 0.5f;
 
       pp.carrying = 0.0f;
       pp.cargo = 10.0f;

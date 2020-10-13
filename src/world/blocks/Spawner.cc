@@ -76,7 +76,7 @@ namespace new_frontiers {
         pp.radius = 0.5f;
 
         pp.perception = 4.0f;
-        pp.health = 12.0f;
+        pp.health = 10.0f;
 
         pp.arrival = 0.01f;
         pp.pathLength = 3.0f;

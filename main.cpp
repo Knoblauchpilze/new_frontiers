@@ -49,7 +49,7 @@ int main(int /*argc*/, char** /*argv*/) {
   utils::StdLogger logger;
   utils::LoggerLocator::provide(&logger);
 
-  logger.setLevel(utils::Level::Verbose);
+  logger.setLevel(utils::Level::Debug);
 
   const std::string service("new_frontiers");
   const std::string module("main");

@@ -32,7 +32,13 @@ namespace new_frontiers {
 
     // We have reached the deposit, attempt to pick
     // some resource and get back.
-    BlockShPtr b = info.frustum->getClosest(m_tile.x, m_tile.y, tiles::Portal, 14);
+    BlockShPtr b = info.frustum->getClosest(
+      m_tile.x,
+      m_tile.y,
+      tiles::Portal,
+      m_perceptionRadius,
+      14
+    );
 
     if (b == nullptr) {
       // For some reason the deposit does not exist,
@@ -159,7 +165,7 @@ namespace new_frontiers {
   Worker::wander(StepInfo& info, float& x, float& y) {
     // Check whether we can find any deposit in the
     // surroudings of the entity.
-    BlockShPtr deposit = info.frustum->getClosest(x, y, tiles::Portal, 14, m_perceptionRadius);
+    BlockShPtr deposit = info.frustum->getClosest(x, y, tiles::Portal, m_perceptionRadius, 14);
 
     // In case there are no deposits, continue the
     // wandering around process. We also need to
