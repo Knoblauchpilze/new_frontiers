@@ -85,7 +85,7 @@ namespace new_frontiers {
     // not get destroyed for some reasons).
     world::ItemEntry ie = info.frustum->getClosest(m_tile.x, m_tile.y, world::ItemType::Block);
     world::Block b;
-    
+
     if (ie.index >= 0 && ie.type == world::ItemType::Block) {
       b = info.frustum->block(ie.index);
     }

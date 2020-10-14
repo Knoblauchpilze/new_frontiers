@@ -6,6 +6,7 @@ set (SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/TimedSpawner.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/SpawnerOMeter.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/Deposit.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/BlockFactory.cc
   PARENT_SCOPE
   )
 
