@@ -2,11 +2,26 @@
 # define   BLOCK_FACTORY_HH
 
 # include "Block.hh"
+# include "Deposit.hh"
+# include "TimedSpawner.hh"
+# include "SpawnerOMeter.hh"
 
 namespace new_frontiers {
 
   class BlockFactory {
     public:
+
+      static
+      Deposit::DProps
+      newDepositProps(float x, float y) noexcept;
+
+      static
+      TimedSpawner::TSProps
+      newTimedSpawnerProps(float x, float y, const tiles::Entity& ent) noexcept;
+
+      static
+      SpawnerOMeter::SOMProps
+      newSpawnerOMeterProps(float x, float y, const tiles::Entity& ent) noexcept;
 
       static
       BlockShPtr
@@ -22,25 +37,15 @@ namespace new_frontiers {
 
       static
       BlockShPtr
-      newTimedSpawner(int id,
-                      const mob::Type& type,
-                      float x,
-                      float y,
-                      const tiles::Entity& ent,
-                      int variant = 0) noexcept;
+      newTimedSpawner(const TimedSpawner::TSProps& props) noexcept;
 
       static
       BlockShPtr
-      newSpawnerOMeter(int id,
-                       const mob::Type& type,
-                       float x,
-                       float y,
-                       const tiles::Entity& ent,
-                       int variant = 0) noexcept;
+      newSpawnerOMeter(const SpawnerOMeter::SOMProps& props) noexcept;
 
       static
       BlockShPtr
-      newDeposit(float x, float y, float stock = 10.0f) noexcept;
+      newDeposit(const Deposit::DProps& props) noexcept;
 
     private:
 
@@ -55,6 +60,11 @@ namespace new_frontiers {
       static
       BlockShPtr
       newPortal(float x, float y, int id = 0) noexcept;
+
+    private:
+
+      static const float sk_radius;
+      static const float sk_health;
   };
 
 }

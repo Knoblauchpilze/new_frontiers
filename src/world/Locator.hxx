@@ -126,7 +126,7 @@ namespace new_frontiers {
       if (bTile != nullptr && b->getTile().type != *bTile) {
         continue;
       }
-      
+
       // Not the same variant.
       if (id != -1 && b->getTile().id != id) {
         continue;
@@ -160,7 +160,7 @@ namespace new_frontiers {
       if (eTile != nullptr && e->getTile().type != *eTile) {
         continue;
       }
-      
+
       // Not the same variant.
       if (id != -1 && e->getTile().id != id) {
         continue;

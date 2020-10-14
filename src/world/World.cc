@@ -5,6 +5,7 @@
 # include <fstream>
 # include "blocks/Spawner.hh"
 # include "blocks/BlockFactory.hh"
+# include "entities/EntityFactory.hh"
 # include "entities/Player.hh"
 # include "entities/Mob.hh"
 # include "TimeUtils.hh"
@@ -47,51 +48,28 @@ namespace {
       return nullptr;
     }
 
-    new_frontiers::EntityTile et;
-    et.type = e;
-    et.id = id;
-
-    et.x = x;
-    et.y = y;
-
     // Interpret the brain.
-    if (kind == "hostile") {
-      new_frontiers::Mob::MProps pp;
-      pp.tile = et;
-      pp.radius = 0.5f;
-
-      pp.perception = 4.0f;
-      pp.health = 10.0f;
-
-      pp.arrival = 0.01f;
-      pp.pathLength = 3.0f;
+    if (kind == "warrior") {
+      new_frontiers::Warrior::WProps pp = new_frontiers::EntityFactory::newWarriorProps(x, y, e);
+      pp.tile.id = id;
 
       pp.homeX = homeX + 0.5f;
       pp.homeY = homeY + 0.5f;
 
-      pp.carrying = 0.0f;
-      pp.cargo = 10.0f;
+      return std::make_shared<new_frontiers::Warrior>(pp);
+    }
+    if (kind == "worker") {
+      new_frontiers::Mob::MProps pp = new_frontiers::EntityFactory::newWorkerProps(x, y, e);
+      pp.tile.id = id;
 
-      pp.vfxDelay = new_frontiers::toMilliseconds(3000);
+      pp.homeX = homeX + 0.5f;
+      pp.homeY = homeY + 0.5f;
 
-      return std::make_shared<new_frontiers::Mob>(pp);
+      return std::make_shared<new_frontiers::Worker>(pp);
     }
     if (kind == "player") {
-      new_frontiers::Player::PProps pp;
-      pp.tile = et;
-      pp.radius = 1.0f;
-
-      pp.perception = 2.0f;
-      pp.health = 15.0f;
-
-      pp.arrival = 0.01f;
-      pp.pathLength = 3.0f;
-
-      pp.sprintSpeed = 4.0f;
-      pp.recoverySpeed = 0.5f;
-
-      pp.exhaustion = new_frontiers::toMilliseconds(3000);
-      pp.recovery = new_frontiers::toMilliseconds(6000);
+      new_frontiers::Player::PProps pp = new_frontiers::EntityFactory::newPlayerProps(x, y, e);
+      pp.tile.id = id;
 
       return std::make_shared<new_frontiers::Player>(pp);
     }
@@ -245,35 +223,23 @@ namespace new_frontiers {
     m_blocks.push_back(BlockFactory::newTimedSpawner(3, mob::Type::Worker, 1.0f, 5.0f, tiles::IncaOverlord, 0));
     m_blocks.push_back(BlockFactory::newTimedSpawner(3, mob::Type::Warrior, 5.0f, 1.0f, tiles::DemonBat, 0));
 # else
-    m_blocks.push_back(BlockFactory::newSpawnerOMeter(3, mob::Type::Worker, 1.0f, 4.0f, tiles::IncaOverlord, 0));
-    m_blocks.push_back(BlockFactory::newSpawnerOMeter(3, mob::Type::Worker, 2.0f, 2.0f, tiles::Executioner, 0));
-    m_blocks.push_back(BlockFactory::newSpawnerOMeter(3, mob::Type::Warrior, 5.0f, 1.0f, tiles::DemonBat, 0));
+    SpawnerOMeter::SOMProps pp = BlockFactory::newSpawnerOMeterProps(1.0f, 4.0f, tiles::IncaOverlord);
+    m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
+    pp.tile.x = 2.0f; pp.tile.y = 2.0f; pp.mob = tiles::Executioner;
+    m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
+    pp.tile.x = 5.0f; pp.tile.y = 1.0f; pp.mob = tiles::DemonBat; pp.agent = mob::Type::Warrior;
+    m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
 # endif
 
     // Generate resource deposit.
-    m_blocks.push_back(BlockFactory::newDeposit(3.0f, 4.0f, 20.0f));
+    Deposit::DProps dp = BlockFactory::newDepositProps(3.0f, 4.0f);
+    dp.stock = 20.0f;
+    m_blocks.push_back(BlockFactory::newDeposit(dp));
 
     // Generate the player at the same location
     // as the entry portal.
-    Player::PProps pp;
-    pp.tile = newTile(tiles::Knight, 0);
-    pp.tile.x = 1.0f; pp.tile.y = 1.0f;
-
-    pp.radius = 1.0f;
-
-    pp.perception = 2.0f;
-    pp.health = 15.0f;
-
-    pp.arrival = 0.01f;
-    pp.pathLength = 3.0f;
-
-    pp.sprintSpeed = 4.0f;
-    pp.recoverySpeed = 0.5f;
-
-    pp.exhaustion = new_frontiers::toMilliseconds(3000);
-    pp.recovery = new_frontiers::toMilliseconds(6000);
-
-    m_entities.push_back(std::make_shared<Player>(pp));
+    Player::PProps plp = EntityFactory::newPlayerProps(1.0f, 1.0f, tiles::Knight);
+    m_entities.push_back(std::make_shared<Player>(plp));
   }
 
   void
@@ -585,9 +551,18 @@ namespace new_frontiers {
         utils::Level::Verbose
       );
 
+      // in >> type >> x >> y >> mobStr >> entStr >> mobVariant;
+      // portal 3 16 9 Warrior Griffin 0
+
       // Note that we only allow creation of portals
       // with a spawner-o-meter type for now.
-      m_blocks.push_back(BlockFactory::newSpawnerOMeter(type, mt, x, y, e, mobVariant));
+      SpawnerOMeter::SOMProps pp = BlockFactory::newSpawnerOMeterProps(x, y, e);
+      pp.tile.id = type;
+
+      pp.mVariant = mobVariant;
+      pp.agent = mt;
+
+      m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
     }
   }
 
