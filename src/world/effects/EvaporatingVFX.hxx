@@ -4,14 +4,11 @@
 # include "EvaporatingVFX.hh"
 
 namespace new_frontiers {
-
   inline
-  EvaporatingVFX::EvaporatingVFX(const VFXTile& tile,
-                                 float radius,
-                                 float evaporation):
-    VFX(tile, radius, "evaporating"),
+  EvaporatingVFX::EvaporatingVFX(const EProps& props):
+    VFX(props),
 
-    m_evaporation(std::max(evaporation, 0.0f))
+    m_evaporation(std::max(props.evaporation, 0.0f))
   {}
 
   inline

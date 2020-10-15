@@ -6,13 +6,10 @@
 namespace new_frontiers {
 
   inline
-  Pheromon::Pheromon(const pheromon::Type& type,
-                     const VFXTile& vfx,
-                     float radius,
-                     float evaporation):
-    EvaporatingVFX(vfx, radius, evaporation),
+  Pheromon::Pheromon(const PProps& props):
+    EvaporatingVFX(props),
 
-    m_type(type)
+    m_type(props.type)
   {}
 
 }

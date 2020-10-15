@@ -10,18 +10,21 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create an VFX. It is meant as a
+       *          way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct DProps: Props {
+        std::vector<Duration> phases;
+      };
+
+      /**
        * @brief - Create a new effect with the specified visual
        *          representation and decay times.
-       * @param tile - the visual display for this effect which
-       *               also contain the position at which the
-       *               effect should be spawned.
-       * @param radius - the radius for this VFX.
-       * @param phases - the list of phases that this effect has
-       *                 to traverse before finally decaying.
+       * @param props - the description of this decaying VFX.
        */
-      DecayingVFX(const VFXTile& tile,
-                  float radius,
-                  const std::vector<Duration>& phases);
+      DecayingVFX(const DProps& props);
 
       void
       pause(const TimeStamp& t) override;

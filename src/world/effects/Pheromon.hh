@@ -29,21 +29,22 @@ namespace new_frontiers {
     protected:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create an VFX. It is meant as a
+       *          way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct PProps: EProps {
+        pheromon::Type type;
+      };
+
+      /**
        * @brief - Create a new pheromon with the specified
        *          type and visual representation.
-       * @param type - the type of this pheromon, which is
-       *               some sort of indication of its role.
-       * @param vfx - the visual representation for this
-       *              pheromon. It will be passed on to the
-       *              base class constructor.
-       * @param radius - the visual radius for this item.
-       * @param evaporation - the speed at which this item
-       *                      is evaporating away.
+       * @param props - the description of the properties
+       *                of this pheromon.
        */
-      Pheromon(const pheromon::Type& type,
-               const VFXTile& vfx,
-               float radius,
-               float evaporation);
+      Pheromon(const PProps& props);
 
     private:
 

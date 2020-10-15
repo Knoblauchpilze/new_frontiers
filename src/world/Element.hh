@@ -2,6 +2,7 @@
 # define   ELEMENT_HH
 
 # include <core_utils/CoreObject.hh>
+# include <core_utils/Uuid.hh>
 # include "Tiles.hh"
 # include "TimeUtils.hh"
 # include "StepInfo.hh"
@@ -44,6 +45,33 @@ namespace new_frontiers {
        */
       float
       getHealthRatio();
+
+      /**
+       * @brief - Interrogate the internal identifier for the
+       *          owner of this entity and return `true` if
+       *          it is valid.
+       * @return - `true` if the owner is valid.
+       */
+      bool
+      isOwned() const noexcept;
+
+      /**
+       * @brief - Return a reference to the identifier of the
+       *          owner of this element. Note that the uuid
+       *          might be invalid if the `isOwned` returns
+       *          `true`.
+       * @return - the identifier of the owner of this elem.
+       */
+      const utils::Uuid&
+      getOwner() const noexcept;
+
+      /**
+       * @brief - Used to define a new owner for this element.
+       * @param uuid - the identifier of the new owner of the
+       *               element.
+       */
+      void
+      setOwner(const utils::Uuid& uuid);
 
       /**
        * @brief - Return `true` in case this element is marked
@@ -117,11 +145,16 @@ namespace new_frontiers {
        * @param health - the health pool for this element.
        * @param name - the name of the object (mainly used for
        *               logging purposes).
+       * @param owner - the identifier of the owner of this
+       *                element. It is assigned to a null value
+       *                by default, meaning that the element is
+       *                not owned.
        */
       Element(const Tile<TileType>& tile,
               float radius,
               float health,
-              const std::string& name);
+              const std::string& name,
+              const utils::Uuid& owner = utils::Uuid());
 
       /**
        * @brief - Used to mark or remove this element from
@@ -159,6 +192,14 @@ namespace new_frontiers {
        *          it.
        */
       float m_totalHealth;
+
+      /**
+       * @brief - The identifier of the owner of this element.
+       *          It is used to make sure that elements can
+       *          cooperate and identify each other in the
+       *          simulation.
+       */
+      utils::Uuid m_owner;
 
       /**
        * @brief - Used to indicate that this element is marked

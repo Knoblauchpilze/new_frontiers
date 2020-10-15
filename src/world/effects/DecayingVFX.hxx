@@ -6,26 +6,6 @@
 namespace new_frontiers {
 
   inline
-  DecayingVFX::DecayingVFX(const VFXTile& tile,
-                           float radius,
-                           const std::vector<Duration>& phases):
-    VFX(tile, radius, "decaying"),
-
-    m_phases(phases),
-    m_transition(0u),
-
-    m_next(Duration::zero()),
-    m_decayTimeLeft()
-  {
-    // Adjust the next phase duration if any transitions
-    // is specified.
-    if (!m_phases.empty()) {
-      m_transition = 0u;
-      m_next = now() + m_phases[m_transition];
-    }
-  }
-
-  inline
   void
   DecayingVFX::pause(const TimeStamp& t) {
     // In case we're decaying, we need to pause the

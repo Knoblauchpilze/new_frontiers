@@ -16,7 +16,7 @@ namespace new_frontiers {
        *          are needed for building an instance of this
        *          class.
        */
-      struct MProps: public Props {
+      struct MProps: Props {
         float homeX;
         float homeY;
 

@@ -47,6 +47,8 @@ namespace new_frontiers {
         pp.homeX = m_tile.x + 0.5f;
         pp.homeY = m_tile.y + 0.5f;
 
+        pp.owner = getOwner();
+
         mp = std::make_shared<Warrior>(pp);
         } break;
       case mob::Type::Worker:
@@ -57,6 +59,8 @@ namespace new_frontiers {
 
         pp.homeX = m_tile.x + 0.5f;
         pp.homeY = m_tile.y + 0.5f;
+
+        pp.owner = getOwner();
 
         mp = std::make_shared<Worker>(pp);
         } break;

@@ -10,18 +10,21 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create an VFX. It is meant as a
+       *          way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct EProps: Props {
+        float evaporation;
+      };
+
+      /**
        * @brief - Create a new effect with the specified visual
        *          representation and decay times.
-       * @param tile - the visual display for this effect which
-       *               also contain the position at which the
-       *               effect should be spawned.
-       * @param radius - the radius for this VFX.
-       * @param evaporation - defines the evaporation rate for
-       *                      this effect in unit per second.
+       * @param props - the description of the props of this VFX.
        */
-      EvaporatingVFX(const VFXTile& tile,
-                     float radius,
-                     float evaporation);
+      EvaporatingVFX(const EProps& props);
 
     protected:
 
