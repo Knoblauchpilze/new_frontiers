@@ -1,7 +1,9 @@
 
 set (SOURCES
   ${SOURCES}
+  ${CMAKE_CURRENT_SOURCE_DIR}/VFX.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/DecayingVFX.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/PheromonFactory.cc
   PARENT_SCOPE
   )
 

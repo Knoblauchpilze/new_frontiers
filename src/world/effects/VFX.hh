@@ -53,17 +53,27 @@ namespace new_frontiers {
     protected:
 
       /**
-       * @brief - Create a new effect with the specified visual
-       *          representation and name.
-       * @param tile - the visual display for this effect which
-       *               also contain the position at which the
-       *               effect should be spawned.
-       * @param radius - the radius for this vfx.
-       * @param name - the name of this VFX in logs.
+       * @brief - Convenience structure to regroup the info
+       *          needed to create an VFX. It is meant as a
+       *          way to reduce the number of arguments
+       *          provided to the constructor of this class.
        */
-      VFX(const VFXTile& tile,
-          float radius,
-          const std::string& name);
+      struct Props {
+        VFXTile tile;
+        float radius;
+
+        float amount;
+
+        utils::Uuid owner;
+      };
+
+      /**
+       * @brief - Creates a new VFX with the specified tile
+       *          to use for the visual representation.
+       * @param props - the properties describing the VFX
+       *                to create.
+       */
+      VFX(const Props& props);
 
       /**
        * @brief - Interface method defining whether or not the

@@ -15,7 +15,7 @@ namespace new_frontiers {
        *          as a way to reduce the number of arguments
        *          provided to the constructor of this class.
        */
-      struct PProps: public Props {
+      struct PProps: Props {
         float sprintSpeed;
         float recoverySpeed;
 

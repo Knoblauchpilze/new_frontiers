@@ -19,6 +19,8 @@ namespace new_frontiers {
     pp.arrival = sk_arrival;
     pp.pathLength = sk_pathLength;
 
+    pp.owner.invalidate();
+
     return pp;
   }
 
@@ -35,6 +37,8 @@ namespace new_frontiers {
 
     pp.arrival = sk_arrival;
     pp.pathLength = sk_pathLength;
+
+    pp.owner.invalidate();
 
     pp.homeX = x;
     pp.homeY = y;
@@ -60,6 +64,8 @@ namespace new_frontiers {
 
     pp.arrival = sk_arrival;
     pp.pathLength = sk_pathLength;
+
+    pp.owner.invalidate();
 
     pp.homeX = x;
     pp.homeY = y;
@@ -88,6 +94,8 @@ namespace new_frontiers {
 
     pp.arrival = sk_arrival;
     pp.pathLength = sk_pathLength;
+
+    pp.owner.invalidate();
 
     pp.sprintSpeed = 4.0f;
     pp.recoverySpeed = 0.5f;

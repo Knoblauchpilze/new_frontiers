@@ -6,7 +6,7 @@
 namespace new_frontiers {
 
   Entity::Entity(const Props& props):
-    Element(props.tile, props.radius, props.health, "entity"),
+    Element(props.tile, props.radius, props.health, "entity", props.owner),
 
     m_speed(-1.0f),
     m_perceptionRadius(props.perception < 0.0f ? 1.0f : props.perception),

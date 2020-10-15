@@ -2,6 +2,7 @@
 # define   BLOCK_HH
 
 # include <memory>
+# include <core_utils/Uuid.hh>
 # include "Element.hh"
 # include "Tiles.hh"
 # include "StepInfo.hh"
@@ -51,6 +52,8 @@ namespace new_frontiers {
 
         float radius;
         float health;
+
+        utils::Uuid owner;
       };
 
       /**

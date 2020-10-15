@@ -6,17 +6,6 @@
 namespace new_frontiers {
 
   inline
-  VFX::VFX(const VFXTile& tile,
-           float radius,
-           const std::string& name):
-    // The health of a VFX is more like a percentage of
-    // active component left.
-    Element(tile, radius, 1.0f, name),
-
-    m_amount(1.0f)
-  {}
-
-  inline
   float
   VFX::getAmount() const noexcept {
     return m_amount;

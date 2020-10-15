@@ -55,6 +55,8 @@ namespace new_frontiers {
 
         float arrival;
         float pathLength;
+
+        utils::Uuid owner;
       };
 
       /**

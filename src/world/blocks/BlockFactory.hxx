@@ -21,6 +21,8 @@ namespace new_frontiers {
 
     pp.stock = 10.0f;
 
+    pp.owner.invalidate();
+
     return pp;
   }
 
@@ -33,6 +35,8 @@ namespace new_frontiers {
 
     pp.radius = sk_radius;
     pp.health = sk_health;
+
+    pp.owner.invalidate();
 
     pp.mob = ent;
     pp.mVariant = 0;
@@ -56,6 +60,8 @@ namespace new_frontiers {
 
     pp.radius = sk_radius;
     pp.health = sk_health;
+
+    pp.owner.invalidate();
 
     pp.mob = ent;
     pp.mVariant = 0;

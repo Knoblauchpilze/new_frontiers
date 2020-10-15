@@ -3,6 +3,23 @@
 
 namespace new_frontiers {
 
+  DecayingVFX::DecayingVFX(const DProps& props):
+    VFX(props),
+
+    m_phases(props.phases),
+    m_transition(0u),
+
+    m_next(Duration::zero()),
+    m_decayTimeLeft()
+  {
+    // Adjust the next phase duration if any transitions
+    // is specified.
+    if (!m_phases.empty()) {
+      m_transition = 0u;
+      m_next = now() + m_phases[m_transition];
+    }
+  }
+
   void
   DecayingVFX::update(StepInfo& info) noexcept {
     // Check whether the vfx should decay in its
