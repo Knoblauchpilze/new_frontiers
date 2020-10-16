@@ -242,13 +242,6 @@ namespace new_frontiers {
 # ifdef TIMED_SPAWNER
     m_blocks.push_back(BlockFactory::newTimedSpawner(3, mob::Type::Worker, 1.0f, 5.0f, tiles::IncaOverlord, 0));
     m_blocks.push_back(BlockFactory::newTimedSpawner(3, mob::Type::Warrior, 5.0f, 1.0f, tiles::DemonBat, 0));
-# else
-    // SpawnerOMeter::SOMProps pp = BlockFactory::newSpawnerOMeterProps(1.0f, 4.0f, tiles::IncaOverlord);
-    // m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
-    // pp.tile.x = 2.0f; pp.tile.y = 2.0f; pp.mob = tiles::Executioner;
-    // m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
-    // pp.tile.x = 5.0f; pp.tile.y = 1.0f; pp.mob = tiles::DemonBat; pp.agent = mob::Type::Warrior;
-    // m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
 # endif
 
     // Generate resource deposit.
@@ -704,6 +697,5 @@ namespace new_frontiers {
       m_entities.push_back(e);
     }
   }
-
 
 }
