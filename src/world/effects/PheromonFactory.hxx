@@ -17,8 +17,16 @@ namespace new_frontiers {
 
     pp.owner.invalidate();
 
-    // TODO: Handle this ?
-    // pp.phases;
+    static const int b = 1000;
+    std::vector<Duration> decay = {
+      toMilliseconds(b),
+      toMilliseconds(2 * b),
+      toMilliseconds(4 * b),
+      toMilliseconds(8 * b),
+      toMilliseconds(8 * b)
+    };
+
+    pp.phases.swap(decay);
 
     return pp;
   }
