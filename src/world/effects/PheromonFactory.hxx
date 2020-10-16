@@ -60,27 +60,6 @@ namespace new_frontiers {
   }
 
   inline
-  PheromonShPtr
-  PheromonFactory::newPheromon(const pheromon::Type& type, float x, float y, float radius) noexcept {
-    // Deduce the VFX type from the pheromon type.
-    tiles::Effect vt = pheromonToVFX(type);
-
-    Pheromon::PProps pp = newPheromonProps(x, y, vt);
-    pp.radius = radius;
-
-    pp.type = type;
-
-    // Evaporation time is fixed for now.
-    return std::shared_ptr<Pheromon>(new Pheromon(pp));
-  }
-
-  inline
-  VFXTile
-  PheromonFactory::newTile(const tiles::Effect& e, int id, float x, float y) noexcept {
-    return VFXTile{x, y, e, id};
-  }
-
-  inline
   tiles::Effect
   PheromonFactory::pheromonToVFX(const pheromon::Type& type) noexcept {
     switch (type) {
@@ -95,6 +74,19 @@ namespace new_frontiers {
       default:
         return tiles::Smoke;
     }
+  }
+
+  inline
+  PheromonShPtr
+  PheromonFactory::newPheromon(const Pheromon::PProps& props) noexcept {
+    // Evaporation time is fixed for now.
+    return std::make_shared<Pheromon>(props);
+  }
+
+  inline
+  VFXTile
+  PheromonFactory::newTile(const tiles::Effect& e, int id, float x, float y) noexcept {
+    return VFXTile{x, y, e, id};
   }
 
 }

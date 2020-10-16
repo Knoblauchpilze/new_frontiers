@@ -23,18 +23,18 @@ namespace new_frontiers {
       newPheromonProps(float x, float y, const tiles::Effect& vfx) noexcept;
 
       static
+      tiles::Effect
+      pheromonToVFX(const pheromon::Type& type) noexcept;
+
+      static
       PheromonShPtr
-      newPheromon(const pheromon::Type& type, float x, float y, float radius) noexcept;
+      newPheromon(const Pheromon::PProps& props) noexcept;
 
     private:
 
       static
       VFXTile
       newTile(const tiles::Effect& e, int id, float x, float y) noexcept;
-
-      static
-      tiles::Effect
-      pheromonToVFX(const pheromon::Type& type) noexcept;
 
     private:
 
