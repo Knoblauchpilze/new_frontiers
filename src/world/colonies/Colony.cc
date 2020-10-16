@@ -3,8 +3,13 @@
 
 namespace new_frontiers {
 
-  Colony::Colony(const utils::Uuid& uuid):
-    WorldElement(uuid.toString(), uuid)
+  Colony::Colony(const utils::Uuid& uuid,
+                 float x,
+                 float y):
+    WorldElement(uuid.toString(), uuid),
+
+    m_homeX(x),
+    m_homeY(y)
   {
     setService("colony");
 

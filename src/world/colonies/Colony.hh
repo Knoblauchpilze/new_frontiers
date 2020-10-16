@@ -15,9 +15,18 @@ namespace new_frontiers {
        *          The identifier has to be valid otherwise an
        *          exception is thrown. The colony will not yet
        *          have any elements spawned in game.
+       *          The position provided in input locates the
+       *          colony in the world and gives an indication
+       *          of its preferential location.
        * @param uuid - the identifier of the colony.
+       * @param x - the abscissa of the preferred position of
+       *            this colony.
+       * @param y - the ordinate of the preferred position of
+       *            this colony.
        */
-      Colony(const utils::Uuid& uuid);
+      Colony(const utils::Uuid& uuid,
+             float x,
+             float y);
 
       /**
        * @brief - Destruction of the colony. Used to make sure
@@ -50,6 +59,22 @@ namespace new_frontiers {
        */
       void
       resume(const TimeStamp& t) override;
+
+    private:
+
+      /**
+       * @brief - The preferred abscissa for this colony. It
+       *          will usually mean that the activity for this
+       *          colony will be around this position (at least
+       *          for direct actions of the colony).
+       */
+      float m_homeX;
+
+      /**
+       * @brief - Similar to the `m_homeX` but handles the
+       *          preferred ordinate for the colony.
+       */
+      float m_homeY;
   };
 
   using ColonyShPtr = std::shared_ptr<Colony>;
