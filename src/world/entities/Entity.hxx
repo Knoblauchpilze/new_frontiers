@@ -51,10 +51,18 @@ namespace new_frontiers {
   inline
   PheromonShPtr
   Entity::spawnPheromon(const pheromon::Type& type) const noexcept {
-    PheromonShPtr p = PheromonFactory::newPheromon(type, m_tile.x, m_tile.y, getRadius());
-    p->setOwner(getOwner());
+    Pheromon::PProps pp = PheromonFactory::newPheromonProps(
+      m_tile.x,
+      m_tile.y,
+      PheromonFactory::pheromonToVFX(type)
+    );
 
-    return p;
+    pp.radius = getRadius();
+    pp.type = type;
+
+    pp.owner = getOwner();
+
+    return PheromonFactory::newPheromon(pp);
   }
 
   inline

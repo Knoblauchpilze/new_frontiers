@@ -26,7 +26,7 @@ namespace new_frontiers {
   }
 
   class Pheromon: public EvaporatingVFX {
-    protected:
+    public:
 
       /**
        * @brief - Convenience structure to regroup the info
