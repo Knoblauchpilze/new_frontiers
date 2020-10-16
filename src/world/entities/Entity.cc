@@ -36,7 +36,7 @@ namespace new_frontiers {
     m_path.yD = 0.0f;
   }
 
-  bool
+  void
   Entity::step(StepInfo& info) {
     // Prepare the entity for this step.
     prepareForStep(info);
@@ -61,7 +61,6 @@ namespace new_frontiers {
     choosePath(info);
 
     // Move along the path.
-    bool moved = false;
     if (isEnRoute()) {
       // We know the elapsed time since the
       // last frame, we know the speed of
@@ -69,14 +68,10 @@ namespace new_frontiers {
       // new position.
       m_tile.x += info.elapsed * m_speed * m_path.xD;
       m_tile.y += info.elapsed * m_speed * m_path.yD;
-
-      moved = true;
     }
 
     // Perform post step operations.
     postStep(info);
-
-    return moved;
   }
 
   bool

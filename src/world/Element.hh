@@ -6,13 +6,14 @@
 # include "Tiles.hh"
 # include "TimeUtils.hh"
 # include "StepInfo.hh"
+# include "WorldElement.hh"
 
 namespace new_frontiers {
 
   class StepInfo;
 
   template <typename TileType>
-  class Element: public utils::CoreObject {
+  class Element: public WorldElement {
     public:
 
       /**
@@ -47,25 +48,6 @@ namespace new_frontiers {
       getHealthRatio();
 
       /**
-       * @brief - Interrogate the internal identifier for the
-       *          owner of this entity and return `true` if
-       *          it is valid.
-       * @return - `true` if the owner is valid.
-       */
-      bool
-      isOwned() const noexcept;
-
-      /**
-       * @brief - Return a reference to the identifier of the
-       *          owner of this element. Note that the uuid
-       *          might be invalid if the `isOwned` returns
-       *          `true`.
-       * @return - the identifier of the owner of this elem.
-       */
-      const utils::Uuid&
-      getOwner() const noexcept;
-
-      /**
        * @brief - Return `true` in case this element is marked
        *          for deletion and will probably be removed in
        *          the next execution of the influences.
@@ -87,42 +69,6 @@ namespace new_frontiers {
        */
       bool
       damage(float hit);
-
-      /**
-       * @brief - Interface method allowing for a world element
-       *          to evolve based on its surroundings. We use a
-       *          struct gathering the current state of the
-       *          world to take decisions based on it.
-       *          Inheriting classes can subclass this method
-       *          to provide custom behavior.
-       * @param info - all the information about the current
-       *               state of the world.
-       * @return - `true` if the element has been updated. It
-       *           is used to indicate that a repaint of the
-       *           entity (and most probably of the wolrd) is
-       *           needed.
-       */
-      virtual bool
-      step(StepInfo& info) = 0;
-
-      /**
-       * @brief - Interface method allowing to pause this world
-       *          element: all internal behavior that depend on
-       *          time should be stopped so that they can be
-       *          later resumed.
-       * @param t - the timestamp at which the pause occur.
-       */
-      virtual void
-      pause(const TimeStamp& t) = 0;
-
-      /**
-       * @brief - Opposite operation to the `pause`, this method
-       *          is called to indicate that internal processes
-       *          for this world element can be resumed.
-       * @param t - the timestamp at which the resume occur.
-       */
-      virtual void
-      resume(const TimeStamp& t) = 0;
 
     protected:
 
@@ -157,14 +103,6 @@ namespace new_frontiers {
       void
       markForDeletion(bool toDelete);
 
-      /**
-       * @brief - Used to define a new owner for this element.
-       * @param uuid - the identifier of the new owner of the
-       *               element.
-       */
-      void
-      setOwner(const utils::Uuid& uuid);
-
     protected:
 
       /**
@@ -192,14 +130,6 @@ namespace new_frontiers {
        *          it.
        */
       float m_totalHealth;
-
-      /**
-       * @brief - The identifier of the owner of this element.
-       *          It is used to make sure that elements can
-       *          cooperate and identify each other in the
-       *          simulation.
-       */
-      utils::Uuid m_owner;
 
       /**
        * @brief - Used to indicate that this element is marked

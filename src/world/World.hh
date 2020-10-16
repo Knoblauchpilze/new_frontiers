@@ -6,6 +6,7 @@
 # include <core_utils/CoreObject.hh>
 # include "RNG.hh"
 # include "Tiles.hh"
+# include "colonies/Colony.hh"
 # include "Element.hh"
 # include "Locator.hh"
 # include "Controls.hh"
@@ -167,6 +168,11 @@ namespace new_frontiers {
        *          randomness in a single place.
        */
       RNG m_rng;
+
+      /**
+       * @brief - The list of colonies registered in the world.
+       */
+      std::vector<ColonyShPtr> m_colonies;
 
       /**
        * @brief - The list of blocks for this world.

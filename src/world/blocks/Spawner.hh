@@ -42,9 +42,8 @@ namespace new_frontiers {
        *          used to spawn new entities according to this
        *          portal's strategy.
        * @param info - the needed information about the world.
-       * @return - `true` if an entity has been spawned.
        */
-      bool
+      void
       step(StepInfo& info) override;
 
     protected:
