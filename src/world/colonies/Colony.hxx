@@ -12,8 +12,8 @@ namespace new_frontiers {
 
   inline
   void
-  Colony::step(StepInfo& /*info*/) {
-    // TODO: Implement this.
+  Colony::setFocus(const colony::Priority& focus) {
+    m_focus = focus;
   }
 
   inline

@@ -225,11 +225,17 @@ namespace new_frontiers {
   void
   World::generateElements() {
     // Generate the colonies.
-    ColonyShPtr c1 = std::make_shared<Colony>(utils::Uuid::create(), 2.0f, 2.0f);
+    ColonyShPtr c1 = std::make_shared<Colony>(utils::Uuid::create(), 1.0f, 4.0f);
+    c1->setFocus(colony::Priority::Expansion);
     m_colonies.push_back(c1);
 
-    ColonyShPtr c2 = std::make_shared<Colony>(utils::Uuid::create(), 5.0f, 1.0f);
+    ColonyShPtr c2 = std::make_shared<Colony>(utils::Uuid::create(), 2.0f, 2.0f);
+    c2->setFocus(colony::Priority::Consolidation);
     m_colonies.push_back(c2);
+
+    ColonyShPtr c3 = std::make_shared<Colony>(utils::Uuid::create(), 5.0f, 1.0f);
+    c3->setFocus(colony::Priority::War);
+    m_colonies.push_back(c3);
 
     // Generate mob portals.
 // # define TIMED_SPAWNER
@@ -237,12 +243,12 @@ namespace new_frontiers {
     m_blocks.push_back(BlockFactory::newTimedSpawner(3, mob::Type::Worker, 1.0f, 5.0f, tiles::IncaOverlord, 0));
     m_blocks.push_back(BlockFactory::newTimedSpawner(3, mob::Type::Warrior, 5.0f, 1.0f, tiles::DemonBat, 0));
 # else
-    SpawnerOMeter::SOMProps pp = BlockFactory::newSpawnerOMeterProps(1.0f, 4.0f, tiles::IncaOverlord);
-    m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
-    pp.tile.x = 2.0f; pp.tile.y = 2.0f; pp.mob = tiles::Executioner;
-    m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
-    pp.tile.x = 5.0f; pp.tile.y = 1.0f; pp.mob = tiles::DemonBat; pp.agent = mob::Type::Warrior;
-    m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
+    // SpawnerOMeter::SOMProps pp = BlockFactory::newSpawnerOMeterProps(1.0f, 4.0f, tiles::IncaOverlord);
+    // m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
+    // pp.tile.x = 2.0f; pp.tile.y = 2.0f; pp.mob = tiles::Executioner;
+    // m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
+    // pp.tile.x = 5.0f; pp.tile.y = 1.0f; pp.mob = tiles::DemonBat; pp.agent = mob::Type::Warrior;
+    // m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
 # endif
 
     // Generate resource deposit.
