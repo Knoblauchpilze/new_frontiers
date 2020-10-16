@@ -53,13 +53,6 @@ namespace new_frontiers {
 
   template <typename TileType>
   inline
-  void
-  Element<TileType>::setOwner(const utils::Uuid& uuid) {
-    m_owner = uuid;
-  }
-
-  template <typename TileType>
-  inline
   bool
   Element<TileType>::isDead() const noexcept {
     return m_toBeDeleted;
@@ -112,6 +105,13 @@ namespace new_frontiers {
   void
   Element<TileType>::markForDeletion(bool toDelete) {
     m_toBeDeleted = toDelete;
+  }
+
+  template <typename TileType>
+  inline
+  void
+  Element<TileType>::setOwner(const utils::Uuid& uuid) {
+    m_owner = uuid;
   }
 
 }

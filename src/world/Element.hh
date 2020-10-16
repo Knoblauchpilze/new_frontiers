@@ -66,14 +66,6 @@ namespace new_frontiers {
       getOwner() const noexcept;
 
       /**
-       * @brief - Used to define a new owner for this element.
-       * @param uuid - the identifier of the new owner of the
-       *               element.
-       */
-      void
-      setOwner(const utils::Uuid& uuid);
-
-      /**
        * @brief - Return `true` in case this element is marked
        *          for deletion and will probably be removed in
        *          the next execution of the influences.
@@ -164,6 +156,14 @@ namespace new_frontiers {
        */
       void
       markForDeletion(bool toDelete);
+
+      /**
+       * @brief - Used to define a new owner for this element.
+       * @param uuid - the identifier of the new owner of the
+       *               element.
+       */
+      void
+      setOwner(const utils::Uuid& uuid);
 
     protected:
 
