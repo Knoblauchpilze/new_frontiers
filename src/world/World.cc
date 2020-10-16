@@ -224,6 +224,13 @@ namespace new_frontiers {
 
   void
   World::generateElements() {
+    // Generate the colonies.
+    ColonyShPtr c1 = std::make_shared<Colony>(utils::Uuid::create(), 2.0f, 2.0f);
+    m_colonies.push_back(c1);
+
+    ColonyShPtr c2 = std::make_shared<Colony>(utils::Uuid::create(), 5.0f, 1.0f);
+    m_colonies.push_back(c2);
+
     // Generate mob portals.
 // # define TIMED_SPAWNER
 # ifdef TIMED_SPAWNER
