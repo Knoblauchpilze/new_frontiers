@@ -27,9 +27,8 @@ namespace new_frontiers {
        *          make this visual effect evolve.
        * @param info - the necessary information to describe
        *               the world's surroundings.
-       * @return - `true` if this effect should be deleted.
        */
-      bool
+      void
       step(StepInfo& info) override;
 
       /**

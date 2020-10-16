@@ -6,9 +6,9 @@
 namespace new_frontiers {
 
   inline
-  bool
+  void
   Block::step(StepInfo& /*info*/) {
-    return false;
+    // Nothing to do.
   }
 
   inline

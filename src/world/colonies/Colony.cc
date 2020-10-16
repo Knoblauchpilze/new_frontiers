@@ -4,9 +4,7 @@
 namespace new_frontiers {
 
   Colony::Colony(const utils::Uuid& uuid):
-    utils::CoreObject(uuid.toString()),
-
-    m_uuid(uuid)
+    WorldElement(uuid.toString(), uuid)
   {
     setService("colony");
 

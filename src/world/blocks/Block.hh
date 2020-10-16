@@ -16,9 +16,8 @@ namespace new_frontiers {
        * @brief - Base implementation for an element which
        *          does nothing.
        * @param info - information about the world.
-       * @return - `false` as nothing happens here.
        */
-      bool
+      void
       step(StepInfo& info) override;
 
       /**

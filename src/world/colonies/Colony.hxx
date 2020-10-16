@@ -10,6 +10,24 @@ namespace new_frontiers {
     // Nothing to do yet.
   }
 
+  inline
+  void
+  Colony::step(StepInfo& /*info*/) {
+    // TODO: Implement this.
+  }
+
+  inline
+  void
+  Colony::pause(const TimeStamp& /*t*/) {
+    // TODO: Implement this.
+  }
+
+  inline
+  void
+  Colony::resume(const TimeStamp& /*t*/) {
+    // TODO: Implement this.
+  }
+
 }
 
 #endif    /* COLONY_HXX */

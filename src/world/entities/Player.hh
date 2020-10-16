@@ -34,10 +34,8 @@ namespace new_frontiers {
        *          receptive to the user's input.
        * @param info - the information about the world to use for
        *               the entity to adapt its behavior.
-       * @return - `true` if the entity has moved (and thus should
-       *           be repainted).
        */
-      bool
+      void
       step(StepInfo& info) override;
 
       /**

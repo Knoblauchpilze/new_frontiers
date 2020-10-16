@@ -28,7 +28,7 @@ namespace new_frontiers {
   }
 
   inline
-  bool
+  void
   Spawner::step(StepInfo& info) {
     // Check whether the spawner is allowed to spawn
     // a new entity at this frame.
@@ -37,21 +37,19 @@ namespace new_frontiers {
     // In case a new entity cannot be spawned, we're
     // done.
     if (!canSpawn(info)) {
-      return false;
+      return;
     }
 
     // Spawn a new entity and prepare it.
     EntityShPtr ent = spawn(info);
     if (ent == nullptr) {
       log("Spawner generated null entity, discarding it");
-      return false;
+      return;
     }
 
     preSpawn(info, ent);
 
     info.spawnEntity(ent);
-
-    return true;
   }
 
 }

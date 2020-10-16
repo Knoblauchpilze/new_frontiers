@@ -90,6 +90,7 @@ namespace new_frontiers {
 
     m_rng(seed),
 
+    m_colonies(),
     m_blocks(),
     m_entities(),
     m_vfx(),
@@ -118,6 +119,7 @@ namespace new_frontiers {
 
     m_rng(seed),
 
+    m_colonies(),
     m_blocks(),
     m_entities(),
     m_vfx(),
@@ -167,6 +169,11 @@ namespace new_frontiers {
 
     for (unsigned id = 0u ; id < m_vfx.size() ; ++id) {
       m_vfx[id]->step(si);
+    }
+
+    // Finally make colonies evolve.
+    for (unsigned id = 0u ; id < m_colonies.size() ; ++id) {
+      m_colonies[id]->step(si);
     }
 
     // Process influences.

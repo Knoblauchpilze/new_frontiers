@@ -3,11 +3,11 @@
 
 # include <memory>
 # include <core_utils/Uuid.hh>
-# include <core_utils/CoreObject.hh>
+# include "WorldElement.hh"
 
 namespace new_frontiers {
 
-  class Colony: public utils::CoreObject {
+  class Colony: public WorldElement {
     public:
 
       /**
@@ -26,18 +26,30 @@ namespace new_frontiers {
        */
       ~Colony();
 
-    private:
+      /**
+       * @brief - Implementation of the interface methdo to
+       *          make this `Colony` evolve.
+       * @param info - all the information about the current
+       *               state of the world.
+       */
+      void
+      step(StepInfo& info) override;
 
       /**
-       * @brief - The identifier of this colony. Allows to know
-       *          which elements of the simulation belong to the
-       *          colony. It also help individual entities to be
-       *          aware of whether other entities are from the
-       *          same colony or not.
-       *          This value is assigned once and for all in the
-       *          life of the colony.
+       * @brief - Implementation of the interface method to
+       *          make this `Colony` pause internal processes.
+       * @param t - the timestamp at which the pause occur.
        */
-      utils::Uuid m_uuid;
+      void
+      pause(const TimeStamp& t) override;
+
+      /**
+       * @brief - Implementation of the interface method to
+       *          make this `Colony` resume its activity.
+       * @param t - the timestamp at which the resume occur.
+       */
+      void
+      resume(const TimeStamp& t) override;
   };
 
   using ColonyShPtr = std::shared_ptr<Colony>;

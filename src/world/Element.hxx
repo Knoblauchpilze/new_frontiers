@@ -40,20 +40,6 @@ namespace new_frontiers {
   template <typename TileType>
   inline
   bool
-  Element<TileType>::isOwned() const noexcept {
-    return m_owner.valid();
-  }
-
-  template <typename TileType>
-  inline
-  const utils::Uuid&
-  Element<TileType>::getOwner() const noexcept {
-    return m_owner;
-  }
-
-  template <typename TileType>
-  inline
-  bool
   Element<TileType>::isDead() const noexcept {
     return m_toBeDeleted;
   }
@@ -83,7 +69,7 @@ namespace new_frontiers {
                              float health,
                              const std::string& name,
                              const utils::Uuid& owner):
-    utils::CoreObject(name),
+    WorldElement(name, owner),
 
     m_tile(desc),
 
@@ -92,8 +78,6 @@ namespace new_frontiers {
     // Clamp to at least `0`.
     m_health(std::max(health, 0.0f)),
     m_totalHealth(m_health),
-
-    m_owner(owner),
 
     m_toBeDeleted(false)
   {
@@ -105,13 +89,6 @@ namespace new_frontiers {
   void
   Element<TileType>::markForDeletion(bool toDelete) {
     m_toBeDeleted = toDelete;
-  }
-
-  template <typename TileType>
-  inline
-  void
-  Element<TileType>::setOwner(const utils::Uuid& uuid) {
-    m_owner = uuid;
   }
 
 }

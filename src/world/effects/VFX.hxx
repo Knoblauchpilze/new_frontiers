@@ -12,7 +12,7 @@ namespace new_frontiers {
   }
 
   inline
-  bool
+  void
   VFX::step(StepInfo& info) {
     // Check whether the vfx should decay in its
     // next form.
@@ -21,13 +21,13 @@ namespace new_frontiers {
       markForDeletion(true);
       info.removeVFX(this);
 
-      return true;
+      return;
     }
 
     // Make this effect progress in time.
     update(info);
 
-    return false;
+    return;
   }
 
   inline

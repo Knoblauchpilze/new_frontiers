@@ -19,7 +19,7 @@ namespace new_frontiers {
     m_speed = m_sprintSpeed / 2.0f;
   }
 
-  bool
+  void
   Player::step(StepInfo& info) {
     // Check whether any of the control keys
     // are pressed and move accordingly.
@@ -27,7 +27,6 @@ namespace new_frontiers {
     // in a reverse direction we need to
     // make controls move in both directions
     // to be intuitive.
-    bool moved = false;
 
     // Determine the speed of the player based
     // on the current state.
@@ -44,7 +43,6 @@ namespace new_frontiers {
       // `x` axis and conversely.
       m_tile.x -= info.elapsed * std::sqrt(sp);
       m_tile.y += info.elapsed * std::sqrt(sp);
-      moved = true;
     }
 
     if (info.controls.keys[MoveUp]) {
@@ -52,19 +50,16 @@ namespace new_frontiers {
       // `y` axis and conversely.
       m_tile.y -= info.elapsed * std::sqrt(sp);
       m_tile.x -= info.elapsed * std::sqrt(sp);
-      moved = true;
     }
 
     if (info.controls.keys[MoveLeft]) {
       m_tile.x += info.elapsed * std::sqrt(sp);
       m_tile.y -= info.elapsed * std::sqrt(sp);
-      moved = true;
     }
 
     if (info.controls.keys[MoveDown]) {
       m_tile.y += info.elapsed * std::sqrt(sp);
       m_tile.x += info.elapsed * std::sqrt(sp);
-      moved = true;
     }
 
     // Update the state of the player if he's
@@ -86,8 +81,6 @@ namespace new_frontiers {
       m_origin = info.moment;
       log("Player is now glowing");
     }
-
-    return moved;
   }
 
 }
