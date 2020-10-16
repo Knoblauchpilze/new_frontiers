@@ -7,6 +7,28 @@
 
 namespace new_frontiers {
 
+  namespace colony {
+
+    /**
+     * @brief - Defines the current focus of a colony in
+     *          terms of behavior.
+     */
+    enum class Priority {
+      Consolidation,  //< Specifies that the colony is
+                      //< focusing on consolidating its
+                      //< current position.
+      Expansion,      //< Specifies that the colony is
+                      //< giving priority to expanding
+                      //< its territory even though the
+                      //< new conquestes might no be
+                      //< very well defended.
+      War             //< Specifies that the colony is
+                      //< focused on being prepared in
+                      //< case a war occurs.
+    };
+
+  }
+
   class Colony: public WorldElement {
     public:
 
@@ -34,6 +56,15 @@ namespace new_frontiers {
        *          correctly marked for self-destruction.
        */
       ~Colony();
+
+      /**
+       * @brief - Define the new focus of the colony. Will be
+       *          replacing the current focus upon the next
+       *          `step` invocation.
+       * @param focus - the focus of the colony.
+       */
+      void
+      setFocus(const colony::Priority& focus);
 
       /**
        * @brief - Implementation of the interface methdo to
@@ -75,6 +106,18 @@ namespace new_frontiers {
        *          preferred ordinate for the colony.
        */
       float m_homeY;
+
+      /**
+       * @brief - The current focus of the colony. Starts with
+       *          a value and updated along the life of the
+       *          colony based on the perceptions.
+       */
+      colony::Priority m_focus;
+
+      /**
+       * @brief - The current resource budget for this colony.
+       */
+      float m_budget;
   };
 
   using ColonyShPtr = std::shared_ptr<Colony>;
