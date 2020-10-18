@@ -202,21 +202,6 @@ namespace new_frontiers {
       refresh();
 
       /**
-       * @brief - Used to count how many entities of the input
-       *          type exists within the region defined by the
-       *          coordinates and radius.
-       * @param ent - the type of entity to search.
-       * @param x - the center of the radius in which entities
-       *            should be searched.
-       * @param y - second coordinate of the center.
-       * @param radius - the radius of the center to search in.
-       * @return - an integer count representing the number of
-       *           entities of said type in the input region.
-       */
-      int
-      countEntities(const tiles::Entity& ent, float x, float y, float radius) const;
-
-      /**
        * @brief - Determine whether the path defined by the
        *          input coordinate and the direction has any
        *          obstructing elements on it within `d` cells

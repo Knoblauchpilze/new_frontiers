@@ -133,9 +133,6 @@ namespace new_frontiers {
     loadFromFile(file);
   }
 
-
-  World::~World() {}
-
   void
   World::step(float tDelta,
               const Controls& controls)
