@@ -263,7 +263,7 @@ namespace new_frontiers {
     // colony's information.
     olc::vi2d s;
     int cOffset = 3;
-    int tpOffset = 2;
+    int icOffset = 2;
     olc::Pixel bg(255, 255, 255, ALPHA_SEMI_OPAQUE);
     int tpSize = 20;
 
@@ -271,7 +271,9 @@ namespace new_frontiers {
       world::Colony c = res.loc->colony(id);
       olc::vi2d idS = GetTextSize(c.id.toString());
 
-      s.x = std::max(s.x, idS.x + tpOffset + tpSize);
+      olc::vi2d idFocus = GetTextSize(world::focusToString(c.focus));
+
+      s.x = std::max(s.x, idS.x + icOffset + tpSize + icOffset + idFocus.x);
       s.y += (idS.y + cOffset);
     }
 
@@ -288,7 +290,7 @@ namespace new_frontiers {
 
       // Draw the bar corresponding to the resource
       // budget.
-      olc::vf2d tp(idS.x + tpOffset, p.y);
+      olc::vf2d tp(idS.x + icOffset, p.y);
       olc::Pixel tint = redToGreenGradient(c.ratio, ALPHA_OPAQUE);
       olc::Pixel emptyTint(
         static_cast<int>(tint.r * 0.5f),
@@ -303,6 +305,26 @@ namespace new_frontiers {
         olc::vf2d((1.0f - c.ratio) * tpSize, idS.y),
         emptyTint
       );
+
+      // Draw the current focus of this colony rendered
+      // as a string.
+      olc::vf2d tf(idS.x + tpSize + icOffset, p.y);
+      olc::Pixel fTint = olc::WHITE;
+      switch (c.focus) {
+        case colony::Priority::Consolidation:
+          fTint = olc::GREEN;
+          break;
+        case colony::Priority::Expansion:
+          fTint = olc::BLUE;
+          break;
+        case colony::Priority::War:
+          fTint = olc::RED;
+          break;
+        default:
+          break;
+      }
+
+      DrawStringDecal(tf, world::focusToString(c.focus), fTint);
 
       p.y += (idS.y + cOffset);
     }
