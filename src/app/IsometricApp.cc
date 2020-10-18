@@ -390,7 +390,6 @@ namespace new_frontiers {
     olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp, &it);
 
     int h = GetDrawTargetHeight();
-
     int dOffset = 15;
     DrawString(olc::vi2d(0, h - 3 * dOffset), "Mouse coords      : " + toString(mp), olc::CYAN);
     DrawString(olc::vi2d(0, h - 2 * dOffset), "World cell coords : " + toString(mtp), olc::CYAN);
