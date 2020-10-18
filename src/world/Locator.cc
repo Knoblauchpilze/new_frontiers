@@ -27,24 +27,6 @@ namespace new_frontiers {
     initialize();
   }
 
-  int
-  Locator::countEntities(const tiles::Entity& ent, float x, float y, float radius) const {
-    int count = 0;
-
-    // Traverse entities and search for `mob`s.
-    float r2 = radius * radius;
-
-    for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
-      const EntityTile& et = m_entities[id]->getTile();
-
-      if (et.type == ent && distance::d2(x, y, et.x, et.y) <= r2) {
-        ++count;
-      }
-    }
-
-    return count;
-  }
-
   bool
   Locator::obstructed(float x, float y, float xDir, float yDir, float d, std::vector<float>& cPoints) const noexcept {
     // We basically need to find which cells are

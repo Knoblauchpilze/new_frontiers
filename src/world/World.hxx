@@ -6,6 +6,9 @@
 namespace new_frontiers {
 
   inline
+  World::~World() {}
+
+  inline
   unsigned
   World::w() const noexcept {
     return m_w;
