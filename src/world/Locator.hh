@@ -99,6 +99,16 @@ namespace new_frontiers {
       int index;
     };
 
+    /**
+     * @brief - Transform the input focus into a readable string.
+     *          In case the focus cannot be interpreted "unknown"
+     *          is returned.
+     * @param focus - the focus to interpret as a string.
+     * @return - the corresponding string for the input focus.
+     */
+    std::string
+    focusToString(const colony::Priority& focus) noexcept;
+
   }
 
   class Locator: public utils::CoreObject {

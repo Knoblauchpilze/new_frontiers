@@ -8,6 +8,25 @@
 
 namespace new_frontiers {
 
+  namespace world {
+
+    inline
+    std::string
+    focusToString(const colony::Priority& focus) noexcept {
+      switch (focus) {
+        case colony::Priority::Consolidation:
+          return "consolidation";
+        case colony::Priority::Expansion:
+          return "expansion";
+        case colony::Priority::War:
+          return "war";
+        default:
+          return "unknown";
+      }
+    }
+
+  }
+
   inline
   int
   Locator::w() const noexcept {
