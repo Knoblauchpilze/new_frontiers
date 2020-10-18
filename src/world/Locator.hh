@@ -70,8 +70,9 @@ namespace new_frontiers {
      *          about a colony.
      */
     struct Colony {
+      utils::Uuid id;
       colony::Priority focus;
-      float m_budget;
+      float ratio;
     };
 
     /**
@@ -179,7 +180,7 @@ namespace new_frontiers {
        *          far in the world.
        * @return - the number of colonies in this world.
        */
-      std::size_t
+      int
       coloniesCount() const noexcept;
 
       /**

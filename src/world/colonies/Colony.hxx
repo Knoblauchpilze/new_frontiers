@@ -12,8 +12,10 @@ namespace new_frontiers {
 
   inline
   float
-  Colony::getBudget() const noexcept {
-    return m_budget;
+  Colony::getActionRatio() const noexcept {
+    // Compute the action ratio by taking precautions
+    // when manipulating possibly `0` numbers.
+    return std::min(std::max(m_budget / std::max(m_actionCost, 1.0f), 0.0f), 1.0f);
   }
 
   inline
