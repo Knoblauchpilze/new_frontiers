@@ -31,7 +31,7 @@ namespace new_frontiers {
 
     // Create the locator service from the
     // elements of this world.
-    m_loc = std::make_shared<Locator>(m_w, m_h, m_blocks, m_entities, m_vfx);
+    m_loc = std::make_shared<Locator>(m_w, m_h, m_blocks, m_entities, m_vfx, m_colonies);
   }
 
   inline

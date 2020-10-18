@@ -71,6 +71,12 @@ namespace new_frontiers {
        */
       ~Colony();
 
+      float
+      getBudget() const noexcept;
+
+      colony::Priority
+      getFocus() const noexcept;
+
       /**
        * @brief - Define the new focus of the colony. Will be
        *          replacing the current focus upon the next

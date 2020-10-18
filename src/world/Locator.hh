@@ -7,6 +7,7 @@
 # include "blocks/Block.hh"
 # include "entities/Entity.hh"
 # include "effects/VFX.hh"
+# include "colonies/Colony.hh"
 
 namespace new_frontiers {
 
@@ -52,7 +53,7 @@ namespace new_frontiers {
     };
 
     /**
-     * @brief - Similar to the `EntityDesc` but for effects.
+     * @brief - Similar to the `Entity` but for effects.
      *          Contains an indication on the amount of the
      *          initial quantity of the effect that is still
      *          existing.
@@ -62,6 +63,15 @@ namespace new_frontiers {
       VFXTile tile;
       float radius;
       float amount;
+    };
+
+    /**
+     * @brief - Convenience wrapper to define the information
+     *          about a colony.
+     */
+    struct Colony {
+      colony::Priority focus;
+      float m_budget;
     };
 
     /**
@@ -109,13 +119,16 @@ namespace new_frontiers {
        * @param blocks - the list of tiles registered in the
        *                 world.
        * @param entities - the list of entities of the world.
+       * @param colonies - the list of colonies registered in
+       *                   this world.
        * @param vfxs - the list of visual effects of the world.
        */
       Locator(int width,
               int height,
               const std::vector<BlockShPtr>& blocks,
               const std::vector<EntityShPtr>& entities,
-              const std::vector<VFXShPtr>& vfxs);
+              const std::vector<VFXShPtr>& vfxs,
+              const std::vector<ColonyShPtr>& colonies);
 
       /**
        * @brief - Return the width of the world in cells.
@@ -160,6 +173,22 @@ namespace new_frontiers {
        */
       world::VFX
       vfx(int id) const noexcept;
+
+      /**
+       * @brief - Return the number of colonies registered so
+       *          far in the world.
+       * @return - the number of colonies in this world.
+       */
+      std::size_t
+      coloniesCount() const noexcept;
+
+      /**
+       * @brief - Return the colony at index `id`
+       * @param id - the index of the colony to fetch.
+       * @return - a description of the colony to get.
+       */
+      world::Colony
+      colony(int id) const noexcept;
 
       /**
        * @brief - Used to indicate that the locator should be
@@ -440,6 +469,11 @@ namespace new_frontiers {
       const std::vector<BlockShPtr>& m_blocks;
       const std::vector<EntityShPtr>& m_entities;
       const std::vector<VFXShPtr>& m_vfxs;
+
+      /**
+       * @brief - The list of colonies for this world.
+       */
+      const std::vector<ColonyShPtr>& m_colonies;
 
       /**
        * @brief - A map referencing the unique indices for
