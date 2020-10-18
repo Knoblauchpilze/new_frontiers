@@ -33,6 +33,25 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a colony. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct Props {
+        utils::Uuid id;
+
+        float homeX;
+        float homeY;
+
+        float budget;
+        float actionCost;
+        float refill;
+
+        colony::Priority focus;
+      };
+
+      /**
        * @brief - Create a new colony with the provided uuid.
        *          The identifier has to be valid otherwise an
        *          exception is thrown. The colony will not yet
@@ -40,15 +59,10 @@ namespace new_frontiers {
        *          The position provided in input locates the
        *          colony in the world and gives an indication
        *          of its preferential location.
-       * @param uuid - the identifier of the colony.
-       * @param x - the abscissa of the preferred position of
-       *            this colony.
-       * @param y - the ordinate of the preferred position of
-       *            this colony.
+       * @param props - the properties defining the colony to
+       *                create.
        */
-      Colony(const utils::Uuid& uuid,
-             float x,
-             float y);
+      Colony(const Props& props);
 
       /**
        * @brief - Destruction of the colony. Used to make sure
@@ -94,6 +108,45 @@ namespace new_frontiers {
     private:
 
       /**
+       * @brief - Used internally at the beginning of the
+       *          `step` function in order to perform the
+       *          actualization of internal time dependend
+       *          props for this colony.
+       *          Allows to nicely group all the processing
+       *          in a single method.
+       * @param info - information about the current time
+       *               in the world.
+       */
+      void
+      update(const StepInfo& info);
+
+      /**
+       * @brief - Main thinking process for the colony. It
+       *          attempts to change the focus to something
+       *          more appropriate based on the surroundings
+       *          of the colony at the moment of calling the
+       *          method.
+       *          Verification to make sure that the budget
+       *          for thinking is not exhausted is performed.
+       * @param info - information about the world.
+       */
+      void
+      changeFocus(const StepInfo& info);
+
+      /**
+       * @brief - Used to perform the thinking process of
+       *          the colony based on its current focus.
+       *          This means spawning new blocks as needed
+       *          and performing adjustments to bring the
+       *          colony to a better state given its focus.
+       * @param info - information about the world.
+       */
+      void
+      think(StepInfo& info);
+
+    private:
+
+      /**
        * @brief - The preferred abscissa for this colony. It
        *          will usually mean that the activity for this
        *          colony will be around this position (at least
@@ -116,8 +169,30 @@ namespace new_frontiers {
 
       /**
        * @brief - The current resource budget for this colony.
+       *          It corresponds to the available thinking
+       *          power available. Each action consumes a cost
+       *          defined by `m_actionCost` so the larger this
+       *          value the more actions can be taken.
        */
       float m_budget;
+
+      /**
+       * @brief - The cost taking a single action for the colony.
+       *          It goes from spawning a new portal to changing
+       *          other priorities.
+       */
+      float m_actionCost;
+
+      /**
+       * @brief - Base refill rate for this colony. Defines how
+       *          fast the `m_budget` resource is refilling over
+       *          time. This resource is the base used to create
+       *          new spawners and more generally take action as
+       *          a colony. A higher refill rate indicates a
+       *          more active colony (as more actions can be
+       *          taken).
+       */
+      float m_refill;
   };
 
   using ColonyShPtr = std::shared_ptr<Colony>;

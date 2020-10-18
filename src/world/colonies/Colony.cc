@@ -6,21 +6,21 @@
 
 namespace new_frontiers {
 
-  Colony::Colony(const utils::Uuid& uuid,
-                 float x,
-                 float y):
-    WorldElement(uuid.toString(), uuid),
+  Colony::Colony(const Props& props):
+    WorldElement(props.id.toString(), props.id),
 
-    m_homeX(x),
-    m_homeY(y),
+    m_homeX(props.homeX),
+    m_homeY(props.homeY),
 
-    m_focus(colony::Priority::Expansion),
+    m_focus(props.focus),
 
-    m_budget(10.0f)
+    m_budget(props.budget),
+    m_actionCost(props.actionCost),
+    m_refill(props.refill)
   {
     setService("colony");
 
-    if (!uuid.valid()) {
+    if (!props.id.valid()) {
       error(
         "Unable to create colony from uuid",
         "Invalid uuid"
@@ -29,11 +29,17 @@ namespace new_frontiers {
   }
 
   void
-  Colony::step(StepInfo& info) {
-    // TODO: Implement this.
-    // If the colony spent its budget, we can't
-    // do anything more.
-    if (m_budget <= 0.0f) {
+  Colony::update(const StepInfo& info) {
+    // Update the budget available for the colony's
+    // thinking process based on the elapsed time.
+    m_budget += info.elapsed * m_refill;
+  }
+
+  void
+  Colony::think(StepInfo& info) {
+    // Make sure the budget is enough to spawn a
+    // new portal based on the focus.
+    if (m_budget < m_actionCost) {
       return;
     }
 
@@ -59,6 +65,7 @@ namespace new_frontiers {
         pp.agent = mob::Type::Warrior;
         break;
       case colony::Priority::Consolidation:
+        // Default mode is consolidation.
       default:
         pp = BlockFactory::newSpawnerOMeterProps(
           m_homeX,
@@ -69,10 +76,9 @@ namespace new_frontiers {
     }
 
     // Spend the budget and create the spawner.
-    m_budget = 0.0f;
-    BlockShPtr b = BlockFactory::newSpawnerOMeter(pp);
+    m_budget -= m_actionCost;
 
-    // And spawn the block.
+    BlockShPtr b = BlockFactory::newSpawnerOMeter(pp);
     info.spawnBlock(b);
   }
 

@@ -18,6 +18,20 @@ namespace new_frontiers {
 
   inline
   void
+  Colony::step(StepInfo& info) {
+    // Start by updating internal time depedent processes.
+    update(info);
+
+    // Attempt to refine the focus of the colony at the
+    // moment by considering the situation.
+    changeFocus(info);
+
+    // Perform spawning of blocks if possible.
+    think(info);
+  }
+
+  inline
+  void
   Colony::pause(const TimeStamp& /*t*/) {
     // TODO: Implement this.
   }
@@ -25,6 +39,12 @@ namespace new_frontiers {
   inline
   void
   Colony::resume(const TimeStamp& /*t*/) {
+    // TODO: Implement this.
+  }
+
+  inline
+  void
+  Colony::changeFocus(const StepInfo& /*info*/) {
     // TODO: Implement this.
   }
 

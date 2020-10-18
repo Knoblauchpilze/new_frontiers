@@ -8,6 +8,7 @@
 # include "entities/EntityFactory.hh"
 # include "entities/Player.hh"
 # include "entities/Mob.hh"
+# include "colonies/ColonyFactory.hh"
 # include "TimeUtils.hh"
 
 namespace {
@@ -225,17 +226,17 @@ namespace new_frontiers {
   void
   World::generateElements() {
     // Generate the colonies.
-    ColonyShPtr c1 = std::make_shared<Colony>(utils::Uuid::create(), 1.0f, 4.0f);
-    c1->setFocus(colony::Priority::Expansion);
-    m_colonies.push_back(c1);
+    Colony::Props c = ColonyFactory::newColonyProps(1.0f, 4.0f, utils::Uuid::create());
+    c.focus = colony::Priority::Expansion;
+    m_colonies.push_back(std::make_shared<Colony>(c));
 
-    ColonyShPtr c2 = std::make_shared<Colony>(utils::Uuid::create(), 2.0f, 2.0f);
-    c2->setFocus(colony::Priority::Consolidation);
-    m_colonies.push_back(c2);
+    c = ColonyFactory::newColonyProps(2.0f, 2.0f, utils::Uuid::create());
+    c.focus = colony::Priority::Consolidation;
+    m_colonies.push_back(std::make_shared<Colony>(c));
 
-    ColonyShPtr c3 = std::make_shared<Colony>(utils::Uuid::create(), 5.0f, 1.0f);
-    c3->setFocus(colony::Priority::War);
-    m_colonies.push_back(c3);
+    c = ColonyFactory::newColonyProps(2.0f, 1.0f, utils::Uuid::create());
+    c.focus = colony::Priority::War;
+    m_colonies.push_back(std::make_shared<Colony>(c));
 
     // Generate mob portals.
 // # define TIMED_SPAWNER
