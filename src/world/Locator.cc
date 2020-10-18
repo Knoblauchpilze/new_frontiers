@@ -8,7 +8,8 @@ namespace new_frontiers {
                    int height,
                    const std::vector<BlockShPtr>& blocks,
                    const std::vector<EntityShPtr>& entities,
-                   const std::vector<VFXShPtr>& vfxs):
+                   const std::vector<VFXShPtr>& vfxs,
+                   const std::vector<ColonyShPtr>& colonies):
     utils::CoreObject("locator"),
 
     m_w(width),
@@ -17,6 +18,7 @@ namespace new_frontiers {
     m_blocks(blocks),
     m_entities(entities),
     m_vfxs(vfxs),
+    m_colonies(colonies),
 
     m_blocksIDs()
   {

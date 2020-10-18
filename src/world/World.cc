@@ -386,7 +386,7 @@ namespace new_frontiers {
       );
     }
 
-    m_loc = std::make_shared<Locator>(m_w, m_h, m_blocks, m_entities, m_vfx);
+    m_loc = std::make_shared<Locator>(m_w, m_h, m_blocks, m_entities, m_vfx, m_colonies);
   }
 
   void

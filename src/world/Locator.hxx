@@ -79,6 +79,23 @@ namespace new_frontiers {
   }
 
   inline
+  std::size_t
+  Locator::coloniesCount() const noexcept {
+    return m_colonies.size();
+  }
+
+  inline
+  world::Colony
+  Locator::colony(int id) const noexcept {
+    ColonyShPtr c = m_colonies[id];
+
+    return world::Colony{
+      c->getFocus(),
+      c->getBudget()
+    };
+  }
+
+  inline
   void
   Locator::refresh() {
     m_blocksIDs.clear();

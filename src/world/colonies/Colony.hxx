@@ -11,6 +11,18 @@ namespace new_frontiers {
   }
 
   inline
+  float
+  Colony::getBudget() const noexcept {
+    return m_budget;
+  }
+
+  inline
+  colony::Priority
+  Colony::getFocus() const noexcept {
+    return m_focus;
+  }
+
+  inline
   void
   Colony::setFocus(const colony::Priority& focus) {
     m_focus = focus;
