@@ -79,9 +79,9 @@ namespace new_frontiers {
   }
 
   inline
-  std::size_t
+  int
   Locator::coloniesCount() const noexcept {
-    return m_colonies.size();
+    return static_cast<int>(m_colonies.size());
   }
 
   inline
@@ -90,8 +90,9 @@ namespace new_frontiers {
     ColonyShPtr c = m_colonies[id];
 
     return world::Colony{
+      c->getOwner(),
       c->getFocus(),
-      c->getBudget()
+      c->getActionRatio()
     };
   }
 

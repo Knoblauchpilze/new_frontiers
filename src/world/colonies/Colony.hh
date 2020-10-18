@@ -71,8 +71,18 @@ namespace new_frontiers {
        */
       ~Colony();
 
+      /**
+       * @brief - Return a number in the range `[0; 1]` that
+       *          indicates how far from taking a new action
+       *          this colony is. `0` would mean that it has
+       *          probably just taken an action while `1` is
+       *          an indication that it will probably take a
+       *          new action very soon.
+       * @return - the ratio indicating how far the thought
+       *           process is situated.
+       */
       float
-      getBudget() const noexcept;
+      getActionRatio() const noexcept;
 
       colony::Priority
       getFocus() const noexcept;

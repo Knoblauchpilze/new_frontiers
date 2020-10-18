@@ -258,8 +258,53 @@ namespace new_frontiers {
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, ALPHA_TRANSPARENT));
 
-    if (res.ui != nullptr) {
-      res.ui->render(this);
+    // Draw the colonies. We first need to draw the
+    // transparent background and then draw each
+    // colony's information.
+    olc::vi2d s;
+    int cOffset = 3;
+    int tpOffset = 2;
+    olc::Pixel bg(255, 255, 255, ALPHA_SEMI_OPAQUE);
+    int tpSize = 20;
+
+    for (int id = 0 ; id < res.loc->coloniesCount() ; ++id) {
+      world::Colony c = res.loc->colony(id);
+      olc::vi2d idS = GetTextSize(c.id.toString());
+
+      s.x = std::max(s.x, idS.x + tpOffset + tpSize);
+      s.y += (idS.y + cOffset);
+    }
+
+    FillRectDecal(olc::vf2d(), s, bg);
+
+    olc::vf2d p;
+    for (int id = 0 ; id < res.loc->coloniesCount() ; ++id) {
+      world::Colony c = res.loc->colony(id);
+
+      // Draw the colony's identifier.
+      DrawStringDecal(p, c.id.toString());
+
+      olc::vi2d idS = GetTextSize(c.id.toString());
+
+      // Draw the bar corresponding to the resource
+      // budget.
+      olc::vf2d tp(idS.x + tpOffset, p.y);
+      olc::Pixel tint = redToGreenGradient(c.ratio, ALPHA_OPAQUE);
+      olc::Pixel emptyTint(
+        static_cast<int>(tint.r * 0.5f),
+        static_cast<int>(tint.g * 0.5f),
+        static_cast<int>(tint.b * 0.5f),
+        tint.a
+      );
+
+      FillRectDecal(tp, olc::vf2d(c.ratio * tpSize, idS.y), tint);
+      FillRectDecal(
+        olc::vf2d(tp.x + c.ratio * tpSize, tp.y),
+        olc::vf2d((1.0f - c.ratio) * tpSize, idS.y),
+        emptyTint
+      );
+
+      p.y += (idS.y + cOffset);
     }
 
     SetPixelMode(olc::Pixel::NORMAL);
@@ -322,10 +367,12 @@ namespace new_frontiers {
     olc::vf2d it;
     olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp, &it);
 
+    int h = GetDrawTargetHeight();
+
     int dOffset = 15;
-    DrawString(olc::vi2d(0, 0 * dOffset), "Mouse coords      : " + toString(mp), olc::CYAN);
-    DrawString(olc::vi2d(0, 1 * dOffset), "World cell coords : " + toString(mtp), olc::CYAN);
-    DrawString(olc::vi2d(0, 2 * dOffset), "Intra cell        : " + toString(it), olc::CYAN);
+    DrawString(olc::vi2d(0, h - 3 * dOffset), "Mouse coords      : " + toString(mp), olc::CYAN);
+    DrawString(olc::vi2d(0, h - 2 * dOffset), "World cell coords : " + toString(mtp), olc::CYAN);
+    DrawString(olc::vi2d(0, h - 1 * dOffset), "Intra cell        : " + toString(it), olc::CYAN);
 
     SetPixelMode(olc::Pixel::NORMAL);
   }
