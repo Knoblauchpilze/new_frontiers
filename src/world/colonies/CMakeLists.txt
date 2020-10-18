@@ -2,6 +2,7 @@
 set (SOURCES
   ${SOURCES}
   ${CMAKE_CURRENT_SOURCE_DIR}/Colony.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/ColonyFactory.cc
   PARENT_SCOPE
   )
 
