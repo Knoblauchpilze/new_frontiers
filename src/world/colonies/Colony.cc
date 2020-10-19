@@ -69,6 +69,7 @@ namespace new_frontiers {
     // Spawn a block corresponding to the current
     // focus of the colony.
     SpawnerOMeter::SOMProps pp = BlockFactory::newSpawnerOMeterProps(x, y);
+    pp.owner = getOwner();
 
     switch (m_focus) {
       case colony::Priority::Expansion:
