@@ -123,6 +123,18 @@ namespace new_frontiers {
   }
 
   inline
+  bool
+  Locator::obstructed(float x, float y) const noexcept {
+    // Convert input coordinates to integer cell
+    // coordinates.
+    int xi = static_cast<int>(x);
+    int yi = static_cast<int>(y);
+
+    // Verify that no block occupies this location.
+    return m_blocksIDs.count(yi * m_w + xi) > 0;
+  }
+
+  inline
   world::ItemEntry
   Locator::getClosest(float x,
                       float y,

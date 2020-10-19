@@ -49,6 +49,9 @@ namespace new_frontiers {
         float refill;
 
         colony::Priority focus;
+
+        float radius;
+        int maxSize;
       };
 
       /**
@@ -209,6 +212,34 @@ namespace new_frontiers {
        *          taken).
        */
       float m_refill;
+
+      /**
+       * @brief - Define the territory that corresponds to the
+       *          colony. It is used to materialize the space
+       *          that this colony consider home and is allowed
+       *          to use to spawn elements and change in terms
+       *          of properties.
+       *          This will be the region where blocks spawned
+       *          by the colony will be located.
+       */
+      float m_radius;
+
+      /**
+       * @brief - Define the maximum number of spawners that
+       *          can be created by the colony at any given
+       *          time. It allows to control the growth of a
+       *          well fed colony so that it does not become
+       *          too big.
+       */
+      int m_maxSize;
+
+      /**
+       * @brief - Used to determine the current size of the
+       *          colony in terms of blocks spawned. This is
+       *          used in association with the max size val
+       *          to make sure that we don't grow too big.
+       */
+      int m_size;
   };
 
   using ColonyShPtr = std::shared_ptr<Colony>;

@@ -21,6 +21,9 @@ namespace new_frontiers {
 
     pp.focus = sk_focus;
 
+    pp.radius = sk_radius;
+    pp.maxSize = sk_maxSize;
+
     return pp;
   }
 
