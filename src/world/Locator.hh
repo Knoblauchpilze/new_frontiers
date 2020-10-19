@@ -23,6 +23,16 @@ namespace new_frontiers {
   namespace world {
 
     /**
+     * @brief - Convenience structure allowing to define
+     *          a status for identifiers when retrieving
+     *          elements based on their visibility.
+     */
+    struct Filter {
+      utils::Uuid id;
+      bool include;
+    };
+
+    /**
      * @brief - Convenience wrapper describing common props
      *          for blocks that can be used for display.
      */
@@ -266,6 +276,9 @@ namespace new_frontiers {
        * @param type - the type of elements to consider. If
        *               this value is set to `null` all the
        *               item types will be included.
+       * @param filters - include a description of a uuid and
+       *                  whether or not theyit should be used
+       *                  and considered when fetching items.
        * @param sort - `true` if the items should be sorted
        *               in the output vector. The sort occurs
        *               based on the `z` order of the items.
@@ -278,6 +291,7 @@ namespace new_frontiers {
                  float xMax,
                  float yMax,
                  const world::ItemType* type = nullptr,
+                 const world::Filter* filters = nullptr,
                  bool sort = false) const noexcept;
 
       /**
@@ -298,6 +312,9 @@ namespace new_frontiers {
        * @param type - the type of elements to consider. If
        *               this value is set to `null` all the
        *               item types will be included.
+       * @param filters - include a description of a uuid and
+       *                  whether or not theyit should be used
+       *                  and considered when fetching items.
        * @param sort - `true` if the items should be sorted
        *               in the output vector. The sort occurs
        *               based on the `z` order of the items.
@@ -309,6 +326,7 @@ namespace new_frontiers {
                  float y,
                  float r,
                  const world::ItemType* type = nullptr,
+                 const world::Filter* filter = nullptr,
                  bool sort = false) const noexcept;
 
       /**
@@ -325,6 +343,9 @@ namespace new_frontiers {
        *            found.
        * @param type - the type of the element to search
        *               for.
+       * @param filters - include a description of a uuid and
+       *                  whether or not theyit should be used
+       *                  and considered when fetching items.
        * @return - the corresponding element's description
        *           or a negative index if none can be
        *           found.
@@ -332,7 +353,8 @@ namespace new_frontiers {
       world::ItemEntry
       getClosest(float x,
                  float y,
-                 const world::ItemType& type) const noexcept;
+                 const world::ItemType& type,
+                 const world::Filter& filter) const noexcept;
 
       /**
        * @brief - Specialization of the `getVisible` method
@@ -349,6 +371,9 @@ namespace new_frontiers {
        * @param id - the variant of the block to consider.
        *             If this value is `-1` any variant is
        *             considered.
+       * @param filters - include a description of a uuid and
+       *                  whether or not theyit should be used
+       *                  and considered when fetching items.
        * @param sort - whether or not the output vector
        *               should be sorted so that blocks are
        *               in ascending order compared to the
@@ -361,6 +386,7 @@ namespace new_frontiers {
                  float r,
                  const tiles::Block* bTile,
                  int id = -1,
+                 const world::Filter* filter = nullptr,
                  bool sort = false) const noexcept;
 
       /**
@@ -378,6 +404,9 @@ namespace new_frontiers {
        * @param id - the variant of the entity to consider.
        *             If this value is `-1` any variant is
        *             considered.
+       * @param filters - include a description of a uuid and
+       *                  whether or not theyit should be used
+       *                  and considered when fetching items.
        * @param sort - whether or not the output vector
        *               should be sorted so that entities
        *               are in ascending order compared to
@@ -390,6 +419,7 @@ namespace new_frontiers {
                  float r,
                  const tiles::Entity* eTile,
                  int id = -1,
+                 const world::Filter* filter = nullptr,
                  bool sort = false) const noexcept;
 
       /**
@@ -406,6 +436,9 @@ namespace new_frontiers {
        *            considered.
        * @param id - the variant of the block to consider. If
        *             this value is `-1` any variant is considered.
+       * @param filters - include a description of a uuid and
+       *                  whether or not theyit should be used
+       *                  and considered when fetching items.
        * @return - the list of blocks.
        */
       BlockShPtr
@@ -413,7 +446,8 @@ namespace new_frontiers {
                  float y,
                  const tiles::Block& bTile,
                  float r = -1.0f,
-                 int id = -1) const noexcept;
+                 int id = -1,
+                 const world::Filter* filter = nullptr) const noexcept;
 
       /**
        * @brief - Similar to the `getVisible` but only returns
@@ -429,6 +463,9 @@ namespace new_frontiers {
        *            considered.
        * @param id - the variant of the entity to consider. If
        *             this value is `-1` any variant is considered.
+       * @param filters - include a description of a uuid and
+       *                  whether or not theyit should be used
+       *                  and considered when fetching items.
        * @return - the list of entities.
        */
       EntityShPtr
@@ -436,7 +473,8 @@ namespace new_frontiers {
                  float y,
                  const tiles::Entity& eTile,
                  float r = -1.0f,
-                 int id = -1) const noexcept;
+                 int id = -1,
+                 const world::Filter* filter = nullptr) const noexcept;
 
     private:
 

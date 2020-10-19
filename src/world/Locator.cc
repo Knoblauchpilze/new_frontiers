@@ -154,6 +154,7 @@ namespace new_frontiers {
                       float xMax,
                       float yMax,
                       const world::ItemType* type,
+                      const world::Filter* filter,
                       bool sort) const noexcept
   {
     std::vector<world::ItemEntry> out;
@@ -169,6 +170,23 @@ namespace new_frontiers {
         const BlockTile& t = m_blocks[id]->getTile();
 
         if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+          continue;
+        }
+
+        // Check the owner: if the filtering is defined we
+        // we want to reject the item if:
+        //  - the filter says to include the specified id
+        //    and the item's one is different.
+        //  - the filter says to exclude the specified id
+        //    and the item's one is identical.
+        const utils::Uuid& uuid = m_blocks[id]->getOwner();
+        if (filter != nullptr &&
+            (
+              (filter->include && uuid != filter->id) ||
+              (!filter->include && uuid == filter->id)
+            )
+           )
+        {
           continue;
         }
 
@@ -189,6 +207,18 @@ namespace new_frontiers {
           continue;
         }
 
+        // See above for details.
+        const utils::Uuid& uuid = m_entities[id]->getOwner();
+        if (filter != nullptr &&
+            (
+              (filter->include && uuid != filter->id) ||
+              (!filter->include && uuid == filter->id)
+            )
+           )
+        {
+          continue;
+        }
+
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
         out.push_back(ie);
@@ -203,6 +233,18 @@ namespace new_frontiers {
         const VFXTile& t = m_vfxs[id]->getTile();
 
         if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+          continue;
+        }
+
+        // See above for details.
+        const utils::Uuid& uuid = m_vfxs[id]->getOwner();
+        if (filter != nullptr &&
+            (
+              (filter->include && uuid != filter->id) ||
+              (!filter->include && uuid == filter->id)
+            )
+           )
+        {
           continue;
         }
 
@@ -240,6 +282,7 @@ namespace new_frontiers {
                       float y,
                       float r,
                       const world::ItemType* type,
+                      const world::Filter* filter,
                       bool sort) const noexcept
   {
     std::vector<world::ItemEntry> out;
@@ -256,6 +299,23 @@ namespace new_frontiers {
         const BlockTile& t = m_blocks[id]->getTile();
 
         if (r > 0.0f && distance::d2(t.x + 0.5f, t.y + 0.5f, x, y) > r2) {
+          continue;
+        }
+
+        // Check the owner: if the filtering is defined we
+        // we want to reject the item if:
+        //  - the filter says to include the specified id
+        //    and the item's one is different.
+        //  - the filter says to exclude the specified id
+        //    and the item's one is identical.
+        const utils::Uuid& uuid = m_blocks[id]->getOwner();
+        if (filter != nullptr &&
+            (
+              (filter->include && uuid != filter->id) ||
+              (!filter->include && uuid == filter->id)
+            )
+           )
+        {
           continue;
         }
 
@@ -276,6 +336,18 @@ namespace new_frontiers {
           continue;
         }
 
+        // See above for details.
+        const utils::Uuid& uuid = m_entities[id]->getOwner();
+        if (filter != nullptr &&
+            (
+              (filter->include && uuid != filter->id) ||
+              (!filter->include && uuid == filter->id)
+            )
+           )
+        {
+          continue;
+        }
+
         ie.index = id;
         entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
         out.push_back(ie);
@@ -290,6 +362,18 @@ namespace new_frontiers {
         const VFXTile& t = m_vfxs[id]->getTile();
 
         if (r > 0.0f && distance::d2(t.x, t.y, x, y) > r2) {
+          continue;
+        }
+
+        // See above for details.
+        const utils::Uuid& uuid = m_vfxs[id]->getOwner();
+        if (filter != nullptr &&
+            (
+              (filter->include && uuid != filter->id) ||
+              (!filter->include && uuid == filter->id)
+            )
+           )
+        {
           continue;
         }
 

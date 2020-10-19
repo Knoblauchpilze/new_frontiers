@@ -122,7 +122,8 @@ namespace new_frontiers {
     // We have reached home, attempt to dump the
     // resource we're transporting and get back
     // to wandering.
-    BlockShPtr b = info.frustum->getClosest(m_tile.x, m_tile.y, tiles::Portal, -1);
+    world::Filter f{getOwner(), true};
+    BlockShPtr b = info.frustum->getClosest(m_tile.x, m_tile.y, tiles::Portal, -1, -1, &f);
 
     if (b == nullptr) {
       // For some reason the home of the entity does
