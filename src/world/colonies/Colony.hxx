@@ -2,6 +2,7 @@
 # define   COLONY_HXX
 
 # include "Colony.hh"
+# include "Locator.hh"
 
 namespace new_frontiers {
 

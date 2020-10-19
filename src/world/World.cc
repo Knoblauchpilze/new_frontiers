@@ -225,14 +225,17 @@ namespace new_frontiers {
     // Generate the colonies.
     Colony::Props c = ColonyFactory::newColonyProps(1.0f, 4.0f, utils::Uuid::create());
     c.focus = colony::Priority::Expansion;
+    c.refill = 0.2f;
     m_colonies.push_back(std::make_shared<Colony>(c));
 
     c = ColonyFactory::newColonyProps(2.0f, 2.0f, utils::Uuid::create());
     c.focus = colony::Priority::Consolidation;
+    c.refill = 1.0f;
     m_colonies.push_back(std::make_shared<Colony>(c));
 
     c = ColonyFactory::newColonyProps(2.0f, 1.0f, utils::Uuid::create());
     c.focus = colony::Priority::War;
+    c.refill = 0.05f;
     m_colonies.push_back(std::make_shared<Colony>(c));
 
     // Generate mob portals.
@@ -256,6 +259,8 @@ namespace new_frontiers {
   void
   World::processInfluences(const std::vector<InfluenceShPtr>& influences) {
     // Process each influence.
+    std::size_t bCount = m_blocks.size();
+
     for (unsigned id = 0; id < influences.size() ; ++id) {
       InfluenceShPtr i = influences[id];
 
@@ -309,6 +314,12 @@ namespace new_frontiers {
           log("Unhandled influence with type " + std::to_string(static_cast<int>(i->getType())), utils::Level::Warning);
           break;
       }
+    }
+
+    // In case the number of blocks has been changed
+    // we need to update the locator.
+    if (m_blocks.size() != bCount) {
+      m_loc->refresh();
     }
   }
 

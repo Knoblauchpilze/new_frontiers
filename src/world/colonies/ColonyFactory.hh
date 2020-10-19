@@ -20,6 +20,9 @@ namespace new_frontiers {
       static const float sk_refill;
 
       static const colony::Priority sk_focus;
+
+      static const float sk_radius;
+      static const int sk_maxSize;
   };
 
 }

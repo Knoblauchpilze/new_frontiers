@@ -16,7 +16,11 @@ namespace new_frontiers {
 
     m_budget(props.budget),
     m_actionCost(props.actionCost),
-    m_refill(props.refill)
+    m_refill(props.refill),
+
+    m_radius(props.radius),
+    m_maxSize(props.maxSize),
+    m_size(0)
   {
     setService("colony");
 
@@ -39,44 +43,51 @@ namespace new_frontiers {
   Colony::think(StepInfo& info) {
     // Make sure the budget is enough to spawn a
     // new portal based on the focus.
-    if (m_budget < m_actionCost) {
+    if (m_budget < m_actionCost || m_size >= m_maxSize) {
       return;
     }
 
+    // Generate a position in the radius of the
+    // colony. Note that this position will be
+    // set to the `home` position of the colony
+    // in case it's the first spawner.
+    float x = m_homeX;
+    float y = m_homeY;
+
+    while (info.frustum->obstructed(x, y)) {
+      float r = info.rng.rndFloat(0, m_radius * m_radius);
+      float theta = info.rng.rndAngle();
+
+      x = std::round(std::sqrt(r) * std::cos(theta));
+      y = std::round(std::sqrt(r) * std::sin(theta));
+
+      info.clampCoord(x, y);
+    }
+
+    log("Spawning portal at " + std::to_string(x) + "x" + std::to_string(y));
+
     // Spawn a block corresponding to the current
     // focus of the colony.
-    SpawnerOMeter::SOMProps pp;
+    SpawnerOMeter::SOMProps pp = BlockFactory::newSpawnerOMeterProps(x, y);
 
     switch (m_focus) {
       case colony::Priority::Expansion:
-        pp = BlockFactory::newSpawnerOMeterProps(
-          m_homeX,
-          m_homeY,
-          tiles::IncaOverlord
-        );
+        pp.mob = tiles::IncaOverlord;
         break;
       case colony::Priority::War:
-        pp = BlockFactory::newSpawnerOMeterProps(
-          m_homeX,
-          m_homeY,
-          tiles::DemonBat
-        );
-
+        pp.mob = tiles::DemonBat;
         pp.agent = mob::Type::Warrior;
         break;
       case colony::Priority::Consolidation:
         // Default mode is consolidation.
       default:
-        pp = BlockFactory::newSpawnerOMeterProps(
-          m_homeX,
-          m_homeY,
-          tiles::Executioner
-        );
+        pp.mob = tiles::Executioner;
         break;
     }
 
     // Spend the budget and create the spawner.
     m_budget -= m_actionCost;
+    ++m_size;
 
     BlockShPtr b = BlockFactory::newSpawnerOMeter(pp);
     info.spawnBlock(b);

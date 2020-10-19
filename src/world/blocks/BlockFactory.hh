@@ -17,11 +17,11 @@ namespace new_frontiers {
 
       static
       TimedSpawner::TSProps
-      newTimedSpawnerProps(float x, float y, const tiles::Entity& ent) noexcept;
+      newTimedSpawnerProps(float x, float y, const tiles::Entity& ent = tiles::Executioner) noexcept;
 
       static
       SpawnerOMeter::SOMProps
-      newSpawnerOMeterProps(float x, float y, const tiles::Entity& ent) noexcept;
+      newSpawnerOMeterProps(float x, float y, const tiles::Entity& ent = tiles::Executioner) noexcept;
 
       static
       BlockShPtr
