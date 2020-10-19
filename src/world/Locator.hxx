@@ -138,10 +138,11 @@ namespace new_frontiers {
   world::ItemEntry
   Locator::getClosest(float x,
                       float y,
-                      const world::ItemType& type) const noexcept
+                      const world::ItemType& type,
+                      const world::Filter& filter) const noexcept
   {
     // Use the dedicated handler.
-    std::vector<world::ItemEntry> all = getVisible(x, y, -1.0f, &type, true);
+    std::vector<world::ItemEntry> all = getVisible(x, y, -1.0f, &type, &filter, true);
 
     // Return the closest one if any has
     // been found or an invalid entry. As
@@ -161,11 +162,12 @@ namespace new_frontiers {
                       float r,
                       const tiles::Block* bTile,
                       int id,
+                      const world::Filter* filter,
                       bool sort) const noexcept
   {
     // Fetch visible blocks descriptions.
     world::ItemType t = world::ItemType::Block;
-    std::vector<world::ItemEntry> bds = getVisible(x, y, r, &t, sort);
+    std::vector<world::ItemEntry> bds = getVisible(x, y, r, &t, filter, sort);
 
     std::vector<BlockShPtr> bs;
     for (unsigned i = 0u ; i < bds.size() ; ++i) {
@@ -195,11 +197,12 @@ namespace new_frontiers {
                       float r,
                       const tiles::Entity* eTile,
                       int id,
+                      const world::Filter* filter,
                       bool sort) const noexcept
   {
     // Fetch visible entities descriptions.
     world::ItemType t = world::ItemType::Entity;
-    std::vector<world::ItemEntry> eds = getVisible(x, y, r, &t, sort);
+    std::vector<world::ItemEntry> eds = getVisible(x, y, r, &t, filter, sort);
 
     std::vector<EntityShPtr> es;
     for (unsigned i = 0u ; i < eds.size() ; ++i) {
@@ -228,9 +231,10 @@ namespace new_frontiers {
                       float y,
                       const tiles::Block& bTile,
                       float r,
-                      int id) const noexcept
+                      int id,
+                      const world::Filter* filter) const noexcept
   {
-    std::vector<BlockShPtr> bs = getVisible(x, y, r, &bTile, id, true);
+    std::vector<BlockShPtr> bs = getVisible(x, y, r, &bTile, id, filter, true);
 
     if (bs.empty()) {
       return nullptr;
@@ -245,9 +249,10 @@ namespace new_frontiers {
                       float y,
                       const tiles::Entity& eTile,
                       float r,
-                      int id) const noexcept
+                      int id,
+                      const world::Filter* filter) const noexcept
   {
-    std::vector<EntityShPtr> es = getVisible(x, y, r, &eTile, id, true);
+    std::vector<EntityShPtr> es = getVisible(x, y, r, &eTile, id, filter, true);
 
     if (es.empty()) {
       return nullptr;

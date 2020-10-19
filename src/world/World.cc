@@ -230,7 +230,7 @@ namespace new_frontiers {
 
     c = ColonyFactory::newColonyProps(2.0f, 2.0f, utils::Uuid::create());
     c.focus = colony::Priority::Consolidation;
-    c.refill = 1.0f;
+    c.refill = 0.4f;
     m_colonies.push_back(std::make_shared<Colony>(c));
 
     c = ColonyFactory::newColonyProps(2.0f, 1.0f, utils::Uuid::create());

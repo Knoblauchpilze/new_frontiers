@@ -24,7 +24,8 @@ namespace new_frontiers {
     // for this entity.
     // In case no entities can be found, we will return
     // to the wandering behavior.
-    EntityShPtr e = info.frustum->getClosest(x, y, tiles::Executioner, m_perceptionRadius, 0);
+    world::Filter f{getOwner(), false};
+    EntityShPtr e = info.frustum->getClosest(x, y, tiles::Executioner, m_perceptionRadius, 0, &f);
 
     if (e == nullptr) {
       // Couldn't find the entity we were chasing, get
@@ -83,7 +84,8 @@ namespace new_frontiers {
     // new instructions. We need to make sure that
     // we are actually close to home (and that it did
     // not get destroyed for some reasons).
-    world::ItemEntry ie = info.frustum->getClosest(m_tile.x, m_tile.y, world::ItemType::Block);
+    world::Filter f{getOwner(), true};
+    world::ItemEntry ie = info.frustum->getClosest(m_tile.x, m_tile.y, world::ItemType::Block, f);
     world::Block b;
 
     if (ie.index >= 0 && ie.type == world::ItemType::Block) {
@@ -108,7 +110,8 @@ namespace new_frontiers {
   Warrior::wander(StepInfo& info, float& x, float& y) {
     // Check whether we can find any deposit in the
     // surroudings of the entity.
-    EntityShPtr entity = info.frustum->getClosest(x, y, tiles::Executioner, m_perceptionRadius, 0);
+    world::Filter f{getOwner(), false};
+    EntityShPtr entity = info.frustum->getClosest(x, y, tiles::Executioner, m_perceptionRadius, 0, &f);
 
     // In case there are no entities, continue the
     // wandering around process.

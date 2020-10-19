@@ -51,6 +51,7 @@ namespace new_frontiers {
       v.p.x + v.dims.x,
       v.p.y + v.dims.y,
       nullptr,
+      nullptr,
       true
     );
 
@@ -273,6 +274,7 @@ namespace new_frontiers {
       v.p.x + v.dims.x,
       v.p.y + v.dims.y,
       &ie,
+      nullptr,
       true
     );
 

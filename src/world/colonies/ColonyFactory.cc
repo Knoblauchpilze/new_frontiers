@@ -10,6 +10,6 @@ namespace new_frontiers {
   const colony::Priority ColonyFactory::sk_focus = colony::Priority::Consolidation;
 
   const float ColonyFactory::sk_radius = 3.0f;
-  const int ColonyFactory::sk_maxSize = 5;
+  const int ColonyFactory::sk_maxSize = 1;
 
 }
