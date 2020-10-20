@@ -249,11 +249,6 @@ namespace new_frontiers {
     Deposit::DProps dp = BlockFactory::newDepositProps(3.0f, 4.0f);
     dp.stock = 20.0f;
     m_blocks.push_back(BlockFactory::newDeposit(dp));
-
-    // Generate the player at the same location
-    // as the entry portal.
-    Player::PProps plp = EntityFactory::newPlayerProps(1.0f, 1.0f, tiles::Knight);
-    m_entities.push_back(std::make_shared<Player>(plp));
   }
 
   void

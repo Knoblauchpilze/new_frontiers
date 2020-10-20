@@ -48,19 +48,13 @@ namespace new_frontiers {
   inline
   void
   Colony::pause(const TimeStamp& /*t*/) {
-    // TODO: Implement this.
+    // Nothing to do yet.
   }
 
   inline
   void
   Colony::resume(const TimeStamp& /*t*/) {
-    // TODO: Implement this.
-  }
-
-  inline
-  void
-  Colony::changeFocus(const StepInfo& /*info*/) {
-    // TODO: Implement this.
+    // Nothing to do yet.
   }
 
 }
