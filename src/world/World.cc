@@ -11,68 +11,56 @@
 # include "colonies/ColonyFactory.hh"
 # include "TimeUtils.hh"
 
+# include <iostream>
+
 namespace {
 
-  /**
-   * @brief - Create a valid entity from the input desc.
-   *          In case the `kind` or the `type` cannot be
-   *          interpreted a null pointer is returned.
-   * @param kind - the type of 'brain' to associate to
-   *               this entity.
-   * @param type - the type of visual display for it.
-   * @param id - the variant of the main display.
-   * @param x - the abscissa of the entity in cells.
-   * @param y - the ordinate of the entity in cells.
-   * @param homeX - the home position of the entity in
-   *                cells: defines only the abscissa.
-   * @param homeY - the home position of the entity in
-   *                cells: defines only the ordinate.
-   * @return - the pointer on the created entity or a
-   *           null pointer if one of the parameter is
-   *           not recognized.
-   */
   inline
   new_frontiers::EntityShPtr
   createEntity(const std::string& kind,
-               const std::string& type,
-               int id,
+               const std::string& mob,
                float x,
                float y,
+               float health,
                float homeX,
-               float homeY)
+               float homeY,
+               float carrying,
+               float cargo,
+               float attack = 0.0f)
   {
     // Retrieve the visual display type for the entity.
-    new_frontiers::tiles::Entity e = new_frontiers::strToEntity(type);
+    // In case none is found, return an empty pointer.
+    new_frontiers::tiles::Entity e = new_frontiers::strToEntity(mob);
     if (e == new_frontiers::tiles::EntitiesCount) {
-      // We could not interpret the visual display type
-      // for this entity.
+      std::cout << "[HAHA] " << mob << std::endl;
       return nullptr;
     }
 
-    // Interpret the brain.
+    // Interpret the brain, assign custom properties
+    // and return the created object.
     if (kind == "warrior") {
       new_frontiers::Warrior::WProps pp = new_frontiers::EntityFactory::newWarriorProps(x, y, e);
-      pp.tile.id = id;
+      pp.health = health;
 
       pp.homeX = homeX + 0.5f;
       pp.homeY = homeY + 0.5f;
+      pp.carrying = carrying;
+      pp.cargo = cargo;
+
+      pp.attack = attack;
 
       return std::make_shared<new_frontiers::Warrior>(pp);
     }
     if (kind == "worker") {
       new_frontiers::Mob::MProps pp = new_frontiers::EntityFactory::newWorkerProps(x, y, e);
-      pp.tile.id = id;
+      pp.health = health;
 
       pp.homeX = homeX + 0.5f;
       pp.homeY = homeY + 0.5f;
+      pp.carrying = carrying;
+      pp.cargo = cargo;
 
       return std::make_shared<new_frontiers::Worker>(pp);
-    }
-    if (kind == "player") {
-      new_frontiers::Player::PProps pp = new_frontiers::EntityFactory::newPlayerProps(x, y, e);
-      pp.tile.id = id;
-
-      return std::make_shared<new_frontiers::Player>(pp);
     }
 
     // Could not interpret the brain.
@@ -416,6 +404,7 @@ namespace new_frontiers {
         continue;
       }
 
+      // TODO: We should handle the owner's string.
       in >> x >> y >> mobStr >> mobTypeStr >> cost >> stock >> refill;
 
       // Convert mob type from string to enumeration.
@@ -492,7 +481,6 @@ namespace new_frontiers {
         std::getline(in, line);
 
         log("Skipping section \"" + section + "\" (not a wall)", utils::Level::Warning);
-
         continue;
       }
 
@@ -514,20 +502,8 @@ namespace new_frontiers {
     // section called `entity`.
     std::string section;
 
-    // The `type` and `id` caracterize the visual
-    // display for the entity: it represents how
-    // it will look on screen.
-    // The `x` and `y` represent the position of
-    // the entity.
-    // The `kind` represent whether this entity
-    // is a hostile mob, a player, or any other
-    // kind of entity. It is more linked to the
-    // type of 'brain' that is responsible for
-    // its behavior.
-    std::string kind;
-    std::string type;
-    int id;
-    float x, y, xH, yH;
+    std::string kind, mob;
+    float x, y, health, homeX, homeY, carrying, cargo, attack;
 
     while (!in.eof() && section != "end") {
       in >> section;
@@ -550,24 +526,16 @@ namespace new_frontiers {
         std::string line;
         std::getline(in, line);
 
-        log(
-          std::string("Skipping section \"") + section + "\" (not an entity)",
-          utils::Level::Warning
-        );
-
+        log("Skipping section \"" + section + "\" (not an entity)", utils::Level::Warning);
         continue;
       }
 
-      in >> kind >> type >> id >> x >> y >> xH >> yH;
+      // TODO: We should handle the owner's string.
+      in >> kind >> mob >> x >> y >> health >> homeX >> homeY >> carrying >> cargo >> attack;
 
-      EntityShPtr e = createEntity(kind, type, id, x, y, xH, yH);
+      EntityShPtr e = createEntity(kind, mob, x, y, health, homeX, homeY, carrying, cargo, attack);
       if (e == nullptr) {
-        log(
-          std::string("Could not decode entity with unknown kind \"") + kind +
-          "\" and type \"" + type + "\"",
-          utils::Level::Warning
-        );
-
+        log("Could not decode entity with unknown kind \"" + kind + "\"", utils::Level::Warning);
         continue;
       }
 
