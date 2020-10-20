@@ -40,6 +40,11 @@ namespace new_frontiers {
   }
 
   void
+  Colony::changeFocus(const StepInfo& /*info*/) {
+    // TODO: Implement this.
+  }
+
+  void
   Colony::think(StepInfo& info) {
     // Make sure the budget is enough to spawn a
     // new portal based on the focus.
