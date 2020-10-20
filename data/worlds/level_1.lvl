@@ -2,19 +2,19 @@
 18
 
 portals
-portal 14 2 IncaOverlord Worker 1.5 1.5 0.01
-#portal 8 15 DarkAnubis Warrior 3.0 2.99 0.01
-#portal 16 9 Griffin Warrior 10.0 3.0 0.1
+portal 14 2 IncaOverlord Worker 1.5 1.5 0.01 49dc9520-c2f2-6fd6-00cc-d06e22b6193b
+portal 8 15 DarkAnubis Warrior 3.0 2.99 0.01 dc58ec67-f577-38bf-265c-900bd928aac5
+portal 16 9 Griffin Warrior 10.0 3.0 0.1 81208043-1496-01fd-6f50-d2abf487f6b5
 end
 entities
-#entity warrior MindlessGolem 1 1 20 2 2 0 10 3
-#entity worker CosmicThreat 3 3 50 4 4 5 10 0
+entity warrior MindlessGolem 1 1 20 2 2 0 10 3 dc58ec67-f577-38bf-265c-900bd928aac5
+entity worker CosmicThreat 3 3 50 14 2 5 10 0 49dc9520-c2f2-6fd6-00cc-d06e22b6193b
 end
 blocks
 # Deposits
 deposit 8 9 10 100
 deposit 3 11 10 150
-deposit 11 2 10 100
+deposit 3 5 10 100
 # Corners
 wall 10 15 0 0
 wall 10 15 19 0
