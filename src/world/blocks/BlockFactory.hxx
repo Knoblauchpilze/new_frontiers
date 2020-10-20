@@ -78,21 +78,27 @@ namespace new_frontiers {
   }
 
   inline
-  BlockShPtr
-  BlockFactory::newEntrance(float x, float y, int id) noexcept {
-    return newPortal(x, y, id);
+  Block::Props
+  BlockFactory::newBlockProps(float x, float y, const tiles::Block& blo) noexcept {
+    Block::Props pp;
+
+    pp.tile = newTile(blo, 0, x, y);
+
+    pp.radius = sk_radius;
+    pp.health = sk_health;
+
+    pp.owner.invalidate();
+
+    return pp;
   }
 
   inline
-  BlockShPtr
-  BlockFactory::newExit(float x, float y, int id) noexcept {
-    return newPortal(id, x, y);
-  }
+  Block::Props
+  BlockFactory::newWallProps(float x, float y, int id) noexcept {
+    Block::Props pp = newBlockProps(x, y, tiles::Wall);
+    pp.tile.id = id;
 
-  inline
-  BlockShPtr
-  BlockFactory::newWall(float x, float y, int id) noexcept {
-    return newBlock(newTile(tiles::Wall, id, x, y), "wall");
+    return pp;
   }
 
   inline
@@ -114,27 +120,15 @@ namespace new_frontiers {
   }
 
   inline
+  BlockShPtr
+  BlockFactory::newBlock(const Block::Props& props, const std::string& name) noexcept {
+    return std::shared_ptr<Block>(new Block(props, name));
+  }
+
+  inline
   BlockTile
   BlockFactory::newTile(const tiles::Block& b, int id, float x, float y) noexcept {
     return BlockTile{x, y, b, id};
-  }
-
-  inline
-  BlockShPtr
-  BlockFactory::newBlock(const BlockTile& bt, const std::string& name) noexcept {
-    Block::Props pp;
-    pp.tile = bt;
-
-    pp.radius = sk_radius;
-    pp.health = sk_health;
-
-    return std::shared_ptr<Block>(new Block(pp, name));
-  }
-
-  inline
-  BlockShPtr
-  BlockFactory::newPortal(float x, float y, int id) noexcept {
-    return newBlock(newTile(tiles::Portal, id, x, y), "portal");
   }
 
 }

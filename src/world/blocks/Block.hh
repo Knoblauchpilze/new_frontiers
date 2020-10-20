@@ -13,6 +13,21 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a block. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct Props {
+        BlockTile tile;
+
+        float radius;
+        float health;
+
+        utils::Uuid owner;
+      };
+
+      /**
        * @brief - Base implementation for an element which
        *          does nothing.
        * @param info - information about the world.
@@ -39,21 +54,6 @@ namespace new_frontiers {
       resume(const TimeStamp& t) override;
 
     protected:
-
-      /**
-       * @brief - Convenience structure to regroup the info
-       *          needed to create a block. It is meant
-       *          as a way to reduce the number of arguments
-       *          provided to the constructor of this class.
-       */
-      struct Props {
-        BlockTile tile;
-
-        float radius;
-        float health;
-
-        utils::Uuid owner;
-      };
 
       /**
        * @brief - Create a new solid element with the tile

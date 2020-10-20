@@ -337,9 +337,9 @@ namespace new_frontiers {
         // Mob portals for this level.
         loadPortals(in);
       }
-      else if (section == "walls") {
-        // Walls registered in the level.
-        loadWalls(in);
+      else if (section == "blocks") {
+        // Blocks registered in the level.
+        loadBlocks(in);
       }
       else if (section == "entities") {
         // Entities already spawned in the level.
@@ -451,9 +451,10 @@ namespace new_frontiers {
   }
 
   void
-  World::loadWalls(std::ifstream& in) {
+  World::loadBlocks(std::ifstream& in) {
     // Parse until we reach a `end` directive. The
-    // cue for a wall is a section called `wall`.
+    // cue for a block can be several specialized
+    // types like `wall`, `deposit`, etc.
     std::string section;
 
     int type;
@@ -475,23 +476,45 @@ namespace new_frontiers {
 
         continue;
       }
-      if (section != "wall") {
+      if (section != "wall" && section != "deposit") {
         // Not handled section, continue.
         std::string line;
         std::getline(in, line);
 
-        log("Skipping section \"" + section + "\" (not a wall)", utils::Level::Warning);
+        log("Skipping section \"" + section + "\" (not a wall nor a deposit)", utils::Level::Warning);
         continue;
       }
 
-      in >> type >> x >> y;
+      // Check the type of block to register.
+      float health, stock;
 
-      log(
-        "Registering wall " + std::to_string(type) + " at " + std::to_string(x) + "x" + std::to_string(y),
-        utils::Level::Verbose
-      );
+      if (section == "wall") {
+        in >> health >> type >> x >> y;
 
-      m_blocks.push_back(BlockFactory::newWall(x, y, type));
+        log(
+          "Registering wall " + std::to_string(type) + " at " + std::to_string(x) + "x" + std::to_string(y),
+          utils::Level::Verbose
+        );
+
+        Block::Props pp = BlockFactory::newWallProps(x, y, type);
+        pp.health = health;
+
+        m_blocks.push_back(BlockFactory::newBlock(pp, "wall"));
+      }
+      else if (section == "deposit") {
+        in >> x >> y >> health >> stock;
+
+        log(
+          "Registering deposit with stock " + std::to_string(stock) + " at " + std::to_string(x) + "x" + std::to_string(y),
+          utils::Level::Verbose
+        );
+
+        Deposit::DProps pp = BlockFactory::newDepositProps(x, y);
+        pp.health = health;
+        pp.stock = stock;
+
+        m_blocks.push_back(BlockFactory::newDeposit(pp));
+      }
     }
   }
 
