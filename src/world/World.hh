@@ -140,12 +140,6 @@ namespace new_frontiers {
       loadDimensions(std::ifstream& in);
 
       void
-      loadEntrances(std::ifstream& in);
-
-      void
-      loadExits(std::ifstream& in);
-
-      void
       loadPortals(std::ifstream& in);
 
       void

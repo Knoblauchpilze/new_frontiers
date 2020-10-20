@@ -523,9 +523,9 @@ namespace new_frontiers {
       /**
        * @brief - A map referencing the unique indices for
        *          blocks in the world. It is build as the
-       *          object is constructed (or refresehd) and
-       *          allows to quickly access to the id where
-       *          a block exists.
+       *          object is constructed (or refreshed) and
+       *          allows to quickly access to the position
+       *          where a block exists.
        */
       std::unordered_set<int> m_blocksIDs;
   };

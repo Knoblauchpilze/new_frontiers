@@ -1,18 +1,10 @@
 20
 18
 
-entrances
-entrance 6 1 1
-entrance 6 2 3
-end
-exits
-exit 1 1 4
-exit 1 4 5
-end
 portals
-portal 3 14 2 Worker IncaOverlord 0
-portal 3 8 15 Warrior DarkAnubis 0
-portal 3 16 9 Warrior Griffin 0
+portal 14 2 IncaOverlord Worker 1.5 3.0 0.01
+portal 8 15 DarkAnubis Warrior 3.0 2.99 0.01
+portal 16 9 Griffin Warrior 10.0 3.0 0.1
 end
 walls
 # Corners
@@ -120,8 +112,4 @@ wall 9 8 7
 wall 1 8 8
 end
 entities
-entity warrior Vampire 0 12 12 3 4
-entity worker IncaOverlord 0 1 1 2 2
-entity player Blob 0 12 13 0 0
-entity player Executioner 0 8 13 0 0
 end

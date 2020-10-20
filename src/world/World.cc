@@ -238,17 +238,15 @@ namespace new_frontiers {
     c.refill = 0.05f;
     m_colonies.push_back(std::make_shared<Colony>(c));
 
-    // Generate mob portals.
-// # define TIMED_SPAWNER
-# ifdef TIMED_SPAWNER
-    m_blocks.push_back(BlockFactory::newTimedSpawner(3, mob::Type::Worker, 1.0f, 5.0f, tiles::IncaOverlord, 0));
-    m_blocks.push_back(BlockFactory::newTimedSpawner(3, mob::Type::Warrior, 5.0f, 1.0f, tiles::DemonBat, 0));
-# endif
-
     // Generate resource deposit.
     Deposit::DProps dp = BlockFactory::newDepositProps(3.0f, 4.0f);
     dp.stock = 20.0f;
     m_blocks.push_back(BlockFactory::newDeposit(dp));
+
+    // Generate the player at the same location
+    // as the entry portal.
+    Player::PProps plp = EntityFactory::newPlayerProps(1.0f, 1.0f, tiles::Knight);
+    m_entities.push_back(std::make_shared<Player>(plp));
   }
 
   void
@@ -347,15 +345,7 @@ namespace new_frontiers {
 
       log("Reading section \"" + section + "\" from \"" + file + "\"");
 
-      if (section == "entrances") {
-        // Starting point of the level.
-        loadEntrances(in);
-      }
-      else if (section == "exits") {
-        // End portal of the level.
-        loadExits(in);
-      }
-      else if (section == "portals") {
+      if (section == "portals") {
         // Mob portals for this level.
         loadPortals(in);
       }
@@ -393,119 +383,13 @@ namespace new_frontiers {
   }
 
   void
-  World::loadEntrances(std::ifstream& in) {
-    // Parse until we reach a `end` directive. The
-    // cue for an entrance is a section called
-    // `entrance`.
-    std::string section;
-
-    int type;
-    float x, y;
-
-    while (!in.eof() && section != "end") {
-      in >> section;
-
-      if (in.eof()) {
-        break;
-      }
-      if (section == "end") {
-        break;
-      }
-      if (section == "#") {
-        // Comment, continue.
-        std::string line;
-        std::getline(in, line);
-
-        continue;
-      }
-      if (section != "entrance") {
-        // Not handled section, continue.
-        std::string line;
-        std::getline(in, line);
-
-        log(
-          std::string("Skipping section \"") + section + "\" (not an entrance)",
-          utils::Level::Warning
-        );
-
-        continue;
-      }
-
-      in >> type >> x >> y;
-
-      log(
-        std::string("Registering entrance ") +
-        std::to_string(type) + " at " +
-        std::to_string(x) + "x" + std::to_string(y),
-        utils::Level::Verbose
-      );
-
-      m_blocks.push_back(BlockFactory::newEntrance(x, y, type));
-    }
-  }
-
-  void
-  World::loadExits(std::ifstream& in) {
-    // Parse until we reach a `end` directive. The
-    // cue for an exit is a section called `exit`.
-    std::string section;
-
-    int type;
-    float x, y;
-
-    while (!in.eof() && section != "end") {
-      in >> section;
-
-      if (in.eof()) {
-        break;
-      }
-      if (section == "end") {
-        break;
-      }
-      if (section == "#") {
-        // Comment, continue.
-        std::string line;
-        std::getline(in, line);
-
-        continue;
-      }
-      if (section != "exit") {
-        // Not handled section, continue.
-        std::string line;
-        std::getline(in, line);
-
-        log(
-          std::string("Skipping section \"") + section + "\" (not an exit)",
-          utils::Level::Warning
-        );
-
-        continue;
-      }
-
-      in >> type >> x >> y;
-
-      log(
-        std::string("Registering exit ") +
-        std::to_string(type) + " at " +
-        std::to_string(x) + "x" + std::to_string(y),
-        utils::Level::Verbose
-      );
-
-      m_blocks.push_back(BlockFactory::newExit(x, y, type));
-    }
-  }
-
-  void
   World::loadPortals(std::ifstream& in) {
     // Parse until we reach a `end` directive. The
     // cue for a portal is a section called `portal`.
     std::string section;
 
-    int type;
-    float x, y;
-    std::string entStr;
-    std::string mobStr;
-    int mobVariant;
+    std::string mobStr, mobTypeStr;
+    float x, y, cost, stock, refill;
 
     while (!in.eof() && section != "end") {
       in >> section;
@@ -528,20 +412,17 @@ namespace new_frontiers {
         std::string line;
         std::getline(in, line);
 
-        log(
-          std::string("Skipping section \"") + section + "\" (not a portal)",
-          utils::Level::Warning
-        );
-
+        log("Skipping section \"" + section + "\" (not a portal)", utils::Level::Warning);
         continue;
       }
 
-      in >> type >> x >> y >> mobStr >> entStr >> mobVariant;
+      in >> x >> y >> mobStr >> mobTypeStr >> cost >> stock >> refill;
 
-      tiles::Entity e = strToEntity(entStr);
+      // Convert mob type from string to enumeration.
+      tiles::Entity e = strToEntity(mobStr);
       if (e == tiles::EntitiesCount) {
         log(
-          std::string("Could not decode portal spawning unknown entity \"") + entStr +
+          "Could not decode portal spawning unknown entity \"" + mobStr +
           "\" at " + std::to_string(x) + "x" + std::to_string(y),
           utils::Level::Warning
         );
@@ -549,11 +430,12 @@ namespace new_frontiers {
         continue;
       }
 
+      // Convert agent kind from string to enumeration.
       bool err = false;
-      mob::Type mt = mob::strToType(mobStr, err);
+      mob::Type mt = mob::strToType(mobTypeStr, err);
       if (err) {
         log(
-          std::string("Could not decode portal spawning unknown entity type \"") + mobStr +
+          "Could not decode portal spawning unknown entity type \"" + mobTypeStr +
           "\" at " + std::to_string(x) + "x" + std::to_string(y),
           utils::Level::Warning
         );
@@ -562,22 +444,18 @@ namespace new_frontiers {
       }
 
       log(
-        std::string("Registering portal ") +
-        std::to_string(type) + " at " +
-        std::to_string(x) + "x" + std::to_string(y),
+        "Registering portal spawning " + mobStr + " at " + std::to_string(x) + "x" + std::to_string(y),
         utils::Level::Verbose
       );
-
-      // in >> type >> x >> y >> mobStr >> entStr >> mobVariant;
-      // portal 3 16 9 Warrior Griffin 0
 
       // Note that we only allow creation of portals
       // with a spawner-o-meter type for now.
       SpawnerOMeter::SOMProps pp = BlockFactory::newSpawnerOMeterProps(x, y, e);
-      pp.tile.id = type;
-
-      pp.mVariant = mobVariant;
       pp.agent = mt;
+
+      pp.threshold = cost;
+      pp.reserve = stock;
+      pp.refill = refill;
 
       m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
     }
@@ -613,10 +491,7 @@ namespace new_frontiers {
         std::string line;
         std::getline(in, line);
 
-        log(
-          std::string("Skipping section \"") + section + "\" (not a wall)",
-          utils::Level::Warning
-        );
+        log("Skipping section \"" + section + "\" (not a wall)", utils::Level::Warning);
 
         continue;
       }
@@ -624,9 +499,7 @@ namespace new_frontiers {
       in >> type >> x >> y;
 
       log(
-        std::string("Registering wall ") +
-        std::to_string(type) + " at " +
-        std::to_string(x) + "x" + std::to_string(y),
+        "Registering wall " + std::to_string(type) + " at " + std::to_string(x) + "x" + std::to_string(y),
         utils::Level::Verbose
       );
 
