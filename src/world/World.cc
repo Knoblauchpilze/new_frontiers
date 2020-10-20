@@ -19,6 +19,7 @@ namespace {
   new_frontiers::EntityShPtr
   createEntity(const std::string& kind,
                const std::string& mob,
+               const std::string& owner,
                float x,
                float y,
                float health,
@@ -49,6 +50,8 @@ namespace {
 
       pp.attack = attack;
 
+      pp.owner = utils::Uuid::create(owner);
+
       return std::make_shared<new_frontiers::Warrior>(pp);
     }
     if (kind == "worker") {
@@ -59,6 +62,8 @@ namespace {
       pp.homeY = homeY + 0.5f;
       pp.carrying = carrying;
       pp.cargo = cargo;
+
+      pp.owner = utils::Uuid::create(owner);
 
       return std::make_shared<new_frontiers::Worker>(pp);
     }
@@ -376,7 +381,7 @@ namespace new_frontiers {
     // cue for a portal is a section called `portal`.
     std::string section;
 
-    std::string mobStr, mobTypeStr;
+    std::string mobStr, mobTypeStr, owner;
     float x, y, cost, stock, refill;
 
     while (!in.eof() && section != "end") {
@@ -404,8 +409,7 @@ namespace new_frontiers {
         continue;
       }
 
-      // TODO: We should handle the owner's string.
-      in >> x >> y >> mobStr >> mobTypeStr >> cost >> stock >> refill;
+      in >> x >> y >> mobStr >> mobTypeStr >> cost >> stock >> refill >> owner;
 
       // Convert mob type from string to enumeration.
       tiles::Entity e = strToEntity(mobStr);
@@ -445,6 +449,8 @@ namespace new_frontiers {
       pp.threshold = cost;
       pp.reserve = stock;
       pp.refill = refill;
+
+      pp.owner = utils::Uuid::create(owner);
 
       m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
     }
@@ -525,7 +531,7 @@ namespace new_frontiers {
     // section called `entity`.
     std::string section;
 
-    std::string kind, mob;
+    std::string kind, mob, owner;
     float x, y, health, homeX, homeY, carrying, cargo, attack;
 
     while (!in.eof() && section != "end") {
@@ -553,10 +559,9 @@ namespace new_frontiers {
         continue;
       }
 
-      // TODO: We should handle the owner's string.
-      in >> kind >> mob >> x >> y >> health >> homeX >> homeY >> carrying >> cargo >> attack;
+      in >> kind >> mob >> x >> y >> health >> homeX >> homeY >> carrying >> cargo >> attack >> owner;
 
-      EntityShPtr e = createEntity(kind, mob, x, y, health, homeX, homeY, carrying, cargo, attack);
+      EntityShPtr e = createEntity(kind, mob, owner, x, y, health, homeX, homeY, carrying, cargo, attack);
       if (e == nullptr) {
         log("Could not decode entity with unknown kind \"" + kind + "\"", utils::Level::Warning);
         continue;
