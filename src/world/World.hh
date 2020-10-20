@@ -143,7 +143,7 @@ namespace new_frontiers {
       loadPortals(std::ifstream& in);
 
       void
-      loadWalls(std::ifstream& in);
+      loadBlocks(std::ifstream& in);
 
       void
       loadEntities(std::ifstream& in);

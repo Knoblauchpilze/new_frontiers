@@ -180,7 +180,12 @@ namespace new_frontiers {
         sd.type = aliasOfBlock(t.tile.type);
 
         drawSprite(sd, res.cf, t.tile.id);
-        drawHealthBar(sd, t.health, res.cf);
+
+        // Draw the healthbar only in case of `interesting`
+        // buildings like anything apart from walls.
+        if (t.tile.type != tiles::Wall) {
+          drawHealthBar(sd, t.health, res.cf);
+        }
 
         if (t.ratio > 0.0f) {
           sd.location = Cell::BottomLeft;

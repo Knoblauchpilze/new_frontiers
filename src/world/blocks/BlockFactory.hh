@@ -24,16 +24,12 @@ namespace new_frontiers {
       newSpawnerOMeterProps(float x, float y, const tiles::Entity& ent = tiles::Executioner) noexcept;
 
       static
-      BlockShPtr
-      newEntrance(float x, float y, int id = 0) noexcept;
+      Block::Props
+      newBlockProps(float x, float y, const tiles::Block& blo) noexcept;
 
       static
-      BlockShPtr
-      newExit(float x, float y, int id = 0) noexcept;
-
-      static
-      BlockShPtr
-      newWall(float x, float y, int id = 0) noexcept;
+      Block::Props
+      newWallProps(float x, float y, int id = 0) noexcept;
 
       static
       BlockShPtr
@@ -47,19 +43,15 @@ namespace new_frontiers {
       BlockShPtr
       newDeposit(const Deposit::DProps& props) noexcept;
 
+      static
+      BlockShPtr
+      newBlock(const Block::Props& props, const std::string& name) noexcept;
+
     private:
 
       static
       BlockTile
       newTile(const tiles::Block& b, int id, float x, float y) noexcept;
-
-      static
-      BlockShPtr
-      newBlock(const BlockTile& bt, const std::string& name) noexcept;
-
-      static
-      BlockShPtr
-      newPortal(float x, float y, int id = 0) noexcept;
 
     private:
 

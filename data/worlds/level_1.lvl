@@ -2,116 +2,120 @@
 18
 
 portals
-portal 14 2 IncaOverlord Worker 1.5 3.0 0.01
-portal 8 15 DarkAnubis Warrior 3.0 2.99 0.01
-portal 16 9 Griffin Warrior 10.0 3.0 0.1
-end
-walls
-# Corners
-wall 15 0 0
-wall 15 19 0
-wall 15 19 17
-wall 15 0 17
-# Top border
-wall 11 0 1
-wall 11 0 2
-wall 11 0 3
-wall 11 0 4
-wall 11 0 5
-wall 11 0 6
-wall 11 0 7
-wall 11 0 8
-wall 11 0 9
-wall 11 0 10
-wall 11 0 11
-wall 11 0 12
-wall 11 0 13
-wall 11 0 14
-wall 11 0 15
-wall 11 0 16
-# Right border
-wall 14 1 17
-wall 14 2 17
-wall 14 3 17
-wall 14 4 17
-wall 14 5 17
-wall 14 6 17
-wall 14 7 17
-wall 14 8 17
-wall 14 9 17
-wall 14 10 17
-wall 14 11 17
-wall 14 12 17
-wall 14 13 17
-wall 14 14 17
-wall 14 15 17
-wall 14 16 17
-wall 14 17 17
-wall 14 18 17
-# Bottom border
-wall 13 19 16
-wall 13 19 15
-wall 13 19 14
-wall 13 19 13
-wall 13 19 12
-wall 13 19 11
-wall 13 19 10
-wall 13 19 9
-wall 13 19 8
-wall 13 19 7
-wall 13 19 6
-wall 13 19 5
-wall 13 19 4
-wall 13 19 3
-wall 13 19 2
-wall 13 19 1
-# Left border
-wall 7 18 0
-wall 7 17 0
-wall 7 16 0
-wall 7 15 0
-wall 7 14 0
-wall 7 13 0
-wall 7 12 0
-wall 7 11 0
-wall 7 10 0
-wall 7 9 0
-wall 7 8 0
-wall 7 7 0
-wall 7 6 0
-wall 7 5 0
-wall 7 4 0
-wall 7 3 0
-wall 7 2 0
-wall 7 1 0
-# Internal vertical line
-wall 2 16 13
-wall 6 15 13
-wall 6 14 13
-wall 6 13 13
-wall 6 12 13
-wall 6 11 13
-wall 4 10 13
-# Internal horizontal line
-wall 8 4 8
-wall 9 4 9
-wall 9 4 10
-wall 9 4 11
-wall 9 4 12
-wall 9 4 13
-wall 1 4 14
-# Internal corner line
-wall 2 12 4
-wall 6 11 4
-wall 6 10 4
-wall 6 9 4
-wall 12 8 4
-wall 9 8 5
-wall 9 8 6
-wall 9 8 7
-wall 1 8 8
+portal 14 2 IncaOverlord Worker 1.5 1.5 0.01
+#portal 8 15 DarkAnubis Warrior 3.0 2.99 0.01
+#portal 16 9 Griffin Warrior 10.0 3.0 0.1
 end
 entities
-entity warrior MindlessGolem 1 1 20 2 2 0 10 3
-entity worker CosmicThreat 3 3 50 4 4 5 10 0
+#entity warrior MindlessGolem 1 1 20 2 2 0 10 3
+#entity worker CosmicThreat 3 3 50 4 4 5 10 0
+end
+blocks
+# Deposits
+deposit 8 9 10 100
+deposit 3 11 10 150
+deposit 11 2 10 100
+# Corners
+wall 10 15 0 0
+wall 10 15 19 0
+wall 10 15 19 17
+wall 10 15 0 17
+# Top border
+wall 10 11 0 1
+wall 10 11 0 2
+wall 10 11 0 3
+wall 10 11 0 4
+wall 10 11 0 5
+wall 10 11 0 6
+wall 10 11 0 7
+wall 10 11 0 8
+wall 10 11 0 9
+wall 10 11 0 10
+wall 10 11 0 11
+wall 10 11 0 12
+wall 10 11 0 13
+wall 10 11 0 14
+wall 10 11 0 15
+wall 10 11 0 16
+# Right border
+wall 10 14 1 17
+wall 10 14 2 17
+wall 10 14 3 17
+wall 10 14 4 17
+wall 10 14 5 17
+wall 10 14 6 17
+wall 10 14 7 17
+wall 10 14 8 17
+wall 10 14 9 17
+wall 10 14 10 17
+wall 10 14 11 17
+wall 10 14 12 17
+wall 10 14 13 17
+wall 10 14 14 17
+wall 10 14 15 17
+wall 10 14 16 17
+wall 10 14 17 17
+wall 10 14 18 17
+# Bottom border
+wall 10 13 19 16
+wall 10 13 19 15
+wall 10 13 19 14
+wall 10 13 19 13
+wall 10 13 19 12
+wall 10 13 19 11
+wall 10 13 19 10
+wall 10 13 19 9
+wall 10 13 19 8
+wall 10 13 19 7
+wall 10 13 19 6
+wall 10 13 19 5
+wall 10 13 19 4
+wall 10 13 19 3
+wall 10 13 19 2
+wall 10 13 19 1
+# Left border
+wall 10 7 18 0
+wall 10 7 17 0
+wall 10 7 16 0
+wall 10 7 15 0
+wall 10 7 14 0
+wall 10 7 13 0
+wall 10 7 12 0
+wall 10 7 11 0
+wall 10 7 10 0
+wall 10 7 9 0
+wall 10 7 8 0
+wall 10 7 7 0
+wall 10 7 6 0
+wall 10 7 5 0
+wall 10 7 4 0
+wall 10 7 3 0
+wall 10 7 2 0
+wall 10 7 1 0
+# Internal vertical line
+wall 10 2 16 13
+wall 10 6 15 13
+wall 10 6 14 13
+wall 10 6 13 13
+wall 10 6 12 13
+wall 10 6 11 13
+wall 10 4 10 13
+# Internal horizontal line
+wall 10 8 4 8
+wall 10 9 4 9
+wall 10 9 4 10
+wall 10 9 4 11
+wall 10 9 4 12
+wall 10 9 4 13
+wall 10 1 4 14
+# Internal corner line
+wall 10 2 12 4
+wall 10 6 11 4
+wall 10 6 10 4
+wall 10 6 9 4
+wall 10 12 8 4
+wall 10 9 8 5
+wall 10 9 8 6
+wall 10 9 8 7
+wall 10 1 8 8
 end

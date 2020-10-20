@@ -138,8 +138,11 @@ namespace new_frontiers {
     if (s == nullptr) {
       // Not able to convert to a valid deposit,
       // use wander again.
+      int status;
+      std::string bType = abi::__cxa_demangle(typeid(*b).name(), 0, 0, &status);
+
       log(
-        "Reached block that is not a spawner in return behavior",
+        "Reached block of type \"" + bType + "\" which is not a spawner in return behavior",
         utils::Level::Warning
       );
 
