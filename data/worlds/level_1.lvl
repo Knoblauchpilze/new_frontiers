@@ -2,6 +2,9 @@
 18
 
 colonies
+colony 49dc9520-c2f2-6fd6-00cc-d06e22b6193b 14 2 5 10 0.01 3 1 Expansion
+colony dc58ec67-f577-38bf-265c-900bd928aac5 8 15 0 10 1.0 2 2 Consolidation
+colony 81208043-1496-01fd-6f50-d2abf487f6b5 16 9 0 10 0.02 2 1 War
 end
 portals
 portal 14 2 IncaOverlord Worker 1.5 1.5 0.01 49dc9520-c2f2-6fd6-00cc-d06e22b6193b
