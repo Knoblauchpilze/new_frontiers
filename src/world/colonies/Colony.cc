@@ -63,8 +63,8 @@ namespace new_frontiers {
       float r = info.rng.rndFloat(0, m_radius * m_radius);
       float theta = info.rng.rndAngle();
 
-      x = std::round(std::sqrt(r) * std::cos(theta));
-      y = std::round(std::sqrt(r) * std::sin(theta));
+      x = m_homeX + std::round(std::sqrt(r) * std::cos(theta));
+      y = m_homeY + std::round(std::sqrt(r) * std::sin(theta));
 
       info.clampCoord(x, y);
     }

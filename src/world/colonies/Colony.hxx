@@ -6,6 +6,31 @@
 
 namespace new_frontiers {
 
+  namespace colony {
+
+    inline
+    Priority
+    strToFocus(const std::string& str, bool& error) noexcept {
+      // Assume no error.
+      error = false;
+
+      if (str == "Consolidation") {
+        return Priority::Consolidation;
+      }
+      if (str == "Expansion") {
+        return Priority::Expansion;
+      }
+      if (str == "War") {
+        return Priority::War;
+      }
+
+      // Return the default `Consolidation` value.
+      error = true;
+      return Priority::Consolidation;
+    }
+
+  }
+
   inline
   Colony::~Colony() {
     // Nothing to do yet.
