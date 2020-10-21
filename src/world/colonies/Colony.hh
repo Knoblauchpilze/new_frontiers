@@ -27,6 +27,20 @@ namespace new_frontiers {
                       //< case a war occurs.
     };
 
+    /**
+     * @brief - Used to convert a string into a valid
+     *          priority value. In case the string does
+     *          not correspond to any known focus type
+     *          a `Consolidation` value is returned and
+     *          the error flag is set to `true`.
+     * @param str - the string to convert.
+     * @param error - `true` if the string could not be
+     *                decoded.
+     * @return - the corresponding focus.
+     */
+    Priority
+    strToFocus(const std::string& str, bool& error) noexcept;
+
   }
 
   class Colony: public WorldElement {
