@@ -33,7 +33,12 @@ namespace {
     // In case none is found, return an empty pointer.
     new_frontiers::tiles::Entity e = new_frontiers::strToEntity(mob);
     if (e == new_frontiers::tiles::EntitiesCount) {
-      std::cout << "[HAHA] " << mob << std::endl;
+      return nullptr;
+    }
+
+    // Decode the owner into a valid identifier.
+    utils::Uuid id = utils::Uuid::create(owner);
+    if (!id.valid()) {
       return nullptr;
     }
 
@@ -50,7 +55,7 @@ namespace {
 
       pp.attack = attack;
 
-      pp.owner = utils::Uuid::create(owner);
+      pp.owner = id;
 
       return std::make_shared<new_frontiers::Warrior>(pp);
     }
@@ -63,7 +68,7 @@ namespace {
       pp.carrying = carrying;
       pp.cargo = cargo;
 
-      pp.owner = utils::Uuid::create(owner);
+      pp.owner = id;
 
       return std::make_shared<new_frontiers::Worker>(pp);
     }
@@ -338,16 +343,16 @@ namespace new_frontiers {
 
       log("Reading section \"" + section + "\" from \"" + file + "\"");
 
-      if (section == "portals") {
-        // Mob portals for this level.
+      if (section == "colonies") {
+        loadColonies(in);
+      }
+      else if (section == "portals") {
         loadPortals(in);
       }
       else if (section == "blocks") {
-        // Blocks registered in the level.
         loadBlocks(in);
       }
       else if (section == "entities") {
-        // Entities already spawned in the level.
         loadEntities(in);
       }
       else {
@@ -376,6 +381,74 @@ namespace new_frontiers {
   }
 
   void
+  World::loadColonies(std::ifstream& in) {
+    // Parse until we reach a `end` directive. The
+    // cue for a colony is a section called `colony`.
+    std::string section;
+
+    std::string uuidStr, focusStr;
+    float x, y, budget, actionCost, refill, radius, maxSize;
+
+    while (!in.eof() && section != "end") {
+      in >> section;
+
+      if (in.eof()) {
+        break;
+      }
+      if (section == "end") {
+        break;
+      }
+      if (section[0] == '#') {
+        // Comment, continue.
+        std::string line;
+        std::getline(in, line);
+
+        continue;
+      }
+      if (section != "colony") {
+        // Not handled section, continue.
+        std::string line;
+        std::getline(in, line);
+
+        log("Skipping section \"" + section + "\" (not a colony)", utils::Level::Warning);
+        continue;
+      }
+
+      in >> uuidStr >> x >> y >> budget >> actionCost >> refill >> radius >> maxSize >> focusStr;
+
+      // Convert the identifier to a valid kind.
+      utils::Uuid id = utils::Uuid::create(uuidStr);
+      if (!id.valid()) {
+        log(
+          "Could not decode uuid for colony \"" + uuidStr + "\" at " +
+          std::to_string(x) + "x" + std::to_string(y),
+          utils::Level::Warning
+        );
+
+        continue;
+      }
+
+      log(
+        "Registering colony at " + std::to_string(x) + "x" + std::to_string(y),
+        utils::Level::Verbose
+      );
+
+      // Note that we only allow creation of portals
+      // with a spawner-o-meter type for now.
+      Colony::Props pp = ColonyFactory::newColonyProps(x, y, id);
+      pp.budget = budget;
+      pp.actionCost = actionCost;
+      pp.refill = refill;
+      // TODO: Handle this.
+      pp.focus = colony::Priority::Consolidation;
+      pp.radius = radius;
+      pp.maxSize = maxSize;
+
+      m_colonies.push_back(std::make_shared<Colony>(pp));
+    }
+  }
+
+  void
   World::loadPortals(std::ifstream& in) {
     // Parse until we reach a `end` directive. The
     // cue for a portal is a section called `portal`.
@@ -390,10 +463,14 @@ namespace new_frontiers {
       if (in.eof()) {
         break;
       }
+      if (section.empty()) {
+        // Empty section, continue;
+        continue;
+      }
       if (section == "end") {
         break;
       }
-      if (section == "#") {
+      if (section[0] == '#') {
         // Comment, continue.
         std::string line;
         std::getline(in, line);
@@ -436,6 +513,17 @@ namespace new_frontiers {
         continue;
       }
 
+      utils::Uuid id = utils::Uuid::create(owner);
+      if (!id.valid()) {
+        log(
+          "Could not decode owner of portal \"" + owner + "\" at " +
+          std::to_string(x) + "x" + std::to_string(y),
+          utils::Level::Warning
+        );
+
+        continue;
+      }
+
       log(
         "Registering portal spawning " + mobStr + " at " + std::to_string(x) + "x" + std::to_string(y),
         utils::Level::Verbose
@@ -450,7 +538,7 @@ namespace new_frontiers {
       pp.reserve = stock;
       pp.refill = refill;
 
-      pp.owner = utils::Uuid::create(owner);
+      pp.owner = id;
 
       m_blocks.push_back(BlockFactory::newSpawnerOMeter(pp));
     }
@@ -472,10 +560,14 @@ namespace new_frontiers {
       if (in.eof()) {
         break;
       }
+      if (section.empty()) {
+        // Empty section, continue;
+        continue;
+      }
       if (section == "end") {
         break;
       }
-      if (section == "#") {
+      if (section[0] == '#') {
         // Comment, continue.
         std::string line;
         std::getline(in, line);
@@ -540,10 +632,14 @@ namespace new_frontiers {
       if (in.eof()) {
         break;
       }
+      if (section.empty()) {
+        // Empty section, continue;
+        continue;
+      }
       if (section == "end") {
         break;
       }
-      if (section == "#") {
+      if (section[0] == '#') {
         // Comment, continue.
         std::string line;
         std::getline(in, line);
@@ -563,7 +659,7 @@ namespace new_frontiers {
 
       EntityShPtr e = createEntity(kind, mob, owner, x, y, health, homeX, homeY, carrying, cargo, attack);
       if (e == nullptr) {
-        log("Could not decode entity with unknown kind \"" + kind + "\"", utils::Level::Warning);
+        log("Failed to decode props of entity at " + std::to_string(x) + "x" + std::to_string(y), utils::Level::Warning);
         continue;
       }
 
