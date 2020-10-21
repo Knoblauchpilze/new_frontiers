@@ -428,6 +428,19 @@ namespace new_frontiers {
         continue;
       }
 
+      // Convert focus from string to enumeration.
+      bool err = false;
+      colony::Priority p = colony::strToFocus(focusStr, err);
+      if (err) {
+        log(
+          "Could not decode colony focus \"" + focusStr +
+          "\" at " + std::to_string(x) + "x" + std::to_string(y),
+          utils::Level::Warning
+        );
+
+        continue;
+      }
+
       log(
         "Registering colony at " + std::to_string(x) + "x" + std::to_string(y),
         utils::Level::Verbose
@@ -439,8 +452,7 @@ namespace new_frontiers {
       pp.budget = budget;
       pp.actionCost = actionCost;
       pp.refill = refill;
-      // TODO: Handle this.
-      pp.focus = colony::Priority::Consolidation;
+      pp.focus = p;
       pp.radius = radius;
       pp.maxSize = maxSize;
 
