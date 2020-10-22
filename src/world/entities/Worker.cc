@@ -190,7 +190,7 @@ namespace new_frontiers {
         log("Deposit is empty");
       }
 
-      pickRandomTarget(info, x, y);
+      pickTargetFromPheromon(info, x, y);
 
       return true;
     }
@@ -212,6 +212,59 @@ namespace new_frontiers {
     m_cPoints.push_back(y);
 
     return true;
+  }
+
+  void
+  Worker::pickTargetFromPheromon(StepInfo& info, float& x, float& y) noexcept {
+    // Collect the pheromons laid out by colleagues
+    // of this worker.
+    world::Filter f{getOwner(), true};
+    tiles::Effect* te = nullptr;
+    std::vector<VFXShPtr> d = info.frustum->getVisible(x, y, m_perceptionRadius, te, -1, &f);
+
+    // In case no pheromons are visible use the
+    // default wandering behavior.
+    if (d.empty()) {
+      pickRandomTarget(info, x, y);
+
+      return;
+    }
+
+    // Otherwise, see what kind of pheromones are
+    // visible:
+    unsigned pCollect = 0u;
+    unsigned pReturn = 0u;
+
+    for (unsigned id = 0u ; id < d.size() ; ++id) {
+      VFXShPtr v = d[id];
+
+      PheromonShPtr p = std::dynamic_pointer_cast<Pheromon>(v);
+      if (v == nullptr || p == nullptr) {
+        continue;
+      }
+
+      if (p->getType() == pheromon::Type::Collect) {
+        ++pCollect;
+      }
+      if (p->getType() == pheromon::Type::Return) {
+        ++pReturn;
+      }
+    }
+
+    log("Found " + std::to_string(pCollect) + " collect and " + std::to_string(pReturn) + " return pheromon(s)");
+
+    pickRandomTarget(info, x, y);
+
+    // case Behavior::Chase:
+    // return pheromon::Type::Chase;
+    // case Behavior::Fight:
+    // return pheromon::Type::Fight;
+    // case Behavior::Collect:
+    // return pheromon::Type::Collect;
+    // case Behavior::Return:
+    // return pheromon::Type::Return;
+    // case Behavior::Wander:
+    // return pheromon::Type::Wander;
   }
 
 }

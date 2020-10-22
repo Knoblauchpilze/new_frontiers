@@ -12,6 +12,12 @@ namespace new_frontiers {
     m_type(props.type)
   {}
 
+  inline
+  const pheromon::Type&
+  Pheromon::getType() const noexcept {
+    return m_type;
+  }
+
 }
 
 #endif    /* PHEROMON_HXX */
