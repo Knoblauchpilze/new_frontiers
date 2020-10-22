@@ -232,8 +232,9 @@ namespace new_frontiers {
 
     // Otherwise, see what kind of pheromones are
     // visible:
-    unsigned pCollect = 0u;
-    unsigned pReturn = 0u;
+    unsigned c = 0u, r = 0u;
+    float wPCollect = 0.0f, xGCollect = 0.0f, yGCollect = 0.0f;
+    float wPReturn = 0.0f, xGReturn = 0.0f, yGReturn = 0.0f;
 
     for (unsigned id = 0u ; id < d.size() ; ++id) {
       VFXShPtr v = d[id];
@@ -244,16 +245,64 @@ namespace new_frontiers {
       }
 
       if (p->getType() == pheromon::Type::Collect) {
-        ++pCollect;
+        xGCollect += p->getAmount() * p->getTile().x;
+        yGCollect += p->getAmount() * p->getTile().y;
+        wPCollect += p->getAmount();
+        ++c;
       }
       if (p->getType() == pheromon::Type::Return) {
-        ++pReturn;
+        xGReturn += p->getAmount() * p->getTile().x;
+        yGReturn += p->getAmount() * p->getTile().y;
+        wPReturn += p->getAmount();
+        ++r;
       }
     }
 
-    log("Found " + std::to_string(pCollect) + " collect and " + std::to_string(pReturn) + " return pheromon(s)");
+    if (c > 0) {
+      xGCollect /= wPCollect;
+      yGCollect /= wPCollect;
+    }
+    if (r > 0) {
+      xGReturn /= wPReturn;
+      yGReturn /= wPReturn;
+    }
 
-    pickRandomTarget(info, x, y);
+    // In case no pheromons of the right type were
+    // found, use the default wandering behavior.
+    if (c == 0u && r == 0u) {
+      pickRandomTarget(info, x, y);
+
+      return;
+    }
+
+    // Compute the target by computing a weighted
+    // average of both barycenters.
+    float wc = 0.7f, wr = 0.3f;
+
+    if (c == 0u && r > 0u) {
+      wc = 0.0f;
+      wr = 1.0f;
+    }
+    if (c > 0u && r == 0u) {
+      wc = 1.0f;
+      wr = 0.0f;
+    }
+
+    x = (wc * xGCollect + wr * xGReturn) / (wc + wr);
+    y = (wc * yGCollect + wr * yGReturn) / (wc + wr);
+
+    log(
+      "Barycenter of collect is at " + std::to_string(xGCollect) + "x" +  std::to_string(yGCollect) +
+      " and return is  " + std::to_string(xGReturn) + "x" +  std::to_string(yGReturn) +
+      " final coord is " + std::to_string(x) + "x" + std::to_string(y)
+    );
+
+    // Update debug elements.
+    m_cPoints.clear();
+    m_cPoints.push_back(m_tile.x);
+    m_cPoints.push_back(m_tile.y);
+    m_cPoints.push_back(x);
+    m_cPoints.push_back(y);
 
     // case Behavior::Chase:
     // return pheromon::Type::Chase;
