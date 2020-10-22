@@ -46,7 +46,9 @@ namespace new_frontiers {
     pp.carrying = 0.0f;
     pp.cargo = 10.0f;
 
-    pp.vfxDelay = toMilliseconds(3000);
+    pp.energy = 1.9f;
+    pp.refill = 1.0f;
+    pp.pheromonCost = 2.0f;
 
     return pp;
   }
@@ -73,10 +75,12 @@ namespace new_frontiers {
     pp.carrying = 0.0f;
     pp.cargo = 10.0f;
 
-    pp.vfxDelay = toMilliseconds(3000);
+    pp.energy = 1.9f;
+    pp.refill = 1.0f;
+    pp.pheromonCost = 2.0f;
 
     pp.attack = 2.0f;
-    pp.attackDelay = toMilliseconds(2000);
+    pp.attackCost = 1.0f;
 
     return pp;
   }

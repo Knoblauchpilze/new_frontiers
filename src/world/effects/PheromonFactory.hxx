@@ -60,7 +60,7 @@ namespace new_frontiers {
 
     pp.owner.invalidate();
 
-    pp.evaporation = 0.1f;
+    pp.evaporation = 0.02f;
 
     pp.type = pheromon::Type::Wander;
 

@@ -23,7 +23,10 @@ namespace new_frontiers {
         float carrying;
         float cargo;
 
-        Duration vfxDelay;
+        float energy;
+        float refill;
+
+        float pheromonCost;
       };
 
       /**
@@ -41,8 +44,10 @@ namespace new_frontiers {
 
       /**
        * @brief - Implementation of the interface method to pause
-       *          the internal processes for this mob. It mostly
-       *          include the VFX spawning routine.
+       *          the internal processes for this mob. Note that
+       *          it is mostly provided so that this class is not
+       *          abstract as there are not really any process to
+       *          pause at this time.
        * @param t - the timestamp at which the pause occur.
        */
       void
@@ -50,8 +55,7 @@ namespace new_frontiers {
 
       /**
        * @brief - Implementation of the interface method to resume
-       *          the internal processes for this mob. We will be
-       *          resuming the VFX spawning routine.
+       *          the internal processes for this mob.
        * @param t - the timestamp at which the resume occur.
        */
       void
@@ -211,25 +215,24 @@ namespace new_frontiers {
       float m_cargo;
 
       /**
-       * @brief - Duration between two consecutives emission of
-       *          a VFX by this mob.
+       * @brief - An indication of the energy left for this
+       *          mob to take actions. This include spawning
+       *          new pheromones for example.
        */
-      Duration m_vfxDelay;
+      float m_energy;
 
       /**
-       * @brief - The timestamp of the last time this entity has
-       *          emitted a VFX.
+       * @brief - Indication of how fast the energy pool of
+       *          this entity can be refilled over time. A
+       *          faster refill rate indicates an entity that
+       *          can take more decisions.
        */
-      TimeStamp m_last;
+      float m_energyRefill;
 
       /**
-       * @brief - Hold the duration that has passed since the last
-       *          time a vfx was emitted in case a pause event is
-       *          received.
-       *          Used to be able to restore the vfx production as
-       *          if nothing happened.
+       * @brief - The cost in energy of spawning a phgeromon.
        */
-      Duration m_passed;
+      float m_pheromonCost;
 
       /**
        * @brief - Describe the current behavior for this entity. It
