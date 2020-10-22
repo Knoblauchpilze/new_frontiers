@@ -226,6 +226,41 @@ namespace new_frontiers {
   }
 
   inline
+  std::vector<VFXShPtr>
+  Locator::getVisible(float x,
+                      float y,
+                      float r,
+                      const tiles::Effect* vTile,
+                      int id,
+                      const world::Filter* filter,
+                      bool sort) const noexcept
+  {
+    // Fetch visible entities descriptions.
+    world::ItemType t = world::ItemType::VFX;
+    std::vector<world::ItemEntry> vds = getVisible(x, y, r, &t, filter, sort);
+
+    std::vector<VFXShPtr> vs;
+    for (unsigned i = 0u ; i < vds.size() ; ++i) {
+      VFXShPtr v = m_vfxs[vds[i].index];
+
+      // Not the same tile.
+      if (vTile != nullptr && v->getTile().type != *vTile) {
+        continue;
+      }
+
+      // Not the same variant.
+      if (id != -1 && v->getTile().id != id) {
+        continue;
+      }
+
+      // The VFX should be considered.
+      vs.push_back(v);
+    }
+
+    return vs;
+  }
+
+  inline
   BlockShPtr
   Locator::getClosest(float x,
                       float y,

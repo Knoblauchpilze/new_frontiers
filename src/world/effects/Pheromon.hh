@@ -46,6 +46,9 @@ namespace new_frontiers {
        */
       Pheromon(const PProps& props);
 
+      const pheromon::Type&
+      getType() const noexcept;
+
     private:
 
       friend class PheromonFactory;

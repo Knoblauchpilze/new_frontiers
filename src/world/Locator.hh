@@ -277,7 +277,7 @@ namespace new_frontiers {
        *               this value is set to `null` all the
        *               item types will be included.
        * @param filters - include a description of a uuid and
-       *                  whether or not theyit should be used
+       *                  whether or not it should be used
        *                  and considered when fetching items.
        * @param sort - `true` if the items should be sorted
        *               in the output vector. The sort occurs
@@ -313,7 +313,7 @@ namespace new_frontiers {
        *               this value is set to `null` all the
        *               item types will be included.
        * @param filters - include a description of a uuid and
-       *                  whether or not theyit should be used
+       *                  whether or not it should be used
        *                  and considered when fetching items.
        * @param sort - `true` if the items should be sorted
        *               in the output vector. The sort occurs
@@ -344,7 +344,7 @@ namespace new_frontiers {
        * @param type - the type of the element to search
        *               for.
        * @param filters - include a description of a uuid and
-       *                  whether or not theyit should be used
+       *                  whether or not it should be used
        *                  and considered when fetching items.
        * @return - the corresponding element's description
        *           or a negative index if none can be
@@ -398,14 +398,14 @@ namespace new_frontiers {
        * @param y - the ordinate of the center of the area
        *            to consider.
        * @param r - the radius of the area to consider.
-       * @param bTile - the type of the entity to consider.
+       * @param eTile - the type of the entity to consider.
        *                If this value is `null` any entity
        *                will be considered.
        * @param id - the variant of the entity to consider.
        *             If this value is `-1` any variant is
        *             considered.
        * @param filters - include a description of a uuid and
-       *                  whether or not theyit should be used
+       *                  whether or not it should be used
        *                  and considered when fetching items.
        * @param sort - whether or not the output vector
        *               should be sorted so that entities
@@ -418,6 +418,39 @@ namespace new_frontiers {
                  float y,
                  float r,
                  const tiles::Entity* eTile,
+                 int id = -1,
+                 const world::Filter* filter = nullptr,
+                 bool sort = false) const noexcept;
+
+      /**
+       * @brief - Specialization of the `getVisible` method
+       *          to fetch visible VFXs in a certain area
+       *          and return this as a list of VFXs.
+       * @param x - the abscissa of the center of the area
+       *            to consider.
+       * @param y - the ordinate of the center of the area
+       *            to consider.
+       * @param r - the radius of the area to consider.
+       * @param vTile - the type of the VFX to consider.
+       *                If this value is `null` any VFX
+       *                will be considered.
+       * @param id - the variant of the VFX to consider.
+       *             If this value is `-1` any variant is
+       *             considered.
+       * @param filters - include a description of a uuid and
+       *                  whether or not it should be used
+       *                  and considered when fetching items.
+       * @param sort - whether or not the output vector
+       *               should be sorted so that VFXs
+       *               are in ascending order compared to
+       *               the center of the area.
+       * @return - the list of VFXs.
+       */
+      std::vector<VFXShPtr>
+      getVisible(float x,
+                 float y,
+                 float r,
+                 const tiles::Effect* vTile,
                  int id = -1,
                  const world::Filter* filter = nullptr,
                  bool sort = false) const noexcept;
@@ -437,7 +470,7 @@ namespace new_frontiers {
        * @param id - the variant of the block to consider. If
        *             this value is `-1` any variant is considered.
        * @param filters - include a description of a uuid and
-       *                  whether or not theyit should be used
+       *                  whether or not it should be used
        *                  and considered when fetching items.
        * @return - the list of blocks.
        */
@@ -464,7 +497,7 @@ namespace new_frontiers {
        * @param id - the variant of the entity to consider. If
        *             this value is `-1` any variant is considered.
        * @param filters - include a description of a uuid and
-       *                  whether or not theyit should be used
+       *                  whether or not it should be used
        *                  and considered when fetching items.
        * @return - the list of entities.
        */
