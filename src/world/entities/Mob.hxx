@@ -19,19 +19,14 @@ namespace new_frontiers {
 
   inline
   void
-  Mob::pause(const TimeStamp& t) {
-    // Save the duration passed since the last
-    // time a vfx was emitted by this mob.
-    m_passed = t - m_last;
+  Mob::pause(const TimeStamp& /*t*/) {
+    // Nothing to do.
   }
 
   inline
   void
-  Mob::resume(const TimeStamp& t) {
-    // Restore the `last` time an effect was
-    // produced to be the same duration in the
-    // past as when the pause occurred.
-    m_last = t - m_passed;
+  Mob::resume(const TimeStamp& /*t*/) {
+    // Nothing to do.
   }
 
   inline
@@ -65,19 +60,24 @@ namespace new_frontiers {
   Mob::prepareForStep(const StepInfo& info) {
     // Select a speed if not already done.
     if (m_speed < 0.0f) {
-      m_speed = info.rng.rndFloat(0.1f, 1.5f);
+      m_speed = info.rng.rndFloat(0.5f, 1.5f);
     }
+
+    // Also update the energy available for
+    // this frame based on the elapsed time
+    // since the last update.
+    m_energy += info.elapsed * m_energyRefill;
   }
 
   inline
   void
   Mob::postStep(StepInfo& info) {
-    // Emit a new VFX if needed.
-    if (m_last + m_vfxDelay <= info.moment) {
+    // Emit a new pheromon if needed.
+    if (m_energy >= m_pheromonCost) {
       pheromon::Type pt = behaviorToPheromon(m_behavior);
       info.spawnVFX(spawnPheromon(pt));
 
-      m_last = info.moment;
+      m_energy -= m_pheromonCost;
     }
   }
 
@@ -140,10 +140,6 @@ namespace new_frontiers {
     // Emit a pheromon based on the current behavior.
     pheromon::Type pt = behaviorToPheromon(m_behavior);
     info.spawnVFX(spawnPheromon(pt));
-
-    // Register this as the last moment we produced
-    // a pheromon.
-    m_last = info.moment;
   }
 
   inline

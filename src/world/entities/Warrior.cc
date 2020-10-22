@@ -9,10 +9,7 @@ namespace new_frontiers {
     Mob(props),
 
     m_attack(props.attack),
-
-    m_attackDelay(props.attackDelay),
-    m_last(now() - m_attackDelay),
-    m_passed()
+    m_attackCost(props.attackCost)
   {
     setService("warrior");
   }
@@ -46,11 +43,11 @@ namespace new_frontiers {
 
     // In case we are close enough of the entity to
     // actually hit it, do so if we are able to.
-    if (!isEnRoute() && m_last + m_attackDelay <= info.moment) {
+    if (!isEnRoute() && m_energy >= m_attackCost) {
       bool alive = e->damage(m_attack);
       log("Attacking for " + std::to_string(m_attack) + " damage, " + std::to_string(e->getHealthRatio()) + " health ratio");
 
-      m_last = info.moment;
+      m_energy -= m_attackCost;
 
       // Mark the entity for deletion in case it is
       // now dead. We will also return back to the

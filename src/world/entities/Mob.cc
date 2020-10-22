@@ -13,10 +13,9 @@ namespace new_frontiers {
     m_carrying(std::max(std::min(props.cargo, props.carrying), 0.0f)),
     m_cargo(std::max(props.cargo, 0.0f)),
 
-    m_vfxDelay(props.vfxDelay),
-    m_last(now() - m_vfxDelay),
-
-    m_passed(),
+    m_energy(props.energy),
+    m_energyRefill(props.refill),
+    m_pheromonCost(props.pheromonCost),
 
     m_behavior(Behavior::Wander)
   {}

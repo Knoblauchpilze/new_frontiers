@@ -16,7 +16,7 @@ namespace new_frontiers {
        */
       struct WProps: MProps {
         float attack;
-        Duration attackDelay;
+        float attackCost;
       };
 
       /**
@@ -24,23 +24,6 @@ namespace new_frontiers {
        * @param props - the properties describing this mob.
        */
       Warrior(const WProps& props);
-
-      /**
-       * @brief - Implementation of the interface method to pause
-       *          the internal processes for this warrior. It is
-       *          mostly linked to the attacking process.
-       * @param t - the timestamp at which the pause occur.
-       */
-      void
-      pause(const TimeStamp& t) override;
-
-      /**
-       * @brief - Implementation of the interface method to resume
-       *          the internal processes for this warrior.
-       * @param t - the timestamp at which the resume occur.
-       */
-      void
-      resume(const TimeStamp& t) override;
 
     protected:
 
@@ -62,27 +45,14 @@ namespace new_frontiers {
       float m_attack;
 
       /**
-       * @brief - The duration between two consecutive
-       *          attacks given other conditions are met.
-       *          Expressed in milliseconds.
+       * @brief - The cost in energy for an attack. It is
+       *          meant as a way to integrate the attack
+       *          in the thinking process of the warrior
+       *          and thus make some sort of concurrency
+       *          between the pheromon spawning and the
+       *          attack.
        */
-      Duration m_attackDelay;
-
-      /**
-       * @brief - The timestamp at which the last attack
-       *          took place. Allow to make sure that we
-       *          do not attack too often.
-       */
-      TimeStamp m_last;
-
-      /**
-       * @brief - Hold the duration that has passed since
-       *          the last time an attack was performed in
-       *          case a pause event is received.
-       *          Used to be able to restore the attacking
-       *          behavior as if nothing happened.
-       */
-      Duration m_passed;
+      float m_attackCost;
   };
 
   using WarriorShPtr = std::shared_ptr<Warrior>;
