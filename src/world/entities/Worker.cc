@@ -44,7 +44,7 @@ namespace new_frontiers {
       // For some reason the deposit does not exist,
       // return to wandering.
       setBehavior(Behavior::Wander);
-      pickRandomTarget(info, x, y);
+      pickTargetFromPheromon(info, x, y);
 
       return true;
     }
@@ -59,7 +59,7 @@ namespace new_frontiers {
       );
 
       setBehavior(Behavior::Wander);
-      pickRandomTarget(info, x, y);
+      pickTargetFromPheromon(info, x, y);
 
       return true;
     }
@@ -81,7 +81,7 @@ namespace new_frontiers {
       log("Deposit has been emptied while en route");
 
       setBehavior(Behavior::Wander);
-      pickRandomTarget(info, x, y);
+      pickTargetFromPheromon(info, x, y);
 
       return true;
     }
@@ -129,7 +129,7 @@ namespace new_frontiers {
       // For some reason the home of the entity does
       // not exist, return to wandering.
       setBehavior(Behavior::Wander);
-      pickRandomTarget(info, x, y);
+      pickTargetFromPheromon(info, x, y);
 
       return true;
     }
@@ -147,7 +147,7 @@ namespace new_frontiers {
       );
 
       setBehavior(Behavior::Wander);
-      pickRandomTarget(info, x, y);
+      pickTargetFromPheromon(info, x, y);
 
       return true;
     }
@@ -160,7 +160,7 @@ namespace new_frontiers {
 
     // Re-wander again.
     setBehavior(Behavior::Wander);
-    pickRandomTarget(info, x, y);
+    pickTargetFromPheromon(info, x, y);
 
     return true;
   }
@@ -222,10 +222,16 @@ namespace new_frontiers {
     tiles::Effect* te = nullptr;
     std::vector<VFXShPtr> d = info.frustum->getVisible(x, y, m_perceptionRadius, te, -1, &f);
 
+    // We will need a random target so better compute
+    // it right now.
+    float xRnd = x, yRnd = y;
+    pickRandomTarget(info, xRnd, yRnd);
+
     // In case no pheromons are visible use the
     // default wandering behavior.
     if (d.empty()) {
-      pickRandomTarget(info, x, y);
+      x = xRnd;
+      y = yRnd;
 
       return;
     }
@@ -269,31 +275,38 @@ namespace new_frontiers {
 
     // In case no pheromons of the right type were
     // found, use the default wandering behavior.
+    // The goal will be to compute a weighted sum
+    // of the barycenter of visible pheromons and
+    // a random location.
+    // This will allow the pheromons to have some
+    // sort of influence but to not be the only
+    // way to select the next target. The precise
+    // weights used to modulate the picked target
+    // are updated based on whether some pheromons
+    // are actually visible.
+    float wRnd = 0.5f;
+    float wCol = 0.4f;
+    float wRet = 1.0f - wRnd - wCol;
+
     if (c == 0u && r == 0u) {
-      pickRandomTarget(info, x, y);
-
-      return;
+      wRnd = 1.0f; wCol = 0.0f; wRet = 0.0f;
     }
-
-    // Compute the target by computing a weighted
-    // average of both barycenters.
-    float wc = 0.7f, wr = 0.3f;
-
     if (c == 0u && r > 0u) {
-      wc = 0.0f;
-      wr = 1.0f;
+      wRnd = wRnd / (wRnd + wRet);
+      wRet = wRet / (wRnd + wRet);
     }
     if (c > 0u && r == 0u) {
-      wc = 1.0f;
-      wr = 0.0f;
+      wRnd = wRnd / (wRnd + wCol);
+      wCol = wCol / (wRnd + wCol);
     }
 
-    x = (wc * xGCollect + wr * xGReturn) / (wc + wr);
-    y = (wc * yGCollect + wr * yGReturn) / (wc + wr);
+    x = (wRnd * xRnd + wCol * xGCollect + wRet * xGReturn) / (wRnd + wCol + wRet);
+    y = (wRnd * yRnd + wCol * yGCollect + wRet * yGReturn) / (wRnd + wCol + wRet);
 
     log(
       "Barycenter of collect is at " + std::to_string(xGCollect) + "x" +  std::to_string(yGCollect) +
-      " and return is  " + std::to_string(xGReturn) + "x" +  std::to_string(yGReturn) +
+      ", return is " + std::to_string(xGReturn) + "x" +  std::to_string(yGReturn) +
+      ", random is " + std::to_string(xRnd) + "x" +  std::to_string(yRnd) +
       " final coord is " + std::to_string(x) + "x" + std::to_string(y)
     );
 
@@ -303,17 +316,6 @@ namespace new_frontiers {
     m_cPoints.push_back(m_tile.y);
     m_cPoints.push_back(x);
     m_cPoints.push_back(y);
-
-    // case Behavior::Chase:
-    // return pheromon::Type::Chase;
-    // case Behavior::Fight:
-    // return pheromon::Type::Fight;
-    // case Behavior::Collect:
-    // return pheromon::Type::Collect;
-    // case Behavior::Return:
-    // return pheromon::Type::Return;
-    // case Behavior::Wander:
-    // return pheromon::Type::Wander;
   }
 
 }
