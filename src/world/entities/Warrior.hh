@@ -39,6 +39,25 @@ namespace new_frontiers {
     private:
 
       /**
+       * @brief - Used to pick a semi-random target based on
+       *          the pheromons that are visible from the
+       *          position of this warrior.
+       *          We don't avoid purely random behavior but
+       *          rather weigh it with some deterministic
+       *          behavior to favorize emergent behaviors
+       *          where pheromons laid out by other mobs
+       *          might lead to their 'owners'.
+       * @param info - information about the surroundings of
+       *               the warrior.
+       * @param x - the abscissa of the output position.
+       * @param y - the ordinate of the output position.
+       */
+      void
+      pickTargetFromPheromon(StepInfo& info, float& x, float& y) noexcept;
+
+    private:
+
+      /**
        * @brief - The damage value for this warrior. Each
        *          attack will inflict that many damage.
        */

@@ -78,6 +78,24 @@ namespace new_frontiers {
       };
 
       /**
+       * @brief - A convenience structure defining the pheromon info
+       *          including the barycenter and the total amount that
+       *          is laid out.
+       */
+      struct PheromonInfo {
+        float x;
+        float y;
+        float w;
+        int count;
+
+        void
+        accumulate(float locX, float locY, float amount);
+
+        void
+        normalize();
+      };
+
+      /**
        * @brief - Define a new behavior as provided in input and
        *          assign it as the current behavior. No checks
        *          are performed so any assignment is valid.

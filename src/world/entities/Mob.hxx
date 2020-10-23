@@ -6,6 +6,27 @@
 namespace new_frontiers {
 
   inline
+  void
+  Mob::PheromonInfo::accumulate(float locX, float locY, float amount) {
+    x += amount * locX;
+    y += amount * locY;
+    w += amount;
+
+    ++count;
+  }
+
+  inline
+  void
+  Mob::PheromonInfo::normalize() {
+    if (count > 0) {
+      x /= w;
+      y /= w;
+
+      w = 1.0f;
+    }
+  }
+
+  inline
   float
   Mob::getCarryingCapacity() const noexcept {
     return m_cargo;

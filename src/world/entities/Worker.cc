@@ -237,10 +237,8 @@ namespace new_frontiers {
     }
 
     // Otherwise, see what kind of pheromones are
-    // visible:
-    unsigned c = 0u, r = 0u;
-    float wPCollect = 0.0f, xGCollect = 0.0f, yGCollect = 0.0f;
-    float wPReturn = 0.0f, xGReturn = 0.0f, yGReturn = 0.0f;
+    // visible.
+    PheromonInfo coPI{0.0f, 0.0f, 0.0f, 0}, rePI{0.0f, 0.0f, 0.0f, 0};
 
     for (unsigned id = 0u ; id < d.size() ; ++id) {
       VFXShPtr v = d[id];
@@ -250,28 +248,24 @@ namespace new_frontiers {
         continue;
       }
 
-      if (p->getType() == pheromon::Type::Collect) {
-        xGCollect += p->getAmount() * p->getTile().x;
-        yGCollect += p->getAmount() * p->getTile().y;
-        wPCollect += p->getAmount();
-        ++c;
-      }
-      if (p->getType() == pheromon::Type::Return) {
-        xGReturn += p->getAmount() * p->getTile().x;
-        yGReturn += p->getAmount() * p->getTile().y;
-        wPReturn += p->getAmount();
-        ++r;
+      switch (p->getType()) {
+        case pheromon::Type::Collect:
+          coPI.accumulate(p->getTile().x, p->getTile().y, p->getAmount());
+          break;
+        case pheromon::Type::Return:
+          rePI.accumulate(p->getTile().x, p->getTile().y, p->getAmount());
+          break;
+        case pheromon::Type::Chase:
+        case pheromon::Type::Fight:
+        case pheromon::Type::Wander:
+        default:
+          // Don't accumulate irrelevant pheromon.
+          break;
       }
     }
 
-    if (c > 0) {
-      xGCollect /= wPCollect;
-      yGCollect /= wPCollect;
-    }
-    if (r > 0) {
-      xGReturn /= wPReturn;
-      yGReturn /= wPReturn;
-    }
+    coPI.normalize();
+    rePI.normalize();
 
     // In case no pheromons of the right type were
     // found, use the default wandering behavior.
@@ -285,29 +279,32 @@ namespace new_frontiers {
     // are updated based on whether some pheromons
     // are actually visible.
     float wRnd = 0.5f;
-    float wCol = 0.4f;
-    float wRet = 1.0f - wRnd - wCol;
+    coPI.w = 0.4f;
+    rePI.w = 1.0f - wRnd - coPI.w;
 
-    if (c == 0u && r == 0u) {
-      wRnd = 1.0f; wCol = 0.0f; wRet = 0.0f;
+    if (coPI.count == 0u && rePI.count == 0u) {
+      wRnd = 1.0f; coPI.w = 0.0f; rePI.w = 0.0f;
     }
-    if (c == 0u && r > 0u) {
-      wRnd = wRnd / (wRnd + wRet);
-      wRet = wRet / (wRnd + wRet);
+    if (coPI.count == 0u) {
+      float s = 1.0f - coPI.w;
+      wRnd /= s; rePI.w /= s;
+      coPI.w = 0.0f;
     }
-    if (c > 0u && r == 0u) {
-      wRnd = wRnd / (wRnd + wCol);
-      wCol = wCol / (wRnd + wCol);
+    if (rePI.count == 0u) {
+      float s = 1.0f - rePI.w;
+      wRnd /= s; coPI.w /= s;
+      rePI.w = 0.0f;
     }
 
-    x = (wRnd * xRnd + wCol * xGCollect + wRet * xGReturn) / (wRnd + wCol + wRet);
-    y = (wRnd * yRnd + wCol * yGCollect + wRet * yGReturn) / (wRnd + wCol + wRet);
+    x = (wRnd * xRnd + coPI.w * coPI.x + rePI.w * rePI.x) / (wRnd + coPI.w + rePI.w);
+    y = (wRnd * yRnd + coPI.w * coPI.y + rePI.w * rePI.y) / (wRnd + coPI.w + rePI.w);
 
     log(
-      "Barycenter of collect is at " + std::to_string(xGCollect) + "x" +  std::to_string(yGCollect) +
-      ", return is " + std::to_string(xGReturn) + "x" +  std::to_string(yGReturn) +
+      "Barycenter of collect is at " + std::to_string(coPI.x) + "x" +  std::to_string(coPI.y) +
+      ", return is " + std::to_string(rePI.x) + "x" +  std::to_string(rePI.y) +
       ", random is " + std::to_string(xRnd) + "x" +  std::to_string(yRnd) +
-      " final coord is " + std::to_string(x) + "x" + std::to_string(y)
+      " final coord is " + std::to_string(x) + "x" + std::to_string(y),
+      utils::Level::Verbose
     );
 
     // Update debug elements.
