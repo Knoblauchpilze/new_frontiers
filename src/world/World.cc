@@ -237,7 +237,7 @@ namespace new_frontiers {
     m_colonies.push_back(std::make_shared<Colony>(c));
 
     // Generate resource deposit.
-    Deposit::DProps dp = BlockFactory::newDepositProps(3.0f, 4.0f);
+    Deposit::DProps dp = BlockFactory::newDepositProps(6.0f, 4.0f);
     dp.stock = 20.0f;
     m_blocks.push_back(BlockFactory::newDeposit(dp));
 

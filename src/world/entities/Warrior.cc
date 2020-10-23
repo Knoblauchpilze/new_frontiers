@@ -3,8 +3,6 @@
 # include "StepInfo.hh"
 # include "Locator.hh"
 
-# include "LocationUtils.hh"
-
 namespace new_frontiers {
 
   Warrior::Warrior(const WProps& props):
@@ -25,7 +23,15 @@ namespace new_frontiers {
     // to the wandering behavior.
     world::Filter f{getOwner(), false};
     tiles::Entity* te = nullptr;
-    std::vector<EntityShPtr> entities = info.frustum->getVisible(x, y, m_perceptionRadius, te, -1, &f, true);
+    std::vector<EntityShPtr> entities = info.frustum->getVisible(
+      x,
+      y,
+      m_perceptionRadius,
+      te,
+      -1,
+      &f,
+      world::Sort::Distance
+    );
 
     if (entities.empty()) {
       // Couldn't find the entity we were chasing, get
@@ -40,20 +46,6 @@ namespace new_frontiers {
 
     // Pick the first one as it will be the closest.
     EntityShPtr e = entities.front();
-
-    for (unsigned id = 0u ; id < entities.size() ; ++id) {
-      log(
-        "Entity " + std::to_string(id) + " has type " +std::to_string(entities[id]->getTile().type) + " at " +
-        std::to_string(entities[id]->getTile().x) + "x" + std::to_string(entities[id]->getTile().y) +
-        " (d: " + std::to_string(distance::d(entities[id]->getTile().x, entities[id]->getTile().y, m_tile.x, m_tile.y)) + ")"
-      );
-    }
-
-    log(
-      "Chasing entity with type " + std::to_string(e->getTile().type) + " at " +
-      std::to_string(e->getTile().x) + "x" + std::to_string(e->getTile().y) +
-      " (d: " + std::to_string(distance::d(e->getTile().x, e->getTile().y, m_tile.x, m_tile.y)) + ")"
-    );
 
     // Update the target with the actual position of
     // the entity: indeed the entity may be moving
@@ -129,7 +121,15 @@ namespace new_frontiers {
     // surroudings of the entity.
     world::Filter f{getOwner(), false};
     tiles::Entity* te = nullptr;
-    std::vector<EntityShPtr> entities = info.frustum->getVisible(x, y, m_perceptionRadius, te, -1, &f, true);
+    std::vector<EntityShPtr> entities = info.frustum->getVisible(
+      x,
+      y,
+      m_perceptionRadius,
+      te,
+      -1,
+      &f,
+      world::Sort::Distance
+    );
 
     // In case there are no entities, continue the
     // wandering around process.
@@ -297,7 +297,7 @@ namespace new_frontiers {
       " (weights: " + std::to_string(wRnd) + ", "+ std::to_string(chPI.w) +
       ", " + std::to_string(fiPI.w) + ", " + std::to_string(coPI.x) + ", " +
       std::to_string(rePI.w) + ", " + std::to_string(waPI.w) + ")",
-      utils::Level::Debug
+      utils::Level::Verbose
     );
 
     // Update debug elements.

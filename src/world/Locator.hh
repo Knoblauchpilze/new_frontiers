@@ -119,6 +119,16 @@ namespace new_frontiers {
     std::string
     focusToString(const colony::Priority& focus) noexcept;
 
+    /**
+     * @brief - Convenience enumeration defining the possible
+     *          sort algorithms to use.
+     */
+    enum class Sort {
+      None,
+      Distance,
+      ZOrder
+    };
+
   }
 
   class Locator: public utils::CoreObject {
@@ -279,9 +289,8 @@ namespace new_frontiers {
        * @param filters - include a description of a uuid and
        *                  whether or not it should be used
        *                  and considered when fetching items.
-       * @param sort - `true` if the items should be sorted
-       *               in the output vector. The sort occurs
-       *               based on the `z` order of the items.
+       * @param sort - the algorithm to use when performing the
+       *               sorting operation (none by default).
        * @return - the list of items that are visible in the
        *           input view frustum.
        */
@@ -292,7 +301,7 @@ namespace new_frontiers {
                  float yMax,
                  const world::ItemType* type = nullptr,
                  const world::Filter* filters = nullptr,
-                 bool sort = false) const noexcept;
+                 world::Sort sort = world::Sort::None) const noexcept;
 
       /**
        * @brief - Retrieve the list of elements with a type
@@ -315,9 +324,8 @@ namespace new_frontiers {
        * @param filters - include a description of a uuid and
        *                  whether or not it should be used
        *                  and considered when fetching items.
-       * @param sort - `true` if the items should be sorted
-       *               in the output vector. The sort occurs
-       *               based on the `z` order of the items.
+       * @param sort - the algorithm to use when performing the
+       *               sorting operation (none by default).
        * @return - the list of elements corresponding in the
        *           specified area.
        */
@@ -327,7 +335,7 @@ namespace new_frontiers {
                  float r,
                  const world::ItemType* type = nullptr,
                  const world::Filter* filter = nullptr,
-                 bool sort = false) const noexcept;
+                 world::Sort sort = world::Sort::None) const noexcept;
 
       /**
        * @brief - Similar to the `getVisible` method but
@@ -374,10 +382,8 @@ namespace new_frontiers {
        * @param filters - include a description of a uuid and
        *                  whether or not theyit should be used
        *                  and considered when fetching items.
-       * @param sort - whether or not the output vector
-       *               should be sorted so that blocks are
-       *               in ascending order compared to the
-       *               center of the area.
+       * @param sort - the algorithm to use when performing the
+       *               sorting operation (none by default).
        * @return - the list of blocks.
        */
       std::vector<BlockShPtr>
@@ -387,7 +393,7 @@ namespace new_frontiers {
                  const tiles::Block* bTile,
                  int id = -1,
                  const world::Filter* filter = nullptr,
-                 bool sort = false) const noexcept;
+                 world::Sort sort = world::Sort::None) const noexcept;
 
       /**
        * @brief - Specialization of the `getVisible` method
@@ -407,10 +413,8 @@ namespace new_frontiers {
        * @param filters - include a description of a uuid and
        *                  whether or not it should be used
        *                  and considered when fetching items.
-       * @param sort - whether or not the output vector
-       *               should be sorted so that entities
-       *               are in ascending order compared to
-       *               the center of the area.
+       * @param sort - the algorithm to use when performing the
+       *               sorting operation (none by default).
        * @return - the list of entities.
        */
       std::vector<EntityShPtr>
@@ -420,7 +424,7 @@ namespace new_frontiers {
                  const tiles::Entity* eTile,
                  int id = -1,
                  const world::Filter* filter = nullptr,
-                 bool sort = false) const noexcept;
+                 world::Sort sort = world::Sort::None) const noexcept;
 
       /**
        * @brief - Specialization of the `getVisible` method
@@ -440,10 +444,8 @@ namespace new_frontiers {
        * @param filters - include a description of a uuid and
        *                  whether or not it should be used
        *                  and considered when fetching items.
-       * @param sort - whether or not the output vector
-       *               should be sorted so that VFXs
-       *               are in ascending order compared to
-       *               the center of the area.
+       * @param sort - the algorithm to use when performing the
+       *               sorting operation (none by default).
        * @return - the list of VFXs.
        */
       std::vector<VFXShPtr>
@@ -453,7 +455,7 @@ namespace new_frontiers {
                  const tiles::Effect* vTile,
                  int id = -1,
                  const world::Filter* filter = nullptr,
-                 bool sort = false) const noexcept;
+                 world::Sort sort = world::Sort::None) const noexcept;
 
       /**
        * @brief - Similar to the `getVisible` but only returns

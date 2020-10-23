@@ -134,7 +134,7 @@ namespace new_frontiers {
       v.p.y + v.dims.y,
       nullptr,
       nullptr,
-      true
+      world::Sort::ZOrder
     );
 
     log(
@@ -353,7 +353,7 @@ namespace new_frontiers {
       v.p.y + v.dims.y,
       &ie,
       nullptr,
-      true
+      world::Sort::ZOrder
     );
 
     for (unsigned i = 0 ; i < items.size() ; ++i) {

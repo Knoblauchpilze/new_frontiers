@@ -142,7 +142,7 @@ namespace new_frontiers {
                       const world::Filter& filter) const noexcept
   {
     // Use the dedicated handler.
-    std::vector<world::ItemEntry> all = getVisible(x, y, -1.0f, &type, &filter, true);
+    std::vector<world::ItemEntry> all = getVisible(x, y, -1.0f, &type, &filter, world::Sort::Distance);
 
     // Return the closest one if any has
     // been found or an invalid entry. As
@@ -163,7 +163,7 @@ namespace new_frontiers {
                       const tiles::Block* bTile,
                       int id,
                       const world::Filter* filter,
-                      bool sort) const noexcept
+                      world::Sort sort) const noexcept
   {
     // Fetch visible blocks descriptions.
     world::ItemType t = world::ItemType::Block;
@@ -198,7 +198,7 @@ namespace new_frontiers {
                       const tiles::Entity* eTile,
                       int id,
                       const world::Filter* filter,
-                      bool sort) const noexcept
+                      world::Sort sort) const noexcept
   {
     // Fetch visible entities descriptions.
     world::ItemType t = world::ItemType::Entity;
@@ -233,7 +233,7 @@ namespace new_frontiers {
                       const tiles::Effect* vTile,
                       int id,
                       const world::Filter* filter,
-                      bool sort) const noexcept
+                      world::Sort sort) const noexcept
   {
     // Fetch visible entities descriptions.
     world::ItemType t = world::ItemType::VFX;
@@ -269,7 +269,7 @@ namespace new_frontiers {
                       int id,
                       const world::Filter* filter) const noexcept
   {
-    std::vector<BlockShPtr> bs = getVisible(x, y, r, &bTile, id, filter, true);
+    std::vector<BlockShPtr> bs = getVisible(x, y, r, &bTile, id, filter, world::Sort::Distance);
 
     if (bs.empty()) {
       return nullptr;
@@ -287,7 +287,7 @@ namespace new_frontiers {
                       int id,
                       const world::Filter* filter) const noexcept
   {
-    std::vector<EntityShPtr> es = getVisible(x, y, r, &eTile, id, filter, true);
+    std::vector<EntityShPtr> es = getVisible(x, y, r, &eTile, id, filter, world::Sort::Distance);
 
     if (es.empty()) {
       return nullptr;
