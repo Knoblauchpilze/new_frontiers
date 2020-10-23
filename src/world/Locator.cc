@@ -155,7 +155,7 @@ namespace new_frontiers {
                       float yMax,
                       const world::ItemType* type,
                       const world::Filter* filter,
-                      bool sort) const noexcept
+                      world::Sort sort) const noexcept
   {
     std::vector<world::ItemEntry> out;
     std::vector<SortEntry> entries;
@@ -256,9 +256,13 @@ namespace new_frontiers {
 
     // Check whether we need to sort the output
     // vector.
-    if (sort) {
+    if (sort != world::Sort::None) {
       // Sort the entries by ascending `z` order.
       auto cmp = [](const SortEntry& lhs, const SortEntry& rhs) {
+        // Note that we will actually always sort by
+        // `z` order: indeed we don't have any ref
+        // point to sort by distance so it would be
+        // pointless anyway.
         return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
       };
 
@@ -283,7 +287,7 @@ namespace new_frontiers {
                       float r,
                       const world::ItemType* type,
                       const world::Filter* filter,
-                      bool sort) const noexcept
+                      world::Sort sort) const noexcept
   {
     std::vector<world::ItemEntry> out;
     std::vector<SortEntry> entries;
@@ -385,10 +389,18 @@ namespace new_frontiers {
 
     // Check whether we need to sort the output
     // vector.
-    if (sort) {
+    if (sort != world::Sort::None) {
       // Sort the entries by ascending `z` order.
-      auto cmp = [](const SortEntry& lhs, const SortEntry& rhs) {
-        return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
+      auto cmp = [&sort, &x, &y](const SortEntry& lhs, const SortEntry& rhs) {
+        switch (sort) {
+          case world::Sort::Distance:
+            return distance::d(x, y, lhs.x, lhs.y) < distance::d(x, y, rhs.x, rhs.y);
+          case world::Sort::ZOrder:
+            // Use `z` order as default sorting alg
+            // in case the input is unknown.
+          default:
+            return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
+        }
       };
 
       std::sort(entries.begin(), entries.end(), cmp);
