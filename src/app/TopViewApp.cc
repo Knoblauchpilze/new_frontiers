@@ -58,7 +58,8 @@ namespace new_frontiers {
     log(
       "Fetched " + std::to_string(items.size()) + " element(s)" +
       " in viewport [" + std::to_string(v.p.x) + "," + std::to_string(v.p.y) +
-      " : " + std::to_string(v.dims.x) + "x" + std::to_string(v.dims.y) + "]"
+      " : " + std::to_string(v.dims.x) + "x" + std::to_string(v.dims.y) + "]",
+      utils::Level::Verbose
     );
 
     SpriteDesc sd;

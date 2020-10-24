@@ -153,9 +153,32 @@ namespace new_frontiers {
     float x = std::fmod(std::fmod(pox, m_tScaled.x) + m_tScaled.x, m_tScaled.x);
     float y = std::fmod(std::fmod(poy, m_tScaled.y) + m_tScaled.y, m_tScaled.y);
 
+    olc::vf2d topLeftTile = tileCoordsToPixels(rt.x, rt.y, 1.0f, Cell::TopLeft);
+    olc::vf2d intraTileBase(
+      (pixels.x - topLeftTile.x) / m_tScaled.x,
+      (pixels.y - topLeftTile.y - m_tScaled.y) / m_tScaled.y
+    );
+
     if (intraTile != nullptr) {
-      intraTile->x = m_tScaled.x / 2.0f - x + 2.0f * y;
-      intraTile->y = x / 2.0f - m_tScaled.y / 2.0f + y;
+      intraTile->x = -0.5f;
+      intraTile->y = 0.0f;
+
+      // When increasing the `x` screen coordinates,
+      // the `x` intra tile coordinate is decreasing
+      // continuously from `1` to `0`.
+      // The `y` intra tile coordinate on the other
+      // hand is increasing.
+      intraTile->x += (1.0f - intraTileBase.x);
+      intraTile->y += (intraTileBase.x - 0.5f);
+
+      // When increasing the `y` screen coordinate,
+      // the `y` intra tile coordinate is also
+      // increasing in the same proportion. Initially
+      // the value is `0` as well.
+      // The `x` intra tile coordinate also varies
+      // in the same measure.
+      intraTile->x += intraTileBase.y;
+      intraTile->y += intraTileBase.y;
     }
 
     float hw = m_tScaled.x / 2.0f;
@@ -169,7 +192,7 @@ namespace new_frontiers {
       --rt.y;
 
       if (intraTile != nullptr) {
-        intraTile->y += m_tScaled.y;
+        intraTile->y +=1.0f;
       }
     }
     if (x > hw && y < hh && y < x * how - hh) {
@@ -177,7 +200,7 @@ namespace new_frontiers {
       --rt.x;
 
       if (intraTile != nullptr) {
-        intraTile->x += m_tScaled.x;
+        intraTile->x += 1.0f;
       }
     }
     if (x < hw && y > hh && y > hh + x * how) {
@@ -185,7 +208,7 @@ namespace new_frontiers {
       ++rt.x;
 
       if (intraTile != nullptr) {
-        intraTile->x -= m_tScaled.x;
+        intraTile->x -= 1.0f;
       }
     }
     if (x > hw && y > hh && y > 3 * hh - x * how) {
@@ -193,13 +216,8 @@ namespace new_frontiers {
       ++rt.y;
 
       if (intraTile != nullptr) {
-        intraTile->y -= m_tScaled.y;
+        intraTile->y -= 1.0f;
       }
-    }
-
-    if (intraTile != nullptr) {
-      intraTile->x /= m_tScaled.x;
-      intraTile->y /= m_tScaled.y;
     }
 
     return rt;
