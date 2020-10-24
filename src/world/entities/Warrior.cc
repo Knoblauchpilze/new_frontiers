@@ -282,21 +282,24 @@ namespace new_frontiers {
       waPI.w = 0.0f;
     }
 
-    float totW = fiPI.w + waPI.w + coPI.w + rePI.w + chPI.w;
-    x = (xRnd + wRnd + chPI.x * chPI.w + fiPI.x * fiPI.w + coPI.x * coPI.w + rePI.x * rePI.w + waPI.x * waPI.w) / totW;
-    y = (yRnd + wRnd + chPI.y * chPI.w + fiPI.y * fiPI.w + coPI.y * coPI.w + rePI.y * rePI.w + waPI.y * waPI.w) / totW;
+    float totW = wRnd + fiPI.w + waPI.w + coPI.w + rePI.w + chPI.w;
+    x = (xRnd * wRnd + chPI.x * chPI.w + fiPI.x * fiPI.w + coPI.x * coPI.w + rePI.x * rePI.w + waPI.x * waPI.w) / totW;
+    y = (yRnd * wRnd + chPI.y * chPI.w + fiPI.y * fiPI.w + coPI.y * coPI.w + rePI.y * rePI.w + waPI.y * waPI.w) / totW;
 
     log(
       "rn: " + std::to_string(xRnd) + "x" +  std::to_string(yRnd) +
-      "ch: " + std::to_string(chPI.x) + "x" +  std::to_string(chPI.y) +
+      ", ch: " + std::to_string(chPI.x) + "x" +  std::to_string(chPI.y) +
       ", fi: " + std::to_string(fiPI.x) + "x" +  std::to_string(fiPI.y) +
       ", co: " + std::to_string(coPI.x) + "x" +  std::to_string(coPI.y) +
       ", re: " + std::to_string(rePI.x) + "x" +  std::to_string(rePI.y) +
       ", wa: " + std::to_string(waPI.x) + "x" +  std::to_string(waPI.y) +
       ", fi: " + std::to_string(x) + "x" + std::to_string(y) +
       " (weights: " + std::to_string(wRnd) + ", "+ std::to_string(chPI.w) +
-      ", " + std::to_string(fiPI.w) + ", " + std::to_string(coPI.x) + ", " +
-      std::to_string(rePI.w) + ", " + std::to_string(waPI.w) + ")",
+      ", " + std::to_string(fiPI.w) + ", " + std::to_string(coPI.w) + ", " +
+      std::to_string(rePI.w) + ", " + std::to_string(waPI.w) + ")" +
+      " (counts: " + std::to_string(chPI.count) +
+      ", " + std::to_string(fiPI.count) + ", " + std::to_string(coPI.count) + ", " +
+      std::to_string(rePI.count) + ", " + std::to_string(waPI.count) + ")",
       utils::Level::Verbose
     );
 
