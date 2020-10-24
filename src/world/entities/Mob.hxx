@@ -98,6 +98,12 @@ namespace new_frontiers {
 
   inline
   bool
+  Mob::inhibitPheromon(StepInfo& /*info*/) const noexcept {
+    return false;
+  }
+
+  inline
+  bool
   Mob::chase(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
     // Empty base implementation.
     return false;
@@ -154,7 +160,7 @@ namespace new_frontiers {
   Mob::emitPheromon(StepInfo& info) noexcept {
     // Emit a pheromon based on the current behavior
     // if the energy is available.
-    if (m_energy >= m_pheromonCost) {
+    if (m_energy >= m_pheromonCost && !inhibitPheromon(info)) {
       pheromon::Type pt = behaviorToPheromon(m_behavior);
       info.spawnVFX(spawnPheromon(pt));
 

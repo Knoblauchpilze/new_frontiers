@@ -39,7 +39,6 @@
 // TODO: Change the pheromon builder to have some sort of
 // automatic path adjustement which could be parameterized
 // by specifying the weights of the pheromon types.
-// TODO: Remove wandering pheromons.
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>
