@@ -35,7 +35,6 @@
  */
 // TODO: Quadtree system to represent the elements of the world (in Locator class).
 // TODO: Control of colony's priorities through UI.
-// TODO: Intra-tile seems to be broken again :(((
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>
