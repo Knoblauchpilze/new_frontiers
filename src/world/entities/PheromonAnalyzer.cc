@@ -145,7 +145,7 @@ namespace new_frontiers {
       ", " + std::to_string(pheromons[pheromon::Type::Collect].count) +
       ", " + std::to_string(pheromons[pheromon::Type::Return].count) +
       ", " + std::to_string(pheromons[pheromon::Type::Wander].count) + ")",
-      utils::Level::Debug
+      utils::Level::Verbose
     );
   }
 
