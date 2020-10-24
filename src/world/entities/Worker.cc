@@ -4,9 +4,8 @@
 # include "Locator.hh"
 # include "../blocks/Deposit.hh"
 # include "../blocks/SpawnerOMeter.hh"
-
+# include "PheromonAnalyzer.hh"
 # include <cxxabi.h>
-# include "LocationUtils.hh"
 
 namespace new_frontiers {
 
@@ -238,7 +237,13 @@ namespace new_frontiers {
 
     // Otherwise, see what kind of pheromones are
     // visible.
-    PheromonInfo coPI{0.0f, 0.0f, 0.0f, 0}, rePI{0.0f, 0.0f, 0.0f, 0};
+    PheromonAnalyzer pa;
+    pa.setRelativeWeight(pheromon::Type::Chase, 0.0f);
+    pa.setRelativeWeight(pheromon::Type::Fight, 0.0f);
+    pa.setRelativeWeight(pheromon::Type::Collect, 0.4f);
+    pa.setRelativeWeight(pheromon::Type::Return, 0.1f);
+    pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
+    pa.setRandomWeight(0.5f);
 
     for (unsigned id = 0u ; id < d.size() ; ++id) {
       VFXShPtr v = d[id];
@@ -248,64 +253,16 @@ namespace new_frontiers {
         continue;
       }
 
-      switch (p->getType()) {
-        case pheromon::Type::Collect:
-          coPI.accumulate(p->getTile().x, p->getTile().y, p->getAmount());
-          break;
-        case pheromon::Type::Return:
-          rePI.accumulate(p->getTile().x, p->getTile().y, p->getAmount());
-          break;
-        case pheromon::Type::Chase:
-        case pheromon::Type::Fight:
-        case pheromon::Type::Wander:
-        default:
-          // Don't accumulate irrelevant pheromon.
-          break;
-      }
+      pa.accumulate(*p);
     }
 
-    coPI.normalize();
-    rePI.normalize();
+    // Use the pheromon analyze to yield a valid target
+    // to pick for this worker. The relative importance
+    // of pheromons will be handled directly.
+    pa.computeTarget(xRnd, yRnd);
 
-    // In case no pheromons of the right type were
-    // found, use the default wandering behavior.
-    // The goal will be to compute a weighted sum
-    // of the barycenter of visible pheromons and
-    // a random location.
-    // This will allow the pheromons to have some
-    // sort of influence but to not be the only
-    // way to select the next target. The precise
-    // weights used to modulate the picked target
-    // are updated based on whether some pheromons
-    // are actually visible.
-    float wRnd = 0.5f;
-    coPI.w = 0.4f;
-    rePI.w = 1.0f - wRnd - coPI.w;
-
-    if (coPI.count == 0u && rePI.count == 0u) {
-      wRnd = 1.0f; coPI.w = 0.0f; rePI.w = 0.0f;
-    }
-    if (coPI.count == 0u) {
-      float s = 1.0f - coPI.w;
-      wRnd /= s; rePI.w /= s;
-      coPI.w = 0.0f;
-    }
-    if (rePI.count == 0u) {
-      float s = 1.0f - rePI.w;
-      wRnd /= s; coPI.w /= s;
-      rePI.w = 0.0f;
-    }
-
-    x = (wRnd * xRnd + coPI.w * coPI.x + rePI.w * rePI.x) / (wRnd + coPI.w + rePI.w);
-    y = (wRnd * yRnd + coPI.w * coPI.y + rePI.w * rePI.y) / (wRnd + coPI.w + rePI.w);
-
-    log(
-      "Barycenter of collect is at " + std::to_string(coPI.x) + "x" +  std::to_string(coPI.y) +
-      ", return is " + std::to_string(rePI.x) + "x" +  std::to_string(rePI.y) +
-      ", random is " + std::to_string(xRnd) + "x" +  std::to_string(yRnd) +
-      " final coord is " + std::to_string(x) + "x" + std::to_string(y),
-      utils::Level::Verbose
-    );
+    x = xRnd;
+    y = yRnd;
 
     // Update debug elements.
     m_cPoints.clear();
