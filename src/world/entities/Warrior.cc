@@ -2,6 +2,7 @@
 # include "Warrior.hh"
 # include "StepInfo.hh"
 # include "Locator.hh"
+# include "PheromonAnalyzer.hh"
 
 namespace new_frontiers {
 
@@ -193,11 +194,13 @@ namespace new_frontiers {
     // visible: we will give some priority to the
     // fighting pheromon over other types and so
     // on to specialize the behavior.
-    PheromonInfo chPI{0.0f, 0.0f, 0.0f, 0};
-    PheromonInfo fiPI{0.0f, 0.0f, 0.0f, 0};
-    PheromonInfo coPI{0.0f, 0.0f, 0.0f, 0};
-    PheromonInfo rePI{0.0f, 0.0f, 0.0f, 0};
-    PheromonInfo waPI{0.0f, 0.0f, 0.0f, 0};
+    PheromonAnalyzer pa;
+    pa.setRelativeWeight(pheromon::Type::Chase, 0.1f);
+    pa.setRelativeWeight(pheromon::Type::Fight, 0.25f);
+    pa.setRelativeWeight(pheromon::Type::Collect, 0.2f);
+    pa.setRelativeWeight(pheromon::Type::Return, 0.15f);
+    pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
+    pa.setRandomWeight(0.3f);
 
     for (unsigned id = 0u ; id < d.size() ; ++id) {
       VFXShPtr v = d[id];
@@ -207,101 +210,16 @@ namespace new_frontiers {
         continue;
       }
 
-      switch (p->getType()) {
-        case pheromon::Type::Chase:
-          chPI.accumulate(p->getTile().x, p->getTile().y, p->getAmount());
-          break;
-        case pheromon::Type::Fight:
-          fiPI.accumulate(p->getTile().x, p->getTile().y, p->getAmount());
-          break;
-        case pheromon::Type::Collect:
-          coPI.accumulate(p->getTile().x, p->getTile().y, p->getAmount());
-          break;
-        case pheromon::Type::Return:
-          rePI.accumulate(p->getTile().x, p->getTile().y, p->getAmount());
-          break;
-        case pheromon::Type::Wander:
-          waPI.accumulate(p->getTile().x, p->getTile().y, p->getAmount());
-          break;
-        default:
-          // Don't accumulate unknown pheromon.
-          break;
-      }
+      pa.accumulate(*p);
     }
 
-    chPI.normalize();
-    fiPI.normalize();
-    coPI.normalize();
-    rePI.normalize();
-    waPI.normalize();
+    // Use the pheromon analyze to yield a valid target
+    // to pick for this warrior. The relative importance
+    // of pheromons will be handled directly.
+    pa.computeTarget(xRnd, yRnd);
 
-    // In case no pheromons of the right type were
-    // found, use the default wandering behavior.
-    // The goal will be to compute a weighted sum
-    // of the barycenter of visible pheromons and
-    // a random location.
-    // This will allow the pheromons to have some
-    // sort of influence but to not be the only
-    // way to select the next target. The precise
-    // weights used to modulate the picked target
-    // are updated based on whether some pheromons
-    // are actually visible.
-    float wRnd = 0.2f;
-    fiPI.w = 0.2f;
-    waPI.w = 0.2f;
-    coPI.w = 0.15f;
-    rePI.w = 0.15f;
-    chPI.w = 1.0f - wRnd - fiPI.w - waPI.w - coPI.w - rePI.w;
-
-    if (fiPI.count == 0 && chPI.count == 0 && coPI.count == 0 && rePI.count == 0 && waPI.count == 0) {
-      wRnd = 1.0f; chPI.w = 0.0f; fiPI.w = 0.0f; coPI.w = 0.0f; rePI.w = 0.0f; waPI.w = 0.0f;
-    }
-    if (fiPI.count == 0) {
-      float s = 1.0f - fiPI.w;
-      wRnd /= s; chPI.w /= s; coPI.w /= s; rePI.w /= s; waPI.w /= s;
-      fiPI.w = 0.0f;
-    }
-    if (chPI.count == 0) {
-      float s = 1.0f - chPI.w;
-      wRnd /= s; fiPI.w /= s; coPI.w /= s; rePI.w /= s; waPI.w /= s;
-      chPI.w = 0.0f;
-    }
-    if (coPI.count == 0) {
-      float s = 1.0f - coPI.w;
-      wRnd /= s; fiPI.w /= s; chPI.w /= s; rePI.w /= s; waPI.w /= s;
-      coPI.w = 0.0f;
-    }
-    if (rePI.count == 0) {
-      float s = 1.0f - rePI.w;
-      wRnd /= s; fiPI.w /= s; chPI.w /= s; coPI.w /= s; waPI.w /= s;
-      rePI.w = 0.0f;
-    }
-    if (waPI.count == 0) {
-      float s = 1.0f - waPI.w;
-      wRnd /= s; fiPI.w /= s; chPI.w /= s; coPI.w /= s; rePI.w /= s;
-      waPI.w = 0.0f;
-    }
-
-    float totW = wRnd + fiPI.w + waPI.w + coPI.w + rePI.w + chPI.w;
-    x = (xRnd * wRnd + chPI.x * chPI.w + fiPI.x * fiPI.w + coPI.x * coPI.w + rePI.x * rePI.w + waPI.x * waPI.w) / totW;
-    y = (yRnd * wRnd + chPI.y * chPI.w + fiPI.y * fiPI.w + coPI.y * coPI.w + rePI.y * rePI.w + waPI.y * waPI.w) / totW;
-
-    log(
-      "rn: " + std::to_string(xRnd) + "x" +  std::to_string(yRnd) +
-      ", ch: " + std::to_string(chPI.x) + "x" +  std::to_string(chPI.y) +
-      ", fi: " + std::to_string(fiPI.x) + "x" +  std::to_string(fiPI.y) +
-      ", co: " + std::to_string(coPI.x) + "x" +  std::to_string(coPI.y) +
-      ", re: " + std::to_string(rePI.x) + "x" +  std::to_string(rePI.y) +
-      ", wa: " + std::to_string(waPI.x) + "x" +  std::to_string(waPI.y) +
-      ", fi: " + std::to_string(x) + "x" + std::to_string(y) +
-      " (weights: " + std::to_string(wRnd) + ", "+ std::to_string(chPI.w) +
-      ", " + std::to_string(fiPI.w) + ", " + std::to_string(coPI.w) + ", " +
-      std::to_string(rePI.w) + ", " + std::to_string(waPI.w) + ")" +
-      " (counts: " + std::to_string(chPI.count) +
-      ", " + std::to_string(fiPI.count) + ", " + std::to_string(coPI.count) + ", " +
-      std::to_string(rePI.count) + ", " + std::to_string(waPI.count) + ")",
-      utils::Level::Verbose
-    );
+    x = xRnd;
+    y = yRnd;
 
     // Update debug elements.
     m_cPoints.clear();

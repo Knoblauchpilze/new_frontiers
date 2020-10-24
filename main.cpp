@@ -36,9 +36,6 @@
 // TODO: Quadtree system to represent the elements of the world (in Locator class).
 // TODO: Control of colony's priorities through UI.
 // TODO: Intra-tile seems to be broken again :(((
-// TODO: Change the pheromon builder to have some sort of
-// automatic path adjustement which could be parameterized
-// by specifying the weights of the pheromon types.
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>

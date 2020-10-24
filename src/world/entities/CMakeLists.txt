@@ -7,6 +7,7 @@ set (SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Worker.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/Warrior.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/EntityFactory.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/PheromonAnalyzer.cc
   PARENT_SCOPE
   )
 
