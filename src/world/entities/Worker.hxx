@@ -5,6 +5,12 @@
 
 namespace new_frontiers {
 
+  inline
+  bool
+  Worker::inhibitPheromon(StepInfo& /*info*/) const noexcept {
+    return m_behavior == Behavior::Wander;
+  }
+
 }
 
 #endif    /* WORKER_HXX */

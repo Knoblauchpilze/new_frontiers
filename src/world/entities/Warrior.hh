@@ -36,6 +36,15 @@ namespace new_frontiers {
       bool
       wander(StepInfo& info, float& x, float& y) override;
 
+      /**
+       * @brief - Used to inhibit pheromon emission when the
+       *          warrior is in wander mode.
+       * @param info - not used by this method.
+       * @return - `true` if the pheromon should be inhibited.
+       */
+      bool
+      inhibitPheromon(StepInfo& info) const noexcept override;
+
     private:
 
       /**

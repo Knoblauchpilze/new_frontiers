@@ -148,6 +148,22 @@ namespace new_frontiers {
       void
       postStep(StepInfo& info) override;
 
+      /**
+       * @brief - Method guaranteed to be called upon each
+       *          invocation of the `emitPheromon` methos
+       *          and which gives inheriting classes the
+       *          opportunity to block emission of pheromon
+       *          for some reason.
+       *          The default implementation never inhibits
+       *          pheromons.
+       * @param info - information about the state of the
+       *               world and the mob.
+       * @return - `true` if the pheromon should be inhibited
+       *           (and thus not produced).
+       */
+      virtual bool
+      inhibitPheromon(StepInfo& info) const noexcept;
+
       virtual bool
       chase(StepInfo& info, float& x, float& y);
 
