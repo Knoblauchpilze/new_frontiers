@@ -30,9 +30,8 @@ namespace new_frontiers {
     // Once this is done, we may need to emit a new
     // pheromon: this allow to make sure that we
     // indicate any change of state for this entity.
-    if (t.behaviorChanged && m_energy >= m_pheromonCost) {
+    if (t.behaviorChanged) {
       emitPheromon(info);
-      m_energy -= m_pheromonCost;
     }
 
     // Set the output position to the picked target

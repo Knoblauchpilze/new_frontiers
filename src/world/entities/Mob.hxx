@@ -93,13 +93,7 @@ namespace new_frontiers {
   inline
   void
   Mob::postStep(StepInfo& info) {
-    // Emit a new pheromon if needed.
-    if (m_energy >= m_pheromonCost) {
-      pheromon::Type pt = behaviorToPheromon(m_behavior);
-      info.spawnVFX(spawnPheromon(pt));
-
-      m_energy -= m_pheromonCost;
-    }
+    emitPheromon(info);
   }
 
   inline
@@ -158,9 +152,14 @@ namespace new_frontiers {
   inline
   void
   Mob::emitPheromon(StepInfo& info) noexcept {
-    // Emit a pheromon based on the current behavior.
-    pheromon::Type pt = behaviorToPheromon(m_behavior);
-    info.spawnVFX(spawnPheromon(pt));
+    // Emit a pheromon based on the current behavior
+    // if the energy is available.
+    if (m_energy >= m_pheromonCost) {
+      pheromon::Type pt = behaviorToPheromon(m_behavior);
+      info.spawnVFX(spawnPheromon(pt));
+
+      m_energy -= m_pheromonCost;
+    }
   }
 
   inline
