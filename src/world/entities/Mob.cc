@@ -14,6 +14,7 @@ namespace new_frontiers {
     m_cargo(std::max(props.cargo, 0.0f)),
 
     m_energy(props.energy),
+    m_maxEnergy(props.maxEnergy),
     m_energyRefill(props.refill),
     m_pheromonCost(props.pheromonCost),
 
