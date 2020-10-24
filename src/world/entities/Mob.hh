@@ -24,6 +24,7 @@ namespace new_frontiers {
         float cargo;
 
         float energy;
+        float maxEnergy;
         float refill;
 
         float pheromonCost;
@@ -236,6 +237,13 @@ namespace new_frontiers {
        *          new pheromones for example.
        */
       float m_energy;
+
+      /**
+       * @brief - Measure the maximum energy that this mob can
+       *          have. Above this value the energy won't be
+       *          refilled anymore.
+       */
+      float m_maxEnergy;
 
       /**
        * @brief - Indication of how fast the energy pool of

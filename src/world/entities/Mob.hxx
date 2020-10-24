@@ -66,7 +66,7 @@ namespace new_frontiers {
     // Also update the energy available for
     // this frame based on the elapsed time
     // since the last update.
-    m_energy += info.elapsed * m_energyRefill;
+    m_energy = std::min(m_energy + info.elapsed * m_energyRefill, m_maxEnergy);
   }
 
   inline

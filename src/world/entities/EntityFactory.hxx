@@ -47,6 +47,7 @@ namespace new_frontiers {
     pp.cargo = 10.0f;
 
     pp.energy = 1.9f;
+    pp.maxEnergy = 2.1f;
     pp.refill = 1.0f;
     pp.pheromonCost = 2.0f;
 
@@ -76,6 +77,7 @@ namespace new_frontiers {
     pp.cargo = 10.0f;
 
     pp.energy = 1.9f;
+    pp.maxEnergy = 2.1f;
     pp.refill = 1.0f;
     pp.pheromonCost = 2.0f;
 
