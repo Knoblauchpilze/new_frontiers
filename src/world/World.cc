@@ -11,8 +11,6 @@
 # include "colonies/ColonyFactory.hh"
 # include "TimeUtils.hh"
 
-# include <iostream>
-
 namespace {
 
   inline
