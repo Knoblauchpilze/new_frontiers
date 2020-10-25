@@ -134,12 +134,14 @@ namespace new_frontiers {
   }
 
   bool
-  Menu::processUserInput(const Controls& c) {
+  Menu::processUserInput(const controls::State& c,
+                         std::vector<ActionShPtr> actions)
+  {
     // Make sure that the children get their chance
     // to process the event.
     bool used = false;
     for (unsigned id = 0u ; id < m_children.size() ; ++id) {
-      if (m_children[id]->processUserInput(c)) {
+      if (m_children[id]->processUserInput(c, actions)) {
         used = true;
       }
     }
