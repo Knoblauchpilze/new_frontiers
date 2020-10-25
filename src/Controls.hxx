@@ -1,17 +1,22 @@
 #ifndef    CONTROLS_HXX
 # define   CONTROLS_HXX
 
+# include "Controls.hh"
+
 namespace new_frontiers {
+  namespace controls {
 
-  inline
-  Controls
-  newControls() noexcept {
-    Controls c;
-    c.keys.resize(KeysCount, false);
+    inline
+    State
+    newState() noexcept {
+      State c;
+      c.keys.resize(keys::KeysCount, false);
+      c.buttons.resize(mouse::ButtonsCount, ButtonState::Free);
 
-    return c;
+      return c;
+    }
+
   }
-
 }
 
 #endif    /* CONTROLS_HXX */
