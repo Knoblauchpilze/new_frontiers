@@ -22,8 +22,8 @@ namespace new_frontiers {
     m_dLayer(0u),
     m_uiLayer(0u),
 
-    m_debugOn(true),
-    m_uiOn(false),
+    m_debugOn(false),
+    m_uiOn(true),
 
     m_state(State::Running),
     m_first(true)
@@ -83,13 +83,11 @@ namespace new_frontiers {
   PGEApp::loadMenuResources() {
     // Create the menu: we want it to have a fixed
     // height and be at the bottom of the screen.
-    int mHeight = 150;
-
     int w = ScreenWidth();
     int h = ScreenHeight();
 
-    olc::vi2d mPos(0, h - mHeight);
-    olc::vf2d mSize(w, mHeight);
+    olc::vi2d mPos(0, h - MENU_HEIGHT);
+    olc::vf2d mSize(w, MENU_HEIGHT);
 
     m_menu = std::make_shared<GameMenu>(mPos, mSize);
   }

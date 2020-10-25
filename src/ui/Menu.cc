@@ -177,6 +177,16 @@ namespace new_frontiers {
 
     // Assign this element has the parent of the new
     // child and register it as a new submenu.
+    // Note that this might cause issue in case the
+    // child already has a parent.
+    if (child->m_parent != nullptr) {
+      log(
+        "Reparenting menu \"" + child->getName() + "\" from \"" +
+        child->m_parent->getName() + "\"",
+        utils::Level::Warning
+      );
+    }
+
     child->m_parent = this;
 
     m_children.push_back(child);
@@ -233,7 +243,7 @@ namespace new_frontiers {
       pge->DrawStringDecal(
         p,
         m_content.text,
-        olc::MAGENTA
+        m_content.color
       );
 
       return;
@@ -412,19 +422,64 @@ namespace new_frontiers {
     // child in the principal direction.
     int wh = (m_layout == Layout::Horizontal ? m_size.y : m_size.x);
     int i = (m_layout == Layout::Horizontal ? m_size.x : m_size.y);
-    int d = static_cast<int>(1.0f * i / m_children.size());
+
+    // Compute the size to allocate to each child
+    // based on the expanding ones.
+    int expandableSize = i;
+    int count = m_children.size();
+    for (unsigned id = 0u ; id < m_children.size() ; ++id) {
+      if (!m_children[id]->m_content.expand) {
+        expandableSize -= (
+          m_layout == Layout::Horizontal ?
+          m_children[id]->m_size.x :
+          m_children[id]->m_size.y
+        );
+
+        log(
+          "Child \"" + m_children[id]->getName() + "\" has size " +
+          std::to_string(m_layout == Layout::Horizontal ? m_children[id]->m_size.x : m_children[id]->m_size.y) +
+          " and expandable is now " + std::to_string(expandableSize)
+        );
+
+        --count;
+      }
+
+    }
+
+    log("Expandable: " + std::to_string(expandableSize) + ", c: " + std::to_string(count));
+
+    if (expandableSize < 0) {
+      log(
+        "Menu has " + std::to_string(m_children.size()) + " child(ren)" +
+        " occpupying " + std::to_string(i - expandableSize) +
+        " but menu is only " + std::to_string(i) +
+        ", truncation will occur",
+        utils::Level::Warning
+      );
+
+      expandableSize = 0;
+    }
+    count = std::max(count, 1);
+
+    int d = static_cast<int>(1.0f * expandableSize / count);
 
     // Note that we also force the wraping for the
     // background tiled children to something that
     // will be consistent with their actual size.
+    int offset = 0;
+
     for (unsigned id = 0u ; id < m_children.size() ; ++id) {
       switch (m_layout) {
         case Layout::Vertical:
-          m_children[id]->m_size.x = wh;
-          m_children[id]->m_size.y = d;
+          m_children[id]->m_size.x = std::min(m_children[id]->m_size.x, wh);
+          if (m_children[id]->m_content.expand) {
+            m_children[id]->m_size.y = d;
+          }
 
-          m_children[id]->m_pos.x = 0;
-          m_children[id]->m_pos.y = id * d;
+          m_children[id]->m_pos.x = (wh - m_children[id]->m_size.x) / 2.0f;
+          m_children[id]->m_pos.y = offset;
+
+          offset += m_children[id]->m_size.y;
 
           // Update the wrap size for the background of
           // the child menu if it indicates a no-wrap
@@ -442,11 +497,15 @@ namespace new_frontiers {
           break;
         case Layout::Horizontal:
         default:
-          m_children[id]->m_size.x = d;
-          m_children[id]->m_size.y = wh;
+          if (m_children[id]->m_content.expand) {
+            m_children[id]->m_size.x = d;
+          }
+          m_children[id]->m_size.y = std::min(m_children[id]->m_size.y, wh);
 
-          m_children[id]->m_pos.x = id * d;
-          m_children[id]->m_pos.y = 0;
+          m_children[id]->m_pos.x = offset;
+          m_children[id]->m_pos.y = (wh - m_children[id]->m_size.y) / 2.0f;
+
+          offset += m_children[id]->m_size.x;
 
           if (!m_children[id]->m_bg.tiling) {
             m_children[id]->m_bg.wrap.x = d;

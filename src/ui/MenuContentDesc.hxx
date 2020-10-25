@@ -10,10 +10,12 @@ namespace new_frontiers {
   newTextContent(const std::string& text, const Alignment& align) noexcept {
     return MenuContentDesc{
       text,
+      olc::MAGENTA,
       "",
       olc::vi2d(),
       align,
-      Ordering::TextFirst
+      Ordering::TextFirst,
+      true
     };
   }
 
@@ -22,10 +24,12 @@ namespace new_frontiers {
   newImageContent(const std::string& sprite, const olc::vi2d& size) noexcept {
     return MenuContentDesc{
       "",
+      olc::MAGENTA,
       sprite,
       size,
       Alignment::Left,
-      Ordering::ImageFirst
+      Ordering::ImageFirst,
+      true
     };
   }
 
@@ -38,10 +42,12 @@ namespace new_frontiers {
   {
     return MenuContentDesc{
       text,
+      olc::MAGENTA,
       sprite,
       size,
       align,
-      Ordering::ImageFirst
+      Ordering::ImageFirst,
+      true
     };
   }
 

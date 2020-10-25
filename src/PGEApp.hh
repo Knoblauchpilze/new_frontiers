@@ -86,6 +86,13 @@ namespace new_frontiers {
       static constexpr int ALPHA_TRANSPARENT = 0;
 
       /**
+       * @brief - Definition of the height of the game menu in
+       *          pixels. Allow to tailor some other display so
+       *          that they don't overlap the menu.
+       */
+      static constexpr int MENU_HEIGHT = 50;
+
+      /**
        * @brief - Interface method allowing inheriting classes
        *          to get a chance to load resources needed for
        *          display. This method is guaranteed to be

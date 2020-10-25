@@ -30,12 +30,15 @@ namespace new_frontiers {
    */
   struct MenuContentDesc {
     std::string text;
+    olc::Pixel color;
 
     std::string icon;
     olc::vi2d size;
 
     Alignment align;
     Ordering order;
+
+    bool expand;
   };
 
   /**
