@@ -11,7 +11,7 @@ namespace new_frontiers {
              Menu* parent):
     utils::CoreObject(name),
 
-    m_state(State{true, false}),
+    m_state(State{true, false, false}),
 
     m_pos(pos),
     m_size(size),
@@ -47,7 +47,7 @@ namespace new_frontiers {
       pge->FillRectDecal(
         pos,
         m_size,
-        (m_state.highlighted ? m_bg.hColor : m_bg.color)
+        (m_state.highlighted || m_state.selected ? m_bg.hColor : m_bg.color)
       );
     }
 
@@ -133,17 +133,18 @@ namespace new_frontiers {
     }
   }
 
-  bool
+  Menu::InputHandle
   Menu::processUserInput(const controls::State& c,
                          std::vector<ActionShPtr>& actions)
   {
     // Make sure that the children get their chance
     // to process the event.
-    bool used = false;
+    InputHandle res{false, false};
     for (unsigned id = 0u ; id < m_children.size() ; ++id) {
-      if (m_children[id]->processUserInput(c, actions)) {
-        used = true;
-      }
+      InputHandle rc = m_children[id]->processUserInput(c, actions);
+
+      res.relevant = res.relevant || rc.relevant;
+      res.selected = res.selected || rc.selected;
     }
 
     // If the mouse is not inside this element, stop
@@ -154,14 +155,20 @@ namespace new_frontiers {
     // following conditions apply: it either mean
     // that the mouse is not inside this menu or
     // that a child is more relevant than we are.
+    bool click = (c.buttons[controls::mouse::Left] == controls::ButtonState::Released);
+
     olc::vi2d ap = absolutePosition();
     if (c.mPosX < ap.x || c.mPosX >= ap.x + m_size.x ||
         c.mPosY < ap.y || c.mPosY >= ap.y + m_size.y ||
-        used)
+        res.relevant || res.selected)
     {
       m_state.highlighted = false;
 
-      return used;
+      if (res.selected || click) {
+        m_state.selected = false;
+      }
+
+      return res;
     }
 
     // This menu is now highlighted.
@@ -169,11 +176,12 @@ namespace new_frontiers {
 
     // In case the user clicks on the menu, we need
     // to trigger the corresponding handler.
-    if (c.buttons[controls::mouse::Left] == controls::ButtonState::Released) {
+    if (click) {
       onClick(actions);
+      m_state.selected = true;
     }
 
-    return true;
+    return res;
   }
 
   void

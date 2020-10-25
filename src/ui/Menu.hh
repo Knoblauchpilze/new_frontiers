@@ -30,6 +30,18 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience struct defining what can happen
+       *          while processing inputs. It is mostly used
+       *          internally to detect update of children but
+       *          can also be interpreted by external callers
+       *          if needed.
+       */
+      struct InputHandle {
+        bool relevant;
+        bool selected;
+      };
+
+      /**
        * @brief - Create a new menu with the specified dimensions.
        * @param pos - the position of the menu in the parent app.
        * @param size - the dimensions of the menu.
@@ -71,14 +83,10 @@ namespace new_frontiers {
        *            frame.
        * @param actions - the list of actions produced by the
        *                  menu while processing the events.
-       * @return - `true` in case this event was processed
-       *           (which means that it was relevant for the
-       *           menu) and `false` otherwise. Defines some
-       *           sort of causal chain and allow parent to
-       *           check whether one of their children could
-       *           use the events.
+       * @return - the description of what happened when the
+       *           inputs has been processed.
        */
-      bool
+      InputHandle
       processUserInput(const controls::State& c,
                        std::vector<ActionShPtr>& actions);
 
@@ -214,6 +222,7 @@ namespace new_frontiers {
       struct State {
         bool visible;
         bool highlighted;
+        bool selected;
       };
 
       /**
