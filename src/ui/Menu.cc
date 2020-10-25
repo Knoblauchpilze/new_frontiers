@@ -135,7 +135,7 @@ namespace new_frontiers {
 
   bool
   Menu::processUserInput(const controls::State& c,
-                         std::vector<ActionShPtr> actions)
+                         std::vector<ActionShPtr>& actions)
   {
     // Make sure that the children get their chance
     // to process the event.
@@ -166,6 +166,12 @@ namespace new_frontiers {
 
     // This menu is now highlighted.
     m_state.highlighted = true;
+
+    // In case the user clicks on the menu, we need
+    // to trigger the corresponding handler.
+    if (c.buttons[controls::mouse::Left] == controls::ButtonState::Released) {
+      onClick(actions);
+    }
 
     return true;
   }

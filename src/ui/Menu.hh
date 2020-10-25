@@ -80,7 +80,7 @@ namespace new_frontiers {
        */
       bool
       processUserInput(const controls::State& c,
-                       std::vector<ActionShPtr> actions);
+                       std::vector<ActionShPtr>& actions);
 
       /**
        * @brief - Adds the input menu as a child of this one.
@@ -143,6 +143,20 @@ namespace new_frontiers {
       virtual
       void
       renderSelf(olc::PixelGameEngine* pge) const;
+
+      /**
+       * @brief - Interface method allowing inheriting classes
+       *          to perform the creation of their own actions
+       *          whenver a click is detected on this menu.
+       *          For now this method is only triggered when a
+       *          click witht he left mouse button is detected.
+       *          The default implementation does nothing.
+       * @param actions - output vector to register actions if
+       *                  needed.
+       */
+      virtual
+      void
+      onClick(std::vector<ActionShPtr>& actions) const;
 
       /**
        * @brief - Used to obtain the absolute position of the

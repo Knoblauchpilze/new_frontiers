@@ -6,12 +6,23 @@
 namespace new_frontiers {
 
   inline
-  Action::Action(const std::string& name):
-    utils::CoreObject(name)
-  {}
+  Action::Action(const action::Type& type,
+                 const std::string& name):
+    utils::CoreObject(name),
+
+    m_type(type)
+  {
+    setService("action");
+  }
 
   inline
   Action::~Action() {}
+
+  inline
+  const action::Type&
+  Action::getType() const noexcept {
+    return m_type;
+  }
 
 }
 

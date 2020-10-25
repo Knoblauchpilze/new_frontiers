@@ -7,6 +7,19 @@
 
 namespace new_frontiers {
 
+  namespace action {
+
+    /**
+     * @brief - Describe general type of actions that can be
+     *          used in various context.
+     */
+    enum class Type {
+      Creation,
+      Deletion
+    };
+
+  }
+
   class Action: public utils::CoreObject {
     public:
 
@@ -32,12 +45,23 @@ namespace new_frontiers {
     protected:
 
       /**
-       * @brief - Create a new empty action.
+       * @brief - Create a new empty action with the specified
+       *          type.
+       * @param type - the general type of this action.
        * @param name - the name of the action (for logging purposes).
        */
-      Action(const std::string& name);
+      Action(const action::Type& type,
+             const std::string& name);
+
+      const action::Type&
+      getType() const noexcept;
 
     private:
+
+      /**
+       * @brief - The general type of this action.
+       */
+      action::Type m_type;
   };
 
   using ActionShPtr = std::shared_ptr<Action>;
