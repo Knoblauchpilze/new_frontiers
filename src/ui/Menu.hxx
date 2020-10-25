@@ -55,6 +55,12 @@ namespace new_frontiers {
   }
 
   inline
+  void
+  Menu::onClick(std::vector<ActionShPtr>& /*actions*/) const {
+    // Nothing to do.
+  }
+
+  inline
   olc::vi2d
   Menu::absolutePosition() const noexcept {
     olc::vi2d p(0, 0);
