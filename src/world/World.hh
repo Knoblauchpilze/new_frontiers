@@ -67,7 +67,7 @@ namespace new_frontiers {
        */
       void
       step(float tDelta,
-           const Controls& controls);
+           const controls::State& controls);
 
       /**
        * @brief - Used to indicate that the world should be
@@ -80,7 +80,7 @@ namespace new_frontiers {
        */
       void
       pause(float tDelta,
-            const Controls& controls);
+            const controls::State& controls);
 
       /**
        * @brief - Used to indicate that the world should be
@@ -93,7 +93,7 @@ namespace new_frontiers {
        */
       void
       resume(float tDelta,
-             const Controls& controls);
+             const controls::State& controls);
 
     private:
 

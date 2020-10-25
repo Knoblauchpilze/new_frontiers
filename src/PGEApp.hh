@@ -310,7 +310,7 @@ namespace new_frontiers {
        *          to be transmitted to the world's entities for
        *          the simulation.
        */
-      Controls m_controls;
+      controls::State m_controls;
 
       /**
        * @brief - The index representing the main layer for this

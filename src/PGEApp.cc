@@ -16,7 +16,7 @@ namespace new_frontiers {
 
     m_cf(desc.frame),
 
-    m_controls(newControls()),
+    m_controls(controls::newState()),
 
     m_mLayer(0u),
     m_dLayer(0u),
@@ -119,12 +119,6 @@ namespace new_frontiers {
     m_controls.mPosX = mPos.x;
     m_controls.mPosY = mPos.y;
 
-    // Detect clicks with the left mouse button to be
-    // selecting game elements.
-    if (GetMouse(0).bReleased) {
-      log("Should detect element", utils::Level::Error);
-    }
-
     int scroll = GetMouseWheel();
     if (scroll > 0) {
       m_cf->zoomIn(GetMousePos());
@@ -135,19 +129,37 @@ namespace new_frontiers {
 
     // Handle inputs.
     olc::HWButton b = GetKey(olc::RIGHT);
-    m_controls.keys[Right] = b.bPressed || b.bHeld;
+    m_controls.keys[controls::keys::Right] = b.bPressed || b.bHeld;
 
     b = GetKey(olc::UP);
-    m_controls.keys[Up] = b.bPressed || b.bHeld;
+    m_controls.keys[controls::keys::Up] = b.bPressed || b.bHeld;
 
     b = GetKey(olc::LEFT);
-    m_controls.keys[Left] = b.bPressed || b.bHeld;
+    m_controls.keys[controls::keys::Left] = b.bPressed || b.bHeld;
 
     b = GetKey(olc::DOWN);
-    m_controls.keys[Down] = b.bPressed || b.bHeld;
+    m_controls.keys[controls::keys::Down] = b.bPressed || b.bHeld;
 
     b = GetKey(olc::SPACE);
-    m_controls.keys[Space] = b.bPressed || b.bHeld;
+    m_controls.keys[controls::keys::Space] = b.bPressed || b.bHeld;
+
+    auto analysis = [](const olc::HWButton& b) {
+      if (b.bPressed) {
+        return controls::ButtonState::Pressed;
+      }
+      if (b.bHeld) {
+        return controls::ButtonState::Held;
+      }
+      if (b.bReleased) {
+        return controls::ButtonState::Released;
+      }
+
+      return controls::ButtonState::Free;
+    };
+
+    m_controls.buttons[controls::mouse::Left] = analysis(GetMouse(0));
+    m_controls.buttons[controls::mouse::Right] = analysis(GetMouse(1));
+    m_controls.buttons[controls::mouse::Middle] = analysis(GetMouse(2));
 
     // De/activate the debug mode if needed and
     // handle general simulation control options.
@@ -172,6 +184,12 @@ namespace new_frontiers {
         default:
           break;
       }
+    }
+
+    // Detect clicks with the left mouse button to be
+    // selecting game elements.
+    if (GetMouse(0).bReleased) {
+      log("Should detect element 0", utils::Level::Error);
     }
 
     return ic;

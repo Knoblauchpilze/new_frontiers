@@ -47,7 +47,7 @@ namespace new_frontiers {
 
     LocatorShPtr frustum;
 
-    Controls controls;
+    controls::State controls;
 
     void
     clampCoord(float& x, float& y) const noexcept;

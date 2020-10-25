@@ -2,6 +2,7 @@
 # define   PLAYER_CONTROLS_HH
 
 # include "../Controls.hh"
+
 namespace new_frontiers {
 
   /**
@@ -11,11 +12,11 @@ namespace new_frontiers {
    *          to detect.
    */
   enum Motion {
-    MoveRight = Right,
-    MoveUp = Up,
-    MoveLeft = Left,
-    MoveDown = Down,
-    Sprint = Space,
+    MoveRight = controls::keys::Right,
+    MoveUp = controls::keys::Up,
+    MoveLeft = controls::keys::Left,
+    MoveDown = controls::keys::Down,
+    Sprint = controls::keys::Space,
 
     ControlsCount
   };

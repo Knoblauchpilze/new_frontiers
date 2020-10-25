@@ -4,40 +4,78 @@
 # include <vector>
 
 namespace new_frontiers {
+  namespace controls {
 
-  /**
-   * @brief - The list of keys that are trackes by the
-   *          controls structure.
-   */
-  enum Keys {
-    Right,
-    Up,
-    Left,
-    Down,
-    Space,
+    namespace keys {
 
-    KeysCount
-  };
+      /**
+       * @brief - The list of keys that are trackes by the
+       *          controls structure.
+       */
+      enum Keys {
+        Right,
+        Up,
+        Left,
+        Down,
+        Space,
 
-  /**
-   * @brief - Describe a structure holding the controls
-   *          that are relevant extracted from the keys
-   *          pressed by the user and the mouse info.
-   */
-  struct Controls {
-    int mPosX;
-    int mPosY;
+        KeysCount
+      };
 
-    std::vector<bool> keys;
-  };
+    }
 
-  /**
-   * @brief - Create a new controls structure.
-   * @return - the created structure.
-   */
-  Controls
-  newControls() noexcept;
+    namespace mouse {
 
+      /**
+       * @brief - The possible mouse buttons recognized for
+       *          controls.
+       */
+      enum MouseButton {
+        Left,
+        Middle,
+        Right,
+
+        ButtonsCount
+      };
+
+    }
+
+    /**
+     * @brief - The possible states for a button. Note
+     *          that the `Pressed` state state is only
+     *          active once when the button is first
+     *          pressed. Similarly the `Released` state
+     *          is only active once when the button is
+     *          first released.
+     */
+    enum class ButtonState {
+      Free,
+      Released,
+      Pressed,
+      Held
+    };
+
+    /**
+     * @brief - Describe a structure holding the controls
+     *          that are relevant extracted from the keys
+     *          pressed by the user and the mouse info.
+     */
+    struct State {
+      int mPosX;
+      int mPosY;
+
+      std::vector<bool> keys;
+      std::vector<ButtonState> buttons;
+    };
+
+    /**
+     * @brief - Create a new controls structure.
+     * @return - the created structure.
+     */
+    State
+    newState() noexcept;
+
+  }
 }
 
 # include "Controls.hxx"

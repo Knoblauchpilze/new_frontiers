@@ -131,7 +131,7 @@ namespace new_frontiers {
 
   void
   World::step(float tDelta,
-              const Controls& controls)
+              const controls::State& controls)
   {
     // Create the step information structure.
     StepInfo si{
@@ -176,7 +176,7 @@ namespace new_frontiers {
 
   void
   World::pause(float /*tDelta*/,
-               const Controls& /*controls*/)
+               const controls::State& /*controls*/)
   {
     // Call the pause method on each world element. The
     // pause method is invoked at this moment in time.
@@ -197,7 +197,7 @@ namespace new_frontiers {
 
   void
   World::resume(float /*tDelta*/,
-                const Controls& /*controls*/)
+                const controls::State& /*controls*/)
   {
     // Call the resume method on each world element. The
     // pause method is invoked at this moment in time.
