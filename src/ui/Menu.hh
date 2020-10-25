@@ -8,6 +8,7 @@
 # include "BackgroundDesc.hh"
 # include "MenuContentDesc.hh"
 # include "Controls.hh"
+# include "Action.hh"
 
 namespace new_frontiers {
 
@@ -68,6 +69,8 @@ namespace new_frontiers {
        *          of this menu if needed.
        * @param c - the controls and user input for this
        *            frame.
+       * @param actions - the list of actions produced by the
+       *                  menu while processing the events.
        * @return - `true` in case this event was processed
        *           (which means that it was relevant for the
        *           menu) and `false` otherwise. Defines some
@@ -76,7 +79,8 @@ namespace new_frontiers {
        *           use the events.
        */
       bool
-      processUserInput(const Controls& c);
+      processUserInput(const controls::State& c,
+                       std::vector<ActionShPtr> actions);
 
       /**
        * @brief - Adds the input menu as a child of this one.

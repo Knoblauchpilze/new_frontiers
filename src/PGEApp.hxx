@@ -2,8 +2,7 @@
 # define   PGE_APP_HXX
 
 # include "PGEApp.hh"
-
-# include "utils.hh"
+# include "ui/Action.hh"
 
 namespace new_frontiers {
 
@@ -31,8 +30,14 @@ namespace new_frontiers {
         break;
     }
 
-    // Handle menus update.
-    m_menu->processUserInput(m_controls);
+    // Handle menus update and process the
+    // corresponding actions.
+    std::vector<ActionShPtr> actions;
+    m_menu->processUserInput(m_controls, actions);
+
+    for (unsigned id = 0u ; id < actions.size() ; ++id) {
+      actions[id]->apply(*m_world);
+    }
 
     // Handle rendering: for each function
     // we will assign the draw target first
