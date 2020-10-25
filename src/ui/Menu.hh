@@ -120,6 +120,13 @@ namespace new_frontiers {
       void
       setContent(const MenuContentDesc& mcd);
 
+      /**
+       * @brief - Retrieve the size for this menu.
+       * @return - the size of this menu in pixels.
+       */
+      olc::vf2d
+      getSize() const noexcept;
+
     protected:
 
       /**

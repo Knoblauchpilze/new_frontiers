@@ -258,6 +258,11 @@ namespace new_frontiers {
       p.y += (idS.y + cOffset);
     }
 
+    // Render the game menu.
+    if (res.ui != nullptr) {
+      res.ui->render(this);
+    }
+
     SetPixelMode(olc::Pixel::NORMAL);
   }
 
@@ -321,9 +326,9 @@ namespace new_frontiers {
 
     int h = GetDrawTargetHeight();
     int dOffset = 15;
-    DrawString(olc::vi2d(0, h - 3 * dOffset), "Mouse coords      : " + toString(mp), olc::CYAN);
-    DrawString(olc::vi2d(0, h - 2 * dOffset), "World cell coords : " + toString(mtp), olc::CYAN);
-    DrawString(olc::vi2d(0, h - 1 * dOffset), "Intra cell        : " + toString(it), olc::CYAN);
+    DrawString(olc::vi2d(0, h - MENU_HEIGHT - 3 * dOffset), "Mouse coords      : " + toString(mp), olc::CYAN);
+    DrawString(olc::vi2d(0, h - MENU_HEIGHT - 2 * dOffset), "World cell coords : " + toString(mtp), olc::CYAN);
+    DrawString(olc::vi2d(0, h - MENU_HEIGHT - 1 * dOffset), "Intra cell        : " + toString(it), olc::CYAN);
 
     SetPixelMode(olc::Pixel::NORMAL);
   }

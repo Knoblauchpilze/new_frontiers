@@ -49,6 +49,12 @@ namespace new_frontiers {
   }
 
   inline
+  olc::vf2d
+  Menu::getSize() const noexcept {
+    return m_size;
+  }
+
+  inline
   olc::vi2d
   Menu::absolutePosition() const noexcept {
     olc::vi2d p(0, 0);
