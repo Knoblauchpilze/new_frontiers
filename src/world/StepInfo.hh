@@ -40,7 +40,7 @@ namespace new_frontiers {
 
     RNG& rng;
 
-    std::vector<InfluenceShPtr> influences;
+    std::vector<InfluenceShPtr>& influences;
 
     TimeStamp moment;
     float elapsed;

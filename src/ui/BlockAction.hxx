@@ -2,6 +2,7 @@
 # define   BLOCK_ACTION_HXX
 
 # include "BlockAction.hh"
+# include "../world/blocks/BlockFactory.hh"
 
 namespace new_frontiers {
 
@@ -20,9 +21,15 @@ namespace new_frontiers {
 
   inline
   void
-  BlockAction::apply(World& /*w*/) const {
-    // TODO: Implement this.
-    log("Should perform block action", utils::Level::Error);
+  BlockAction::apply(World& w) const {
+    // Create the properties based on the internal block
+    // description and register that as the next action
+    // for the world.
+    Deposit::DProps pp = BlockFactory::newDepositProps(0.0f, 0.0f);
+    pp.tile.type = m_block;
+    pp.tile.id = m_bVariant;
+
+    w.setDepositProps(pp);
   }
 
 }

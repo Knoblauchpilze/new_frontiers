@@ -33,10 +33,21 @@ namespace new_frontiers {
     // Handle menus update and process the
     // corresponding actions.
     std::vector<ActionShPtr> actions;
-    m_menu->processUserInput(m_controls, actions);
+    Menu::InputHandle ih = m_menu->processUserInput(m_controls, actions);
 
     for (unsigned id = 0u ; id < actions.size() ; ++id) {
       actions[id]->apply(*m_world);
+    }
+
+    // Detect clicks with the left mouse button to be
+    // creating new game elements. We only want to do
+    // that in case the user did not click on the ui.
+    if (m_controls.buttons[controls::mouse::Left] == controls::ButtonState::Released &&
+        !ih.relevant)
+    {
+      olc::vf2d it;
+      olc::vi2d tp = m_cf->pixelCoordsToTiles(olc::vi2d(m_controls.mPosX, m_controls.mPosY), &it);
+      m_world->performAction(tp.x + it.x, tp.y + it.y);
     }
 
     // Handle rendering: for each function

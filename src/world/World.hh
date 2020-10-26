@@ -11,6 +11,8 @@
 # include "Locator.hh"
 # include "Controls.hh"
 # include "Influence.hh"
+# include "blocks/Deposit.hh"
+# include "effects/Pheromon.hh"
 
 namespace new_frontiers {
 
@@ -95,7 +97,44 @@ namespace new_frontiers {
       resume(float tDelta,
              const controls::State& controls);
 
+      /**
+       * @brief - Used to assign a new value for the properties
+       *          of a deposit to create as an action. This will
+       *          be used in the following calls when a new game
+       *          elements need to be created.
+       * @param props - the properties of the deposit to create.
+       */
+      void
+      setDepositProps(const Deposit::DProps& props);
+
+      /**
+       * @brief - Very similar to `setDepositProps` but defines
+       *          the properties to use when spawning a pheromon.
+       * @param props - the properties to use when spawning a new
+       *                pheromon.
+       */
+      void
+      setPheromonProps(const Pheromon::PProps& props);
+
+      /**
+       * @brief - Used to perform the next action at the position
+       *          specified by the input coordinates.
+       * @param x - the abscissa of the position at which the action
+       *            should be taking place.
+       * @param y - the ordinate of the position at which the action
+       *            will be taking place.
+       */
+      void
+      performAction(float x, float y);
+
     private:
+
+      /**
+       * @brief - Perform the initialization of the actions
+       *          defined in the world.
+       */
+      void
+      initializeActions();
 
       /**
        * @brief - Generate the base layout for this world.
@@ -116,10 +155,13 @@ namespace new_frontiers {
        * @brief - Used to process the input list of influences
        *          which usually mean deleting elements marked
        *          for deletion and registering new ones.
-       * @param influences - the list of influences to process.
+       *          The influences are fetched from the internal
+       *          vector registering them. This vector is then
+       *          reset so as to indicate that all influences
+       *          have been handled.
        */
       void
-      processInfluences(const std::vector<InfluenceShPtr>& influences);
+      processInfluences();
 
       /**
        * @brief - Attempt to load a world from the file as
@@ -154,9 +196,42 @@ namespace new_frontiers {
     private:
 
       /**
-       * @brief - Dimensions of the world in cells.
+       * @brief - Convenience define determining which kind of
+       *          action is currently `selected`. This means
+       *          that any call to `performAction` will use the
+       *          registered `action` for this type.
+       */
+      enum class ActionType {
+        None,
+        Block,
+        Entity,
+        VFX
+      };
+
+      /**
+       * @brief - Convenience structure allowing to represent the
+       *          actions currently registered in this world. It
+       *          allows to have some sort of delay processes that
+       *          can be first setup and then activated as many
+       *          times as needed.
+       *          Typical examples include creating game elements
+       *          from the UI.
+       */
+      struct Actions {
+        Deposit::DProps deposit;
+        Pheromon::PProps pheromon;
+
+        ActionType type;
+      };
+
+      /**
+       * @brief - Width of the world in cells.
        */
       int m_w;
+
+      /**
+       * @brief - Height of the world in cells.
+       */
       int m_h;
 
       /**
@@ -198,6 +273,28 @@ namespace new_frontiers {
        *          based on locating specific tiles in the game.
        */
       LocatorShPtr m_loc;
+
+      /**
+       * @brief - The list of actions that are registered in the
+       *          world. Such actions are mainly used to create
+       *          new game elements.
+       *          Initial values are provided to create default
+       *          elements.
+       */
+      Actions m_actions;
+
+      /**
+       * @brief - List of influences registered for this world. The
+       *          influence concept is the main way any game element
+       *          has to change its surroundings. All influences are
+       *          first gathered and then all are applied at the same
+       *          time. This allow a phase of resolution where we
+       *          will determine which influence can be executed and
+       *          possibly find some compromise for some cases like
+       *          if several entities are competing to fetch the last
+       *          resources from a deposit, etc.
+       */
+      std::vector<InfluenceShPtr> m_influences;
   };
 
   using WorldShPtr = std::shared_ptr<World>;
