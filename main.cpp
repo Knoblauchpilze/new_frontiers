@@ -34,7 +34,6 @@
  *          to the mother nest and attack it.
  */
 // TODO: Quadtree system to represent the elements of the world (in Locator class).
-// TODO: Control of colony's priorities through UI.
 
 # include <core_utils/StdLogger.hh>
 # include <core_utils/LoggerLocator.hh>

@@ -455,18 +455,9 @@ namespace new_frontiers {
           m_children[id]->m_size.y
         );
 
-        log(
-          "Child \"" + m_children[id]->getName() + "\" has size " +
-          std::to_string(m_layout == Layout::Horizontal ? m_children[id]->m_size.x : m_children[id]->m_size.y) +
-          " and expandable is now " + std::to_string(expandableSize)
-        );
-
         --count;
       }
-
     }
-
-    log("Expandable: " + std::to_string(expandableSize) + ", c: " + std::to_string(count));
 
     if (expandableSize < 0) {
       log(
