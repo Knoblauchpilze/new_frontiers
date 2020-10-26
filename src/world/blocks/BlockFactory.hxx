@@ -103,6 +103,35 @@ namespace new_frontiers {
 
   inline
   BlockShPtr
+  BlockFactory::newBlockFromProps(const Block::Props& props) noexcept {
+    // Attempt to convert the input properties into
+    // known types. Note that we should perform the
+    // most derived types first otherwise we won't
+    // be able to get the most precise match.
+    const Block::Props* pp = &props;
+
+    const Deposit::DProps* dp = dynamic_cast<const Deposit::DProps*>(pp);
+    if (dp != nullptr) {
+      return newDeposit(*dp);
+    }
+
+    const SpawnerOMeter::SOMProps* sp = dynamic_cast<const SpawnerOMeter::SOMProps*>(pp);
+    if (sp != nullptr) {
+      return newSpawnerOMeter(*sp);
+    }
+
+    const TimedSpawner::TSProps* tp = dynamic_cast<const TimedSpawner::TSProps*>(pp);
+    if (tp != nullptr) {
+      return newTimedSpawner(*tp);
+    }
+
+    // Can't interpret the props, return an invalid
+    // pointer to a block.
+    return nullptr;
+  }
+
+  inline
+  BlockShPtr
   BlockFactory::newTimedSpawner(const TimedSpawner::TSProps& props) noexcept {
     return std::make_shared<TimedSpawner>(props);
   }

@@ -15,13 +15,10 @@ namespace new_frontiers {
        *          include spawning or removing a block from the
        *          world.
        * @param type - the type of this action.
-       * @param block - the tile of the block this action is
-       *                related to.
-       * @param variant - the variant of the block.
+       * @param block - the entity attached to this action.
        */
       BlockAction(const action::Type& type,
-                  const tiles::Block& block,
-                  int variant = 0);
+                  BlockPropsShPtr block);
 
       /**
        * @brief - Desctruction of the object.
@@ -41,15 +38,10 @@ namespace new_frontiers {
     private:
 
       /**
-       * @brief - The tile of the block attached to this action.
-       */
-      tiles::Block m_block;
-
-      /**
-       * @brief - The variant of the block attached to this
+       * @brief - The description of the block attached to this
        *          action.
        */
-      int m_bVariant;
+      BlockPropsShPtr m_block;
   };
 
   using BlockActionShPtr = std::shared_ptr<BlockAction>;

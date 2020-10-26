@@ -25,6 +25,13 @@ namespace new_frontiers {
         float health;
 
         utils::Uuid owner;
+
+        /**
+         * @brief - Used to make the compiler consider this
+         *          structure as polymorphic and thus allow
+         *          dynamic_cast operator on derived elems.
+         */
+        virtual ~Props();
       };
 
       /**
@@ -71,6 +78,7 @@ namespace new_frontiers {
   };
 
   using BlockShPtr = std::shared_ptr<Block>;
+  using BlockPropsShPtr = std::shared_ptr<Block::Props>;
 }
 
 # include "Block.hxx"

@@ -10,13 +10,11 @@ namespace new_frontiers {
                          const olc::vf2d& size,
                          const std::string& name,
                          const action::Type& type,
-                         const tiles::Entity& ent,
-                         int id,
+                         EntityPropsShPtr ent,
                          Menu* parent):
     Menu(pos, size, name, Layout::Horizontal, parent),
 
     m_entity(ent),
-    m_eVariant(id),
     m_type(type)
   {
     // Check the action's type.
@@ -26,6 +24,14 @@ namespace new_frontiers {
         "Invalid action type " + std::to_string(static_cast<int>(m_type)) +
         " but expected " + std::to_string(static_cast<int>(action::Type::Creation)) + " or " +
         std::to_string(static_cast<int>(action::Type::Deletion))
+      );
+    }
+
+    // Check the entity's description.
+    if (m_entity == nullptr) {
+      error(
+        "Unable to create entity menu",
+        "Invalid null entity properties description"
       );
     }
   }
@@ -38,7 +44,7 @@ namespace new_frontiers {
   EntityMenu::onClick(std::vector<ActionShPtr>& actions) const {
     // Push a new action with the corresponding entity
     // and type to be executed.
-    actions.push_back(std::make_shared<EntityAction>(m_type, m_entity, m_eVariant));
+    actions.push_back(std::make_shared<EntityAction>(m_type, m_entity));
   }
 
 }

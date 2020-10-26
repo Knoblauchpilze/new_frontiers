@@ -6,6 +6,9 @@
 namespace new_frontiers {
 
   inline
+  VFX::Props::~Props() {}
+
+  inline
   float
   VFX::getAmount() const noexcept {
     return m_amount;

@@ -20,7 +20,7 @@ namespace new_frontiers {
 
       static
       Pheromon::PProps
-      newPheromonProps(float x, float y, const tiles::Effect& vfx) noexcept;
+      newPheromonProps(float x, float y, const pheromon::Type& type) noexcept;
 
       static
       tiles::Effect

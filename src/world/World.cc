@@ -238,29 +238,38 @@ namespace new_frontiers {
 
     switch (m_actions.type) {
       case ActionType::Block:
-        m_actions.deposit.tile.x = x;
-        m_actions.deposit.tile.y = y;
+        m_actions.block->tile.x = x;
+        m_actions.block->tile.y = y;
 
         m_influences.push_back(
           std::make_shared<Influence>(
             influence::Type::BlockSpawn,
-            BlockFactory::newDeposit(m_actions.deposit)
+            BlockFactory::newBlockFromProps(*m_actions.block)
           )
         );
         break;
       case ActionType::VFX:
-        m_actions.pheromon.tile.x = x;
-        m_actions.pheromon.tile.y = y;
+        m_actions.vfx->tile.x = x;
+        m_actions.vfx->tile.y = y;
 
         m_influences.push_back(
           std::make_shared<Influence>(
             influence::Type::VFXSpawn,
-            PheromonFactory::newPheromon(m_actions.pheromon)
+            PheromonFactory::newPheromon(*std::dynamic_pointer_cast<Pheromon::PProps>(m_actions.vfx))
           )
         );
         break;
       case ActionType::Entity:
-        // TODO: Implement this.
+        m_actions.ent->tile.x = x;
+        m_actions.ent->tile.y = y;
+
+        m_influences.push_back(
+          std::make_shared<Influence>(
+            influence::Type::EntitySpawn,
+            EntityFactory::newEntityFromProps(*m_actions.ent)
+          )
+        );
+        break;
       case ActionType::None:
         // Nothing to do if no action type is selected.
         log("Not implemented or nothing to do");

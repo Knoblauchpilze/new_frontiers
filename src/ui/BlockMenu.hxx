@@ -10,13 +10,11 @@ namespace new_frontiers {
                        const olc::vf2d& size,
                        const std::string& name,
                        const action::Type& type,
-                       const tiles::Block& block,
-                       int id,
+                       BlockPropsShPtr block,
                        Menu* parent):
     Menu(pos, size, name, Layout::Horizontal, parent),
 
     m_block(block),
-    m_bVariant(id),
     m_type(type)
   {
     // Check the action's type.
@@ -26,6 +24,14 @@ namespace new_frontiers {
         "Invalid action type " + std::to_string(static_cast<int>(m_type)) +
         " but expected " + std::to_string(static_cast<int>(action::Type::Creation)) + " or " +
         std::to_string(static_cast<int>(action::Type::Deletion))
+      );
+    }
+
+    // Check the block's description.
+    if (m_block == nullptr) {
+      error(
+        "Unable to create block menu",
+        "Invalid null block properties description"
       );
     }
   }
@@ -38,8 +44,7 @@ namespace new_frontiers {
   BlockMenu::onClick(std::vector<ActionShPtr>& actions) const {
     // Push a new action with the corresponding block
     // and type to be executed.
-    log("Pushing block action");
-    actions.push_back(std::make_shared<BlockAction>(m_type, m_block, m_bVariant));
+    actions.push_back(std::make_shared<BlockAction>(m_type, m_block));
   }
 
 }

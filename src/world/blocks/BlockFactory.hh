@@ -31,6 +31,23 @@ namespace new_frontiers {
       Block::Props
       newWallProps(float x, float y, int id = 0) noexcept;
 
+      /**
+       * @brief - Create the most specialized instance of a
+       *          block given the input properties. A cast
+       *          is performed to the most specialized type
+       *          and then the creation of the corresponding
+       *          block is triggered.
+       * @param props - the properties from which the block
+       *                should be created.
+       * @return - the pointer to the created block or a
+       *           `null` value in case the properties can't
+       *           be interpreted.
+       *
+       */
+      static
+      BlockShPtr
+      newBlockFromProps(const Block::Props& props) noexcept;
+
       static
       BlockShPtr
       newTimedSpawner(const TimedSpawner::TSProps& props) noexcept;

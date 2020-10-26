@@ -11,6 +11,28 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create an VFX. It is meant as a
+       *          way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct Props {
+        VFXTile tile;
+        float radius;
+
+        float amount;
+
+        utils::Uuid owner;
+
+        /**
+         * @brief - Used to make the compiler consider this
+         *          structure as polymorphic and thus allow
+         *          dynamic_cast operator on derived elems.
+         */
+        virtual ~Props();
+      };
+
+      /**
        * @brief - Return the amount of the effect that still
        *          exist compared to the initial quantity. It
        *          is a rather abstract concept at this level
@@ -50,21 +72,6 @@ namespace new_frontiers {
       resume(const TimeStamp& t) override;
 
     protected:
-
-      /**
-       * @brief - Convenience structure to regroup the info
-       *          needed to create an VFX. It is meant as a
-       *          way to reduce the number of arguments
-       *          provided to the constructor of this class.
-       */
-      struct Props {
-        VFXTile tile;
-        float radius;
-
-        float amount;
-
-        utils::Uuid owner;
-      };
 
       /**
        * @brief - Creates a new VFX with the specified tile
@@ -136,6 +143,7 @@ namespace new_frontiers {
   };
 
   using VFXShPtr = std::shared_ptr<VFX>;
+  using VFXPropsShPtr = std::shared_ptr<VFX::Props>;
 }
 
 # include "VFX.hxx"
