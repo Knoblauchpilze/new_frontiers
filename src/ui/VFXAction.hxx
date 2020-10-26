@@ -2,6 +2,7 @@
 # define   VFX_ACTION_HXX
 
 # include "VFXAction.hh"
+# include "../world/effects/PheromonFactory.hh"
 
 namespace new_frontiers {
 
@@ -20,9 +21,16 @@ namespace new_frontiers {
 
   inline
   void
-  VFXAction::apply(World& /*w*/) const {
-    // TODO: Implement this.
-    log("Should perform vfx action", utils::Level::Error);
+  VFXAction::apply(World& w) const {
+    // Create the properties based on the internal vfx
+    // description and register that as the next action
+    // for the world.
+    Pheromon::PProps pp = PheromonFactory::newPheromonProps(0.0f, 0.0f, m_vfx);
+    pp.tile.id = m_vVariant;
+
+    pp.radius = 0.5f;
+
+    w.setPheromonProps(pp);
   }
 
 }

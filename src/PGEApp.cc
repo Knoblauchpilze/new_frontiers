@@ -186,24 +186,6 @@ namespace new_frontiers {
       }
     }
 
-    // Detect clicks with the left mouse button to be
-    // selecting game elements.
-    if (GetMouse(0).bReleased) {
-      /// TODO: We could have an action which register some
-      // block/entity/vfx to spawn in the world like with
-      // attributes named `m_blockToSpawn`, `m_vfxToSpawn`
-      // so that we save the current element to spawn.
-      // In here we would call a new method on the `World`
-      // called for example `click` which would pass the
-      // coordinates of the click and the world would be
-      // handling alone the spawning of the last set item.
-      // We would probably have to register the influence
-      // vector as a member variable instead of smthg
-      // that is only passed to the `StepInfo` (see the
-      // `step` function of the `World`).
-      log("Should detect element 0", utils::Level::Error);
-    }
-
     return ic;
   }
 

@@ -2,6 +2,8 @@
 # define   WORLD_HXX
 
 # include "World.hh"
+# include "blocks/BlockFactory.hh"
+# include "effects/PheromonFactory.hh"
 
 namespace new_frontiers {
 
@@ -24,6 +26,36 @@ namespace new_frontiers {
   LocatorShPtr
   World::locator() const noexcept {
     return m_loc;
+  }
+
+  inline
+  void
+  World::setDepositProps(const Deposit::DProps& props) {
+    m_actions.deposit = props;
+    m_actions.type = ActionType::Block;
+  }
+
+  inline
+  void
+  World::setPheromonProps(const Pheromon::PProps& props) {
+    m_actions.pheromon = props;
+    m_actions.type = ActionType::VFX;
+  }
+
+  inline
+  void
+  World::initializeActions() {
+    // Deposit properties.
+    m_actions.deposit = BlockFactory::newDepositProps(0.0f, 0.0f);
+
+    // Pheromon properties.
+    m_actions.pheromon = PheromonFactory::newPheromonProps(0.0f, 0.0f, tiles::Fire);
+    m_actions.pheromon.type = pheromon::Type::Collect;
+
+    m_actions.pheromon.radius = 0.5f;
+
+    // By default no action is selected.
+    m_actions.type = ActionType::None;
   }
 
   inline

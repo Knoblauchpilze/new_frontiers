@@ -92,7 +92,10 @@ namespace new_frontiers {
     m_entities(),
     m_vfx(),
 
-    m_loc(nullptr)
+    m_loc(nullptr),
+
+    m_actions(),
+    m_influences()
   {
     setService("world");
 
@@ -104,6 +107,7 @@ namespace new_frontiers {
       );
     }
 
+    initializeActions();
     generate();
   }
 
@@ -121,11 +125,15 @@ namespace new_frontiers {
     m_entities(),
     m_vfx(),
 
-    m_loc(nullptr)
+    m_loc(nullptr),
+
+    m_actions(),
+    m_influences()
   {
     // Check dimensions.
     setService("world");
 
+    initializeActions();
     loadFromFile(file);
   }
 
@@ -142,7 +150,7 @@ namespace new_frontiers {
 
       m_rng,
 
-      std::vector<InfluenceShPtr>(),
+      m_influences,
 
       now(),
       tDelta,
@@ -171,7 +179,7 @@ namespace new_frontiers {
     }
 
     // Process influences.
-    processInfluences(si.influences);
+    processInfluences();
   }
 
   void
@@ -217,6 +225,51 @@ namespace new_frontiers {
   }
 
   void
+  World::performAction(float x, float y) {
+    // Create an influence based on the type of action
+    // currently selected for this world. In case no
+    // action is yet defined, nothing will happen.
+    // The first verification is to make sure that the
+    // coordinates are actually within the boundaries
+    // of the world.
+    if (x < 0.0f || x >= m_w || y < 0.0f || y >= m_h) {
+      return;
+    }
+
+    switch (m_actions.type) {
+      case ActionType::Block:
+        m_actions.deposit.tile.x = x;
+        m_actions.deposit.tile.y = y;
+
+        m_influences.push_back(
+          std::make_shared<Influence>(
+            influence::Type::BlockSpawn,
+            BlockFactory::newDeposit(m_actions.deposit)
+          )
+        );
+        break;
+      case ActionType::VFX:
+        m_actions.pheromon.tile.x = x;
+        m_actions.pheromon.tile.y = y;
+
+        m_influences.push_back(
+          std::make_shared<Influence>(
+            influence::Type::VFXSpawn,
+            PheromonFactory::newPheromon(m_actions.pheromon)
+          )
+        );
+        break;
+      case ActionType::Entity:
+        // TODO: Implement this.
+      case ActionType::None:
+        // Nothing to do if no action type is selected.
+        log("Not implemented or nothing to do");
+      default:
+        break;
+    }
+  }
+
+  void
   World::generateElements() {
     // Generate the colonies.
     Colony::Props c = ColonyFactory::newColonyProps(1.0f, 4.0f, utils::Uuid::create());
@@ -246,12 +299,12 @@ namespace new_frontiers {
   }
 
   void
-  World::processInfluences(const std::vector<InfluenceShPtr>& influences) {
+  World::processInfluences() {
     // Process each influence.
     std::size_t bCount = m_blocks.size();
 
-    for (unsigned id = 0; id < influences.size() ; ++id) {
-      InfluenceShPtr i = influences[id];
+    for (unsigned id = 0; id < m_influences.size() ; ++id) {
+      InfluenceShPtr i = m_influences[id];
 
       switch (i->getType()) {
         case influence::Type::BlockSpawn:
@@ -310,6 +363,10 @@ namespace new_frontiers {
     if (m_blocks.size() != bCount) {
       m_loc->refresh();
     }
+
+    // Clear the list of influences as all of them
+    // have been processed.
+    m_influences.clear();
   }
 
   void
