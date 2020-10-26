@@ -171,14 +171,18 @@ namespace new_frontiers {
       return res;
     }
 
-    // This menu is now highlighted.
+    // This menu is now highlighted. We also set
+    // the return value to indicate that this
+    // event was indeed relevant.
     m_state.highlighted = true;
+    res.relevant = true;
 
     // In case the user clicks on the menu, we need
     // to trigger the corresponding handler.
     if (click) {
       onClick(actions);
       m_state.selected = true;
+      res.selected = true;
     }
 
     return res;
