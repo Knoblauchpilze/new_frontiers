@@ -29,6 +29,7 @@ namespace new_frontiers {
     pp.tile.id = m_vVariant;
 
     pp.radius = 0.5f;
+    pp.type = pheromon::Type::Collect;
 
     w.setPheromonProps(pp);
   }
