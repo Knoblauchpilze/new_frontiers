@@ -8,12 +8,10 @@ namespace new_frontiers {
 
   inline
   BlockAction::BlockAction(const action::Type& type,
-                           const tiles::Block& block,
-                           int variant):
+                           BlockPropsShPtr block):
     Action(type, "block_action"),
 
-    m_block(block),
-    m_bVariant(variant)
+    m_block(block)
   {}
 
   inline
@@ -22,14 +20,7 @@ namespace new_frontiers {
   inline
   void
   BlockAction::apply(World& w) const {
-    // Create the properties based on the internal block
-    // description and register that as the next action
-    // for the world.
-    Deposit::DProps pp = BlockFactory::newDepositProps(0.0f, 0.0f);
-    pp.tile.type = m_block;
-    pp.tile.id = m_bVariant;
-
-    w.setDepositProps(pp);
+    w.setBlockProps(m_block);
   }
 
 }

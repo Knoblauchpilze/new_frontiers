@@ -14,13 +14,10 @@ namespace new_frontiers {
        *          modification of a VFX. Typical use cases are
        *          spawning or removing an VFX from the world.
        * @param type - the type of this action.
-       * @param vfx - the tile of the VFX this action is
-       *                related to.
-       * @param variant - the variant of the VFX.
+       * @param vfx - the vfx attached to this action.
        */
       VFXAction(const action::Type& type,
-                const tiles::Effect& vfx,
-                int variant = 0);
+                VFXPropsShPtr vfx);
 
       /**
        * @brief - Desctruction of the object.
@@ -40,15 +37,10 @@ namespace new_frontiers {
     private:
 
       /**
-       * @brief - The tile of the VFX attached to this action.
-       */
-      tiles::Effect m_vfx;
-
-      /**
-       * @brief - The variant of the VFX attached to this
+       * @brief - The description of the vfx attached to this
        *          action.
        */
-      int m_vVariant;
+      VFXPropsShPtr m_vfx;
   };
 
   using VFXActionShPtr = std::shared_ptr<VFXAction>;

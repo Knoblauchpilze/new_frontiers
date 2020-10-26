@@ -15,13 +15,10 @@ namespace new_frontiers {
        *          include spawning or removing an entity from
        *          the world.
        * @param type - the type of this action.
-       * @param ent - the tile of the entity this action is
-       *                related to.
-       * @param variant - the variant of the entity.
+       * @param ent - the entity attached to this action.
        */
       EntityAction(const action::Type& type,
-                   const tiles::Entity& ent,
-                   int variant = 0);
+                   EntityPropsShPtr ent);
 
       /**
        * @brief - Desctruction of the object.
@@ -41,15 +38,10 @@ namespace new_frontiers {
     private:
 
       /**
-       * @brief - The tile of the entity attached to this action.
-       */
-      tiles::Entity m_entity;
-
-      /**
-       * @brief - The variant of the entity attached to this
+       * @brief - The description of the entity attached to this
        *          action.
        */
-      int m_eVariant;
+      EntityPropsShPtr m_entity;
   };
 
   using EntityActionShPtr = std::shared_ptr<EntityAction>;

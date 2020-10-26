@@ -13,6 +13,9 @@ namespace new_frontiers {
   }
 
   inline
+  Entity::Props::~Props() {}
+
+  inline
   const State&
   Entity::getState() const noexcept {
     return m_state;
@@ -51,11 +54,7 @@ namespace new_frontiers {
   inline
   PheromonShPtr
   Entity::spawnPheromon(const pheromon::Type& type) const noexcept {
-    Pheromon::PProps pp = PheromonFactory::newPheromonProps(
-      m_tile.x,
-      m_tile.y,
-      PheromonFactory::pheromonToVFX(type)
-    );
+    Pheromon::PProps pp = PheromonFactory::newPheromonProps(m_tile.x, m_tile.y, type);
 
     pp.radius = getRadius();
     pp.type = type;

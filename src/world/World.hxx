@@ -30,29 +30,60 @@ namespace new_frontiers {
 
   inline
   void
-  World::setDepositProps(const Deposit::DProps& props) {
-    m_actions.deposit = props;
+  World::setBlockProps(BlockPropsShPtr props) {
+    m_actions.block = props;
     m_actions.type = ActionType::Block;
+
+    // Consistency check.
+    if (m_actions.block == nullptr) {
+      log("Assigned invalid null block action", utils::Level::Warning);
+      m_actions.type = ActionType::None;
+    }
   }
 
   inline
   void
-  World::setPheromonProps(const Pheromon::PProps& props) {
-    m_actions.pheromon = props;
+  World::setEntityProps(EntityPropsShPtr props) {
+    m_actions.ent = props;
+    m_actions.type = ActionType::Entity;
+
+    // Consistency check.
+    if (m_actions.ent == nullptr) {
+      log("Assigned invalid null entity action", utils::Level::Warning);
+      m_actions.type = ActionType::None;
+    }
+  }
+
+  inline
+  void
+  World::setVFXProps(VFXPropsShPtr props) {
+    m_actions.vfx = props;
     m_actions.type = ActionType::VFX;
+
+    // Consistency check.
+    if (m_actions.vfx == nullptr) {
+      log("Assigned invalid null vfx action", utils::Level::Warning);
+      m_actions.type = ActionType::None;
+    }
+
+    if (m_actions.type != ActionType::None) {
+      Pheromon::PProps* pp = dynamic_cast<Pheromon::PProps*>(m_actions.vfx.get());
+      if (pp == nullptr) {
+        log("Unhandled vfx action which is not a pheromon", utils::Level::Error);
+
+        m_actions.vfx = nullptr;
+        m_actions.type = ActionType::None;
+      }
+    }
   }
 
   inline
   void
   World::initializeActions() {
-    // Deposit properties.
-    m_actions.deposit = BlockFactory::newDepositProps(0.0f, 0.0f);
-
-    // Pheromon properties.
-    m_actions.pheromon = PheromonFactory::newPheromonProps(0.0f, 0.0f, tiles::Fire);
-    m_actions.pheromon.type = pheromon::Type::Collect;
-
-    m_actions.pheromon.radius = 0.5f;
+    // Initialize empty actions.
+    m_actions.block = nullptr;
+    m_actions.vfx = nullptr;
+    m_actions.ent = nullptr;
 
     // By default no action is selected.
     m_actions.type = ActionType::None;

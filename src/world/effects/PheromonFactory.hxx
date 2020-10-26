@@ -50,10 +50,10 @@ namespace new_frontiers {
 
   inline
   Pheromon::PProps
-  PheromonFactory::newPheromonProps(float x, float y, const tiles::Effect& vfx) noexcept {
+  PheromonFactory::newPheromonProps(float x, float y, const pheromon::Type& type) noexcept {
     Pheromon::PProps pp;
 
-    pp.tile = newTile(vfx, 0, x, y);
+    pp.tile = newTile(pheromonToVFX(type), 0, x, y);
     pp.radius = sk_radius;
 
     pp.amount = 1.0f;
@@ -62,7 +62,7 @@ namespace new_frontiers {
 
     pp.evaporation = 0.02f;
 
-    pp.type = pheromon::Type::Wander;
+    pp.type = type;
 
     return pp;
   }

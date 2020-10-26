@@ -6,6 +6,9 @@
 namespace new_frontiers {
 
   inline
+  Block::Props::~Props() {}
+
+  inline
   void
   Block::step(StepInfo& /*info*/) {
     // Nothing to do.

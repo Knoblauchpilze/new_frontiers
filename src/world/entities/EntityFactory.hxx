@@ -113,6 +113,35 @@ namespace new_frontiers {
   }
 
   inline
+  EntityShPtr
+  EntityFactory::newEntityFromProps(const Entity::Props& props) noexcept {
+    // Attempt to convert the input properties into
+    // known types. Note that we should perform the
+    // most derived types first otherwise we won't
+    // be able to get the most precise match.
+    const Entity::Props* pp = &props;
+
+    const Warrior::WProps* wp = dynamic_cast<const Warrior::WProps*>(pp);
+    if (wp != nullptr) {
+      return std::make_shared<Warrior>(*wp);
+    }
+
+    const Player::PProps* plp = dynamic_cast<const Player::PProps*>(pp);
+    if (plp != nullptr) {
+      return std::make_shared<Player>(*plp);
+    }
+
+    const Mob::MProps* mp = dynamic_cast<const Mob::MProps*>(pp);
+    if (mp != nullptr) {
+      return std::make_shared<Worker>(*mp);
+    }
+
+    // Can't interpret the props, return an invalid
+    // pointer to an entity.
+    return nullptr;
+  }
+
+  inline
   EntityTile
   EntityFactory::newTile(const tiles::Entity& e, int id, float x, float y) noexcept {
     return EntityTile{x, y, e, id};

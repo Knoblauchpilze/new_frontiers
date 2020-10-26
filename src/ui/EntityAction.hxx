@@ -7,12 +7,10 @@ namespace new_frontiers {
 
   inline
   EntityAction::EntityAction(const action::Type& type,
-                             const tiles::Entity& ent,
-                             int variant):
+                             EntityPropsShPtr ent):
     Action(type, "entity_action"),
 
-    m_entity(ent),
-    m_eVariant(variant)
+    m_entity(ent)
   {}
 
   inline
@@ -20,9 +18,8 @@ namespace new_frontiers {
 
   inline
   void
-  EntityAction::apply(World& /*w*/) const {
-    // TODO: Implement this.
-    log("Should perform entity action", utils::Level::Error);
+  EntityAction::apply(World& w) const {
+    w.setEntityProps(m_entity);
   }
 
 }

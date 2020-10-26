@@ -57,6 +57,13 @@ namespace new_frontiers {
         float pathLength;
 
         utils::Uuid owner;
+
+        /**
+         * @brief - Used to make the compiler consider this
+         *          structure as polymorphic and thus allow
+         *          dynamic_cast operator on derived elems.
+         */
+        virtual ~Props();
       };
 
       /**
@@ -252,6 +259,7 @@ namespace new_frontiers {
   };
 
   using EntityShPtr = std::shared_ptr<Entity>;
+  using EntityPropsShPtr = std::shared_ptr<Entity::Props>;
 }
 
 # include "Entity.hxx"

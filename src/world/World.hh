@@ -99,22 +99,31 @@ namespace new_frontiers {
 
       /**
        * @brief - Used to assign a new value for the properties
-       *          of a deposit to create as an action. This will
+       *          of a block to create as an action. This will
        *          be used in the following calls when a new game
        *          elements need to be created.
-       * @param props - the properties of the deposit to create.
+       * @param props - the properties of the block to create.
        */
       void
-      setDepositProps(const Deposit::DProps& props);
+      setBlockProps(BlockPropsShPtr props);
 
       /**
-       * @brief - Very similar to `setDepositProps` but defines
-       *          the properties to use when spawning a pheromon.
+       * @brief - Very similar to `setBlockProps` but defines the
+       *          properties to use when spawning an entity.
        * @param props - the properties to use when spawning a new
-       *                pheromon.
+       *                entity.
        */
       void
-      setPheromonProps(const Pheromon::PProps& props);
+      setEntityProps(EntityPropsShPtr props);
+
+      /**
+       * @brief - Very similar to `setBlockProps` but defines the
+       *          properties to use when spawning a vfx.
+       * @param props - the properties to use when spawning a new
+       *                vfx.
+       */
+      void
+      setVFXProps(VFXPropsShPtr props);
 
       /**
        * @brief - Used to perform the next action at the position
@@ -218,8 +227,9 @@ namespace new_frontiers {
        *          from the UI.
        */
       struct Actions {
-        Deposit::DProps deposit;
-        Pheromon::PProps pheromon;
+        BlockPropsShPtr block;
+        EntityPropsShPtr ent;
+        VFXPropsShPtr vfx;
 
         ActionType type;
       };
