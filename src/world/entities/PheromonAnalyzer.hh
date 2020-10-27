@@ -72,7 +72,7 @@ namespace new_frontiers {
       computeTarget(float& x, float& y);
 
     private:
-    
+
       /**
        * @brief - Convenience structure allowing to represent
        *          the known information about a pheromon. We

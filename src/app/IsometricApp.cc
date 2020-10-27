@@ -267,9 +267,9 @@ namespace new_frontiers {
     // Draw the colonies. We first need to draw the
     // transparent background and then draw each
     // colony's information.
-    olc::vi2d s;
     int cOffset = 3;
     int icOffset = 2;
+    olc::vi2d s(0.0f, cOffset);
     olc::Pixel bg(255, 255, 255, ALPHA_SEMI_OPAQUE);
     int tpSize = 20;
 
@@ -279,24 +279,33 @@ namespace new_frontiers {
 
       olc::vi2d idFocus = GetTextSize(world::focusToString(c.focus));
 
-      s.x = std::max(s.x, idS.x + icOffset + tpSize + icOffset + idFocus.x);
+      s.x = std::max(s.x, icOffset + idS.x + icOffset + tpSize + icOffset + idFocus.x + icOffset);
       s.y += (idS.y + cOffset);
     }
 
+    // Draw the general background as semi opaque.
     FillRectDecal(olc::vf2d(), s, bg);
 
-    olc::vf2d p;
+    olc::vf2d p(icOffset, cOffset);
     for (int id = 0 ; id < res.loc->coloniesCount() ; ++id) {
       world::Colony c = res.loc->colony(id);
 
-      // Draw the colony's identifier.
-      DrawStringDecal(p, c.id.toString());
-
       olc::vi2d idS = GetTextSize(c.id.toString());
+
+      // Override the background with a different
+      // opacity based on whether the colony is
+      // active.
+      if (c.active) {
+        olc::Pixel uc = (c.active ? olc::Pixel(bg.r, bg.g, bg.b, ALPHA_OPAQUE) : bg);
+        FillRectDecal(olc::vf2d(0.0f, p.y - cOffset / 2.0f), olc::vf2d(s.x, idS.y + cOffset), uc);
+      }
+
+      // Draw the colony's identifier.
+      DrawStringDecal(p, c.id.toString(), (c.active ? olc::BLACK : olc::WHITE));
 
       // Draw the bar corresponding to the resource
       // budget.
-      olc::vf2d tp(idS.x + icOffset, p.y);
+      olc::vf2d tp(icOffset + idS.x + icOffset, p.y);
       olc::Pixel tint = redToGreenGradient(c.ratio, ALPHA_OPAQUE);
       olc::Pixel emptyTint(
         static_cast<int>(tint.r * 0.5f),
@@ -314,7 +323,7 @@ namespace new_frontiers {
 
       // Draw the current focus of this colony rendered
       // as a string.
-      olc::vf2d tf(idS.x + tpSize + icOffset, p.y);
+      olc::vf2d tf(icOffset + idS.x + tpSize + icOffset, p.y);
       olc::Pixel fTint = olc::WHITE;
       switch (c.focus) {
         case colony::Priority::Consolidation:
