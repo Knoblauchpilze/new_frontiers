@@ -83,6 +83,8 @@ namespace new_frontiers {
       utils::Uuid id;
       colony::Priority focus;
       float ratio;
+
+      bool active;
     };
 
     /**

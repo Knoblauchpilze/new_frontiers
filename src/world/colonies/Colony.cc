@@ -20,7 +20,9 @@ namespace new_frontiers {
 
     m_radius(props.radius),
     m_maxSize(props.maxSize),
-    m_size(0)
+    m_size(0),
+
+    m_active(false)
   {
     setService("colony");
 

@@ -241,6 +241,8 @@ namespace new_frontiers {
         m_actions.block->tile.x = x;
         m_actions.block->tile.y = y;
 
+        m_actions.block->owner = m_actions.owner;
+
         m_influences.push_back(
           std::make_shared<Influence>(
             influence::Type::BlockSpawn,
@@ -252,6 +254,8 @@ namespace new_frontiers {
         m_actions.vfx->tile.x = x;
         m_actions.vfx->tile.y = y;
 
+        m_actions.vfx->owner = m_actions.owner;
+
         m_influences.push_back(
           std::make_shared<Influence>(
             influence::Type::VFXSpawn,
@@ -262,6 +266,8 @@ namespace new_frontiers {
       case ActionType::Entity:
         m_actions.ent->tile.x = x;
         m_actions.ent->tile.y = y;
+
+        m_actions.ent->owner = m_actions.owner;
 
         m_influences.push_back(
           std::make_shared<Influence>(

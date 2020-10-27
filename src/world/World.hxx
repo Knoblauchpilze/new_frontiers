@@ -79,6 +79,45 @@ namespace new_frontiers {
 
   inline
   void
+  World::switchToNextOwner() {
+    // In case no owner is yet defined, pick
+    // the first one (if possible).
+    if (m_colonies.empty()) {
+      m_actions.owner.invalidate();
+    }
+
+    if (!m_actions.owner.valid()) {
+      m_actions.owner = m_colonies[0u]->getOwner();
+      m_colonies[0u]->setActive(true);
+      return;
+    }
+
+    unsigned id = 0u;
+    while (id < m_colonies.size() && m_colonies[id]->getOwner() != m_actions.owner) {
+      ++id;
+    }
+
+    // Check whether we could find out which
+    // colony is currently active.
+    if (id >= m_colonies.size()) {
+      log(
+        "Could not find colony corresponding to current active one " +
+        m_actions.owner.toString() + ", switching to first one",
+        utils::Level::Error
+      );
+
+      m_actions.owner = m_colonies[0u]->getOwner();
+      m_colonies[0u]->setActive(true);
+      return;
+    }
+
+    m_colonies[id]->setActive(false);
+    m_actions.owner = m_colonies[(id + 1u) % m_colonies.size()]->getOwner();
+    m_colonies[(id + 1u) % m_colonies.size()]->setActive(true);
+  }
+
+  inline
+  void
   World::initializeActions() {
     // Initialize empty actions.
     m_actions.block = nullptr;
@@ -87,6 +126,10 @@ namespace new_frontiers {
 
     // By default no action is selected.
     m_actions.type = ActionType::None;
+
+    // No owner of any of the items that
+    // can be spawned.
+    m_actions.owner.invalidate();
   }
 
   inline

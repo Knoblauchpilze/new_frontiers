@@ -126,6 +126,15 @@ namespace new_frontiers {
       setVFXProps(VFXPropsShPtr props);
 
       /**
+       * @brief - Request the world to switch to the next owner
+       *          available for actions. This usually means to
+       *          another colony. The ordering is not controlled
+       *          by external users.
+       */
+      void
+      switchToNextOwner();
+
+      /**
        * @brief - Used to perform the next action at the position
        *          specified by the input coordinates.
        * @param x - the abscissa of the position at which the action
@@ -232,6 +241,8 @@ namespace new_frontiers {
         VFXPropsShPtr vfx;
 
         ActionType type;
+
+        utils::Uuid owner;
       };
 
       /**

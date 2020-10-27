@@ -111,7 +111,8 @@ namespace new_frontiers {
     return world::Colony{
       c->getOwner(),
       c->getFocus(),
-      c->getActionRatio()
+      c->getActionRatio(),
+      c->isActive()
     };
   }
 

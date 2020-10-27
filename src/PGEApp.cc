@@ -143,6 +143,9 @@ namespace new_frontiers {
     b = GetKey(olc::SPACE);
     m_controls.keys[controls::keys::Space] = b.bPressed || b.bHeld;
 
+    b = GetKey(olc::TAB),
+    m_controls.tab = b.bReleased;
+
     auto analysis = [](const olc::HWButton& b) {
       if (b.bPressed) {
         return controls::ButtonState::Pressed;
