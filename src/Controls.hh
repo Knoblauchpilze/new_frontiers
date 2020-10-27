@@ -66,6 +66,8 @@ namespace new_frontiers {
 
       std::vector<bool> keys;
       std::vector<ButtonState> buttons;
+
+      bool tab;
     };
 
     /**

@@ -114,6 +114,25 @@ namespace new_frontiers {
       setFocus(const colony::Priority& focus);
 
       /**
+       * @brief - Return `true` if the colony is currently
+       *          active. The active status is a way to be
+       *          able to select a particular colony among
+       *          a list. It is mostly used to be able to
+       *          control the colony by external means and
+       *          recognize it as somehow activated.
+       * @return - `true` if the colony is set to active.
+       */
+      bool
+      isActive() const noexcept;
+
+      /**
+       * @brief - Define whether this colony is active.
+       * @param active - the active status for this colony.
+       */
+      void
+      setActive(bool active) noexcept;
+
+      /**
        * @brief - Implementation of the interface methdo to
        *          make this `Colony` evolve.
        * @param info - all the information about the current
@@ -254,6 +273,20 @@ namespace new_frontiers {
        *          to make sure that we don't grow too big.
        */
       int m_size;
+
+      /**
+       * @brief - A boolean indicating whether or not the colony
+       *          is considered active. Active colonies do not
+       *          have a particular behavior, it is more a way
+       *          to mark this colony so that external processes
+       *          can know that it should be treated differently.
+       *          This is typically used in a context where the
+       *          user can change the behavior of the colony if
+       *          needed (like changing the focus, gifting some
+       *          energy, etc.) in a list of colonies.
+       *          Any colony starts as inactive.
+       */
+      bool m_active;
   };
 
   using ColonyShPtr = std::shared_ptr<Colony>;

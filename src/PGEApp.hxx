@@ -50,6 +50,10 @@ namespace new_frontiers {
       m_world->performAction(tp.x + it.x, tp.y + it.y);
     }
 
+    if (m_controls.tab) {
+      m_world->switchToNextOwner();
+    }
+
     // Handle rendering: for each function
     // we will assign the draw target first
     // so that the function does not have
@@ -59,9 +63,9 @@ namespace new_frontiers {
     olc::Sprite* base = GetDrawTarget();
 
     RenderDesc res{
-      m_loc,
-      *m_cf,
-      m_menu
+      m_loc, // Locator
+      *m_cf, // Coordinate frame
+      m_menu // Game menu
     };
 
     SetDrawTarget(m_mLayer);

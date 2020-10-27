@@ -57,6 +57,18 @@ namespace new_frontiers {
   }
 
   inline
+  bool
+  Colony::isActive() const noexcept {
+    return m_active;
+  }
+
+  inline
+  void
+  Colony::setActive(bool active) noexcept {
+    m_active = active;
+  }
+
+  inline
   void
   Colony::step(StepInfo& info) {
     // Start by updating internal time depedent processes.
