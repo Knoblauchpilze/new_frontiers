@@ -159,11 +159,11 @@ namespace new_frontiers {
     y = e->getTile().y;
 
     // Update debug elements.
-    m_cPoints.clear();
-    m_cPoints.push_back(m_tile.x);
-    m_cPoints.push_back(m_tile.y);
-    m_cPoints.push_back(x);
-    m_cPoints.push_back(y);
+    m_path.cPoints.clear();
+    m_path.cPoints.push_back(m_tile.x);
+    m_path.cPoints.push_back(m_tile.y);
+    m_path.cPoints.push_back(x);
+    m_path.cPoints.push_back(y);
 
     return true;
   }
@@ -222,10 +222,10 @@ namespace new_frontiers {
     y = yRnd;
 
     // Update debug elements.
-    m_cPoints.clear();
-    m_cPoints.push_back(m_tile.x);
-    m_cPoints.push_back(m_tile.y);
-    m_cPoints.push_back(x);
-    m_cPoints.push_back(y);
+    m_path.cPoints.clear();
+    m_path.cPoints.push_back(m_tile.x);
+    m_path.cPoints.push_back(m_tile.y);
+    m_path.cPoints.push_back(x);
+    m_path.cPoints.push_back(y);
   }
 }

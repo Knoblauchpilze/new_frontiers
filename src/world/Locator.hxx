@@ -71,9 +71,7 @@ namespace new_frontiers {
       0.0f,
       0.0f,
       e->getState(),
-      e->getPathX(),
-      e->getPathY(),
-      e->m_cPoints
+      e->getPath()
     };
 
     MobShPtr m = std::dynamic_pointer_cast<Mob>(e);

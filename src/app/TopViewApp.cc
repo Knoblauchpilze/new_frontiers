@@ -300,11 +300,11 @@ namespace new_frontiers {
       world::Entity ed = res.loc->entity(ie.index);
 
       olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::UpperTopLeft);
-      olc::vf2d ttl = res.cf.tileCoordsToPixels(ed.xT, ed.yT, ed.radius, Cell::TopLeft);
+      olc::vf2d ttl = res.cf.tileCoordsToPixels(ed.path.segments.xT, ed.path.segments.yT, ed.radius, Cell::TopLeft);
       olc::vf2d tl = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::TopLeft);
 
-      for (unsigned id = 0u ; id < ed.cPoints.size() / 2u ; ++id) {
-        olc::vf2d p = res.cf.tileCoordsToPixels(ed.cPoints[2 * id], ed.cPoints[2 * id + 1], 1.0f, Cell::TopLeft);
+      for (unsigned id = 0u ; id < ed.path.cPoints.size() / 2u ; ++id) {
+        olc::vf2d p = res.cf.tileCoordsToPixels(ed.path.cPoints[2 * id], ed.path.cPoints[2 * id + 1], 1.0f, Cell::TopLeft);
         FillCircle(p, 3, olc::CYAN);
       }
 

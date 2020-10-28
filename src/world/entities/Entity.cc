@@ -20,20 +20,18 @@ namespace new_frontiers {
       false  // Exhausted.
     },
 
-    m_passed(),
-
-    m_cPoints()
+    m_passed()
   {
     // Assign the path with initial position
     // of the entity.
-    m_path.xO = m_tile.x;
-    m_path.yO = m_tile.y;
+    m_path.segments.xO = m_tile.x;
+    m_path.segments.yO = m_tile.y;
 
-    m_path.xT = m_tile.x;
-    m_path.yT = m_tile.y;
+    m_path.segments.xT = m_tile.x;
+    m_path.segments.yT = m_tile.y;
 
-    m_path.xD = 0.0f;
-    m_path.yD = 0.0f;
+    m_path.segments.xD = 0.0f;
+    m_path.segments.yD = 0.0f;
   }
 
   void
@@ -66,8 +64,8 @@ namespace new_frontiers {
       // last frame, we know the speed of
       // the entity, we can determine the
       // new position.
-      m_tile.x += info.elapsed * m_speed * m_path.xD;
-      m_tile.y += info.elapsed * m_speed * m_path.yD;
+      m_tile.x += info.elapsed * m_speed * m_path.segments.xD;
+      m_tile.y += info.elapsed * m_speed * m_path.segments.yD;
     }
 
     // Perform post step operations.
@@ -76,7 +74,7 @@ namespace new_frontiers {
 
   bool
   Entity::isEnRoute() const noexcept {
-    float dToT = distance::d(m_path.xT, m_path.yT, m_tile.x, m_tile.y);
+    float dToT = distance::d(m_path.segments.xT, m_path.segments.yT, m_tile.x, m_tile.y);
     return dToT > m_rArrival;
   }
 
@@ -102,13 +100,13 @@ namespace new_frontiers {
     float d = 1.0f;
     normalizePath(info, xDir, yDir, d);
 
-    m_path.xO = m_tile.x;
-    m_path.yO = m_tile.y;
-    m_path.xT = m_path.xO + d * xDir;
-    m_path.yT = m_path.yO + d * yDir;
+    m_path.segments.xO = m_tile.x;
+    m_path.segments.yO = m_tile.y;
+    m_path.segments.xT = m_path.segments.xO + d * xDir;
+    m_path.segments.yT = m_path.segments.yO + d * yDir;
 
-    m_path.xD = xDir;
-    m_path.yD = yDir;
+    m_path.segments.xD = xDir;
+    m_path.segments.yD = yDir;
   }
 
 }
