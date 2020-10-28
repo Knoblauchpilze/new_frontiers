@@ -7,12 +7,6 @@
 namespace new_frontiers {
 
   inline
-  float
-  PathSegment::length() const noexcept {
-    return std::sqrt((xT - xO) * (xT - xO) + (yT - yO) * (yT - yO));
-  }
-
-  inline
   Entity::Props::~Props() {}
 
   inline
@@ -28,15 +22,9 @@ namespace new_frontiers {
   }
 
   inline
-  float
-  Entity::getPathX() const noexcept {
-    return (isEnRoute() ? m_path.xT : m_tile.x);
-  }
-
-  inline
-  float
-  Entity::getPathY() const noexcept {
-    return (isEnRoute() ? m_path.yT : m_tile.y);
+  path::Path
+  Entity::getPath() const noexcept {
+    return m_path;
   }
 
   inline

@@ -5,27 +5,9 @@
 # include "Element.hh"
 # include "../effects/Pheromon.hh"
 # include "TimeUtils.hh"
+# include "Path.hh"
 
 namespace new_frontiers {
-
-  /**
-   * @brief - Convenience structure defining a path segment with
-   *          its endpoints, a starting and a direction to easily
-   *          make entities following the path move.
-   */
-  struct PathSegment {
-    float xO, yO;
-    float xT, yT;
-
-    float xD, yD;
-
-    /**
-     * @brief - Computes the length of this path in cells.
-     * @return - the length of the path in cells.
-     */
-    float
-    length() const noexcept;
-  };
 
   /**
    * @brief - Describes the state of this entity: general
@@ -97,22 +79,11 @@ namespace new_frontiers {
       getPerceptionRadius() const noexcept;
 
       /**
-       * @brief - Returns the target abscissa of the path segment
-       *          currently being traversed by the entity. In case
-       *          no path is defined the entity's current position
-       *          is returned.
-       * @return - the abscissa of the current path segment.
+       * @brief - Returns the current path followed by the entity.
+       * @return - the current path followed by the entity.
        */
-      float
-      getPathX() const noexcept;
-
-      /**
-       * @brief - Similar to the `getPathX` but return the ordinate
-       *          of the current path segment.
-       * @return - the ordinate of the path segment.
-       */
-      float
-      getPathY() const noexcept;
+      path::Path
+      getPath() const noexcept;
 
       /**
        * @brief - Return `true` in case this entity is already on
@@ -239,7 +210,7 @@ namespace new_frontiers {
       /**
        * @brief - The current path followed by this entity.
        */
-      PathSegment m_path;
+      path::Path m_path;
 
       /**
        * @brief - The current state of the entity.
@@ -253,9 +224,6 @@ namespace new_frontiers {
        *          restore it when a resume occurs.
        */
       Duration m_passed;
-
-    public:
-      std::vector<float> m_cPoints;
   };
 
   using EntityShPtr = std::shared_ptr<Entity>;

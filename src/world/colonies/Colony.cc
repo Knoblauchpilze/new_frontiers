@@ -93,6 +93,10 @@ namespace new_frontiers {
         break;
     }
 
+    pp.refill = 0.0f;
+    pp.threshold *= 2.0f;
+    pp.reserve = pp.threshold;
+
     // Spend the budget and create the spawner.
     m_budget -= m_actionCost;
     ++m_size;

@@ -75,7 +75,7 @@ namespace new_frontiers {
     );
 # endif
 
-    while (info.frustum->obstructed(m_tile.x, m_tile.y, xDir, yDir, r, m_cPoints)) {
+    while (info.frustum->obstructed(m_tile.x, m_tile.y, xDir, yDir, r, m_path.cPoints)) {
 # ifdef DEBUG
       log("Failed", utils::Level::Error);
 # endif

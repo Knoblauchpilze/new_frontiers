@@ -57,9 +57,7 @@ namespace new_frontiers {
       float carrying;
       float cargo;
       State state;
-      float xT;
-      float yT;
-      std::vector<float> cPoints;
+      path::Path path;
     };
 
     /**
