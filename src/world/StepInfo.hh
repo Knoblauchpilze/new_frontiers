@@ -52,6 +52,23 @@ namespace new_frontiers {
     void
     clampCoord(float& x, float& y) const noexcept;
 
+    /**
+     * @brief - Clamp the direction indicated by the input
+     *          values so that they describe a valid path
+     *          as expected by the world.
+     *          Note that we assume that the intial pos of
+     *          the path is valid.
+     * @param xS - the starting abscissa of the path.
+     * @param yS - the starting ordinate of the path.
+     * @param xD - the direction of the path in abscissa.
+     *             Will be updated.
+     * @param yD - the direction of the path in ordinate.
+     *             Will be updated.
+     * @param d - the length of the path.
+     */
+    void
+    clampPath(float xS, float yS, float& xD, float& yD, float& d) const noexcept;
+
     void
     spawnBlock(BlockShPtr e);
 

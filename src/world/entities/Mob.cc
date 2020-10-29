@@ -62,24 +62,7 @@ namespace new_frontiers {
 
     // Clamp these coordinates and update the direction
     // based on that.
-    // TODO: Move this in the `info` class ?
-    auto normalize = [this, &info](float& xD, float& yD, float& d) {
-      float xT = m_tile.x + xD * d;
-      float yT = m_tile.y + yD * d;
-
-      info.clampCoord(xT, yT);
-
-      xD = xT - m_tile.x;
-      yD = yT - m_tile.y;
-
-      d = distance::d(m_tile.x, m_tile.y, xT, yT);
-      if (d > 0.0001f) {
-        xD /= d;
-        yD /= d;
-      }
-    };
-
-    normalize(xDir, yDir, r);
+    info.clampPath(m_tile.x, m_tile.y, xDir, yDir, r);
 
 # ifdef DEBUG
     float xt = m_tile.x + r * xDir;
@@ -103,7 +86,7 @@ namespace new_frontiers {
       xDir = std::cos(theta);
       yDir = std::sin(theta);
 
-      normalize(xDir, yDir, r);
+      info.clampPath(m_tile.x, m_tile.y, xDir, yDir, r);
 
 # ifdef DEBUG
       xt = m_tile.x + r * xDir;
