@@ -13,7 +13,7 @@ namespace new_frontiers {
     m_rArrival(props.arrival),
     m_pathLength(props.pathLength),
 
-    m_path(),
+    m_path(path::newPath(m_tile.x, m_tile.y)),
 
     m_state{
       false, // Glowing.
@@ -22,16 +22,7 @@ namespace new_frontiers {
 
     m_passed()
   {
-    // Assign the path with initial position
-    // of the entity.
-    m_path.segments.xO = m_tile.x;
-    m_path.segments.yO = m_tile.y;
-
-    m_path.segments.xT = m_tile.x;
-    m_path.segments.yT = m_tile.y;
-
-    m_path.segments.xD = 0.0f;
-    m_path.segments.yD = 0.0f;
+    // Nothing to do.
   }
 
   void
@@ -39,17 +30,6 @@ namespace new_frontiers {
     // Prepare the entity for this step.
     prepareForStep(info);
 
-# ifdef DEBUG
-    if (!isEnRoute()) {
-      log(
-        "Reached o(" + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y) +
-        "), " + std::to_string(dToT) + " from t(" +
-        std::to_string(m_path.xT) + "x" + std::to_string(m_path.yT) + ") (r: " +
-        std::to_string(m_rArrival) + ")",
-        utils::Level::Debug
-      );
-    }
-# endif
     // Take an action using the behavior
     // function: this is called no matter
     // whether we already have a target.
@@ -99,14 +79,7 @@ namespace new_frontiers {
 
     float d = 1.0f;
     normalizePath(info, xDir, yDir, d);
-
-    m_path.segments.xO = m_tile.x;
-    m_path.segments.yO = m_tile.y;
-    m_path.segments.xT = m_path.segments.xO + d * xDir;
-    m_path.segments.yT = m_path.segments.yO + d * yDir;
-
-    m_path.segments.xD = xDir;
-    m_path.segments.yD = yDir;
+    m_path.segments = path::newSegment(m_tile.x, m_tile.y, xDir, yDir, d);
   }
 
 }
