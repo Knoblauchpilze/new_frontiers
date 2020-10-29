@@ -158,9 +158,6 @@ namespace new_frontiers {
     x = e->getTile().x;
     y = e->getTile().y;
 
-    // Update debug elements.
-    m_path.reset(m_tile.x, m_tile.y, x, y);
-
     return true;
   }
 
@@ -216,8 +213,5 @@ namespace new_frontiers {
 
     x = xRnd;
     y = yRnd;
-
-    // Update debug elements.
-    m_path.reset(m_tile.x, m_tile.y, x, y);
   }
 }

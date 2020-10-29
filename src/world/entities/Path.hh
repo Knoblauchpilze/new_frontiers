@@ -1,6 +1,8 @@
 #ifndef    PATH_HH
 # define   PATH_HH
 
+# include "StepInfo.hh"
+
 namespace new_frontiers {
   namespace path {
 
@@ -10,7 +12,7 @@ namespace new_frontiers {
      *          a direction.
      */
     struct Segment {
-      float xO, yO;
+      float xS, yS;
       float xT, yT;
 
       float xD, yD;
@@ -21,6 +23,16 @@ namespace new_frontiers {
        */
       float
       length() const noexcept;
+
+      /**
+       * @brief - Used to make sure that the starting and end
+       *          postion of this segment are consistent with
+       *          the dimensions of the world.
+       * @param info - information about the world into which
+       *               this segment is living.
+       */
+      void
+      normalize(const StepInfo& info);
     };
 
     /**
@@ -29,22 +41,43 @@ namespace new_frontiers {
      */
     struct Path {
       float xH, yH;
-      Segment segments;
+
+      float xC, yC;
+      int seg;
+
+      std::vector<Segment> segments;
 
       std::vector<float> cPoints;
 
       /**
-       * @brief - Reset the information defined in this path
-       *          to include a single segment going from the
-       *          starting position provided in input to the
-       *          end location.
-       * @param xS - the abscissa of the starting location.
-       * @param yS - the ordinate of the starting location.
-       * @param xT - the abscissa of the end location.
-       * @param yT - the ordinate of the end location.
+       * @brief - Used to determine whether this path is
+       *          valid. We consider a path valid if it
+       *          is composed of at least one segment.
+       * @return - `true` if this path is valid.
+       */
+      bool
+      valid() const noexcept;
+
+      /**
+       * @brief - Reset all information defined in this path
+       *          and assume the entity is starting from the
+       *          input position.
+       * @param x - the new current abscissa of the entity
+       *            following this path.
+       * @param y - the new current ordinate of the entity
+       *            following this path.
        */
       void
-      reset(float xS, float yS, float xT, float yT);
+      clear(float x, float y);
+
+      /**
+       * @brief - Add the specified passage point in the list
+       *          without changing it otherwise.
+       * @param x - the abscissa of the passage point to add.
+       * @param y - the ordinate of the passage point to add.
+       */
+      void
+      addPassagePoint(float x, float y);
 
       /**
        * @brief - Add a new segment to this path with the
@@ -90,6 +123,36 @@ namespace new_frontiers {
        */
       void
       add(float x, float y);
+
+      /**
+       * @brief - Determine whether the current position on
+       *          the path means that we arrived or not. It
+       *          is only precise if the user actually makes
+       *          the path-follower advance on the path by
+       *          calling `advance`.
+       * @param threshold - define the threshold below which
+       *                    the path-follower is considered
+       *                    to have arrived.
+       * @return - `true` in case the path-follower has not
+       *           arrived yet.
+       */
+      bool
+      enRoute(float threshold) const noexcept;
+
+      /**
+       * @brief - Used to advance on this path assuming the
+       *          path follower is moving at `speed` along
+       *          the path and that `elapsed` seconds have
+       *          passed since the last actualization.
+       * @param speed - the speef of the entity following
+       *                the path.
+       * @param elapsed - the duration elapsed since the
+       *                  last actualization in seconds.
+       * @param threshold - a threshold to consider that a
+       *                    path segment is finished.
+       */
+      void
+      advance(float speed, float elapsed, float threshold);
     };
 
     /**
@@ -107,6 +170,18 @@ namespace new_frontiers {
      */
     Segment
     newSegment(float x, float y, float xD, float yD, float d) noexcept;
+
+    /**
+     * @brief - Create a new segment from a starting location
+     *          and an end position.
+     * @param xS - the starting abscissa for this segment.
+     * @param yS - the starting ordinate for this segment.
+     * @param xT - the end abscissa for this segment.
+     * @param yT - the end ordinate for this segment.
+     * @return - the created path segment.
+     */
+    Segment
+    newSegment(float xS, float yS, float xT, float yT) noexcept;
 
     /**
      * @brief - Create a new path with the input position

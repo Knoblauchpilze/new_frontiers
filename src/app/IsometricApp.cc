@@ -386,15 +386,22 @@ namespace new_frontiers {
       world::Entity ed = res.loc->entity(ie.index);
 
       olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius);
-      olc::vf2d tcb = res.cf.tileCoordsToPixels(ed.path.segments.xT, ed.path.segments.yT, ed.radius);
-      olc::vf2d ul = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::UpperLeft);
 
-      for (unsigned id = 0u ; id < ed.path.cPoints.size() / 2u ; ++id) {
-        olc::vf2d p = res.cf.tileCoordsToPixels(ed.path.cPoints[2 * id], ed.path.cPoints[2 * id + 1], 1.0f);
-        FillCircle(p, 3, olc::CYAN);
+      // Draw the path of this entity if any.
+      if (ed.path.valid()) {
+        olc::vf2d tcb = res.cf.tileCoordsToPixels(ed.path.segments.back().xT, ed.path.segments.back().yT, ed.radius);
+
+        for (unsigned id = 0u ; id < ed.path.cPoints.size() / 2u ; ++id) {
+          olc::vf2d p = res.cf.tileCoordsToPixels(ed.path.cPoints[2 * id], ed.path.cPoints[2 * id + 1], 1.0f);
+          FillCircle(p, 3, olc::CYAN);
+        }
+
+        DrawLine(cb, tcb, olc::WHITE);
       }
 
-      DrawLine(cb, tcb, olc::WHITE);
+      // Draw the rectangle around the entity and its circle
+      // to represent its position.
+      olc::vf2d ul = res.cf.tileCoordsToPixels(ed.tile.x, ed.tile.y, ed.radius, Cell::UpperLeft);
       DrawRect(ul, ed.radius * res.cf.tileScale() * m_ss, olc::MAGENTA);
       FillCircle(cb, 5, olc::YELLOW);
 
