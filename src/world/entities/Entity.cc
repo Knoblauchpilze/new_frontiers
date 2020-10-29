@@ -39,23 +39,18 @@ namespace new_frontiers {
     choosePath(info);
 
     // Move along the path.
-    if (isEnRoute()) {
+    if (m_path.enRoute(m_rArrival)) {
       // We know the elapsed time since the
       // last frame, we know the speed of
       // the entity, we can determine the
       // new position.
-      m_tile.x += info.elapsed * m_speed * m_path.segments.xD;
-      m_tile.y += info.elapsed * m_speed * m_path.segments.yD;
+      m_path.advance(m_speed, info.elapsed, m_rArrival);
+      m_tile.x = m_path.xC;
+      m_tile.y = m_path.yC;
     }
 
     // Perform post step operations.
     postStep(info);
-  }
-
-  bool
-  Entity::isEnRoute() const noexcept {
-    float dToT = distance::d(m_path.segments.xT, m_path.segments.yT, m_tile.x, m_tile.y);
-    return dToT > m_rArrival;
   }
 
   void
@@ -74,12 +69,8 @@ namespace new_frontiers {
     // Build the path information from the location
     // that was picked: basically this means clamp
     // any invalid information.
-    float xDir = x - m_tile.x;
-    float yDir = y - m_tile.y;
-
-    float d = 1.0f;
-    normalizePath(info, xDir, yDir, d);
-    m_path.segments = path::newSegment(m_tile.x, m_tile.y, xDir, yDir, d);
+    m_path.clear(m_tile.x, m_tile.y);
+    m_path.add(x, y);
   }
 
 }

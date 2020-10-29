@@ -94,9 +94,6 @@ namespace new_frontiers {
     x = m_homeX;
     y = m_homeY;
 
-    // Update debug elements.
-    m_path.reset(m_tile.x, m_tile.y, x, y);
-
     return true;
   }
 
@@ -199,9 +196,6 @@ namespace new_frontiers {
     x = d->getTile().x + 0.5f;
     y = d->getTile().y + 0.5f;
 
-    // Update debug elements.
-    m_path.reset(m_tile.x, m_tile.y, x, y);
-
     return true;
   }
 
@@ -255,9 +249,6 @@ namespace new_frontiers {
 
     x = xRnd;
     y = yRnd;
-
-    // Update debug elements.
-    m_path.reset(m_tile.x, m_tile.y, x, y);
   }
 
 }

@@ -86,11 +86,10 @@ namespace new_frontiers {
       getPath() const noexcept;
 
       /**
-       * @brief - Return `true` in case this entity is already on
-       *          a path to reach a target. We assume that this is
-       *          the case if the distance to the target is larger
-       *          than the distance to arrival.
-       * @return - `true` if the entity is en route to a target.
+       * @brief - Convenience wrapper to determine whether this
+       *          entity is still en route on its current path.
+       * @return - `true` if the entity is still moving along
+       *           its path.
        */
       bool
       isEnRoute() const noexcept;
@@ -152,21 +151,6 @@ namespace new_frontiers {
        */
       virtual void
       postStep(StepInfo& info) = 0;
-
-      /**
-       * @brief - Used to make sure that the target of a path that
-       *          would be started at the current entity's position
-       *          and running `d` cells in the direction pointed at
-       *          by `xDir` and `yDir` would stay in admissible
-       *          bounds.
-       *          Input arguments will be modified directly.
-       * @param info - the information to use to clamp coordinates.
-       * @param xDir - the direction along the `x` axis.
-       * @param yDir - the direction along the `y` axis.
-       * @param d - the distance for this path.
-       */
-      void
-      normalizePath(const StepInfo& info, float& xDir, float& yDir, float& d) const noexcept;
 
     private:
 
