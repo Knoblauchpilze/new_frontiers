@@ -246,7 +246,6 @@ namespace new_frontiers {
     // to pick for this worker. The relative importance
     // of pheromons will be handled directly.
     pa.computeTarget(xRnd, yRnd);
-
     x = xRnd;
     y = yRnd;
   }
