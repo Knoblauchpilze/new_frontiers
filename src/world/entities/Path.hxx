@@ -70,6 +70,11 @@ namespace new_frontiers {
       Segment s = newSegment(x, y, xD, yD, d);
       segments.push_back(s);
       addPassagePoint(s.xT, s.yT);
+
+      // Make the entity on the first segment.
+      if (seg < 0) {
+        seg = 0;
+      }
     }
 
     inline
@@ -78,6 +83,11 @@ namespace new_frontiers {
       Segment s = newSegment(xS, yS, xT, yT);
       segments.push_back(s);
       addPassagePoint(s.xT, s.yT);
+
+      // Make the entity on the first segment.
+      if (seg < 0) {
+        seg = 0;
+      }
     }
 
     inline
@@ -137,25 +147,35 @@ namespace new_frontiers {
         traveled -= dToEofS;
         ++seg;
 
+        // In order to prepare for the advance of
+        // the segment, we will move to the start
+        // of the next segment (so the one pointed
+        // by `seg` now).
+        // This should usually correspond to the
+        // end of the previous segment but as it
+        // is not guaranteed, we will ensure it.
+        if (seg < ss) {
+          xC = segments[seg].xS;
+          yC = segments[seg].yS;
+        }
+
         // Initialize the distance to the end
         // of the path segment.
         dToEofS = distance::d(xC, yC, segments[seg].xT, segments[seg].yT);
       }
 
       // See whether we reached the end of the
-      // path: if this is the case we will set
-      // the position to equal the end of the
-      // path, otherwise we will move what is
-      // missing on the current path segment.
+      // path: if this is the case, the previous
+      // algo ensured we were already at the end
+      // of the path so we don't have nothing
+      // else to do.
       if (seg == ss) {
-        xC = segments[ss - 1].xT;
-        yC = segments[ss - 1].yT;
-
         return;
       }
 
-      xC = segments[seg].xS + dToEofS * segments[seg].xD;
-      yC = segments[seg].yS + dToEofS * segments[seg].yD;
+      // Advance on the path of the amount left.
+      xC += traveled * segments[seg].xD;
+      yC += traveled * segments[seg].yD;
     }
 
     inline
