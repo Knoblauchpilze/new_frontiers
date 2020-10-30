@@ -210,7 +210,7 @@ namespace new_frontiers {
     // We will need a random target so better compute
     // it right now.
     float xRnd = x, yRnd = y;
-    pickRandomTarget(info, xRnd, yRnd);
+    pickRandomTarget(info, m_tile.x, m_tile.y, xRnd, yRnd);
 
     // In case no pheromons are visible use the
     // default wandering behavior.

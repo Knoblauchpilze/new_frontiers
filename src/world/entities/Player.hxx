@@ -34,7 +34,7 @@ namespace new_frontiers {
 
   inline
   bool
-  Player::takeAction(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+  Player::takeAction(StepInfo& /*info*/, path::Path& /*path*/) {
     // Nothing to do.
     return false;
   }

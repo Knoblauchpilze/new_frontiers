@@ -116,12 +116,11 @@ namespace new_frontiers {
        *          the target for this mob. We will use behaviors
        *          defined for the entity to choose.
        * @param info - info to pick the target.
-       * @param x - the output abscissa of the chosen location.
-       * @param y - the output ordinate of the chosen location.
+       * @param path - the path to populate by this method.
        * @return - `true` if the mob took an action.
        */
       bool
-      takeAction(StepInfo& info, float& x, float& y) override;
+      takeAction(StepInfo& info, path::Path& path) override;
 
       /**
        * @brief - Implementation of the interface method to handle
@@ -164,14 +163,16 @@ namespace new_frontiers {
 
       /**
        * @brief - Interface method used to pick a random target
-       *          where we can draw an unobstructed path from
-       *          the current position of the entity.
+       *          from which an unobstructed path can be drawn
+       *          starting at the input position.
        * @param info - a random number generator.
+       * @param xS - the starting abscissa for the random target.
+       * @param yS - the starting ordinate for the random target.
        * @param x - the target abscissa of the mob.
        * @param y - the target ordinate of the mob.
        */
       void
-      pickRandomTarget(StepInfo& info, float& x, float& y) noexcept;
+      pickRandomTarget(StepInfo& info, float xS, float yS, float& x, float& y) noexcept;
 
     private:
 
