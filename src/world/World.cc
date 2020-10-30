@@ -309,7 +309,7 @@ namespace new_frontiers {
 
     // Generate the player at the same location
     // as the entry portal.
-    Player::PProps plp = EntityFactory::newPlayerProps(1.0f, 1.0f, tiles::Knight);
+    Player::PProps plp = EntityFactory::newPlayerProps(1.0f, 1.0f, tiles::Gorgone);
     m_entities.push_back(std::make_shared<Player>(plp));
   }
 
