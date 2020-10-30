@@ -34,15 +34,16 @@ namespace new_frontiers {
       world::Sort::Distance
     );
 
+    float x, y;
+
     if (entities.empty()) {
       // Couldn't find the entity we were chasing, get
       // back to wander behavior.
       log("Lost entity at " + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y));
 
       setBehavior(Behavior::Wander);
-      float x, y;
       pickTargetFromPheromon(info, x, y);
-      path.add(x, y);
+      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
       return true;
     }
@@ -54,7 +55,7 @@ namespace new_frontiers {
     // the entity: indeed the entity may be moving
     // so we want to accurately chase it.
     path.clear(m_tile.x, m_tile.y);
-    path.add(e->getTile().x, e->getTile().y);
+    generatePathTo(info, m_tile.x, m_tile.y, e->getTile().x, e->getTile().y, path);
 
     // In case we are close enough of the entity to
     // actually hit it, do so if we are able to.
@@ -73,9 +74,8 @@ namespace new_frontiers {
         info.removeEntity(e.get());
 
         setBehavior(Behavior::Wander);
-        float x, y;
         pickTargetFromPheromon(info, x, y);
-        path.add(x, y);
+        generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
         return true;
       }
@@ -94,6 +94,8 @@ namespace new_frontiers {
       return false;
     }
 
+    float x, y;
+
     // We have reached home, do nothing and wait for
     // new instructions. We need to make sure that
     // we are actually close to home (and that it did
@@ -108,9 +110,8 @@ namespace new_frontiers {
 
     if (ie.index < 0 || ie.type != world::ItemType::Block || b.tile.type != tiles::Portal) {
       setBehavior(Behavior::Wander);
-      float x, y;
       pickTargetFromPheromon(info, x, y);
-      path.add(x, y);
+      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
       return true;
     }
@@ -149,7 +150,7 @@ namespace new_frontiers {
 
       float x, y;
       pickTargetFromPheromon(info, x, y);
-      path.add(x, y);
+      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
       return true;
     }
@@ -163,7 +164,7 @@ namespace new_frontiers {
     // Assign the target to the closest entities:
     // as we requested the list to be sorted we
     // can pick the first one.
-    path.add(e->getTile().x, e->getTile().y);
+    generatePathTo(info, m_tile.x, m_tile.y, e->getTile().x, e->getTile().y, path);
 
     return true;
   }
