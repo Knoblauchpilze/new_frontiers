@@ -22,7 +22,7 @@ namespace new_frontiers {
   {}
 
   bool
-  Mob::takeAction(StepInfo& info, float& x, float& y) {
+  Mob::takeAction(StepInfo& info, path::Path& path) {
     // First, we need to update the behavior of the
     // entity: it is relevant because we just reached
     // the destination we previously picked.
@@ -38,15 +38,15 @@ namespace new_frontiers {
     // Set the output position to the picked target
     // if any has been chosen.
     if (t.actionTaken) {
-      x = t.xT;
-      y = t.yT;
+      m_path.clear(m_tile.x, m_tile.y);
+      path.add(t.xT, t.yT);
     }
 
     return t.actionTaken;
   }
 
   void
-  Mob::pickRandomTarget(StepInfo& info, float& x, float& y) noexcept {
+  Mob::pickRandomTarget(StepInfo& info, float xS, float yS, float& x, float& y) noexcept {
     // Pick a random location within the radius of the
     // motion for this entity. We will use the locator
     // to determine if any element is obstructing the
@@ -54,7 +54,7 @@ namespace new_frontiers {
     // We want at least a path of `m_speed` long so as
     // to have a traversal duration of at least 1ms.
     // we also take a bit of margin for good measure.
-    float r = info.rng.rndFloat(m_speed, m_pathLength);
+    float r = info.rng.rndFloat(m_pathLength / 2.0f, m_pathLength);
     float theta = info.rng.rndAngle();
 
     float xDir = std::cos(theta);
@@ -62,46 +62,52 @@ namespace new_frontiers {
 
     // Clamp these coordinates and update the direction
     // based on that.
-    info.clampPath(m_tile.x, m_tile.y, xDir, yDir, r);
+    info.clampPath(xS, yS, xDir, yDir, r);
 
-# ifdef DEBUG
-    float xt = m_tile.x + r * xDir;
-    float yt = m_tile.y + r * yDir;
-
-    log(
-      "Attempt o(" + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y) +
-      ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
-      utils::Level::Debug
-    );
-# endif
-
-    while (info.frustum->obstructed(m_tile.x, m_tile.y, xDir, yDir, r, m_path.cPoints)) {
-# ifdef DEBUG
-      log("Failed", utils::Level::Error);
-# endif
-
-      r = info.rng.rndFloat(m_speed, m_pathLength);
+    while (info.frustum->obstructed(xS, yS, xDir, yDir, r, m_path.cPoints)) {
+      r = info.rng.rndFloat(m_pathLength / 2.0f, m_pathLength);
       theta = info.rng.rndAngle();
 
       xDir = std::cos(theta);
       yDir = std::sin(theta);
 
-      info.clampPath(m_tile.x, m_tile.y, xDir, yDir, r);
-
-# ifdef DEBUG
-      xt = m_tile.x + r * xDir;
-      yt = m_tile.y + r * yDir;
-      log(
-        "Attempt o(" + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y) +
-        ") to t(" + std::to_string(xt) + "x" + std::to_string(yt) + ")",
-        utils::Level::Debug
-      );
-# endif
+      info.clampPath(xS, yS, xDir, yDir, r);
     }
 
     // Save the picked location.
-    x = m_tile.x + r * xDir;
-    y = m_tile.y + r * yDir;
+    x = xS + r * xDir;
+    y = yS + r * yDir;
+  }
+
+  Mob::Thought
+  Mob::behave(StepInfo& info) noexcept {
+    // Save the current behavior.
+    Behavior s = m_behavior;
+
+    Thought t{false, false, m_tile.x, m_tile.y};
+
+    switch (s) {
+      case Behavior::Chase:
+        t.actionTaken = chase(info, t.xT, t.yT);
+        break;
+      case Behavior::Fight:
+        t.actionTaken = fight(info, t.xT, t.yT);
+        break;
+      case Behavior::Collect:
+        t.actionTaken = collect(info, t.xT, t.yT);
+        break;
+      case Behavior::Return:
+        t.actionTaken = getBack(info, t.xT, t.yT);
+        break;
+      case Behavior::Wander:
+      default:
+        t.actionTaken = wander(info, t.xT, t.yT);
+        break;
+    }
+
+    t.behaviorChanged = (s != m_behavior);
+
+    return t;
   }
 
 }

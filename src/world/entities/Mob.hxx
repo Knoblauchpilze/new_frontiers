@@ -147,38 +147,6 @@ namespace new_frontiers {
     }
   }
 
-  inline
-  Mob::Thought
-  Mob::behave(StepInfo& info) noexcept {
-    // Save the current behavior.
-    Behavior s = m_behavior;
-
-    Thought t{false, false, m_tile.x, m_tile.y};
-
-    switch (s) {
-      case Behavior::Chase:
-        t.actionTaken = chase(info, t.xT, t.yT);
-        break;
-      case Behavior::Fight:
-        t.actionTaken = fight(info, t.xT, t.yT);
-        break;
-      case Behavior::Collect:
-        t.actionTaken = collect(info, t.xT, t.yT);
-        break;
-      case Behavior::Return:
-        t.actionTaken = getBack(info, t.xT, t.yT);
-        break;
-      case Behavior::Wander:
-      default:
-        t.actionTaken = wander(info, t.xT, t.yT);
-        break;
-    }
-
-    t.behaviorChanged = (s != m_behavior);
-
-    return t;
-  }
-
 }
 
 #endif    /* HOSTILE_MOB_HXX */

@@ -136,12 +136,14 @@ namespace new_frontiers {
        *          picking operation.
        * @param info - information about the world to help in the
        *               decision process.
-       * @param x - the output abscissa of the chosen coordinate.
-       * @param y - the output ordinate of the chosen coordinate.
+       * @param path - the path to populate with the action. Note
+       *               that this path is an input output argument
+       *               which is initialized with no segment and
+       *               the current position of the entity.
        * @return - `true` if an action was taken.
        */
       virtual bool
-      takeAction(StepInfo& info, float& x, float& y) = 0;
+      takeAction(StepInfo& info, path::Path& path) = 0;
 
       /**
        * @brief - Interface method called after the execution of

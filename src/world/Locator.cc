@@ -54,8 +54,6 @@ namespace new_frontiers {
     float xT = x + d * xDir;
     float yT = y + d * yDir;
 
-    cPoints.clear();
-
     int xo = static_cast<int>(x);
     int yo = static_cast<int>(y);
 

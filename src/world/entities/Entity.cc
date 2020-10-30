@@ -57,20 +57,7 @@ namespace new_frontiers {
   Entity::choosePath(StepInfo& info) {
     // Make the entity take an action: this will
     // provide a coordinate to go to.
-    float x = 0.0f, y = 0.0f;
-    bool anyIdea = takeAction(info, x, y);
-
-    // In case no action was chosen, nothing will
-    // happen.
-    if (!anyIdea) {
-      return;
-    }
-
-    // Build the path information from the location
-    // that was picked: basically this means clamp
-    // any invalid information.
-    m_path.clear(m_tile.x, m_tile.y);
-    m_path.add(x, y);
+    takeAction(info, m_path);
   }
 
 }

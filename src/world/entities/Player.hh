@@ -70,14 +70,11 @@ namespace new_frontiers {
        * @brief - Dummy implementation of the method as the player is
        *          controlled by the user and not automatically.
        * @param info - info to take the decision of the next target.
-       * @param x - output argument representing the abscissa of the
-       *            chosen location.
-       * @param y - output argument representing the ordinate of the
-       *            chosen location.
+       * @param path - the path to populate. Unused by this method.
        * @return - `true` if an action was taken.
        */
       bool
-      takeAction(StepInfo& info, float& x, float& y) override;
+      takeAction(StepInfo& info, path::Path& path) override;
 
       /**
        * @brief - Dummy implementation of the post step method.
