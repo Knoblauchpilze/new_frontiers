@@ -226,8 +226,8 @@ namespace new_frontiers {
 
       p.xC = x;
       p.yC = y;
-      p.seg = -1;
 
+      p.seg = -1;
       p.addPassagePoint(x, y);
 
       return p;

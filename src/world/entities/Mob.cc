@@ -26,7 +26,7 @@ namespace new_frontiers {
     // First, we need to update the behavior of the
     // entity: it is relevant because we just reached
     // the destination we previously picked.
-    Thought t = behave(info);
+    Thought t = behave(info, path);
 
     // Once this is done, we may need to emit a new
     // pheromon: this allow to make sure that we
@@ -38,8 +38,7 @@ namespace new_frontiers {
     // Set the output position to the picked target
     // if any has been chosen.
     if (t.actionTaken) {
-      m_path.clear(m_tile.x, m_tile.y);
-      path.add(t.xT, t.yT);
+      path = t.path;
     }
 
     return t.actionTaken;
@@ -80,28 +79,31 @@ namespace new_frontiers {
   }
 
   Mob::Thought
-  Mob::behave(StepInfo& info) noexcept {
+  Mob::behave(StepInfo& info, const path::Path& /*path*/) noexcept {
     // Save the current behavior.
     Behavior s = m_behavior;
 
-    Thought t{false, false, m_tile.x, m_tile.y};
+    Thought t;
+    t.behaviorChanged = false;
+    t.actionTaken = false;
+    t.path = path::newPath(m_tile.x, m_tile.y);
 
     switch (s) {
       case Behavior::Chase:
-        t.actionTaken = chase(info, t.xT, t.yT);
+        t.actionTaken = chase(info, t.path);
         break;
       case Behavior::Fight:
-        t.actionTaken = fight(info, t.xT, t.yT);
+        t.actionTaken = fight(info, t.path);
         break;
       case Behavior::Collect:
-        t.actionTaken = collect(info, t.xT, t.yT);
+        t.actionTaken = collect(info, t.path);
         break;
       case Behavior::Return:
-        t.actionTaken = getBack(info, t.xT, t.yT);
+        t.actionTaken = getBack(info, t.path);
         break;
       case Behavior::Wander:
       default:
-        t.actionTaken = wander(info, t.xT, t.yT);
+        t.actionTaken = wander(info, t.path);
         break;
     }
 
