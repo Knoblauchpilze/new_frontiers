@@ -29,6 +29,8 @@ namespace new_frontiers {
       return false;
     }
 
+    float x, y;
+
     // We have reached the deposit, attempt to pick
     // some resource and get back.
     BlockShPtr b = info.frustum->getClosest(
@@ -43,9 +45,8 @@ namespace new_frontiers {
       // For some reason the deposit does not exist,
       // return to wandering.
       setBehavior(Behavior::Wander);
-      float x, y;
       pickTargetFromPheromon(info, x, y);
-      path.add(x, y);
+      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
       return true;
     }
@@ -60,9 +61,8 @@ namespace new_frontiers {
       );
 
       setBehavior(Behavior::Wander);
-      float x, y;
       pickTargetFromPheromon(info, x, y);
-      path.add(x, y);
+      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
       return true;
     }
@@ -84,9 +84,8 @@ namespace new_frontiers {
       log("Deposit has been emptied while en route");
 
       setBehavior(Behavior::Wander);
-      float x, y;
       pickTargetFromPheromon(info, x, y);
-      path.add(x, y);
+      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
       return true;
     }
@@ -96,7 +95,7 @@ namespace new_frontiers {
 
     // And then return to the colony.
     setBehavior(Behavior::Return);
-    path.add(m_homeX, m_homeY);
+    generatePathTo(info, m_tile.x, m_tile.y, m_homeX, m_homeY, path);
 
     return true;
   }
@@ -115,6 +114,8 @@ namespace new_frontiers {
       return false;
     }
 
+    float x, y;
+
     // We have reached home, attempt to dump the
     // resource we're transporting and get back
     // to wandering.
@@ -125,9 +126,8 @@ namespace new_frontiers {
       // For some reason the home of the entity does
       // not exist, return to wandering.
       setBehavior(Behavior::Wander);
-      float x, y;
       pickTargetFromPheromon(info, x, y);
-      path.add(x, y);
+      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
       return true;
     }
@@ -145,9 +145,8 @@ namespace new_frontiers {
       );
 
       setBehavior(Behavior::Wander);
-      float x, y;
       pickTargetFromPheromon(info, x, y);
-      path.add(x, y);
+      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
       return true;
     }
@@ -160,9 +159,8 @@ namespace new_frontiers {
 
     // Re-wander again.
     setBehavior(Behavior::Wander);
-    float x, y;
     pickTargetFromPheromon(info, x, y);
-    path.add(x, y);
+    generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
     return true;
   }
@@ -194,7 +192,7 @@ namespace new_frontiers {
 
       float x, y;
       pickTargetFromPheromon(info, x, y);
-      path.add(x, y);
+      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
 
       return true;
     }
@@ -205,7 +203,7 @@ namespace new_frontiers {
     // Assign the target to the closest deposit:
     // as we requested the list to be sorted we
     // can pick the first one.
-    path.add(d->getTile().x + 0.5f, d->getTile().y + 0.5f);
+    generatePathTo(info, m_tile.x, m_tile.y, d->getTile().x + 0.5f, d->getTile().y + 0.5f, path);
 
     return true;
   }

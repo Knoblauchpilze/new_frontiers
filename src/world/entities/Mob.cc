@@ -78,6 +78,12 @@ namespace new_frontiers {
     y = yS + r * yDir;
   }
 
+  void
+  Mob::generatePathTo(StepInfo& /*info*/, float /*xS*/, float /*yS*/, float x, float y, path::Path& path) {
+    // TODO: Handle this.
+    path.add(x, y);
+  }
+
   Mob::Thought
   Mob::behave(StepInfo& info, const path::Path& /*path*/) noexcept {
     // Save the current behavior.
