@@ -28,13 +28,13 @@ namespace new_frontiers {
     protected:
 
       bool
-      chase(StepInfo& info, float& x, float& y) override;
+      chase(StepInfo& info, path::Path& path) override;
 
       bool
-      getBack(StepInfo& info, float& x, float& y) override;
+      getBack(StepInfo& info, path::Path& path) override;
 
       bool
-      wander(StepInfo& info, float& x, float& y) override;
+      wander(StepInfo& info, path::Path& path) override;
 
       /**
        * @brief - Used to inhibit pheromon emission when the

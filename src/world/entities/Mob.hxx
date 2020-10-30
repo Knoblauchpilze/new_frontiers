@@ -83,35 +83,35 @@ namespace new_frontiers {
 
   inline
   bool
-  Mob::chase(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+  Mob::chase(StepInfo& /*info*/, path::Path& /*path*/) {
     // Empty base implementation.
     return false;
   }
 
   inline
   bool
-  Mob::fight(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+  Mob::fight(StepInfo& /*info*/, path::Path& /*path*/) {
     // Empty base implementation.
     return false;
   }
 
   inline
   bool
-  Mob::collect(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+  Mob::collect(StepInfo& /*info*/, path::Path& /*path*/) {
     // Empty base implementation.
     return false;
   }
 
   inline
   bool
-  Mob::getBack(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+  Mob::getBack(StepInfo& /*info*/, path::Path& /*path*/) {
     // Empty base implementation.
     return false;
   }
 
   inline
   bool
-  Mob::wander(StepInfo& /*info*/, float& /*x*/, float& /*y*/) {
+  Mob::wander(StepInfo& /*info*/, path::Path& /*path*/) {
     // Empty base implementation.
     return false;
   }

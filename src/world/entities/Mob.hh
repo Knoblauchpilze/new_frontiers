@@ -147,19 +147,19 @@ namespace new_frontiers {
       inhibitPheromon(StepInfo& info) const noexcept;
 
       virtual bool
-      chase(StepInfo& info, float& x, float& y);
+      chase(StepInfo& info, path::Path& path);
 
       virtual bool
-      fight(StepInfo& info, float& x, float& y);
+      fight(StepInfo& info, path::Path& path);
 
       virtual bool
-      collect(StepInfo& info, float& x, float& y);
+      collect(StepInfo& info, path::Path& path);
 
       virtual bool
-      getBack(StepInfo& info, float& x, float& y);
+      getBack(StepInfo& info, path::Path& path);
 
       virtual bool
-      wander(StepInfo& info, float& x, float& y);
+      wander(StepInfo& info, path::Path& path);
 
       /**
        * @brief - Interface method used to pick a random target
@@ -184,8 +184,7 @@ namespace new_frontiers {
         bool behaviorChanged;
         bool actionTaken;
 
-        float xT;
-        float yT;
+        path::Path path;
       };
 
       static
@@ -200,10 +199,11 @@ namespace new_frontiers {
        *          of the entity and select the appropriate behavior to
        *          execute.
        * @param info - information about the surroundings of the mob.
+       * @param path - the current path followed by the entity.
        * @return - a coherent thought result for this mob.
        */
       Thought
-      behave(StepInfo& info) noexcept;
+      behave(StepInfo& info, const path::Path& path) noexcept;
 
     protected:
 

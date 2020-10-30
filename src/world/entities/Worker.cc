@@ -16,7 +16,7 @@ namespace new_frontiers {
   }
 
   bool
-  Worker::collect(StepInfo& info, float& x, float& y) {
+  Worker::collect(StepInfo& info, path::Path& path) {
     // The collect behavior is called when the worker
     // has spotted a deposit close enough and is now
     // moving towards it.
@@ -43,7 +43,9 @@ namespace new_frontiers {
       // For some reason the deposit does not exist,
       // return to wandering.
       setBehavior(Behavior::Wander);
+      float x, y;
       pickTargetFromPheromon(info, x, y);
+      path.add(x, y);
 
       return true;
     }
@@ -58,7 +60,9 @@ namespace new_frontiers {
       );
 
       setBehavior(Behavior::Wander);
+      float x, y;
       pickTargetFromPheromon(info, x, y);
+      path.add(x, y);
 
       return true;
     }
@@ -80,7 +84,9 @@ namespace new_frontiers {
       log("Deposit has been emptied while en route");
 
       setBehavior(Behavior::Wander);
+      float x, y;
       pickTargetFromPheromon(info, x, y);
+      path.add(x, y);
 
       return true;
     }
@@ -90,15 +96,13 @@ namespace new_frontiers {
 
     // And then return to the colony.
     setBehavior(Behavior::Return);
-
-    x = m_homeX;
-    y = m_homeY;
+    path.add(m_homeX, m_homeY);
 
     return true;
   }
 
   bool
-  Worker::getBack(StepInfo& info, float& x, float& y) {
+  Worker::getBack(StepInfo& info, path::Path& path) {
     // This method is called when the worker has
     // collected some resources and need to get
     // back home.
@@ -121,7 +125,9 @@ namespace new_frontiers {
       // For some reason the home of the entity does
       // not exist, return to wandering.
       setBehavior(Behavior::Wander);
+      float x, y;
       pickTargetFromPheromon(info, x, y);
+      path.add(x, y);
 
       return true;
     }
@@ -139,7 +145,9 @@ namespace new_frontiers {
       );
 
       setBehavior(Behavior::Wander);
+      float x, y;
       pickTargetFromPheromon(info, x, y);
+      path.add(x, y);
 
       return true;
     }
@@ -152,16 +160,18 @@ namespace new_frontiers {
 
     // Re-wander again.
     setBehavior(Behavior::Wander);
+    float x, y;
     pickTargetFromPheromon(info, x, y);
+    path.add(x, y);
 
     return true;
   }
 
   bool
-  Worker::wander(StepInfo& info, float& x, float& y) {
+  Worker::wander(StepInfo& info, path::Path& path) {
     // Check whether we can find any deposit in the
     // surroudings of the entity.
-    BlockShPtr deposit = info.frustum->getClosest(x, y, tiles::Portal, m_perceptionRadius, 14);
+    BlockShPtr deposit = info.frustum->getClosest(path.xC, path.yC, tiles::Portal, m_perceptionRadius, 14);
 
     // In case there are no deposits, continue the
     // wandering around process. We also need to
@@ -182,7 +192,9 @@ namespace new_frontiers {
         log("Deposit is empty");
       }
 
+      float x, y;
       pickTargetFromPheromon(info, x, y);
+      path.add(x, y);
 
       return true;
     }
@@ -193,8 +205,7 @@ namespace new_frontiers {
     // Assign the target to the closest deposit:
     // as we requested the list to be sorted we
     // can pick the first one.
-    x = d->getTile().x + 0.5f;
-    y = d->getTile().y + 0.5f;
+    path.add(d->getTile().x + 0.5f, d->getTile().y + 0.5f);
 
     return true;
   }
@@ -205,11 +216,11 @@ namespace new_frontiers {
     // of this worker.
     world::Filter f{getOwner(), true};
     tiles::Effect* te = nullptr;
-    std::vector<VFXShPtr> d = info.frustum->getVisible(x, y, m_perceptionRadius, te, -1, &f);
+    std::vector<VFXShPtr> d = info.frustum->getVisible(m_tile.x, m_tile.y, m_perceptionRadius, te, -1, &f);
 
     // We will need a random target so better compute
     // it right now.
-    float xRnd = x, yRnd = y;
+    float xRnd, yRnd;
     pickRandomTarget(info, m_tile.x, m_tile.y, xRnd, yRnd);
 
     // In case no pheromons are visible use the

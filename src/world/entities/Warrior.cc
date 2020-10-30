@@ -16,7 +16,7 @@ namespace new_frontiers {
   }
 
   bool
-  Warrior::chase(StepInfo& info, float& x, float& y) {
+  Warrior::chase(StepInfo& info, path::Path& path) {
     // In chase mode we need to pick the closest entity
     // and set its current position as the new target
     // for this entity.
@@ -25,8 +25,8 @@ namespace new_frontiers {
     world::Filter f{getOwner(), false};
     tiles::Entity* te = nullptr;
     std::vector<EntityShPtr> entities = info.frustum->getVisible(
-      x,
-      y,
+      m_tile.x,
+      m_tile.y,
       m_perceptionRadius,
       te,
       -1,
@@ -37,10 +37,12 @@ namespace new_frontiers {
     if (entities.empty()) {
       // Couldn't find the entity we were chasing, get
       // back to wander behavior.
-      log("Lost entity at " + std::to_string(x) + "x" + std::to_string(y));
+      log("Lost entity at " + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y));
 
       setBehavior(Behavior::Wander);
+      float x, y;
       pickTargetFromPheromon(info, x, y);
+      path.add(x, y);
 
       return true;
     }
@@ -51,8 +53,8 @@ namespace new_frontiers {
     // Update the target with the actual position of
     // the entity: indeed the entity may be moving
     // so we want to accurately chase it.
-    x = e->getTile().x;
-    y = e->getTile().y;
+    path.clear(m_tile.x, m_tile.y);
+    path.add(e->getTile().x, e->getTile().y);
 
     // In case we are close enough of the entity to
     // actually hit it, do so if we are able to.
@@ -66,12 +68,14 @@ namespace new_frontiers {
       // now dead. We will also return back to the
       // wandering behavior.
       if (!alive) {
-        log("Killed entity at " + std::to_string(x) + "x" + std::to_string(y));
+        log("Killed entity at " + std::to_string(e->getTile().x) + "x" + std::to_string(e->getTile().y));
 
         info.removeEntity(e.get());
 
         setBehavior(Behavior::Wander);
+        float x, y;
         pickTargetFromPheromon(info, x, y);
+        path.add(x, y);
 
         return true;
       }
@@ -81,7 +85,7 @@ namespace new_frontiers {
   }
 
   bool
-  Warrior::getBack(StepInfo& info, float& x, float& y) {
+  Warrior::getBack(StepInfo& info, path::Path& path) {
     // The get back behavior is active whenever the
     // warrior needs to get back home.
     if (isEnRoute()) {
@@ -104,7 +108,9 @@ namespace new_frontiers {
 
     if (ie.index < 0 || ie.type != world::ItemType::Block || b.tile.type != tiles::Portal) {
       setBehavior(Behavior::Wander);
+      float x, y;
       pickTargetFromPheromon(info, x, y);
+      path.add(x, y);
 
       return true;
     }
@@ -117,14 +123,14 @@ namespace new_frontiers {
   }
 
   bool
-  Warrior::wander(StepInfo& info, float& x, float& y) {
+  Warrior::wander(StepInfo& info, path::Path& path) {
     // Check whether we can find any deposit in the
     // surroudings of the entity.
     world::Filter f{getOwner(), false};
     tiles::Entity* te = nullptr;
     std::vector<EntityShPtr> entities = info.frustum->getVisible(
-      x,
-      y,
+      m_tile.x,
+      m_tile.y,
       m_perceptionRadius,
       te,
       -1,
@@ -141,7 +147,9 @@ namespace new_frontiers {
         return false;
       }
 
+      float x, y;
       pickTargetFromPheromon(info, x, y);
+      path.add(x, y);
 
       return true;
     }
@@ -155,8 +163,7 @@ namespace new_frontiers {
     // Assign the target to the closest entities:
     // as we requested the list to be sorted we
     // can pick the first one.
-    x = e->getTile().x;
-    y = e->getTile().y;
+    path.add(e->getTile().x, e->getTile().y);
 
     return true;
   }
@@ -167,11 +174,11 @@ namespace new_frontiers {
     // this warrior.
     world::Filter f{getOwner(), false};
     tiles::Effect* te = nullptr;
-    std::vector<VFXShPtr> d = info.frustum->getVisible(x, y, m_perceptionRadius, te, -1, &f);
+    std::vector<VFXShPtr> d = info.frustum->getVisible(m_tile.x, m_tile.y, m_perceptionRadius, te, -1, &f);
 
     // We will need a random target so better compute
     // it right now.
-    float xRnd = x, yRnd = y;
+    float xRnd, yRnd;
     pickRandomTarget(info, m_tile.x, m_tile.y, xRnd, yRnd);
 
     // In case no pheromons are visible use the
