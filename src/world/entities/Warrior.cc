@@ -43,7 +43,7 @@ namespace new_frontiers {
 
       setBehavior(Behavior::Wander);
       pickTargetFromPheromon(info, x, y);
-      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+      path.generatePathTo(info, x, y);
 
       return true;
     }
@@ -55,7 +55,7 @@ namespace new_frontiers {
     // the entity: indeed the entity may be moving
     // so we want to accurately chase it.
     path.clear(m_tile.x, m_tile.y);
-    generatePathTo(info, m_tile.x, m_tile.y, e->getTile().x, e->getTile().y, path);
+    path.generatePathTo(info, e->getTile().x, e->getTile().y);
 
     // In case we are close enough of the entity to
     // actually hit it, do so if we are able to.
@@ -75,7 +75,7 @@ namespace new_frontiers {
 
         setBehavior(Behavior::Wander);
         pickTargetFromPheromon(info, x, y);
-        generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+        path.generatePathTo(info, x, y);
 
         return true;
       }
@@ -111,7 +111,7 @@ namespace new_frontiers {
     if (ie.index < 0 || ie.type != world::ItemType::Block || b.tile.type != tiles::Portal) {
       setBehavior(Behavior::Wander);
       pickTargetFromPheromon(info, x, y);
-      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+      path.generatePathTo(info, x, y);
 
       return true;
     }
@@ -150,7 +150,7 @@ namespace new_frontiers {
 
       float x, y;
       pickTargetFromPheromon(info, x, y);
-      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+      path.generatePathTo(info, x, y);
 
       return true;
     }
@@ -164,7 +164,7 @@ namespace new_frontiers {
     // Assign the target to the closest entities:
     // as we requested the list to be sorted we
     // can pick the first one.
-    generatePathTo(info, m_tile.x, m_tile.y, e->getTile().x, e->getTile().y, path);
+    path.generatePathTo(info, e->getTile().x, e->getTile().y);
 
     return true;
   }

@@ -153,6 +153,21 @@ namespace new_frontiers {
        */
       void
       advance(float speed, float elapsed, float threshold);
+
+      /**
+       * @brief - Used to generate a path to the target specified
+       *          by the `x` and `y` coordinates and add needed
+       *          segments to the path. The start of the path is
+       *          assumed to be the current end of the path.
+       * @param info - allowing to detect obstruction to reach
+       *               the target.
+       * @param x - the abscissa of the target to which a path
+       *            should be generated.
+       * @param y - the ordinate of the target to which a path
+       *            should be generated.
+       */
+      void
+      generatePathTo(StepInfo& info, float x, float y);
     };
 
     /**
