@@ -46,7 +46,7 @@ namespace new_frontiers {
       // return to wandering.
       setBehavior(Behavior::Wander);
       pickTargetFromPheromon(info, x, y);
-      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+      path.generatePathTo(info, x, y);
 
       return true;
     }
@@ -62,7 +62,7 @@ namespace new_frontiers {
 
       setBehavior(Behavior::Wander);
       pickTargetFromPheromon(info, x, y);
-      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+      path.generatePathTo(info, x, y);
 
       return true;
     }
@@ -85,7 +85,7 @@ namespace new_frontiers {
 
       setBehavior(Behavior::Wander);
       pickTargetFromPheromon(info, x, y);
-      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+      path.generatePathTo(info, x, y);
 
       return true;
     }
@@ -95,7 +95,7 @@ namespace new_frontiers {
 
     // And then return to the colony.
     setBehavior(Behavior::Return);
-    generatePathTo(info, m_tile.x, m_tile.y, m_homeX, m_homeY, path);
+    path.generatePathTo(info, m_homeX, m_homeY);
 
     return true;
   }
@@ -127,7 +127,7 @@ namespace new_frontiers {
       // not exist, return to wandering.
       setBehavior(Behavior::Wander);
       pickTargetFromPheromon(info, x, y);
-      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+      path.generatePathTo(info, x, y);
 
       return true;
     }
@@ -146,7 +146,7 @@ namespace new_frontiers {
 
       setBehavior(Behavior::Wander);
       pickTargetFromPheromon(info, x, y);
-      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+      path.generatePathTo(info, x, y);
 
       return true;
     }
@@ -160,7 +160,7 @@ namespace new_frontiers {
     // Re-wander again.
     setBehavior(Behavior::Wander);
     pickTargetFromPheromon(info, x, y);
-    generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+    path.generatePathTo(info, x, y);
 
     return true;
   }
@@ -192,7 +192,7 @@ namespace new_frontiers {
 
       float x, y;
       pickTargetFromPheromon(info, x, y);
-      generatePathTo(info, m_tile.x, m_tile.y, x, y, path);
+      path.generatePathTo(info, x, y);
 
       return true;
     }
@@ -203,7 +203,7 @@ namespace new_frontiers {
     // Assign the target to the closest deposit:
     // as we requested the list to be sorted we
     // can pick the first one.
-    generatePathTo(info, m_tile.x, m_tile.y, d->getTile().x + 0.5f, d->getTile().y + 0.5f, path);
+    path.generatePathTo(info, d->getTile().x + 0.5f, d->getTile().y + 0.5f);
 
     return true;
   }

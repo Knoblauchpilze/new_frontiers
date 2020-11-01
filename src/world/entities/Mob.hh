@@ -174,25 +174,6 @@ namespace new_frontiers {
       void
       pickRandomTarget(StepInfo& info, float xS, float yS, float& x, float& y) noexcept;
 
-      /**
-       * @brief - Used to generate a path to the target specified
-       *          by the `x` and `y` coordinates and add needed
-       *          segments to the path. The start of the path is
-       *          assumed to be the provided position.
-       * @param info - allowing to detect obstruction to reach
-       *               the target.
-       * @param xS - the starting abscissa to reach the target.
-       * @param yS - the starting ordinate to reach the target.
-       * @param x - the abscissa of the target to which a path
-       *            should be generated.
-       * @param y - the ordinate of the target to which a path
-       *            should be generated.
-       * @param path - output argument where the path segments
-       *               needed to reach the target will be added.
-       */
-      void
-      generatePathTo(StepInfo& info, float xS, float yS, float x, float y, path::Path& path);
-
     private:
 
       /**
