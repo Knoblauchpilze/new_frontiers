@@ -82,6 +82,8 @@ namespace new_frontiers {
      *             of the input path.
      * @param d - output argument holding the length of
      *            the path.
+     * @param threshold - the threshold to consider a path
+     *                    to have `0` length.
      * @param - `true` if the path has not `0` length.
      */
     bool
@@ -91,7 +93,8 @@ namespace new_frontiers {
                 float yT,
                 float& xD,
                 float& yD,
-                float& d) const noexcept;
+                float& d,
+                float threshold = 0.0001f) const noexcept;
 
     void
     spawnBlock(BlockShPtr e);

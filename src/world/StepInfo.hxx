@@ -35,7 +35,8 @@ namespace new_frontiers {
                         float yT,
                         float& xD,
                         float& yD,
-                        float& d) const noexcept
+                        float& d,
+                        float threshold) const noexcept
   {
     // Compute the direction and compute
     // the length and a unit vector from
@@ -44,7 +45,7 @@ namespace new_frontiers {
     yD = yT - yS;
 
     d = distance::d(xS, yS, xT, yT);
-    bool notZeroLength = (d > 0.0001f);
+    bool notZeroLength = (d > threshold);
 
     if (notZeroLength) {
       xD /= d;
