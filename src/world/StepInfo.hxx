@@ -24,15 +24,34 @@ namespace new_frontiers {
     clampCoord(xT, yT);
 
     // Reevaluate the direction from there.
+    toDirection(xS, yS, xT, yT, xD, yD, d);
+  }
+
+  inline
+  bool
+  StepInfo::toDirection(float xS,
+                        float yS,
+                        float xT,
+                        float yT,
+                        float& xD,
+                        float& yD,
+                        float& d) const noexcept
+  {
+    // Compute the direction and compute
+    // the length and a unit vector from
+    // there.
     xD = xT - xS;
     yD = yT - yS;
 
-    // Reevaluate the length of the path.
     d = distance::d(xS, yS, xT, yT);
-    if (d > 0.0001f) {
+    bool notZeroLength = (d > 0.0001f);
+
+    if (notZeroLength) {
       xD /= d;
       yD /= d;
     }
+
+    return notZeroLength;
   }
 
 }

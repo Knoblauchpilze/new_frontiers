@@ -28,55 +28,46 @@ namespace new_frontiers {
   }
 
   bool
-  Locator::obstructed(float x, float y, float xDir, float yDir, float d, std::vector<float>& cPoints) const noexcept {
-    // We basically need to find which cells are
-    // 'under' the line when it spans its path
-    // so as to determine whether there is some
-    // solid tile along the way.
-    // At first, using a Bresenham algorithm to
-    // compute the cells that lie under a path
-    // seemed like a good idea. But in the end
-    // it appear that we are usually computing
-    // small path where we basically just trace
-    // two pixels and the performance of the
-    // collision detection was not sufficient
-    // to rule out some of them.
-    // So instead we figured we would sample
-    // the path and take regular probing at
-    // the underlying grid. As pathes are on
-    // average small, we won't do a lot of
-    // comparison and it is reasonable to do
-    // so. It also provide more control on
+  Locator::obstructed(float x,
+                      float y,
+                      float xDir,
+                      float yDir,
+                      float d,
+                      std::vector<float>& cPoints,
+                      float* xObs,
+                      float* yObs) const noexcept
+  {
+    // We basically need to find which cells are 'under' the
+    // line when it spans its path so as to determine whether
+    // there is some solid tile along the way.
+    // At first, using a Bresenham algorithm to compute the
+    // cells that lie under a path seemed like a good idea.
+    // But in the end it appears that we are usually computing
+    // small path where we basically just trace two pixels and
+    // the performance of the collision detection was not
+    // sufficient to rule out some of them.
+    // So instead we figured we would sample the path and take
+    // regular probing at the underlying grid. As pathes are on
+    // average small, we won't do a lot of comparison and it is
+    // reasonable to do so. It also provide more control on
     // precisely where we sample the path.
-    // We chose to use half a tile dims as
-    // a sample path in order to be precise
-    // enough.
+    // We chose to use half a tile dims as a sample path in
+    // order to be precise enough.
     float xT = x + d * xDir;
     float yT = y + d * yDir;
 
     int xo = static_cast<int>(x);
     int yo = static_cast<int>(y);
 
-    // Compute the step to add on the path
-    // for each sampling: it is extracted
-    // from the initial normalized that we
+    // Compute the step to add on the path for each sampling:
+    // it is extracted from the initial normalized that we
     // normalize.
-    // We handle the trivial case where the
-    // direction does not have a valid length
-    // in which case we return `false` (as in
-    // no obstructed) as the initial cell is
-    // never considered obstructed.
+    // We handle the trivial case where the direction does not
+    // have a valid length in which case we return `false` (as
+    // in no obstructed) as the initial cell is never considered
+    // obstructed.
     float l = std::sqrt(xDir * xDir + yDir * yDir);
-
     if (l < 0.0001f) {
-# ifdef DEBUG
-      log(
-        "Checking dir(" + std::to_string(xDir) + "x" + std::to_string(yDir) + ")" +
-        " not enough to change tile, not obstructed",
-        utils::Level::Verbose
-      );
-# endif
-
       return false;
     }
 
@@ -115,15 +106,24 @@ namespace new_frontiers {
       );
 # endif
 
-      x += xDir;
-      y += yDir;
+      if (!obstruction) {
+        x += xDir;
+        y += yDir;
 
-      t += 0.5f;
+        t += 0.5f;
+      }
     }
 
     // In case an obstruction was detected we
     // don't need to check for the last cell.
     if (obstruction) {
+      if (xObs != nullptr) {
+        *xObs = xi;
+      }
+      if (yObs != nullptr) {
+        *yObs = yi;
+      }
+
       return true;
     }
 
@@ -134,16 +134,17 @@ namespace new_frontiers {
     cPoints.push_back(xT);
     cPoints.push_back(yT);
 
-# ifdef DEBUG
-    log(
-      "Checking " + std::to_string(xT) + "x" + std::to_string(yT) +
-      " i(" + std::to_string(xi) + "x" + std::to_string(yi) + ") (end)" +
-      ": " + std::to_string(m_blocksIDs.count(yi * m_w + xi) > 0),
-      utils::Level::Verbose
-    );
-# endif
+    obstruction = (m_blocksIDs.count(yi * m_w + xi) > 0);
+    if (obstruction) {
+      if (xObs != nullptr) {
+        *xObs = xi;
+      }
+      if (yObs != nullptr) {
+        *yObs = yi;
+      }
+    }
 
-    return (m_blocksIDs.count(yi * m_w + xi) > 0);
+    return obstruction;
   }
 
   std::vector<world::ItemEntry>
