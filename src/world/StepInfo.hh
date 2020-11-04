@@ -69,6 +69,30 @@ namespace new_frontiers {
     void
     clampPath(float xS, float yS, float& xD, float& yD, float& d) const noexcept;
 
+    /**
+     * @brief - Used to convert from a position and a
+     *          target to a direction-based path.
+     * @param xS - the starting abscissa of the path.
+     * @param yS - the starting ordinate of the path.
+     * @param xT - the end abscissa of the path.
+     * @param yT - the end ordinate of the path.
+     * @param xD - output argument holding the direction
+     *             of the input path.
+     * @param yD - output argument holding the direction
+     *             of the input path.
+     * @param d - output argument holding the length of
+     *            the path.
+     * @param - `true` if the path has not `0` length.
+     */
+    bool
+    toDirection(float xS,
+                float yS,
+                float xT,
+                float yT,
+                float& xD,
+                float& yD,
+                float& d) const noexcept;
+
     void
     spawnBlock(BlockShPtr e);
 

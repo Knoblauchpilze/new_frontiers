@@ -257,6 +257,14 @@ namespace new_frontiers {
        * @param yDir - the direction of the ray along the `y`
        *               axis.
        * @param d - the distance to check for obstruction.
+       * @param cPoints - the list of points considered in
+       *                  the obsctruction process.
+       * @param xObs - if not `null` will output the abscissa
+       *               of the first obstruction. Only relevant
+       *               if the return value is `true`.
+       * @param yObs - if not `null` will output the ordinate
+       *               of the first obstruction. Only relevant
+       *               if the return value is `true`.
        * @return - `true` if the path is obstructed by any
        *           solid element.
        */
@@ -266,7 +274,9 @@ namespace new_frontiers {
                  float xDir,
                  float yDir,
                  float d,
-                 std::vector<float>& cPoints) const noexcept;
+                 std::vector<float>& cPoints,
+                 float* xObs = nullptr,
+                 float* yObs = nullptr) const noexcept;
 
       /**
        * @brief - Return the list of items that are visible
