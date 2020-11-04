@@ -292,20 +292,31 @@ namespace new_frontiers {
     c.refill = 0.2f;
     m_colonies.push_back(std::make_shared<Colony>(c));
 
-    c = ColonyFactory::newColonyProps(2.0f, 2.0f, utils::Uuid::create());
-    c.focus = colony::Priority::Consolidation;
-    c.refill = 0.4f;
-    m_colonies.push_back(std::make_shared<Colony>(c));
+    // c = ColonyFactory::newColonyProps(2.0f, 2.0f, utils::Uuid::create());
+    // c.focus = colony::Priority::Consolidation;
+    // c.refill = 0.4f;
+    // m_colonies.push_back(std::make_shared<Colony>(c));
 
-    c = ColonyFactory::newColonyProps(2.0f, 1.0f, utils::Uuid::create());
-    c.focus = colony::Priority::War;
-    c.refill = 0.05f;
-    m_colonies.push_back(std::make_shared<Colony>(c));
+    // c = ColonyFactory::newColonyProps(2.0f, 1.0f, utils::Uuid::create());
+    // c.focus = colony::Priority::War;
+    // c.refill = 0.05f;
+    // m_colonies.push_back(std::make_shared<Colony>(c));
 
     // Generate resource deposit.
     Deposit::DProps dp = BlockFactory::newDepositProps(6.0f, 4.0f);
     dp.stock = 20.0f;
     m_blocks.push_back(BlockFactory::newDeposit(dp));
+
+    // And the walls.
+    Block::Props bp = BlockFactory::newWallProps(4.0f, 3.0f, 0);
+    bp.tile.id = 3;
+    m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
+
+    bp.tile.x = 4.0f; bp.tile.y = 4.0f;
+    m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
+
+    bp.tile.x = 4.0f; bp.tile.y = 5.0f;
+    m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
     // Generate the player at the same location
     // as the entry portal.
