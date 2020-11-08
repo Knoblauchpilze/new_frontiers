@@ -142,6 +142,10 @@ namespace new_frontiers {
       // path is directly visible.
       std::vector<float> points;
 
+      // TODO: Case where `xDir` or `yDir` is `0`.
+      // TODO: Case where we reach a position that
+      // was already explored.
+
       bool obs = true;
       int count = 0;
       while (obs && count < 20) {
