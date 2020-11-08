@@ -165,9 +165,16 @@ namespace new_frontiers {
        *            should be generated.
        * @param y - the ordinate of the target to which a path
        *            should be generated.
+       * @param ignoreTargetObstruction - set this value to `true`
+       *                                  in case obstruction of
+       *                                  the target should be
+       *                                  ignored. This should be
+       *                                  the case for example when
+       *                                  the target is a solid
+       *                                  block.
        */
       void
-      generatePathTo(StepInfo& info, float x, float y);
+      generatePathTo(StepInfo& info, float x, float y, bool ignoreTargetObstruction);
     };
 
     /**
