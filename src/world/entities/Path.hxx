@@ -94,7 +94,15 @@ namespace new_frontiers {
     void
     Path::add(float x, float y) {
       if (seg < 0) {
-        add(xH, yH, x, y);
+        // We want to make sure that we don't
+        // register the home position once
+        // again.
+        if (xH != x || yH != y) {
+          add(xH, yH, x, y);
+        }
+        else {
+          std::cout << "[PATH] Prevented double registration" << std::endl;
+        }
       }
       else {
         const Segment s = segments.back();

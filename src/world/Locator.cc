@@ -96,14 +96,12 @@ namespace new_frontiers {
 
       obstruction = (xi != xo || yi != yo) && (m_blocksIDs.count(yi * m_w + xi) > 0);
 
+// # define DEBUG
 # ifdef DEBUG
-      log(
-        "Checking " + std::to_string(x) + "x" + std::to_string(y) +
-        " i(" + std::to_string(xi) + "x" + std::to_string(yi) + ")" +
-        ": " + std::to_string(obstruction) +
-        " t: " + std::to_string(t) + " perc: " + std::to_string(t / d),
-        utils::Level::Verbose
-      );
+      std::cout << "[LOC] Considering " << x << "x" << y
+                << " which " << (obstruction ? "is" : "is not")
+                << " obstructed (" << t << ", " << (t / d) << "%)"
+                << std::endl;
 # endif
 
       if (!obstruction) {
