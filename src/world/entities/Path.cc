@@ -138,7 +138,8 @@ namespace new_frontiers {
       // target is actually a solid block ?
       // TODO: Case where `xDir` or `yDir` is `0`.
       // TODO: Case where we reach a position that
-      // was already explored.
+      // was already explored. This is what prevents
+      // the code from working right now.
 
       // Process the path: we want to keep finding
       // intermediate positions until we can find
@@ -146,6 +147,7 @@ namespace new_frontiers {
       // could very well be right away in case the
       // path is directly visible.
       std::vector<float> points;
+      std::vector<float> steps;
 
       bool pathNotClear = true;
       int count = 0;
@@ -158,9 +160,14 @@ namespace new_frontiers {
         // the home coordinates: for the rest we
         // assume that we won't try to register
         // the same position more than once.
-        add(xS, yS);
+        steps.push_back(xS);
+        steps.push_back(yS);
 
-        bool obs = info.frustum->obstructed(xS, yS, xDir, yDir, d, points, &xObs, &yObs);
+        points.push_back(xS);
+        points.push_back(yS);
+
+        std::vector<float> iPoints;
+        bool obs = info.frustum->obstructed(xS, yS, xDir, yDir, d, iPoints, &xObs, &yObs);
 
         // If the path is obstructed, we need to
         // march on the border of the obstacle
@@ -185,43 +192,58 @@ namespace new_frontiers {
           )
         );
 
-        if (pathNotClear) {
+        if (!pathNotClear) {
+          points.insert(points.end(), iPoints.cbegin(), iPoints.cend());
+          std::cout << "[PATH][" << segments.size() << "] start: " << xS << "x" << yS
+                    << " to " << x << "x" << y
+                    << " is unobstructed, registering "
+                    << xS << "x" << yS
+                    << std::endl;
+        }
+        else {
           // Determine in which way we want to
           // explore for unobstructed regions
           // in the neighborhood of the path.
           float aXDir = std::abs(xDir);
           float aYDir = std::abs(yDir);
 
-          Axis dPerp = (aXDir > aYDir ? Axis::X : Axis::Y);
+          // Axis dPerp = (aXDir > aYDir ? Axis::X : Axis::Y);
           Axis dPara = (aXDir > aYDir ? Axis::Y : Axis::X);
 
           float signX = std::copysign(1.0f, xDir);
           float signY = std::copysign(1.0f, yDir);
-          float sPerp = (dPerp == Axis::X ? signX : signY);
+          // float sPerp = (dPerp == Axis::X ? signX : signY);
           float sPara = (dPara == Axis::X ? signX : signY);
 
-          // Compute the maximum position we can
-          // reach: we must move one cell behind
-          // the reported obstruction.
-          float xStop = xObs + 0.5f;
-          float yStop = yObs + 0.5f;
+          // Register the intermediate steps that were
+          // deemed valid by the exploration: this will
+          // get us as far as possible on this segment.
+          // To determine the last valid position we
+          // will get the second-to-last position in
+          // the `iPoints` vector: this should be the
+          // last valid position along the path.
+          // We can then start from there the search
+          // for a path around the obstacle.
+          float xStop = xS;
+          float yStop = yS;
 
-          switch (dPerp) {
-            case Axis::X:
-              xStop -= sPerp;
-              break;
-            case Axis::Y:
-            default:
-              yStop -= sPerp;
-              break;
-          }
+          if (iPoints.size() > 4) {
+            // Note that as we already pushed the
+            // steps related to the start position
+            // we will start at the second point
+            // reached by the obstruction detection
+            // process. This might mean that we
+            // don't register anything.
+            for (unsigned id = 2u ; id < iPoints.size() / 2u - 1u ; ++id) {
+              points.push_back(iPoints[2u * id]);
+              points.push_back(iPoints[2u * id + 1u]);
+            }
 
-          // Register the stopping position of the
-          // path as an intermediate position if it
-          // is different from the starting position
-          // of the path segment.
-          if (xStop != xS || yStop != yS) {
-            add(xStop, yStop);
+            xStop = iPoints[iPoints.size() - 4u];
+            yStop = iPoints[iPoints.size() - 3u];
+
+            steps.push_back(xStop);
+            steps.push_back(yStop);
           }
 
           float xSave = xS, ySave = yS;
@@ -255,19 +277,21 @@ namespace new_frontiers {
 
           info.toDirection(xS, yS, x, y, xDir, yDir, d);
         }
-        else {
-          std::cout << "[PATH][" << segments.size() << "] start: " << xS << "x" << yS
-                    << " to " << x << "x" << y
-                    << " is unobstructed, registering "
-                    << xS << "x" << yS
-                    << std::endl;
-        }
 
         ++count;
       }
 
-      std::cout << "[PATH][" << segments.size() << "] registering " << x << "x" << y << std::endl;
+      // Once a valid path is built, register it
+      // as the actual path.
+      for (unsigned id = 0u ; id < steps.size() / 2u ; ++id) {
+        std::cout << "[PATH][END][" << segments.size() << "] registering "
+                  << steps[2u * id] << "x" << steps[2u * id + 1u]
+                  << std::endl;
+        add(steps[2u * id], steps[2u * id + 1u]);
+      }
       add(x, y);
+
+      cPoints.swap(points);
     }
 
   }
