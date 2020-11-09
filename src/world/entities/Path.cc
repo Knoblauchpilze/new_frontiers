@@ -119,9 +119,11 @@ namespace new_frontiers {
 
     void
     Path::generatePathTo(StepInfo& info, float x, float y, bool ignoreTargetObstruction) {
-      // Convert to path semantic. The starting point
+      // Convert to path semantic: the starting point
       // of the path segment will be the end of the
-      // registered list.
+      // registered list of intermediate points. It
+      // can correspond to the home position in case
+      // no segments are defined.
       float xS = xH, yS = yH;
       if (seg >= 0) {
         xS = segments[segments.size() - 1].xT;
@@ -134,6 +136,9 @@ namespace new_frontiers {
       // TODO: What happens when we don't want to
       // ignore obstruction of the target but the
       // target is actually a solid block ?
+      // TODO: Case where `xDir` or `yDir` is `0`.
+      // TODO: Case where we reach a position that
+      // was already explored.
 
       // Process the path: we want to keep finding
       // intermediate positions until we can find
@@ -142,33 +147,45 @@ namespace new_frontiers {
       // path is directly visible.
       std::vector<float> points;
 
-      // TODO: Case where `xDir` or `yDir` is `0`.
-      // TODO: Case where we reach a position that
-      // was already explored.
-
-      bool obs = true;
+      bool pathNotClear = true;
       int count = 0;
-      while (obs && count < 20) {
-        // TODO: Obstruction should include the
-        // fractional part of the cell ?
-        obs = info.frustum->obstructed(xS, yS, xDir, yDir, d, points, &xObs, &yObs);
-
+      while (pathNotClear && count < 20) {
         // Register the starting position of this
-        // path segment.
+        // path segment: this is the main way to
+        // be sure that each segment is correctly
+        // saved. The path struct has a mechanism
+        // to make sure that we don't add twice
+        // the home coordinates: for the rest we
+        // assume that we won't try to register
+        // the same position more than once.
         add(xS, yS);
+
+        bool obs = info.frustum->obstructed(xS, yS, xDir, yDir, d, points, &xObs, &yObs);
 
         // If the path is obstructed, we need to
         // march on the border of the obstacle
         // until we walk around it. Note that we
         // only consider an obstruction if the
         // input argument says so.
-        bool obsWithinTarget = (
-          ignoreTargetObstruction &&
-          std::abs(xObs - x) < 1.0f &&
-          std::abs(yObs - y) < 1.0f
+        bool obsWithinTarget = (std::abs(xObs - x) < 1.0f && std::abs(yObs - y) < 1.0f);
+
+        // We want to process the potential
+        // intersection only if it is meaningful.
+        pathNotClear = (
+          obs // In case there is an obstruction
+          &&  // and
+          (
+            !obsWithinTarget // the obstruction does not
+                             // lie within the target
+            || // or (in case the obstruction is within
+               // the target)
+            !ignoreTargetObstruction // we aren't ignoring
+                                      // obstruction of the
+                                      // cell.
+          )
         );
 
-        if (obs && !obsWithinTarget) {
+        if (pathNotClear) {
           // Determine in which way we want to
           // explore for unobstructed regions
           // in the neighborhood of the path.
@@ -200,8 +217,12 @@ namespace new_frontiers {
           }
 
           // Register the stopping position of the
-          // path as an intermediate position.
-          add(xStop, yStop);
+          // path as an intermediate position if it
+          // is different from the starting position
+          // of the path segment.
+          if (xStop != xS || yStop != yS) {
+            add(xStop, yStop);
+          }
 
           float xSave = xS, ySave = yS;
 
@@ -228,16 +249,24 @@ namespace new_frontiers {
                     << ", (d: " << xDir << "x" << yDir << ")"
                     << " stop: " << xStop << "x" << yStop
                     << ", registering: " << xSave << "x" << ySave
+                    << " and " << xStop << "x" << yStop
                     << ", starting from " << xS << "x" << yS
                     << std::endl;
 
           info.toDirection(xS, yS, x, y, xDir, yDir, d);
         }
+        else {
+          std::cout << "[PATH][" << segments.size() << "] start: " << xS << "x" << yS
+                    << " to " << x << "x" << y
+                    << " is unobstructed, registering "
+                    << xS << "x" << yS
+                    << std::endl;
+        }
 
         ++count;
       }
 
-      // TODO: Implement this.
+      std::cout << "[PATH][" << segments.size() << "] registering " << x << "x" << y << std::endl;
       add(x, y);
     }
 
