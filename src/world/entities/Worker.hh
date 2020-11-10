@@ -47,11 +47,10 @@ namespace new_frontiers {
        *          a deposit before.
        * @param info - information about the surroundings of
        *               the worker.
-       * @param x - the abscissa of the output position.
-       * @param y - the ordinate of the output position.
+       * @param p - output position of the picked target.
        */
       void
-      pickTargetFromPheromon(StepInfo& info, float& x, float& y) noexcept;
+      pickTargetFromPheromon(StepInfo& info, Point& p) noexcept;
   };
 
   using WorkerShPtr = std::shared_ptr<Worker>;

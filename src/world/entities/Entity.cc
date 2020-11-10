@@ -13,7 +13,7 @@ namespace new_frontiers {
     m_rArrival(props.arrival),
     m_pathLength(props.pathLength),
 
-    m_path(path::newPath(m_tile.x, m_tile.y)),
+    m_path(path::newPath(m_tile.p)),
 
     m_state{
       false, // Glowing.
@@ -45,8 +45,7 @@ namespace new_frontiers {
       // the entity, we can determine the
       // new position.
       m_path.advance(m_speed, info.elapsed, m_rArrival);
-      m_tile.x = m_path.xC;
-      m_tile.y = m_path.yC;
+      m_tile.p = m_path.cur;
     }
 
     // Perform post step operations.

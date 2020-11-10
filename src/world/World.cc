@@ -238,8 +238,8 @@ namespace new_frontiers {
 
     switch (m_actions.type) {
       case ActionType::Block:
-        m_actions.block->tile.x = x;
-        m_actions.block->tile.y = y;
+        m_actions.block->tile.p.x = x;
+        m_actions.block->tile.p.y = y;
 
         m_actions.block->owner = m_actions.owner;
 
@@ -251,8 +251,8 @@ namespace new_frontiers {
         );
         break;
       case ActionType::VFX:
-        m_actions.vfx->tile.x = x;
-        m_actions.vfx->tile.y = y;
+        m_actions.vfx->tile.p.x = x;
+        m_actions.vfx->tile.p.y = y;
 
         m_actions.vfx->owner = m_actions.owner;
 
@@ -264,8 +264,8 @@ namespace new_frontiers {
         );
         break;
       case ActionType::Entity:
-        m_actions.ent->tile.x = x;
-        m_actions.ent->tile.y = y;
+        m_actions.ent->tile.p.x = x;
+        m_actions.ent->tile.p.y = y;
 
         m_actions.ent->owner = m_actions.owner;
 
@@ -312,11 +312,11 @@ namespace new_frontiers {
     bp.tile.id = 3;
     m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
-    bp.tile.x = 4.0f; bp.tile.y = 4.0f;
+    bp.tile.p.x = 4.0f; bp.tile.p.y = 4.0f;
     m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
-    bp.tile.x = 4.0f; bp.tile.y = 5.0f;
-    m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
+    // bp.tile.p.x = 4.0f; bp.tile.p.y = 5.0f;
+    // m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
     // Generate the player at the same location
     // as the entry portal.

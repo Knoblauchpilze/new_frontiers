@@ -7,6 +7,7 @@
 # include "TimeUtils.hh"
 # include "Controls.hh"
 # include "Influence.hh"
+# include "Point.hh"
 
 namespace new_frontiers {
 
@@ -52,14 +53,16 @@ namespace new_frontiers {
     void
     clampCoord(float& x, float& y) const noexcept;
 
+    void
+    clampCoord(Point& p) const noexcept;
+
     /**
      * @brief - Clamp the direction indicated by the input
      *          values so that they describe a valid path
      *          as expected by the world.
      *          Note that we assume that the intial pos of
      *          the path is valid.
-     * @param xS - the starting abscissa of the path.
-     * @param yS - the starting ordinate of the path.
+     * @param s - the starting position of the path.
      * @param xD - the direction of the path in abscissa.
      *             Will be updated.
      * @param yD - the direction of the path in ordinate.
@@ -67,15 +70,13 @@ namespace new_frontiers {
      * @param d - the length of the path.
      */
     void
-    clampPath(float xS, float yS, float& xD, float& yD, float& d) const noexcept;
+    clampPath(const Point& s, float& xD, float& yD, float& d) const noexcept;
 
     /**
      * @brief - Used to convert from a position and a
      *          target to a direction-based path.
-     * @param xS - the starting abscissa of the path.
-     * @param yS - the starting ordinate of the path.
-     * @param xT - the end abscissa of the path.
-     * @param yT - the end ordinate of the path.
+     * @param s - the starting position of the segment.
+     * @param t - the end position of the path segment.
      * @param xD - output argument holding the direction
      *             of the input path.
      * @param yD - output argument holding the direction
@@ -87,10 +88,8 @@ namespace new_frontiers {
      * @param - `true` if the path has not `0` length.
      */
     bool
-    toDirection(float xS,
-                float yS,
-                float xT,
-                float yT,
+    toDirection(const Point& s,
+                const Point& t,
                 float& xD,
                 float& yD,
                 float& d,

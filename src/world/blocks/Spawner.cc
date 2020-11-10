@@ -28,8 +28,8 @@ namespace new_frontiers {
     float x = std::sqrt(r) * std::cos(theta);
     float y = std::sqrt(r) * std::sin(theta);
 
-    x += (m_tile.x + 0.5f);
-    y += (m_tile.y + 0.5f);
+    x += (m_tile.p.x + 0.5f);
+    y += (m_tile.p.y + 0.5f);
 
     // Clamp the coordinates to be inside the world's
     // boundaries.
@@ -44,8 +44,8 @@ namespace new_frontiers {
         Warrior::WProps pp = EntityFactory::newWarriorProps(x, y, m_mob);
         pp.tile.id = m_mobID;
 
-        pp.homeX = m_tile.x + 0.5f;
-        pp.homeY = m_tile.y + 0.5f;
+        pp.homeX = m_tile.p.x + 0.5f;
+        pp.homeY = m_tile.p.y + 0.5f;
 
         pp.owner = getOwner();
 
@@ -57,10 +57,12 @@ namespace new_frontiers {
         Mob::MProps pp = EntityFactory::newWorkerProps(x, y, m_mob);
         pp.tile.id = m_mobID;
 
-        pp.homeX = m_tile.x + 0.5f;
-        pp.homeY = m_tile.y + 0.5f;
+        pp.homeX = m_tile.p.x + 0.5f;
+        pp.homeY = m_tile.p.y + 0.5f;
 
         pp.owner = getOwner();
+
+        pp.perception = 7.0f;
 
         mp = std::make_shared<Worker>(pp);
         } break;

@@ -2,6 +2,7 @@
 # define   PATH_HH
 
 # include "StepInfo.hh"
+# include "Point.hh"
 
 namespace new_frontiers {
   namespace path {
@@ -12,8 +13,8 @@ namespace new_frontiers {
      *          a direction.
      */
     struct Segment {
-      float xS, yS;
-      float xT, yT;
+      Point start;
+      Point end;
 
       float xD, yD;
 
@@ -40,14 +41,14 @@ namespace new_frontiers {
      *          more segments.
      */
     struct Path {
-      float xH, yH;
+      Point home;
 
-      float xC, yC;
+      Point cur;
       int seg;
 
       std::vector<Segment> segments;
 
-      std::vector<float> cPoints;
+      std::vector<Point> cPoints;
 
       /**
        * @brief - Used to determine whether this path is
@@ -62,30 +63,23 @@ namespace new_frontiers {
        * @brief - Reset all information defined in this path
        *          and assume the entity is starting from the
        *          input position.
-       * @param x - the new current abscissa of the entity
-       *            following this path.
-       * @param y - the new current ordinate of the entity
-       *            following this path.
+       * @param p - the position with which to clear the path.
        */
       void
-      clear(float x, float y);
+      clear(const Point& p);
 
       /**
        * @brief - Add the specified passage point in the list
        *          without changing it otherwise.
-       * @param x - the abscissa of the passage point to add.
-       * @param y - the ordinate of the passage point to add.
+       * @param p - the passage point to add to the path.
        */
       void
-      addPassagePoint(float x, float y);
+      addPassagePoint(const Point& p);
 
       /**
        * @brief - Add a new segment to this path with the
        *          specified information.
-       * @param x - the abscissa of the starting location
-       *            of the new segment.
-       * @param y - the ordinate of the starting location
-       *            of the new segment.
+       * @param p - the starting point of the path segment.
        * @param xD - the abscissa of the direction of the
        *             new segment.
        * @param yD - the ordinate of the direction of the
@@ -93,22 +87,16 @@ namespace new_frontiers {
        * @param d - the length of the path segment.
        */
       void
-      add(float x, float y, float xD, float yD, float d);
+      add(const Point& p, float xD, float yD, float d);
 
       /**
        * @brief - Other variant to register a new segment
        *          on this path.
-       * @param xS - the abscissa of the starting location
-       *             of the path segment.
-       * @param yS - the ordinate of the starting location
-       *             of the path segment.
-       * @param xT - the abscissa of the end location of
-       *             the path segment.
-       * @param yT - the ordinate of the end location of
-       *             the path segment.
+       * @param s - the starting point of the path segment.
+       * @param t - the target of the path segment.
        */
       void
-      add(float xS, float yS, float xT, float yT);
+      add(const Point& s, const Point& t);
 
       /**
        * @brief - Add a new path segment starting from the
@@ -116,13 +104,11 @@ namespace new_frontiers {
        *          the corresponding end position.
        *          In case no previous path segment exists
        *          the starting position of the path is used.
-       * @param x - the desired abscissa for the end of the
-       *            new path segment.
-       * @param y - the desired ordinate for the end of the
-       *            new path segment.
+       * @param p - the target point of the path segment to
+       *            create.
        */
       void
-      add(float x, float y);
+      add(const Point& p);
 
       /**
        * @brief - Determine whether the current position on
@@ -161,10 +147,7 @@ namespace new_frontiers {
        *          assumed to be the current end of the path.
        * @param info - allowing to detect obstruction to reach
        *               the target.
-       * @param x - the abscissa of the target to which a path
-       *            should be generated.
-       * @param y - the ordinate of the target to which a path
-       *            should be generated.
+       * @param p - the point to generate a path to.
        * @param ignoreTargetObstruction - set this value to `true`
        *                                  in case obstruction of
        *                                  the target should be
@@ -174,7 +157,7 @@ namespace new_frontiers {
        *                                  block.
        */
       void
-      generatePathTo(StepInfo& info, float x, float y, bool ignoreTargetObstruction);
+      generatePathTo(StepInfo& info, const Point& p, bool ignoreTargetObstruction);
     };
 
     /**
@@ -183,37 +166,33 @@ namespace new_frontiers {
      *          provided in input.
      *          The final position of the segment is given
      *          by measuring `d` units along the direction.
-     * @param x - the starting abscissa of the segment.
-     * @param y - the starting ordinate of the segment.
+     * @param p - the starting position of the path segment.
      * @param xD - the abscissa for the direction.
      * @param yD - the ordinate for the direction.
      * @param d - the length of this path segment.
      * @return - the created path segment.
      */
     Segment
-    newSegment(float x, float y, float xD, float yD, float d) noexcept;
+    newSegment(const Point& p, float xD, float yD, float d) noexcept;
 
     /**
      * @brief - Create a new segment from a starting location
      *          and an end position.
-     * @param xS - the starting abscissa for this segment.
-     * @param yS - the starting ordinate for this segment.
-     * @param xT - the end abscissa for this segment.
-     * @param yT - the end ordinate for this segment.
+       * @param s - the starting point of the path segment.
+       * @param t - the target of the path segment.
      * @return - the created path segment.
      */
     Segment
-    newSegment(float xS, float yS, float xT, float yT) noexcept;
+    newSegment(const Point& s, const Point& t) noexcept;
 
     /**
      * @brief - Create a new path with the input position
      *          as default.
-     * @param x - the starting abscissa of the path.
-     * @param y - the starting ordinate of the path.
+     * @param p - the input position of the path.
      * @return - the created path.
      */
     Path
-    newPath(float x, float y) noexcept;
+    newPath(const Point& p) noexcept;
 
   }
 }

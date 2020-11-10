@@ -71,15 +71,15 @@ namespace new_frontiers {
       // segment until we either reach the end
       // of the path or don't travel enough to
       // do so.
-      float dToEofS = distance::d(xC, yC, segments[seg].xT, segments[seg].yT);
+      float dToEofS = distance::d(cur, segments[seg].end);
 
       while (traveled > dToEofS && seg < ss) {
         // Move along the path segment: as we
         // traveled far enough to complete the
         // path segment we can directly go to
         // the target point of the segment.
-        xC = segments[seg].xT;
-        yC = segments[seg].yT;
+        cur.x = segments[seg].end.x;
+        cur.y = segments[seg].end.y;
 
         // Finish this path segment and move to
         // the next one.
@@ -94,13 +94,13 @@ namespace new_frontiers {
         // end of the previous segment but as it
         // is not guaranteed, we will ensure it.
         if (seg < ss) {
-          xC = segments[seg].xS;
-          yC = segments[seg].yS;
+          cur.x = segments[seg].start.x;
+          cur.y = segments[seg].start.y;
         }
 
         // Initialize the distance to the end
         // of the path segment.
-        dToEofS = distance::d(xC, yC, segments[seg].xT, segments[seg].yT);
+        dToEofS = distance::d(cur, segments[seg].end);
       }
 
       // See whether we reached the end of the
@@ -113,25 +113,25 @@ namespace new_frontiers {
       }
 
       // Advance on the path of the amount left.
-      xC += traveled * segments[seg].xD;
-      yC += traveled * segments[seg].yD;
+      cur.x += traveled * segments[seg].xD;
+      cur.y += traveled * segments[seg].yD;
     }
 
     void
-    Path::generatePathTo(StepInfo& info, float x, float y, bool ignoreTargetObstruction) {
+    Path::generatePathTo(StepInfo& info, const Point& p, bool ignoreTargetObstruction) {
       // Convert to path semantic: the starting point
       // of the path segment will be the end of the
       // registered list of intermediate points. It
       // can correspond to the home position in case
       // no segments are defined.
-      float xS = xH, yS = yH;
+      Point s = home;
       if (seg >= 0) {
-        xS = segments[segments.size() - 1].xT;
-        yS = segments[segments.size() - 1].yT;
+        s = segments[segments.size() - 1].end;
       }
 
-      float xDir, yDir, d, xObs, yObs;
-      info.toDirection(xS, yS, x, y, xDir, yDir, d);
+      float xDir, yDir, d;
+      Point obsP;
+      info.toDirection(s, p, xDir, yDir, d);
 
       // TODO: What happens when we don't want to
       // ignore obstruction of the target but the
@@ -146,8 +146,8 @@ namespace new_frontiers {
       // an unobstructed path to the target. This
       // could very well be right away in case the
       // path is directly visible.
-      std::vector<float> points;
-      std::vector<float> steps;
+      std::vector<Point> points;
+      std::vector<Point> steps;
 
       bool pathNotClear = true;
       int count = 0;
@@ -160,21 +160,18 @@ namespace new_frontiers {
         // the home coordinates: for the rest we
         // assume that we won't try to register
         // the same position more than once.
-        steps.push_back(xS);
-        steps.push_back(yS);
+        steps.push_back(s);
+        points.push_back(s);
 
-        points.push_back(xS);
-        points.push_back(yS);
-
-        std::vector<float> iPoints;
-        bool obs = info.frustum->obstructed(xS, yS, xDir, yDir, d, iPoints, &xObs, &yObs);
+        std::vector<Point> iPoints;
+        bool obs = info.frustum->obstructed(s, xDir, yDir, d, iPoints, &obsP);
 
         // If the path is obstructed, we need to
         // march on the border of the obstacle
         // until we walk around it. Note that we
         // only consider an obstruction if the
         // input argument says so.
-        bool obsWithinTarget = (std::abs(xObs - x) < 1.0f && std::abs(yObs - y) < 1.0f);
+        bool obsWithinTarget = (std::abs(obsP.x - p.x) < 1.0f && std::abs(obsP.y - p.y) < 1.0f);
 
         // We want to process the potential
         // intersection only if it is meaningful.
@@ -194,10 +191,10 @@ namespace new_frontiers {
 
         if (!pathNotClear) {
           points.insert(points.end(), iPoints.cbegin(), iPoints.cend());
-          std::cout << "[PATH][" << segments.size() << "] start: " << xS << "x" << yS
-                    << " to " << x << "x" << y
+          std::cout << "[PATH][" << segments.size() << "] start: " << s.x << "x" << s.y
+                    << " to " << p.x << "x" << p.y
                     << " is unobstructed, registering "
-                    << xS << "x" << yS
+                    << s.x << "x" << s.y
                     << std::endl;
         }
         else {
@@ -224,58 +221,52 @@ namespace new_frontiers {
           // last valid position along the path.
           // We can then start from there the search
           // for a path around the obstacle.
-          float xStop = xS;
-          float yStop = yS;
+          Point pStop = s;
 
-          if (iPoints.size() > 4) {
+          if (iPoints.size() > 2u) {
             // Note that as we already pushed the
             // steps related to the start position
             // we will start at the second point
             // reached by the obstruction detection
-            // process. This might mean that we
-            // don't register anything.
-            for (unsigned id = 2u ; id < iPoints.size() / 2u - 1u ; ++id) {
-              points.push_back(iPoints[2u * id]);
-              points.push_back(iPoints[2u * id + 1u]);
+            // process. This mean that we might not
+            // register anything.
+            for (unsigned id = 1u ; id < iPoints.size() - 1u ; ++id) {
+              points.push_back(iPoints[id]);
             }
 
-            xStop = iPoints[iPoints.size() - 4u];
-            yStop = iPoints[iPoints.size() - 3u];
-
-            steps.push_back(xStop);
-            steps.push_back(yStop);
+            pStop = iPoints[iPoints.size() - 2u];
+            steps.push_back(pStop);
           }
 
-          float xSave = xS, ySave = yS;
+          float xSave = s.x, ySave = s.y;
 
           // Update the starting position and direction
           // by placing the next intermediate position
           // one cell on the direction of `dPara`.
-          xS = xStop;
-          yS = yStop;
+          s = pStop;
 
           switch (dPara) {
             case Axis::X:
-              xS += sPara;
+              s.x += sPara;
               break;
             case Axis::Y:
             default:
-              yS += sPara;
+              s.y += sPara;
               break;
           }
 
           std::cout << "[PATH][" << segments.size() << "] start: " << xSave << "x" << ySave
-                    << " to " << x << "x" << y
+                    << " to " << p.x << "x" << p.y
                     << " is obstructed at "
-                    << xObs << "x" << yObs
+                    << obsP.x << "x" << obsP.y
                     << ", (d: " << xDir << "x" << yDir << ")"
-                    << " stop: " << xStop << "x" << yStop
+                    << " stop: " << pStop.x << "x" << pStop.y
                     << ", registering: " << xSave << "x" << ySave
-                    << " and " << xStop << "x" << yStop
-                    << ", starting from " << xS << "x" << yS
+                    << " and " << pStop.x << "x" << pStop.y
+                    << ", starting from " << s.x << "x" << s.y
                     << std::endl;
 
-          info.toDirection(xS, yS, x, y, xDir, yDir, d);
+          info.toDirection(s, p, xDir, yDir, d);
         }
 
         ++count;
@@ -283,13 +274,13 @@ namespace new_frontiers {
 
       // Once a valid path is built, register it
       // as the actual path.
-      for (unsigned id = 0u ; id < steps.size() / 2u ; ++id) {
+      for (unsigned id = 0u ; id < steps.size() ; ++id) {
         std::cout << "[PATH][END][" << segments.size() << "] registering "
-                  << steps[2u * id] << "x" << steps[2u * id + 1u]
+                  << steps[id].x << "x" << steps[id].y
                   << std::endl;
-        add(steps[2u * id], steps[2u * id + 1u]);
+        add(steps[id]);
       }
-      add(x, y);
+      add(p);
 
       cPoints.swap(points);
     }

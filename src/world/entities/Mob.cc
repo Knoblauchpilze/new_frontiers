@@ -7,8 +7,7 @@ namespace new_frontiers {
   Mob::Mob(const MProps& props):
     Entity(props),
 
-    m_homeX(props.homeX),
-    m_homeY(props.homeY),
+    m_home(Point{props.homeX, props.homeY}),
 
     m_carrying(std::max(std::min(props.cargo, props.carrying), 0.0f)),
     m_cargo(std::max(props.cargo, 0.0f)),
@@ -45,7 +44,7 @@ namespace new_frontiers {
   }
 
   void
-  Mob::pickRandomTarget(StepInfo& info, float xS, float yS, float& x, float& y) noexcept {
+  Mob::pickRandomTarget(StepInfo& info, const Point& r, float& x, float& y) noexcept {
     // Pick a random location within the radius of the
     // motion for this entity. We will use the locator
     // to determine if any element is obstructing the
@@ -53,7 +52,7 @@ namespace new_frontiers {
     // We want at least a path of `m_speed` long so as
     // to have a traversal duration of at least 1ms.
     // we also take a bit of margin for good measure.
-    float r = info.rng.rndFloat(m_pathLength / 2.0f, m_pathLength);
+    float d = info.rng.rndFloat(m_pathLength / 2.0f, m_pathLength);
     float theta = info.rng.rndAngle();
 
     float xDir = std::cos(theta);
@@ -61,21 +60,21 @@ namespace new_frontiers {
 
     // Clamp these coordinates and update the direction
     // based on that.
-    info.clampPath(xS, yS, xDir, yDir, r);
+    info.clampPath(r, xDir, yDir, d);
 
-    while (info.frustum->obstructed(xS, yS, xDir, yDir, r, m_path.cPoints)) {
-      r = info.rng.rndFloat(m_pathLength / 2.0f, m_pathLength);
+    while (info.frustum->obstructed(r, xDir, yDir, d, m_path.cPoints)) {
+      d = info.rng.rndFloat(m_pathLength / 2.0f, m_pathLength);
       theta = info.rng.rndAngle();
 
       xDir = std::cos(theta);
       yDir = std::sin(theta);
 
-      info.clampPath(xS, yS, xDir, yDir, r);
+      info.clampPath(r, xDir, yDir, d);
     }
 
     // Save the picked location.
-    x = xS + r * xDir;
-    y = yS + r * yDir;
+    x = r.x + d * xDir;
+    y = r.y + d * yDir;
   }
 
   Mob::Thought
@@ -86,7 +85,7 @@ namespace new_frontiers {
     Thought t;
     t.behaviorChanged = false;
     t.actionTaken = false;
-    t.path = path::newPath(m_tile.x, m_tile.y);
+    t.path = path::newPath(m_tile.p);
 
     switch (s) {
       case Behavior::Chase:
