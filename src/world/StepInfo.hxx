@@ -15,24 +15,30 @@ namespace new_frontiers {
 
   inline
   void
-  StepInfo::clampPath(float xS, float yS, float& xD, float& yD, float& d) const noexcept {
+  StepInfo::clampCoord(Point& p) const noexcept {
+    p.x = std::min(std::max(p.x, xMin), xMax);
+    p.y = std::min(std::max(p.y, yMin), yMax);
+  }
+
+  inline
+  void
+  StepInfo::clampPath(const Point& s, float& xD, float& yD, float& d) const noexcept {
     // Compute expected final position.
-    float xT = xS + xD * d;
-    float yT = yS + yD * d;
+    Point t;
+    t.x = s.x + xD * d;
+    t.y = s.y + yD * d;
 
     // Clamp these coordinates.
-    clampCoord(xT, yT);
+    clampCoord(t);
 
     // Reevaluate the direction from there.
-    toDirection(xS, yS, xT, yT, xD, yD, d);
+    toDirection(s, t, xD, yD, d);
   }
 
   inline
   bool
-  StepInfo::toDirection(float xS,
-                        float yS,
-                        float xT,
-                        float yT,
+  StepInfo::toDirection(const Point& s,
+                        const Point& t,
                         float& xD,
                         float& yD,
                         float& d,
@@ -41,10 +47,10 @@ namespace new_frontiers {
     // Compute the direction and compute
     // the length and a unit vector from
     // there.
-    xD = xT - xS;
-    yD = yT - yS;
+    xD = t.x - s.x;
+    yD = t.y - s.y;
 
-    d = distance::d(xS, yS, xT, yT);
+    d = distance::d(s, t);
     bool notZeroLength = (d > threshold);
 
     if (notZeroLength) {

@@ -2,6 +2,7 @@
 # define   MOB_HH
 
 # include "Entity.hh"
+# include "Point.hh"
 # include "../effects/Pheromon.hh"
 
 namespace new_frontiers {
@@ -166,13 +167,12 @@ namespace new_frontiers {
        *          from which an unobstructed path can be drawn
        *          starting at the input position.
        * @param info - a random number generator.
-       * @param xS - the starting abscissa for the random target.
-       * @param yS - the starting ordinate for the random target.
+       * @param r - the position for the random target.
        * @param x - the target abscissa of the mob.
        * @param y - the target ordinate of the mob.
        */
       void
-      pickRandomTarget(StepInfo& info, float xS, float yS, float& x, float& y) noexcept;
+      pickRandomTarget(StepInfo& info, const Point& r, float& x, float& y) noexcept;
 
     private:
 
@@ -208,15 +208,10 @@ namespace new_frontiers {
     protected:
 
       /**
-       * @brief - The home abscissa of this mob. Used when the
+       * @brief - The home position of this mob. Used when the
        *          entity needs to come back home.
        */
-      float m_homeX;
-
-      /**
-       * @brief - Ordniate of the home position of the mob.
-       */
-      float m_homeY;
+      Point m_home;
 
       /**
        * @brief - The amount of a resource that is carried by

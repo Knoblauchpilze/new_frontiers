@@ -2,6 +2,7 @@
 # define   TILES_HH
 
 # include <string>
+# include "Point.hh"
 
 namespace new_frontiers {
 
@@ -120,8 +121,7 @@ namespace new_frontiers {
    */
   template <typename TileType>
   struct Tile {
-    float x;
-    float y;
+    Point p;
     TileType type;
     int id;
   };

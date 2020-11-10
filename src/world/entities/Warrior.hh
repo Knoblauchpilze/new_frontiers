@@ -58,11 +58,10 @@ namespace new_frontiers {
        *          might lead to their 'owners'.
        * @param info - information about the surroundings of
        *               the warrior.
-       * @param x - the abscissa of the output position.
-       * @param y - the ordinate of the output position.
+       * @param p - the output position picked from pheromons.
        */
       void
-      pickTargetFromPheromon(StepInfo& info, float& x, float& y) noexcept;
+      pickTargetFromPheromon(StepInfo& info, Point& p) noexcept;
 
     private:
 

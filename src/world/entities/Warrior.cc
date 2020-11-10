@@ -25,8 +25,7 @@ namespace new_frontiers {
     world::Filter f{getOwner(), false};
     tiles::Entity* te = nullptr;
     std::vector<EntityShPtr> entities = info.frustum->getVisible(
-      m_tile.x,
-      m_tile.y,
+      m_tile.p,
       m_perceptionRadius,
       te,
       -1,
@@ -34,16 +33,16 @@ namespace new_frontiers {
       world::Sort::Distance
     );
 
-    float x, y;
+    Point p;
 
     if (entities.empty()) {
       // Couldn't find the entity we were chasing, get
       // back to wander behavior.
-      log("Lost entity at " + std::to_string(m_tile.x) + "x" + std::to_string(m_tile.y));
+      log("Lost entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y));
 
       setBehavior(Behavior::Wander);
-      pickTargetFromPheromon(info, x, y);
-      path.generatePathTo(info, x, y, false);
+      pickTargetFromPheromon(info, p);
+      path.generatePathTo(info, p, false);
 
       return true;
     }
@@ -54,8 +53,8 @@ namespace new_frontiers {
     // Update the target with the actual position of
     // the entity: indeed the entity may be moving
     // so we want to accurately chase it.
-    path.clear(m_tile.x, m_tile.y);
-    path.generatePathTo(info, e->getTile().x, e->getTile().y, false);
+    path.clear(m_tile.p);
+    path.generatePathTo(info, e->getTile().p, false);
 
     // In case we are close enough of the entity to
     // actually hit it, do so if we are able to.
@@ -69,13 +68,13 @@ namespace new_frontiers {
       // now dead. We will also return back to the
       // wandering behavior.
       if (!alive) {
-        log("Killed entity at " + std::to_string(e->getTile().x) + "x" + std::to_string(e->getTile().y));
+        log("Killed entity at " + std::to_string(e->getTile().p.x) + "x" + std::to_string(e->getTile().p.y));
 
         info.removeEntity(e.get());
 
         setBehavior(Behavior::Wander);
-        pickTargetFromPheromon(info, x, y);
-        path.generatePathTo(info, x, y, false);
+        pickTargetFromPheromon(info, p);
+        path.generatePathTo(info, p, false);
 
         return true;
       }
@@ -94,14 +93,14 @@ namespace new_frontiers {
       return false;
     }
 
-    float x, y;
+    Point p;
 
     // We have reached home, do nothing and wait for
     // new instructions. We need to make sure that
     // we are actually close to home (and that it did
     // not get destroyed for some reasons).
     world::Filter f{getOwner(), true};
-    world::ItemEntry ie = info.frustum->getClosest(m_tile.x, m_tile.y, world::ItemType::Block, f);
+    world::ItemEntry ie = info.frustum->getClosest(m_tile.p, world::ItemType::Block, f);
     world::Block b;
 
     if (ie.index >= 0 && ie.type == world::ItemType::Block) {
@@ -110,8 +109,8 @@ namespace new_frontiers {
 
     if (ie.index < 0 || ie.type != world::ItemType::Block || b.tile.type != tiles::Portal) {
       setBehavior(Behavior::Wander);
-      pickTargetFromPheromon(info, x, y);
-      path.generatePathTo(info, x, y, false);
+      pickTargetFromPheromon(info, p);
+      path.generatePathTo(info, p, false);
 
       return true;
     }
@@ -130,8 +129,7 @@ namespace new_frontiers {
     world::Filter f{getOwner(), false};
     tiles::Entity* te = nullptr;
     std::vector<EntityShPtr> entities = info.frustum->getVisible(
-      m_tile.x,
-      m_tile.y,
+      m_tile.p,
       m_perceptionRadius,
       te,
       -1,
@@ -148,9 +146,9 @@ namespace new_frontiers {
         return false;
       }
 
-      float x, y;
-      pickTargetFromPheromon(info, x, y);
-      path.generatePathTo(info, x, y, false);
+      Point p;
+      pickTargetFromPheromon(info, p);
+      path.generatePathTo(info, p, false);
 
       return true;
     }
@@ -164,29 +162,29 @@ namespace new_frontiers {
     // Assign the target to the closest entities:
     // as we requested the list to be sorted we
     // can pick the first one.
-    path.generatePathTo(info, e->getTile().x, e->getTile().y, false);
+    path.generatePathTo(info, e->getTile().p, false);
 
     return true;
   }
 
   void
-  Warrior::pickTargetFromPheromon(StepInfo& info, float& x, float& y) noexcept {
+  Warrior::pickTargetFromPheromon(StepInfo& info, Point& p) noexcept {
     // Collect the pheromons laid out by ennemis of
     // this warrior.
     world::Filter f{getOwner(), false};
     tiles::Effect* te = nullptr;
-    std::vector<VFXShPtr> d = info.frustum->getVisible(m_tile.x, m_tile.y, m_perceptionRadius, te, -1, &f);
+    std::vector<VFXShPtr> d = info.frustum->getVisible(m_tile.p, m_perceptionRadius, te, -1, &f);
 
     // We will need a random target so better compute
     // it right now.
     float xRnd, yRnd;
-    pickRandomTarget(info, m_tile.x, m_tile.y, xRnd, yRnd);
+    pickRandomTarget(info, m_tile.p, xRnd, yRnd);
 
     // In case no pheromons are visible use the
     // default wandering behavior.
     if (d.empty()) {
-      x = xRnd;
-      y = yRnd;
+      p.x = xRnd;
+      p.y = yRnd;
 
       return;
     }
@@ -219,7 +217,7 @@ namespace new_frontiers {
     // of pheromons will be handled directly.
     pa.computeTarget(xRnd, yRnd);
 
-    x = xRnd;
-    y = yRnd;
+    p.x = xRnd;
+    p.y = yRnd;
   }
 }

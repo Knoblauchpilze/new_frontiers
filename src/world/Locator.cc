@@ -28,14 +28,12 @@ namespace new_frontiers {
   }
 
   bool
-  Locator::obstructed(float x,
-                      float y,
+  Locator::obstructed(Point p,
                       float xDir,
                       float yDir,
                       float d,
-                      std::vector<float>& cPoints,
-                      float* xObs,
-                      float* yObs) const noexcept
+                      std::vector<Point>& cPoints,
+                      Point* obs) const noexcept
   {
     // We basically need to find which cells are 'under' the
     // line when it spans its path so as to determine whether
@@ -53,11 +51,12 @@ namespace new_frontiers {
     // precisely where we sample the path.
     // We chose to use half a tile dims as a sample path in
     // order to be precise enough.
-    float xT = x + d * xDir;
-    float yT = y + d * yDir;
+    Point end;
+    end.x = p.x + d * xDir;
+    end.y = p.y + d * yDir;
 
-    int xo = static_cast<int>(x);
-    int yo = static_cast<int>(y);
+    int xo = static_cast<int>(p.x);
+    int yo = static_cast<int>(p.y);
 
     // Compute the step to add on the path for each sampling:
     // it is extracted from the initial normalized that we
@@ -88,11 +87,10 @@ namespace new_frontiers {
       // Prevent the initial cell to be considered
       // as obstructed: this allow objects that get
       // stuck to be able to move out.
-      xi = static_cast<int>(x);
-      yi = static_cast<int>(y);
+      xi = static_cast<int>(p.x);
+      yi = static_cast<int>(p.y);
 
-      cPoints.push_back(x);
-      cPoints.push_back(y);
+      cPoints.push_back(p);
 
       obstruction = (xi != xo || yi != yo) && (m_blocksIDs.count(yi * m_w + xi) > 0);
 
@@ -105,8 +103,8 @@ namespace new_frontiers {
 # endif
 
       if (!obstruction) {
-        x += xDir;
-        y += yDir;
+        p.x += xDir;
+        p.y += yDir;
 
         t += 0.5f;
       }
@@ -115,30 +113,23 @@ namespace new_frontiers {
     // In case an obstruction was detected we
     // don't need to check for the last cell.
     if (obstruction) {
-      if (xObs != nullptr) {
-        *xObs = xi;
-      }
-      if (yObs != nullptr) {
-        *yObs = yi;
+      if (obs != nullptr) {
+        *obs = p;
       }
 
       return true;
     }
 
     // Check obstruction for the final cell.
-    xi = static_cast<int>(xT);
-    yi = static_cast<int>(yT);
+    xi = static_cast<int>(end.x);
+    yi = static_cast<int>(end.y);
 
-    cPoints.push_back(xT);
-    cPoints.push_back(yT);
+    cPoints.push_back(end);
 
     obstruction = (m_blocksIDs.count(yi * m_w + xi) > 0);
     if (obstruction) {
-      if (xObs != nullptr) {
-        *xObs = xi;
-      }
-      if (yObs != nullptr) {
-        *yObs = yi;
+      if (obs != nullptr) {
+        *obs = end;
       }
     }
 
@@ -166,7 +157,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
         const BlockTile& t = m_blocks[id]->getTile();
 
-        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+        if (t.p.x < xMin || t.p.x > xMax || t.p.y < yMin || t.p.y > yMax) {
           continue;
         }
 
@@ -188,7 +179,7 @@ namespace new_frontiers {
         }
 
         ie.index = id;
-        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        entries.push_back(SortEntry{t.p, static_cast<unsigned>(out.size())});
         out.push_back(ie);
       }
     }
@@ -200,7 +191,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
         const EntityTile& t = m_entities[id]->getTile();
 
-        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+        if (t.p.x < xMin || t.p.x > xMax || t.p.y < yMin || t.p.y > yMax) {
           continue;
         }
 
@@ -217,7 +208,7 @@ namespace new_frontiers {
         }
 
         ie.index = id;
-        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        entries.push_back(SortEntry{t.p, static_cast<unsigned>(out.size())});
         out.push_back(ie);
       }
     }
@@ -229,7 +220,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
         const VFXTile& t = m_vfxs[id]->getTile();
 
-        if (t.x < xMin || t.x > xMax || t.y < yMin || t.y > yMax) {
+        if (t.p.x < xMin || t.p.x > xMax || t.p.y < yMin || t.p.y > yMax) {
           continue;
         }
 
@@ -246,7 +237,7 @@ namespace new_frontiers {
         }
 
         ie.index = id;
-        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        entries.push_back(SortEntry{t.p, static_cast<unsigned>(out.size())});
         out.push_back(ie);
       }
     }
@@ -260,7 +251,7 @@ namespace new_frontiers {
         // `z` order: indeed we don't have any ref
         // point to sort by distance so it would be
         // pointless anyway.
-        return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
+        return lhs.p.x < rhs.p.x || (lhs.p.x == rhs.p.x && lhs.p.y < rhs.p.y);
       };
 
       std::sort(entries.begin(), entries.end(), cmp);
@@ -279,8 +270,7 @@ namespace new_frontiers {
   }
 
   std::vector<world::ItemEntry>
-  Locator::getVisible(float x,
-                      float y,
+  Locator::getVisible(const Point& p,
                       float r,
                       const world::ItemType* type,
                       const world::Filter* filter,
@@ -299,7 +289,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
         const BlockTile& t = m_blocks[id]->getTile();
 
-        if (r > 0.0f && distance::d2(t.x + 0.5f, t.y + 0.5f, x, y) > r2) {
+        if (r > 0.0f && distance::d2(t.p.x + 0.5f, t.p.y + 0.5f, p.x, p.y) > r2) {
           continue;
         }
 
@@ -321,7 +311,7 @@ namespace new_frontiers {
         }
 
         ie.index = id;
-        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        entries.push_back(SortEntry{t.p, static_cast<unsigned>(out.size())});
         out.push_back(ie);
       }
     }
@@ -333,7 +323,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
         const EntityTile& t = m_entities[id]->getTile();
 
-        if (r > 0.0f && distance::d2(t.x, t.y, x, y) > r2) {
+        if (r > 0.0f && distance::d2(t.p.x, t.p.y, p.x, p.y) > r2) {
           continue;
         }
 
@@ -350,7 +340,7 @@ namespace new_frontiers {
         }
 
         ie.index = id;
-        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        entries.push_back(SortEntry{t.p, static_cast<unsigned>(out.size())});
         out.push_back(ie);
       }
     }
@@ -362,7 +352,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
         const VFXTile& t = m_vfxs[id]->getTile();
 
-        if (r > 0.0f && distance::d2(t.x, t.y, x, y) > r2) {
+        if (r > 0.0f && distance::d2(t.p, p) > r2) {
           continue;
         }
 
@@ -379,7 +369,7 @@ namespace new_frontiers {
         }
 
         ie.index = id;
-        entries.push_back(SortEntry{t.x, t.y, static_cast<unsigned>(out.size())});
+        entries.push_back(SortEntry{t.p, static_cast<unsigned>(out.size())});
         out.push_back(ie);
       }
     }
@@ -388,15 +378,15 @@ namespace new_frontiers {
     // vector.
     if (sort != world::Sort::None) {
       // Sort the entries by ascending `z` order.
-      auto cmp = [&sort, &x, &y](const SortEntry& lhs, const SortEntry& rhs) {
+      auto cmp = [&sort, &p](const SortEntry& lhs, const SortEntry& rhs) {
         switch (sort) {
           case world::Sort::Distance:
-            return distance::d(x, y, lhs.x, lhs.y) < distance::d(x, y, rhs.x, rhs.y);
+            return distance::d(p, lhs.p) < distance::d(p, rhs.p);
           case world::Sort::ZOrder:
             // Use `z` order as default sorting alg
             // in case the input is unknown.
           default:
-            return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
+            return lhs.p.x < rhs.p.x || (lhs.p.x == rhs.p.x && lhs.p.y < rhs.p.y);
         }
       };
 
@@ -421,7 +411,7 @@ namespace new_frontiers {
     for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
       const BlockTile& bt = m_blocks[id]->getTile();
 
-      m_blocksIDs.insert(static_cast<int>(bt.y) * m_w + static_cast<int>(bt.x));
+      m_blocksIDs.insert(static_cast<int>(bt.p.y) * m_w + static_cast<int>(bt.p.x));
     }
   }
 

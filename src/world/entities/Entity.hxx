@@ -48,7 +48,7 @@ namespace new_frontiers {
   inline
   PheromonShPtr
   Entity::spawnPheromon(const pheromon::Type& type) const noexcept {
-    Pheromon::PProps pp = PheromonFactory::newPheromonProps(m_tile.x, m_tile.y, type);
+    Pheromon::PProps pp = PheromonFactory::newPheromonProps(m_tile.p.x, m_tile.p.y, type);
 
     pp.radius = getRadius();
     pp.type = type;

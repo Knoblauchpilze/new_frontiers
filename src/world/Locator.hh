@@ -250,8 +250,8 @@ namespace new_frontiers {
        *          of the starting position.
        *          Note that we don't consider the first cell
        *          to be a valid candidate for obstruction.
-       * @param x - the starting abscissa of the path.
-       * @param y - the ordinate of the path.
+       * @param p - the starting position of the path which
+       *            needs to be checked for obstruction.
        * @param xDir - the direction of the ray along the `x`
        *               axis.
        * @param yDir - the direction of the ray along the `y`
@@ -259,24 +259,19 @@ namespace new_frontiers {
        * @param d - the distance to check for obstruction.
        * @param cPoints - the list of points considered in
        *                  the obsctruction process.
-       * @param xObs - if not `null` will output the abscissa
-       *               of the first obstruction. Only relevant
-       *               if the return value is `true`.
-       * @param yObs - if not `null` will output the ordinate
+       * @param obs - if not `null` will output the position
        *               of the first obstruction. Only relevant
        *               if the return value is `true`.
        * @return - `true` if the path is obstructed by any
        *           solid element.
        */
       bool
-      obstructed(float x,
-                 float y,
+      obstructed(Point p,
                  float xDir,
                  float yDir,
                  float d,
-                 std::vector<float>& cPoints,
-                 float* xObs = nullptr,
-                 float* yObs = nullptr) const noexcept;
+                 std::vector<Point>& cPoints,
+                 Point* obs = nullptr) const noexcept;
 
       /**
        * @brief - Return the list of items that are visible
@@ -320,10 +315,8 @@ namespace new_frontiers {
        *          The area in which elements should be fetched
        *          is described through a circle with a center
        *          and a radius.
-       * @param x - the abscissa of the center of the area to
-       *            search for.
-       * @param y - the ordinate of the center of the area to
-       *            search for.
+       * @param p - the position of the point from which a set
+       *            of visible elements should be found.
        * @param r - the radius of the area to search for. If
        *            this value is negative there's no limits
        *            to the distance between the element and the
@@ -340,8 +333,7 @@ namespace new_frontiers {
        *           specified area.
        */
       std::vector<world::ItemEntry>
-      getVisible(float x,
-                 float y,
+      getVisible(const Point& p,
                  float r,
                  const world::ItemType* type = nullptr,
                  const world::Filter* filter = nullptr,
@@ -353,12 +345,8 @@ namespace new_frontiers {
        *          the available items.
        *          In case there are no elements to return
        *          the output will have a negative index.
-       * @param x - the abscissa of the position from
-       *            which the closest block should be
-       *            found.
-       * @param y - the ordinate of the position from
-       *            which the closest block should be
-       *            found.
+       * @param p - the position of the position from which
+       *            an element should be found.
        * @param type - the type of the element to search
        *               for.
        * @param filters - include a description of a uuid and
@@ -369,8 +357,7 @@ namespace new_frontiers {
        *           found.
        */
       world::ItemEntry
-      getClosest(float x,
-                 float y,
+      getClosest(const Point& p,
                  const world::ItemType& type,
                  const world::Filter& filter) const noexcept;
 
@@ -378,10 +365,8 @@ namespace new_frontiers {
        * @brief - Specialization of the `getVisible` method
        *          to fetch visible blocks in a certain area
        *          and return this as a list of blocks.
-       * @param x - the abscissa of the center of the area
-       *            to consider.
-       * @param y - the ordinate of the center of the area
-       *            to consider.
+       * @param p - the position of the center of the area to
+       *            consider.
        * @param r - the radius of the area to consider.
        * @param bTile - the type of the blocks to consider.
        *                If this value is `null` any block
@@ -397,8 +382,7 @@ namespace new_frontiers {
        * @return - the list of blocks.
        */
       std::vector<BlockShPtr>
-      getVisible(float x,
-                 float y,
+      getVisible(const Point& p,
                  float r,
                  const tiles::Block* bTile,
                  int id = -1,
@@ -409,10 +393,8 @@ namespace new_frontiers {
        * @brief - Specialization of the `getVisible` method
        *          to fetch visible entities in a certain area
        *          and return this as a list of entities.
-       * @param x - the abscissa of the center of the area
-       *            to consider.
-       * @param y - the ordinate of the center of the area
-       *            to consider.
+       * @param p - the position of the center of the area to
+       *            consider.
        * @param r - the radius of the area to consider.
        * @param eTile - the type of the entity to consider.
        *                If this value is `null` any entity
@@ -428,8 +410,7 @@ namespace new_frontiers {
        * @return - the list of entities.
        */
       std::vector<EntityShPtr>
-      getVisible(float x,
-                 float y,
+      getVisible(const Point& p,
                  float r,
                  const tiles::Entity* eTile,
                  int id = -1,
@@ -440,10 +421,8 @@ namespace new_frontiers {
        * @brief - Specialization of the `getVisible` method
        *          to fetch visible VFXs in a certain area
        *          and return this as a list of VFXs.
-       * @param x - the abscissa of the center of the area
-       *            to consider.
-       * @param y - the ordinate of the center of the area
-       *            to consider.
+       * @param p - the position of the center of the area to
+       *            consider.
        * @param r - the radius of the area to consider.
        * @param vTile - the type of the VFX to consider.
        *                If this value is `null` any VFX
@@ -459,8 +438,7 @@ namespace new_frontiers {
        * @return - the list of VFXs.
        */
       std::vector<VFXShPtr>
-      getVisible(float x,
-                 float y,
+      getVisible(const Point& p,
                  float r,
                  const tiles::Effect* vTile,
                  int id = -1,
@@ -470,9 +448,7 @@ namespace new_frontiers {
       /**
        * @brief - Similar to the `getVisible` but only returns
        *          the closest block from the total visible list.
-       * @param x - the abscissa of the center of the area to
-       *            consider.
-       * @param y - the ordinate of the center of the area to
+       * @param p - the position of the center of the area to
        *            consider.
        * @param bTile - the type of the blocks to consider. If
        *                this value is `null` any block will be
@@ -487,8 +463,7 @@ namespace new_frontiers {
        * @return - the list of blocks.
        */
       BlockShPtr
-      getClosest(float x,
-                 float y,
+      getClosest(const Point& p,
                  const tiles::Block& bTile,
                  float r = -1.0f,
                  int id = -1,
@@ -497,9 +472,7 @@ namespace new_frontiers {
       /**
        * @brief - Similar to the `getVisible` but only returns
        *          the closest entity from the total visible list.
-       * @param x - the abscissa of the center of the area to
-       *            consider.
-       * @param y - the ordinate of the center of the area to
+       * @param p - the position of the center of the area to
        *            consider.
        * @param bTile - the type of the entities to consider. If
        *                this value is `null` any entity will be
@@ -514,8 +487,7 @@ namespace new_frontiers {
        * @return - the list of entities.
        */
       EntityShPtr
-      getClosest(float x,
-                 float y,
+      getClosest(const Point& p,
                  const tiles::Entity& eTile,
                  float r = -1.0f,
                  int id = -1,
@@ -538,8 +510,7 @@ namespace new_frontiers {
        *          sorting of tiles and entities.
        */
       struct SortEntry {
-        float x;
-        float y;
+        Point p;
         unsigned id;
       };
 

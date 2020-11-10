@@ -10,7 +10,10 @@ namespace new_frontiers {
     inline
     float
     Segment::length() const noexcept {
-      return std::sqrt((xT - xS) * (xT - xS) + (yT - yS) * (yT - yS));
+      return std::sqrt(
+        (end.x - start.x) * (end.x - start.x) +
+        (end.y - start.y) * (end.y - start.y)
+      );
     }
 
     inline
@@ -18,12 +21,12 @@ namespace new_frontiers {
     Segment::normalize(const StepInfo& info) {
       // Normalize starting location and also the
       // end location.
-      info.clampCoord(xS, yS);
-      info.clampCoord(xT, yT);
+      info.clampCoord(start);
+      info.clampCoord(end);
 
       // Update direction for this segment.
-      xD = xT - xS;
-      yD = yT - yS;
+      xD = end.x - start.x;
+      yD = end.y - start.y;
 
       float d = length();
       if (d > 0.0001f) {
@@ -40,13 +43,10 @@ namespace new_frontiers {
 
     inline
     void
-    Path::clear(float x, float y) {
+    Path::clear(const Point& p) {
       // Assign home and current position.
-      xH = x;
-      yH = y;
-
-      xC = x;
-      yC = y;
+      home = p;
+      cur = p;
 
       // Reset segments.
       seg = -1;
@@ -54,22 +54,21 @@ namespace new_frontiers {
 
       // Reset temporary passage points.
       cPoints.clear();
-      addPassagePoint(x, y);
+      addPassagePoint(p);
     }
 
     inline
     void
-    Path::addPassagePoint(float x, float y) {
-      cPoints.push_back(x);
-      cPoints.push_back(y);
+    Path::addPassagePoint(const Point& p) {
+      cPoints.push_back(p);
     }
 
     inline
     void
-    Path::add(float x, float y, float xD, float yD, float d) {
-      Segment s = newSegment(x, y, xD, yD, d);
+    Path::add(const Point& p, float xD, float yD, float d) {
+      Segment s = newSegment(p, xD, yD, d);
       segments.push_back(s);
-      addPassagePoint(s.xT, s.yT);
+      addPassagePoint(s.end);
 
       // Make the entity on the first segment.
       if (seg < 0) {
@@ -79,10 +78,10 @@ namespace new_frontiers {
 
     inline
     void
-    Path::add(float xS, float yS, float xT, float yT) {
-      Segment s = newSegment(xS, yS, xT, yT);
-      segments.push_back(s);
-      addPassagePoint(s.xT, s.yT);
+    Path::add(const Point& s, const Point& t) {
+      Segment se = newSegment(s, t);
+      segments.push_back(se);
+      addPassagePoint(se.end);
 
       // Make the entity on the first segment.
       if (seg < 0) {
@@ -92,13 +91,13 @@ namespace new_frontiers {
 
     inline
     void
-    Path::add(float x, float y) {
+    Path::add(const Point& p) {
       if (seg < 0) {
         // We want to make sure that we don't
         // register the home position once
         // again.
-        if (xH != x || yH != y) {
-          add(xH, yH, x, y);
+        if (home.x != p.x || home.y != p.y) {
+          add(home, p);
         }
         else {
           std::cout << "[PATH] Prevented double registration" << std::endl;
@@ -106,7 +105,7 @@ namespace new_frontiers {
       }
       else {
         const Segment s = segments.back();
-        add(s.xT, s.yT, x, y);
+        add(s.end, p);
       }
     }
 
@@ -122,62 +121,56 @@ namespace new_frontiers {
         return false;
       }
 
-      return (seg < ss - 1) || distance::d(segments[seg].xT, segments[seg].yT, xC, yC) > threshold;
+      return (seg < ss - 1) || distance::d(segments[seg].end, cur) > threshold;
     }
 
     inline
     Segment
-    newSegment(float x, float y, float xD, float yD, float d) noexcept {
+    newSegment(const Point& p, float xD, float yD, float d) noexcept {
       Segment s;
 
-      s.xS = x;
-      s.yS = y;
+      s.start = p;
       s.xD = xD;
       s.yD = yD;
 
-      s.xT = s.xS + d * s.xD;
-      s.yT = s.yS + d * s.yD;
+      s.end.x = s.start.x + d * s.xD;
+      s.end.y = s.start.y + d * s.yD;
 
       return s;
     }
 
     inline
     Segment
-    newSegment(float xS, float yS, float xT, float yT) noexcept {
-      Segment s;
+    newSegment(const Point& s, const Point& t) noexcept {
+      Segment se;
 
-      s.xS = xS;
-      s.yS = yS;
-      s.xT = xT;
-      s.yT = yT;
+      se.start = s;
+      se.end = t;
 
-      s.xD = s.xT - s.xS;
-      s.yD = s.yT - s.yS;
+      se.xD = se.end.x - se.start.x;
+      se.yD = se.end.y - se.start.y;
 
-      float d = s.length();
+      float d = se.length();
       if (d > 0.0001f) {
-        s.xD /= d;
-        s.yD /= d;
+        se.xD /= d;
+        se.yD /= d;
       }
 
-      return s;
+      return se;
     }
 
     inline
     Path
-    newPath(float x, float y) noexcept {
-      Path p;
+    newPath(const Point& p) noexcept {
+      Path pa;
 
-      p.xH = x;
-      p.yH = y;
+      pa.home = p;
+      pa.cur = p;
 
-      p.xC = x;
-      p.yC = y;
+      pa.seg = -1;
+      pa.addPassagePoint(p);
 
-      p.seg = -1;
-      p.addPassagePoint(x, y);
-
-      return p;
+      return pa;
     }
 
   }

@@ -48,13 +48,13 @@ namespace new_frontiers {
     if (it == m_info.end()) {
       // Just register a new information, but this should
       // not really happen.
-      m_info[p.getType()] = PheromonInfo{p.getTile().x, p.getTile().y, p.getAmount(), 1};
+      m_info[p.getType()] = PheromonInfo{p.getTile().p.x, p.getTile().p.y, p.getAmount(), 1};
 
       return;
     }
 
     // Accumulate the information.
-    it->second.accumulate(p.getTile().x, p.getTile().y, p.getAmount());
+    it->second.accumulate(p.getTile().p.x, p.getTile().p.y, p.getAmount());
   }
 
   inline

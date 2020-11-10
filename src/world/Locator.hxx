@@ -135,13 +135,12 @@ namespace new_frontiers {
 
   inline
   world::ItemEntry
-  Locator::getClosest(float x,
-                      float y,
+  Locator::getClosest(const Point& p,
                       const world::ItemType& type,
                       const world::Filter& filter) const noexcept
   {
     // Use the dedicated handler.
-    std::vector<world::ItemEntry> all = getVisible(x, y, -1.0f, &type, &filter, world::Sort::Distance);
+    std::vector<world::ItemEntry> all = getVisible(p, -1.0f, &type, &filter, world::Sort::Distance);
 
     // Return the closest one if any has
     // been found or an invalid entry. As
@@ -156,8 +155,7 @@ namespace new_frontiers {
 
   inline
   std::vector<BlockShPtr>
-  Locator::getVisible(float x,
-                      float y,
+  Locator::getVisible(const Point& p,
                       float r,
                       const tiles::Block* bTile,
                       int id,
@@ -166,7 +164,7 @@ namespace new_frontiers {
   {
     // Fetch visible blocks descriptions.
     world::ItemType t = world::ItemType::Block;
-    std::vector<world::ItemEntry> bds = getVisible(x, y, r, &t, filter, sort);
+    std::vector<world::ItemEntry> bds = getVisible(p, r, &t, filter, sort);
 
     std::vector<BlockShPtr> bs;
     for (unsigned i = 0u ; i < bds.size() ; ++i) {
@@ -191,8 +189,7 @@ namespace new_frontiers {
 
   inline
   std::vector<EntityShPtr>
-  Locator::getVisible(float x,
-                      float y,
+  Locator::getVisible(const Point& p,
                       float r,
                       const tiles::Entity* eTile,
                       int id,
@@ -201,7 +198,7 @@ namespace new_frontiers {
   {
     // Fetch visible entities descriptions.
     world::ItemType t = world::ItemType::Entity;
-    std::vector<world::ItemEntry> eds = getVisible(x, y, r, &t, filter, sort);
+    std::vector<world::ItemEntry> eds = getVisible(p, r, &t, filter, sort);
 
     std::vector<EntityShPtr> es;
     for (unsigned i = 0u ; i < eds.size() ; ++i) {
@@ -226,8 +223,7 @@ namespace new_frontiers {
 
   inline
   std::vector<VFXShPtr>
-  Locator::getVisible(float x,
-                      float y,
+  Locator::getVisible(const Point& p,
                       float r,
                       const tiles::Effect* vTile,
                       int id,
@@ -236,7 +232,7 @@ namespace new_frontiers {
   {
     // Fetch visible entities descriptions.
     world::ItemType t = world::ItemType::VFX;
-    std::vector<world::ItemEntry> vds = getVisible(x, y, r, &t, filter, sort);
+    std::vector<world::ItemEntry> vds = getVisible(p, r, &t, filter, sort);
 
     std::vector<VFXShPtr> vs;
     for (unsigned i = 0u ; i < vds.size() ; ++i) {
@@ -261,14 +257,13 @@ namespace new_frontiers {
 
   inline
   BlockShPtr
-  Locator::getClosest(float x,
-                      float y,
+  Locator::getClosest(const Point& p,
                       const tiles::Block& bTile,
                       float r,
                       int id,
                       const world::Filter* filter) const noexcept
   {
-    std::vector<BlockShPtr> bs = getVisible(x, y, r, &bTile, id, filter, world::Sort::Distance);
+    std::vector<BlockShPtr> bs = getVisible(p, r, &bTile, id, filter, world::Sort::Distance);
 
     if (bs.empty()) {
       return nullptr;
@@ -279,14 +274,13 @@ namespace new_frontiers {
 
   inline
   EntityShPtr
-  Locator::getClosest(float x,
-                      float y,
+  Locator::getClosest(const Point& p,
                       const tiles::Entity& eTile,
                       float r,
                       int id,
                       const world::Filter* filter) const noexcept
   {
-    std::vector<EntityShPtr> es = getVisible(x, y, r, &eTile, id, filter, world::Sort::Distance);
+    std::vector<EntityShPtr> es = getVisible(p, r, &eTile, id, filter, world::Sort::Distance);
 
     if (es.empty()) {
       return nullptr;
