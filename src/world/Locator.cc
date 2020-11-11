@@ -59,7 +59,7 @@ namespace new_frontiers {
     int yo = static_cast<int>(p.y);
 
     // Compute the step to add on the path for each sampling:
-    // it is extracted from the initial normalized that we
+    // it is extracted from the initial direction that we will
     // normalize.
     // We handle the trivial case where the direction does not
     // have a valid length in which case we return `false` (as
@@ -94,11 +94,10 @@ namespace new_frontiers {
 
       obstruction = (xi != xo || yi != yo) && (m_blocksIDs.count(yi * m_w + xi) > 0);
 
-// # define DEBUG
 # ifdef DEBUG
-      std::cout << "[LOC] Considering " << x << "x" << y
+      std::cout << "[LOC] Considering " << p.x << "x" << p.y
                 << " which " << (obstruction ? "is" : "is not")
-                << " obstructed (" << t << ", " << (t / d) << "%)"
+                << " obstructed (" << t << ", " << (100.0f * t / d) << "%, d: " << d << ")"
                 << std::endl;
 # endif
 
@@ -117,6 +116,12 @@ namespace new_frontiers {
         *obs = p;
       }
 
+# ifdef DEBUG
+      std::cout << "[LOC] Found obstruction at " << p.x << "x" << p.y
+                << " (" << t << ", " << (100.0f * t / d) << "%, d: " << d << ")"
+                << std::endl;
+# endif
+
       return true;
     }
 
@@ -132,6 +137,12 @@ namespace new_frontiers {
         *obs = end;
       }
     }
+
+# ifdef DEBUG
+      std::cout << "[LOC] " << (obstruction ? "Found" : "Didn't find") << " obstruction 2 at " << end.x << "x" << end.y
+                << " (" << t << ", " << (100.0f * t / d) << "%, d: " << d << ")"
+                << std::endl;
+# endif
 
     return obstruction;
   }
@@ -410,7 +421,6 @@ namespace new_frontiers {
     // Register each solid tile in the map.
     for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
       const BlockTile& bt = m_blocks[id]->getTile();
-
       m_blocksIDs.insert(static_cast<int>(bt.p.y) * m_w + static_cast<int>(bt.p.x));
     }
   }

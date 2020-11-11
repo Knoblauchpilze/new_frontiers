@@ -12,6 +12,14 @@ namespace {
     Y
   };
 
+  enum class Direction {
+    None,
+    PositiveX,
+    NegativeX,
+    PositiveY,
+    NegativeY
+  };
+
   // void
   // nextCell(float x, float y, float xDir, float yDir, float& xN, float& yN) {
   //   // We need to compute the first point on the boundary
@@ -51,6 +59,102 @@ namespace {
   //     yN = yi + std::copysign(1.0f, yDir);
   //   }
   // }
+
+  /**
+   * @brief - Compute the offset to apply to the position we're
+   *          considering the input direction and generate the
+   *          next position to consider.
+   * @param p - the current position to which the offset will
+   *            be applied.
+   * @param xDir - the abscissa of the direction we're using.
+   * @param yDir - the ordinate of the direction we're using.
+   * @param dir - the current direction of travel.
+   * @return - a set of two coordinates representing the next
+   *           position to consider.
+   */
+  new_frontiers::Point
+  computeNextPosition(new_frontiers::Point p, float xDir, float yDir, Direction& dir) {
+    // Compute the parallel direction (i.e. the direction
+    // with the least amount of momentum).
+    float aXDir = std::abs(xDir);
+    float aYDir = std::abs(yDir);
+
+    Axis dPara = (aXDir > aYDir ? Axis::Y : Axis::X);
+
+    float signX = std::copysign(1.0f, xDir);
+    float signY = std::copysign(1.0f, yDir);
+
+    // The direction of the offset will be the same as
+    // it was before (if any value is assigned) unless
+    // the direction has switched to the perpendicular
+    // direction of the previous one.
+    Axis d = dPara;
+    float sPara = (d == Axis::X ? signX : signY);
+
+    float sParaSave = sPara;
+
+    switch (dir) {
+      case Direction::PositiveX:
+        d = Axis::X;
+        sPara = 1.0f;
+        break;
+      case Direction::PositiveY:
+        d = Axis::Y;
+        sPara = 1.0f;
+        break;
+      case Direction::NegativeX:
+        d = Axis::X;
+        sPara = -1.0f;
+        break;
+      case Direction::NegativeY:
+        d = Axis::Y;
+        sPara = -1.0f;
+        break;
+      case Direction::None:
+      default:
+        // Only `dir` is left to initialize.
+        if (d == Axis::X) {
+          dir = (signX > 0.0f ? Direction::PositiveX : Direction::NegativeX);
+        }
+        else {
+          dir = (signY > 0.0f ? Direction::PositiveY : Direction::NegativeY);
+        }
+        break;
+    }
+
+    std::cout << "[PATH] point: " << p.x << "x" << p.y
+              << " d: " << xDir << "x" << yDir
+              << ", dPara: " << (d == Axis::X ? "x" : "y")
+              << ", sign: " << sPara
+              << ", computed dPara: " << (dPara == Axis::X ? "x" : "y")
+              << " and sign: " << sParaSave
+              << ", dir is " << (dir == Direction::None ? "none" : (dir == Direction::PositiveX ? "pos x" : (dir == Direction::PositiveY ? "pos y" : (dir == Direction::NegativeX ? "neg x" : "neg y"))))
+              << std::endl;
+
+    // Make sure that we continue in the same
+    // direction as we were except if the new
+    // direction is perpendicular.
+    if ((dir == Direction::PositiveX || dir == Direction::NegativeX) && dPara == Axis::Y) {
+      sPara = signY;
+      dir = (signY > 0.0f ? Direction::PositiveY : Direction::NegativeY);
+    }
+    else if ((dir == Direction::PositiveY || dir == Direction::NegativeY) && dPara == Axis::X) {
+      sPara = signX;
+      dir = (signX > 0.0f ? Direction::PositiveX : Direction::NegativeX);
+    }
+
+    switch (d) {
+      case Axis::X:
+        p.x += sPara;
+        break;
+      case Axis::Y:
+      default:
+        p.y += sPara;
+        break;
+    }
+
+    return p;
+  }
 
 }
 
@@ -150,6 +254,7 @@ namespace new_frontiers {
       std::vector<Point> steps;
 
       bool pathNotClear = true;
+      Direction dir = Direction::None;
       int count = 0;
       while (pathNotClear && count < 20) {
         // Register the starting position of this
@@ -163,6 +268,9 @@ namespace new_frontiers {
         steps.push_back(s);
         points.push_back(s);
 
+        std::cout << "-----" << std::endl;
+        std::cout << "Step " << count << std::endl;
+
         std::vector<Point> iPoints;
         bool obs = info.frustum->obstructed(s, xDir, yDir, d, iPoints, &obsP);
 
@@ -171,7 +279,7 @@ namespace new_frontiers {
         // until we walk around it. Note that we
         // only consider an obstruction if the
         // input argument says so.
-        bool obsWithinTarget = (std::abs(obsP.x - p.x) < 1.0f && std::abs(obsP.y - p.y) < 1.0f);
+        bool obsWithinTarget = obs && (std::abs(obsP.x - p.x) < 1.0f && std::abs(obsP.y - p.y) < 1.0f);
 
         // We want to process the potential
         // intersection only if it is meaningful.
@@ -198,20 +306,6 @@ namespace new_frontiers {
                     << std::endl;
         }
         else {
-          // Determine in which way we want to
-          // explore for unobstructed regions
-          // in the neighborhood of the path.
-          float aXDir = std::abs(xDir);
-          float aYDir = std::abs(yDir);
-
-          // Axis dPerp = (aXDir > aYDir ? Axis::X : Axis::Y);
-          Axis dPara = (aXDir > aYDir ? Axis::Y : Axis::X);
-
-          float signX = std::copysign(1.0f, xDir);
-          float signY = std::copysign(1.0f, yDir);
-          // float sPerp = (dPerp == Axis::X ? signX : signY);
-          float sPara = (dPara == Axis::X ? signX : signY);
-
           // Register the intermediate steps that were
           // deemed valid by the exploration: this will
           // get us as far as possible on this segment.
@@ -240,20 +334,10 @@ namespace new_frontiers {
 
           float xSave = s.x, ySave = s.y;
 
-          // Update the starting position and direction
-          // by placing the next intermediate position
-          // one cell on the direction of `dPara`.
-          s = pStop;
-
-          switch (dPara) {
-            case Axis::X:
-              s.x += sPara;
-              break;
-            case Axis::Y:
-            default:
-              s.y += sPara;
-              break;
-          }
+          // Determine in which way we want to explore
+          // for unobstructed regions in the neighborhood
+          // of the path.
+          s = computeNextPosition(pStop, xDir, yDir, dir);
 
           std::cout << "[PATH][" << segments.size() << "] start: " << xSave << "x" << ySave
                     << " to " << p.x << "x" << p.y
@@ -270,6 +354,7 @@ namespace new_frontiers {
         }
 
         ++count;
+        std::cout << "-----" << std::endl;
       }
 
       // Once a valid path is built, register it
