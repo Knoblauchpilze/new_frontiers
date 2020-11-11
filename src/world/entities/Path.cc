@@ -292,7 +292,7 @@ namespace new_frontiers {
       cur.y += traveled * segments[seg].yD;
     }
 
-    void
+    bool
     Path::generatePathTo(StepInfo& info, const Point& p, bool ignoreTargetObstruction) {
       // Convert to path semantic: the starting point
       // of the path segment will be the end of the
@@ -308,9 +308,14 @@ namespace new_frontiers {
       Point obsP;
       info.toDirection(s, p, xDir, yDir, d);
 
-      // TODO: What happens when we don't want to
-      // ignore obstruction of the target but the
-      // target is actually a solid block ?
+      // Detect trivial case where the target is a
+      // solid block and we're not supposed to be
+      // ignoring it: in this case it does not make
+      // sense to try to generate a path.
+      if (info.frustum->obstructed(p) && !ignoreTargetObstruction) {
+        return false;
+      }
+
       // TODO: Case where we reach a position that
       // was already explored. This is what prevents
       // the code from working right now.
@@ -438,6 +443,9 @@ namespace new_frontiers {
       add(p);
 
       cPoints.swap(points);
+
+      // A path could be generated.
+      return true;
     }
 
   }

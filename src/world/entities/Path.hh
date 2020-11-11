@@ -155,8 +155,10 @@ namespace new_frontiers {
        *                                  the case for example when
        *                                  the target is a solid
        *                                  block.
+       * @return - `true` if we could generate a path to the
+       *           target and `false` otherwise.
        */
-      void
+      bool
       generatePathTo(StepInfo& info, const Point& p, bool ignoreTargetObstruction);
     };
 
