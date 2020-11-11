@@ -134,6 +134,12 @@ namespace new_frontiers {
   }
 
   inline
+  bool
+  Locator::obstructed(const Point& p) const noexcept {
+    return obstructed(p.x, p.y);
+  }
+
+  inline
   world::ItemEntry
   Locator::getClosest(const Point& p,
                       const world::ItemType& type,
