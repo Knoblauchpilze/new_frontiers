@@ -81,6 +81,9 @@ namespace {
 
     Axis dPara = (aXDir > aYDir ? Axis::Y : Axis::X);
 
+    // Note that in case one of the `dir` is `0`, we
+    // will use a default value of `1` as the signum
+    // of `0` is positive.
     float signX = std::copysign(1.0f, xDir);
     float signY = std::copysign(1.0f, yDir);
 
@@ -240,7 +243,6 @@ namespace new_frontiers {
       // TODO: What happens when we don't want to
       // ignore obstruction of the target but the
       // target is actually a solid block ?
-      // TODO: Case where `xDir` or `yDir` is `0`.
       // TODO: Case where we reach a position that
       // was already explored. This is what prevents
       // the code from working right now.
