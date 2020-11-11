@@ -244,6 +244,16 @@ namespace new_frontiers {
       obstructed(float x, float y) const noexcept;
 
       /**
+       * @brief - Allow to determine whether a specific loc
+       *          is obstructed (meaning that a block already
+       *          exists here) or not.
+       * @param p - the position to check for occupancy.
+       * @return - `true` if the location is occupied.
+       */
+      bool
+      obstructed(const Point& p) const noexcept;
+
+      /**
        * @brief - Determine whether the path defined by the
        *          input coordinate and the direction has any
        *          obstructing elements on it within `d` cells

@@ -68,12 +68,20 @@ namespace {
    *            be applied.
    * @param xDir - the abscissa of the direction we're using.
    * @param yDir - the ordinate of the direction we're using.
-   * @param dir - the current direction of travel.
+   * @param dir - the current direction of travel. Will be used
+   *              to update the followed direction.
+   * @param loc - a locator to help take decisions and provide
+   *              a next unobstructed position.
    * @return - a set of two coordinates representing the next
    *           position to consider.
    */
   new_frontiers::Point
-  computeNextPosition(new_frontiers::Point p, float xDir, float yDir, Direction& dir) {
+  computeNextPosition(new_frontiers::Point p,
+                      float xDir,
+                      float yDir,
+                      Direction& dir,
+                      const new_frontiers::Locator& loc)
+  {
     // Compute the parallel direction (i.e. the direction
     // with the least amount of momentum).
     float aXDir = std::abs(xDir);
@@ -81,20 +89,20 @@ namespace {
 
     Axis dPara = (aXDir > aYDir ? Axis::Y : Axis::X);
 
-    // Note that in case one of the `dir` is `0`, we
-    // will use a default value of `1` as the signum
-    // of `0` is positive.
-    float signX = std::copysign(1.0f, xDir);
-    float signY = std::copysign(1.0f, yDir);
-
     // The direction of the offset will be the same as
     // it was before (if any value is assigned) unless
     // the direction has switched to the perpendicular
-    // direction of the previous one.
-    Axis d = dPara;
-    float sPara = (d == Axis::X ? signX : signY);
+    // direction of the previous one. We also have to
+    // take into account cases where the direction can
+    // be resumed to something closer to the target if
+    // the path is not unobstructed anymore.
+    // Note that by default we use a positive direction
+    // to explore.
 
-    float sParaSave = sPara;
+    // So first, determine the direction as it would
+    // be in case we were to start anew.
+    Axis d = dPara;
+    float sPara = 1.0f;
 
     switch (dir) {
       case Direction::PositiveX:
@@ -115,12 +123,15 @@ namespace {
         break;
       case Direction::None:
       default:
-        // Only `dir` is left to initialize.
+        // Only `dir` is left to initialize. Choose
+        // the positive direction by default.
         if (d == Axis::X) {
-          dir = (signX > 0.0f ? Direction::PositiveX : Direction::NegativeX);
+          sPara = std::copysign(1.0f, xDir);
+          dir = (sPara > 0.0f ? Direction::PositiveX : Direction::NegativeX);
         }
         else {
-          dir = (signY > 0.0f ? Direction::PositiveY : Direction::NegativeY);
+          sPara = std::copysign(1.0f, yDir);
+          dir = (sPara > 0.0f ? Direction::PositiveY : Direction::NegativeY);
         }
         break;
     }
@@ -130,7 +141,6 @@ namespace {
               << ", dPara: " << (d == Axis::X ? "x" : "y")
               << ", sign: " << sPara
               << ", computed dPara: " << (dPara == Axis::X ? "x" : "y")
-              << " and sign: " << sParaSave
               << ", dir is " << (dir == Direction::None ? "none" : (dir == Direction::PositiveX ? "pos x" : (dir == Direction::PositiveY ? "pos y" : (dir == Direction::NegativeX ? "neg x" : "neg y"))))
               << std::endl;
 
@@ -138,25 +148,83 @@ namespace {
     // direction as we were except if the new
     // direction is perpendicular.
     if ((dir == Direction::PositiveX || dir == Direction::NegativeX) && dPara == Axis::Y) {
-      sPara = signY;
-      dir = (signY > 0.0f ? Direction::PositiveY : Direction::NegativeY);
+      sPara = std::copysign(1.0f, yDir);
+      dir = (sPara > 0.0f ? Direction::PositiveY : Direction::NegativeY);
     }
     else if ((dir == Direction::PositiveY || dir == Direction::NegativeY) && dPara == Axis::X) {
-      sPara = signX;
-      dir = (signX > 0.0f ? Direction::PositiveX : Direction::NegativeX);
+      sPara = std::copysign(1.0f, xDir);
+      dir = (sPara > 0.0f ? Direction::PositiveX : Direction::NegativeX);
     }
 
+    new_frontiers::Point op = p;
     switch (d) {
       case Axis::X:
-        p.x += sPara;
+        op.x += sPara;
         break;
       case Axis::Y:
       default:
-        p.y += sPara;
+        op.y += sPara;
         break;
     }
 
-    return p;
+    // Make sure that the chosen cell is unobstructed:
+    // if it is the case we will have to rotate so we
+    // continue to trace the obstacle.
+    if (!loc.obstructed(op)) {
+      return op;
+    }
+
+    // Rotate in order to follow the obstacle's border.
+    Direction rd = dir;
+    switch (dir) {
+      case Direction::PositiveX:
+        rd = Direction::NegativeY;
+        d = Axis::Y;
+        sPara = -1.0f;
+        break;
+      case Direction::PositiveY:
+        rd = Direction::PositiveX;
+        d = Axis::X;
+        sPara = 1.0f;
+        break;
+      case Direction::NegativeX:
+        rd = Direction::PositiveY;
+        d = Axis::Y;
+        sPara = 1.0f;
+        break;
+      case Direction::NegativeY:
+        rd = Direction::NegativeX;
+        d = Axis::X;
+        sPara = -1.0f;
+        break;
+      case Direction::None:
+      default:
+        // Should never happen.
+        break;
+    }
+
+    new_frontiers::Point ops = op;
+
+    op = p;
+    switch (d) {
+      case Axis::X:
+        op.x += sPara;
+        break;
+      case Axis::Y:
+      default:
+        op.y += sPara;
+        break;
+    }
+
+    std::cout << "[PATH] point: " << p.x << "x" << p.y
+              << " d: " << xDir << "x" << yDir
+              << ", led to " << ops.x << "x" << ops.y
+              << " but was obstructed so chose "
+              << op.x << "x" << op.y
+              << " (dir: " << (rd == Direction::None ? "none" : (rd == Direction::PositiveX ? "pos x" : (rd == Direction::PositiveY ? "pos y" : (rd == Direction::NegativeX ? "neg x" : "neg y")))) << ")"
+              << std::endl;
+
+    return op;
   }
 
 }
@@ -339,7 +407,7 @@ namespace new_frontiers {
           // Determine in which way we want to explore
           // for unobstructed regions in the neighborhood
           // of the path.
-          s = computeNextPosition(pStop, xDir, yDir, dir);
+          s = computeNextPosition(pStop, xDir, yDir, dir, *info.frustum);
 
           std::cout << "[PATH][" << segments.size() << "] start: " << xSave << "x" << ySave
                     << " to " << p.x << "x" << p.y
