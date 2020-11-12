@@ -2,61 +2,9 @@
 # include "Path.hh"
 # include "StepInfo.hh"
 # include "Locator.hh"
+# include "AStar.hh"
 
 # include <iostream>
-
-namespace {
-
-  /**
-   * @brief- Convenience structure allowing to regroup the
-   *         information and processes needed to perform
-   *         the A* algorithm.
-   */
-  struct AStar {
-    new_frontiers::Point start;
-    new_frontiers::Point end;
-
-    const new_frontiers::Locator& loc;
-
-    /**
-     * @brief - Used to generate the path from the start
-     *          position to the end and return the path
-     *          that was built in the output argument.
-     *          In case no path can be found, the return
-     *          value will indicate so.
-     * @param path - the path generated to reach the two
-     *               end points of this finder.
-     * @return - `true` if a path could be find.
-     */
-    bool
-    findPath(std::vector<new_frontiers::Point>& path) const noexcept;
-  };
-
-  /**
-   * @brief - Creates a new object allowing to perform the
-   *          A* algorithm.
-   * @param s - the starting position.
-   * @param e - the end position.
-   * @param loc - the locator to use to retrieve information
-   *              about the world.
-   * @return - the A* structure.
-   */
-  AStar
-  newAStarPathFinder(const new_frontiers::Point& s,
-                     const new_frontiers::Point& e,
-                     const new_frontiers::Locator& loc)
-  {
-    return AStar{s, e, loc};
-  }
-
-  bool
-  AStar::findPath(std::vector<new_frontiers::Point>& path) const noexcept {
-    // TODO: Implement this.
-    path.clear();
-    return false;
-  }
-
-}
 
 namespace new_frontiers {
   namespace path {
@@ -182,7 +130,7 @@ namespace new_frontiers {
       // in the A* which will return `false` and
       // the entity would then go back to real
       // random wandering.
-      AStar alg = newAStarPathFinder(s, p, *info.frustum);
+      AStar alg(s, p, info.frustum);
       std::vector<Point> steps;
 
       if (!alg.findPath(steps)) {

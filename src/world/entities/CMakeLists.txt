@@ -9,6 +9,7 @@ set (SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/EntityFactory.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/PheromonAnalyzer.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/Path.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/AStar.cc
   PARENT_SCOPE
   )
 
