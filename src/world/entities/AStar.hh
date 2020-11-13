@@ -2,6 +2,7 @@
 # define   ASTAR_HH
 
 # include <core_utils/CoreObject.hh>
+# include <unordered_map>
 # include "Point.hh"
 # include "Locator.hh"
 
@@ -42,12 +43,19 @@ namespace new_frontiers {
        * @brief - Used to reconstruct the path stored in
        *          the object assuming that we found a valid
        *          path from the ending point.
+       * @param parents - a description of the explored nodes
+       *                  with their `parent` (i.e. the node
+       *                  that was explored just before).
+       * @param offset - the offset to use when computing the
+       *                 hashes for nodes.
        * @param path - output vector which will contain the
        *               reconstructed path.
        * @return - `true` if the path could be reconstructed.
        */
       bool
-      reconstructPath(std::vector<Point>& path) const noexcept;
+      reconstructPath(const std::unordered_map<int, int>& parents,
+                      int offset,
+                      std::vector<Point>& path) const noexcept;
 
     private:
 

@@ -133,6 +133,12 @@ namespace new_frontiers {
       AStar alg(s, p, info.frustum);
       std::vector<Point> steps;
 
+      std::cout << "Path from " << s.x << "x" << s.y
+                << " to " << p.x << "x" << p.y
+                << " is obstructed at " << obsP.x << "x" << obsP.y
+                << " starting A*"
+                << std::endl;
+
       if (!alg.findPath(steps)) {
         return false;
       }

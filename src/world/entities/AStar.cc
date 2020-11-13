@@ -2,7 +2,6 @@
 # include "AStar.hh"
 # include <deque>
 # include <iostream>
-# include <unordered_map>
 
 namespace {
 
@@ -22,6 +21,10 @@ namespace {
 
     int
     hash(int offset) const noexcept;
+
+    static
+    new_frontiers::Point
+    invertHash(int hash, int offset) noexcept;
   };
 
   inline
@@ -43,8 +46,11 @@ namespace {
 
     new_frontiers::Point np;
 
+    float bx = std::floor(p.x) + 0.5f;
+    float by = std::floor(p.y) + 0.5f;
+
     // Right neighbor.
-    np.x = p.x + 1.0f; np.y = p.y;
+    np.x = bx + 1.0f; np.y = by;
     neighbors.push_back(Node{
       np,
       c + new_frontiers::distance::d(p, np),
@@ -52,7 +58,7 @@ namespace {
     });
 
     // Up neighbor.
-    np.x = p.x; np.y = p.y + 1.0f;
+    np.x = bx; np.y = by + 1.0f;
     neighbors.push_back(Node{
       np,
       c + new_frontiers::distance::d(p, np),
@@ -60,7 +66,7 @@ namespace {
     });
 
     // Left neighbor.
-    np.x = p.x - 1.0f; np.y = p.y;
+    np.x = bx - 1.0f; np.y = by;
     neighbors.push_back(Node{
       np,
       c + new_frontiers::distance::d(p, np),
@@ -68,7 +74,7 @@ namespace {
     });
 
     // Down neighbor.
-    np.x = p.x; np.y = p.y - 1.0f;
+    np.x = bx; np.y = by - 1.0f;
     neighbors.push_back(Node{
       np,
       c + new_frontiers::distance::d(p, np),
@@ -81,7 +87,18 @@ namespace {
   inline
   int
   Node::hash(int offset) const noexcept {
-    return static_cast<int>(p.x) * offset + static_cast<int>(p.x);
+    return static_cast<int>(p.y) * offset + static_cast<int>(p.x);
+  }
+
+  inline
+  new_frontiers::Point
+  Node::invertHash(int hash, int offset) noexcept {
+    new_frontiers::Point p;
+
+    p.x = 0.5f + hash % offset;
+    p.y = 0.5f + hash / offset;
+
+    return p;
   }
 
 }
@@ -113,10 +130,14 @@ namespace new_frontiers {
     Node init{m_start, 0.0f, 0.0f};
     openNodes.push_back(init);
 
+    std::cout << "[a*] Starting a* at " << m_start.x << "x" << m_start.y
+              << " to reach " << m_end.x << "x" << m_end.y
+              << std::endl;
+
     // The `cameFrom[i]` defines the index of its parent
     // node, i.e. the node we were traversing when this
     // node was encountered.
-    std::vector<int> cameFrom;
+    std::unordered_map<int, int> cameFrom;
 
     using ScoreMap = std::unordered_map<int, float>;
 
@@ -135,14 +156,15 @@ namespace new_frontiers {
     // Common lambdas to handle sorting and distance
     // computation from a point to another.
     auto cmp = [](const Node& lhs, const Node& rhs) {
-      return lhs.c + lhs.h < rhs.c + lhs.h;
+      return lhs.c + lhs.h < rhs.c + rhs.h;
     };
 
     auto d = [](const Node& lhs, const Node& rhs) {
       return distance::d(lhs.p, rhs.p);
     };
 
-    while (!openNodes.empty()) {
+    int count = 0;
+    while (!openNodes.empty() && count < 50) {
       // Sort the open list to fetch nodes with smallest
       // `c + h` value.
       std::sort(openNodes.begin(), openNodes.end(), cmp);
@@ -150,13 +172,19 @@ namespace new_frontiers {
 
       // In case we reached the goal, stop there.
       if (current.contains(m_end)) {
-        std::cout << "[ASTAR] Found path to " << m_end.x << "x" << m_end.y << std::endl;
-        return reconstructPath(path);
+        std::cout << "[a*] Found path to " << m_end.x << "x" << m_end.y << std::endl;
+        return reconstructPath(cameFrom, m_loc->w(), path);
       }
 
       openNodes.pop_front();
 
       std::vector<Node> neighbors = current.generateNeighbors(m_end);
+
+      std::cout << "[a*][pick] Picked node " << current.p.x << "x" << current.p.y
+                << " with c " << current.c
+                << " h is " << current.h
+                << " (nodes: " << openNodes.size() << ")"
+                << std::endl;
 
       for (unsigned id = 0u ; id < neighbors.size() ; ++id) {
         // The `d(current,neighbor)` is the weight of the edge from
@@ -166,10 +194,19 @@ namespace new_frontiers {
         float gScoreAttempt = gScore[current.hash(m_loc->w())] + d(current, neighbor);
 
         ScoreMap::iterator it = gScore.find(neighbor.hash(m_loc->w()));
+
         if (it == gScore.end() || gScoreAttempt < it->second) {
           // This path to neighbor is better than any previous one.
-          cameFrom[neighbor] = current;
+          cameFrom[neighbor.hash(m_loc->w())] = current.hash(m_loc->w());
           gScore[neighbor.hash(m_loc->w())] = gScoreAttempt;
+
+
+          std::cout << "[a*] Updating " << neighbor.p.x << "x" << neighbor.p.y
+                    << " from c " << neighbor.c << " to " << gScoreAttempt
+                    << " and f score to " << (gScore[neighbor.hash(m_loc->w())] + neighbor.h)
+                    << " parent is " << current.hash(m_loc->w())
+                    << std::endl;
+
           neighbor.c = gScoreAttempt;
           fScore[neighbor.hash(m_loc->w())] = gScore[neighbor.hash(m_loc->w())] + neighbor.h;
 
@@ -178,6 +215,8 @@ namespace new_frontiers {
           }
         }
       }
+
+      ++count;
     }
 
     // We couldn't reach the goal, the algorithm failed.
@@ -185,9 +224,46 @@ namespace new_frontiers {
   }
 
   bool
-  AStar::reconstructPath(std::vector<Point>& /*path*/) const noexcept {
-    // TODO: Handle this.
-    return false;
+  AStar::reconstructPath(const std::unordered_map<int, int>& parents,
+                         int offset,
+                         std::vector<Point>& path) const noexcept
+  {
+    std::vector<Point> out(1u, m_end);
+
+    Node n{m_end, 0.0f, 0.0f};
+    int h = n.hash(offset);
+    std::unordered_map<int, int>::const_iterator it = parents.find(h);
+
+    while (it != parents.cend()) {
+      Point p = Node::invertHash(h, offset);
+      std::cout << "[a*] Registering point " << p.x << "x" << p.y
+                << " with hash " << h
+                << ", parent is " << it->first
+                << std::endl;
+      out.push_back(p);
+
+      h = it->second;
+      it = parents.find(h);
+    }
+
+    // Make sure that we reached the starting point.
+    // If this is the case we can copy the path we
+    // just built to the output argument.
+    n.p = m_start;
+    int sh = n.hash(offset);
+
+    if (sh == h) {
+      // We need to reverse the path as we've built
+      // it from the end.
+      for (std::vector<Point>::const_reverse_iterator it = out.crbegin() ;
+           it != out.crend() ;
+           ++it)
+      {
+        path.push_back(*it);
+      }
+    }
+
+    return sh == h;
   }
 
 }
