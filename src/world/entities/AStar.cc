@@ -130,9 +130,12 @@ namespace new_frontiers {
     Node init{m_start, 0.0f, 0.0f};
     openNodes.push_back(init);
 
-    std::cout << "[a*] Starting a* at " << m_start.x << "x" << m_start.y
-              << " to reach " << m_end.x << "x" << m_end.y
-              << std::endl;
+# ifdef DEBUG
+    log(
+      "Starting a* at " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
+      " to reach " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y)
+    );
+# endif
 
     // The `cameFrom[i]` defines the index of its parent
     // node, i.e. the node we were traversing when this
@@ -163,8 +166,7 @@ namespace new_frontiers {
       return distance::d(lhs.p, rhs.p);
     };
 
-    int count = 0;
-    while (!openNodes.empty() && count < 50) {
+    while (!openNodes.empty()) {
       // Sort the open list to fetch nodes with smallest
       // `c + h` value.
       std::sort(openNodes.begin(), openNodes.end(), cmp);
@@ -172,7 +174,9 @@ namespace new_frontiers {
 
       // In case we reached the goal, stop there.
       if (current.contains(m_end)) {
-        std::cout << "[a*] Found path to " << m_end.x << "x" << m_end.y << std::endl;
+# ifdef DEBUG
+        log("Found path to " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y));
+# endif
         return reconstructPath(cameFrom, m_loc->w(), path);
       }
 
@@ -180,17 +184,26 @@ namespace new_frontiers {
 
       std::vector<Node> neighbors = current.generateNeighbors(m_end);
 
-      std::cout << "[a*][pick] Picked node " << current.p.x << "x" << current.p.y
-                << " with c " << current.c
-                << " h is " << current.h
-                << " (nodes: " << openNodes.size() << ")"
-                << std::endl;
+# ifdef DEBUG
+      log(
+        "Picked node " + std::to_string(current.p.x) + "x" + std::to_string(current.p.y) +
+        " with c " + std::to_string(current.c) +
+        " h is " + std::to_string(current.h) +
+        " (nodes: " + std::to_string(openNodes.size()) + ")"
+      );
+# endif
 
       for (unsigned id = 0u ; id < neighbors.size() ; ++id) {
         // The `d(current,neighbor)` is the weight of the edge from
         // current to neighbor `gScoreAttempt` is the distance from
         // start to the neighbor through `current`.
         Node& neighbor = neighbors[id];
+
+        // Only consider the node if it is not obstructed.
+        if (m_loc->obstructed(neighbor.p) && !neighbor.contains(m_end)) {
+          continue;
+        }
+
         float gScoreAttempt = gScore[current.hash(m_loc->w())] + d(current, neighbor);
 
         ScoreMap::iterator it = gScore.find(neighbor.hash(m_loc->w()));
@@ -200,12 +213,14 @@ namespace new_frontiers {
           cameFrom[neighbor.hash(m_loc->w())] = current.hash(m_loc->w());
           gScore[neighbor.hash(m_loc->w())] = gScoreAttempt;
 
-
-          std::cout << "[a*] Updating " << neighbor.p.x << "x" << neighbor.p.y
-                    << " from c " << neighbor.c << " to " << gScoreAttempt
-                    << " and f score to " << (gScore[neighbor.hash(m_loc->w())] + neighbor.h)
-                    << " parent is " << current.hash(m_loc->w())
-                    << std::endl;
+# ifdef DEBUG
+          log(
+            "Updating " + std::to_string(neighbor.p.x) + "x" + std::to_string(neighbor.p.y) +
+            " from c " + std::to_string(neighbor.c) + " to " + std::to_string(gScoreAttempt) +
+            " and f score to " + std::to_string(gScore[neighbor.hash(m_loc->w())] + neighbor.h) +
+            " parent is " + std::to_string(current.hash(m_loc->w()))
+          );
+# endif
 
           neighbor.c = gScoreAttempt;
           fScore[neighbor.hash(m_loc->w())] = gScore[neighbor.hash(m_loc->w())] + neighbor.h;
@@ -215,8 +230,6 @@ namespace new_frontiers {
           }
         }
       }
-
-      ++count;
     }
 
     // We couldn't reach the goal, the algorithm failed.
@@ -236,10 +249,13 @@ namespace new_frontiers {
 
     while (it != parents.cend()) {
       Point p = Node::invertHash(h, offset);
-      std::cout << "[a*] Registering point " << p.x << "x" << p.y
-                << " with hash " << h
-                << ", parent is " << it->first
-                << std::endl;
+# ifdef DEBUG
+      log(
+        "Registering point " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+        " with hash " + std::to_string(h) +
+        ", parent is " + std::to_string(it->first)
+      );
+# endif
       out.push_back(p);
 
       h = it->second;
