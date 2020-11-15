@@ -99,9 +99,6 @@ namespace new_frontiers {
         if (home.x != p.x || home.y != p.y) {
           add(home, p);
         }
-        else {
-          std::cout << "[PATH] Prevented double registration" << std::endl;
-        }
       }
       else {
         const Segment s = segments.back();

@@ -4,8 +4,6 @@
 # include "Locator.hh"
 # include "AStar.hh"
 
-# include <iostream>
-
 namespace new_frontiers {
   namespace path {
 
@@ -82,7 +80,7 @@ namespace new_frontiers {
       }
 
       float xDir, yDir, d;
-      info.toDirection(s, p, xDir, yDir, d);
+      toDirection(s, p, xDir, yDir, d);
 
       // Detect trivial case where the target is a
       // solid block and we're not supposed to be
@@ -132,12 +130,6 @@ namespace new_frontiers {
       // random wandering.
       AStar alg(s, p, info.frustum);
       std::vector<Point> steps;
-
-      std::cout << "Path from " << s.x << "x" << s.y
-                << " to " << p.x << "x" << p.y
-                << " is obstructed at " << obsP.x << "x" << obsP.y
-                << " starting A*"
-                << std::endl;
 
       if (!alg.findPath(steps)) {
         return false;

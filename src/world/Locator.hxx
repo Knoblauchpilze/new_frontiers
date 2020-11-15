@@ -140,6 +140,22 @@ namespace new_frontiers {
   }
 
   inline
+  bool
+  Locator::obstructed(Point p,
+                      Point e,
+                      std::vector<Point>& cPoints,
+                      float sample) const noexcept
+  {
+    // Convert the segment defined by `p` and `e` to
+    // a direction syntax.
+    float xD, yD, d;
+    toDirection(p, e, xD, yD, d);
+
+    // Use the dedicated variable.
+    return obstructed(p, xD, yD, d, cPoints, nullptr, sample);
+  }
+
+  inline
   world::ItemEntry
   Locator::getClosest(const Point& p,
                       const world::ItemType& type,
