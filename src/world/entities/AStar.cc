@@ -5,6 +5,22 @@
 namespace {
 
   /**
+   * @brief - Enumeration describing the position of a node
+   *          relatively to its neighbots.
+   */
+  enum Neighbor {
+    North,
+    NorthEast,
+    East,
+    SouthEast,
+    South,
+    SouthWest,
+    West,
+    NorthWest,
+    Count
+  };
+
+  /**
    * @brief - Convenience structure to define an opened node.
    */
   struct Node {
@@ -41,7 +57,7 @@ namespace {
   inline
   std::vector<Node>
   Node::generateNeighbors(const new_frontiers::Point& target) const noexcept {
-    std::vector<Node> neighbors;
+    std::vector<Node> neighbors(Count);
 
     new_frontiers::Point np;
 
@@ -50,67 +66,67 @@ namespace {
 
     // Right neighbor.
     np.x = bx + 1.0f; np.y = by;
-    neighbors.push_back(Node{
+    neighbors[East] = Node{
       np,
       c + new_frontiers::distance::d(p, np),
       new_frontiers::distance::d(np, target)
-    });
+    };
 
     // Top right neighbor.
     np.x = bx + 1.0f; np.y = by + 1.0f;
-    neighbors.push_back(Node{
+    neighbors[NorthEast] = Node{
       np,
       c + new_frontiers::distance::d(p, np),
       new_frontiers::distance::d(np, target)
-    });
+    };
 
     // Up neighbor.
     np.x = bx; np.y = by + 1.0f;
-    neighbors.push_back(Node{
+    neighbors[North] = Node{
       np,
       c + new_frontiers::distance::d(p, np),
       new_frontiers::distance::d(np, target)
-    });
+    };
 
     // Top left neighbor.
     np.x = bx - 1.0f; np.y = by + 1.0f;
-    neighbors.push_back(Node{
+    neighbors[NorthWest] = Node{
       np,
       c + new_frontiers::distance::d(p, np),
       new_frontiers::distance::d(np, target)
-    });
+    };
 
     // Left neighbor.
     np.x = bx - 1.0f; np.y = by;
-    neighbors.push_back(Node{
+    neighbors[West] = Node{
       np,
       c + new_frontiers::distance::d(p, np),
       new_frontiers::distance::d(np, target)
-    });
+    };
 
     // Bottom left neighbor.
     np.x = bx - 1.0f; np.y = by - 1.0f;
-    neighbors.push_back(Node{
+    neighbors[SouthWest] = Node{
       np,
       c + new_frontiers::distance::d(p, np),
       new_frontiers::distance::d(np, target)
-    });
+    };
 
     // Down neighbor.
     np.x = bx; np.y = by - 1.0f;
-    neighbors.push_back(Node{
+    neighbors[South] = Node{
       np,
       c + new_frontiers::distance::d(p, np),
       new_frontiers::distance::d(np, target)
-    });
+    };
 
     // Bottom right neighbor.
     np.x = bx + 1.0f; np.y = by - 1.0f;
-    neighbors.push_back(Node{
+    neighbors[SouthEast] = Node{
       np,
       c + new_frontiers::distance::d(p, np),
       new_frontiers::distance::d(np, target)
-    });
+    };
 
     return neighbors;
   }
@@ -231,6 +247,34 @@ namespace new_frontiers {
       );
 # endif
 
+      // Also, consider the node is it is not obstructed
+      // in a less obvious way as below:
+      //
+      // +----+----+
+      // | Ob |  E |
+      // |    |    |
+      // +----+----+
+      // |    | Ob |
+      // | S  |    |
+      // +----+----+
+      //
+      // This situation can only happen for the diagonal
+      // neighbors (so either SE, SW, NE, NW).
+      // We will first determine before processing the
+      // neighbors and check the status for each one.
+      float bx = std::floor(current.p.x) + 0.5f;
+      float by = std::floor(current.p.y) + 0.5f;
+
+      bool obsE = m_loc->obstructed(Point{bx + 1.0f, by});
+      bool obsN = m_loc->obstructed(Point{bx, by + 1.0f});
+      bool obsW = m_loc->obstructed(Point{bx - 1.0f, by});
+      bool obsS = m_loc->obstructed(Point{bx, by - 1.0f});
+
+        bool validNE = !obsN || !obsE;
+        bool validNW = !obsN || !obsW;
+        bool validSW = !obsS || !obsW;
+        bool validSE = !obsS || !obsE;
+
       for (unsigned id = 0u ; id < neighbors.size() ; ++id) {
         // The `d(current,neighbor)` is the weight of the edge from
         // current to neighbor `gScoreAttempt` is the distance from
@@ -239,6 +283,18 @@ namespace new_frontiers {
 
         // Only consider the node if it is not obstructed.
         if (m_loc->obstructed(neighbor.p) && !neighbor.contains(m_end)) {
+          continue;
+        }
+
+        // Use the pre-computed diagonal neighbors status
+        // and prevent the registration of the it if it
+        // is not valid in the sense defined in the above
+        // section.
+        if ((id == NorthEast && !validNE) ||
+            (id == SouthEast && !validSE) ||
+            (id == SouthWest && !validSW) ||
+            (id == NorthWest && !validNW))
+        {
           continue;
         }
 
