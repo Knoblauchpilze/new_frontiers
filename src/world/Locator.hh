@@ -291,6 +291,24 @@ namespace new_frontiers {
                  float sample = 0.5f) const noexcept;
 
       /**
+       * @brief - Very similar to the above method. Checks
+       *          for obstruction in the line joining the
+       *          `p` and `e` endpoints.
+       * @param p - the starting point of the segment to
+       *            check for obstructions.
+       * @param e - the end point of the segment.
+       * @param cPoints - the list of points considered in
+       *                  the obsctruction process.
+       * @param sample - the sampling interval on the line.
+       * @return - `true` if the line is obstructed.
+       */
+      bool
+      obstructed(Point p,
+                 Point e,
+                 std::vector<Point>& cPoints,
+                 float sample = 0.5f) const noexcept;
+
+      /**
        * @brief - Return the list of items that are visible
        *          in the view frustum defined by the AABB
        *          from the input values.

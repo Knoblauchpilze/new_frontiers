@@ -1,6 +1,7 @@
 #ifndef    LOCATION_UTILS_HXX
 # define   LOCATION_UTILS_HXX
 
+# include <cmath>
 # include "LocationUtils.hh"
 
 namespace new_frontiers {
