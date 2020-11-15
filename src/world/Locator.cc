@@ -33,7 +33,8 @@ namespace new_frontiers {
                       float yDir,
                       float d,
                       std::vector<Point>& cPoints,
-                      Point* obs) const noexcept
+                      Point* obs,
+                      float sample) const noexcept
   {
     // We basically need to find which cells are 'under' the
     // line when it spans its path so as to determine whether
@@ -105,7 +106,7 @@ namespace new_frontiers {
         p.x += xDir;
         p.y += yDir;
 
-        t += 0.5f;
+        t += sample;
       }
     }
 

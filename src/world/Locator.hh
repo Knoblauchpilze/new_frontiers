@@ -272,6 +272,12 @@ namespace new_frontiers {
        * @param obs - if not `null` will output the position
        *               of the first obstruction. Only relevant
        *               if the return value is `true`.
+       * @param sample - the sampling distance to use when we
+       *                 discretly check intermediate points
+       *                 on the line joining the start to the
+       *                 end of the path. Smaller values can
+       *                 be used to detect smaller obstacles
+       *                 but also increase the compute time.
        * @return - `true` if the path is obstructed by any
        *           solid element.
        */
@@ -281,7 +287,8 @@ namespace new_frontiers {
                  float yDir,
                  float d,
                  std::vector<Point>& cPoints,
-                 Point* obs = nullptr) const noexcept;
+                 Point* obs = nullptr,
+                 float sample = 0.5f) const noexcept;
 
       /**
        * @brief - Return the list of items that are visible
