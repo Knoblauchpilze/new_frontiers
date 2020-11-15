@@ -1,7 +1,6 @@
 
 # include "AStar.hh"
 # include <deque>
-# include <iostream>
 
 namespace {
 
@@ -209,7 +208,14 @@ namespace new_frontiers {
 # ifdef DEBUG
         log("Found path to " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y));
 # endif
-        return reconstructPath(cameFrom, m_loc->w(), path);
+        bool found = reconstructPath(cameFrom, m_loc->w(), path);
+        if (found) {
+          // Smooth out the sharp turns that might have
+          // been produced by the A*.
+          smoothPath(path);
+        }
+
+        return found;
       }
 
       openNodes.pop_front();
@@ -273,7 +279,7 @@ namespace new_frontiers {
                          int offset,
                          std::vector<Point>& path) const noexcept
   {
-    std::vector<Point> out(1u, m_end);
+    std::vector<Point> out;
 
     Node n{m_end, 0.0f, 0.0f};
     int h = n.hash(offset);
@@ -312,6 +318,77 @@ namespace new_frontiers {
     }
 
     return sh == h;
+  }
+
+  void
+  AStar::smoothPath(std::vector<Point>& path) const noexcept {
+    // The basic idea is taken from this very interesting
+    // article found in Gamasutra:
+    // https://www.gamasutra.com/view/feature/131505/toward_more_realistic_pathfinding.php?page=2
+    // The idea is to remove progressively intermediate
+    // positions on the path as long as the next step can
+    // be reached with a straight line from the previous
+    // point.
+    // The starting point of the path is already the first
+    // element in the `path` so we can start from there.
+    // We will eliminate the trivial case where the path
+    // is emtpy right away: this corresponds to all paths
+    // that don't have at least 3 elements (and thus where
+    // no simplification can occur).
+    if (path.size() < 2u) {
+      return;
+    }
+
+    std::vector<Point> out;
+    Point p = m_start;
+
+    unsigned id = 0u;
+    std::vector<Point> dummy;
+
+    // Simplify the whole path.
+    int count = 0;
+    while (id < path.size() - 1u && count < 10) {
+      Point c = path[id + 1u];
+      Node n{c, 0.0f, 0.0f};
+
+      // Check whether the starting position and the
+      // current point can be joined by a straight
+      // line without obstructions. Note that we will
+      // ignore obstructions in the target.
+      if (!m_loc->obstructed(p, c, dummy) || n.contains(m_end)) {
+        // The path can be reached in a straight line,
+        // we can remove the current point.
+# ifdef DEBUG
+        log(
+          "Simplified point " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y)
+        );
+# endif
+        ++id;
+      }
+      else {
+        // Can't reach the point from the current start.
+        // This segment cannot be simplified further.
+# ifdef DEBUG
+        log(
+          "Can't simplify path from " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+          " to point " + std::to_string(c.x) + "x" + std::to_string(c.y) +
+          " (id: " + std::to_string(id) + ", s: " + std::to_string(path.size()) + ")" +
+          " registering " + std::to_string(p.x) + "x" + std::to_string(p.y)
+        );
+# endif
+        out.push_back(p);
+        p = path[id];
+      }
+
+      ++count;
+    }
+
+    // Register the last points.
+    out.push_back(p);
+    out.push_back(path.back());
+
+    // Swap the simplified path with the input argument.
+    path.swap(out);
   }
 
 }

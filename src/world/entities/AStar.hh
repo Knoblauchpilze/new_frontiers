@@ -57,6 +57,17 @@ namespace new_frontiers {
                       int offset,
                       std::vector<Point>& path) const noexcept;
 
+      /**
+       * @brief - Used to perform a smoothing of the input path
+       *          to reduce the amount of sharp turns that it
+       *          contains.
+       * @param path - the path to smooth out. Note that the
+       *               smoothened path will be returned directly
+       *               in this output argument.
+       */
+      void
+      smoothPath(std::vector<Point>& path) const noexcept;
+
     private:
 
       /**
