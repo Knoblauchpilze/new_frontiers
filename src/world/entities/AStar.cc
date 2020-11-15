@@ -57,8 +57,24 @@ namespace {
       new_frontiers::distance::d(np, target)
     });
 
+    // Top right neighbor.
+    np.x = bx + 1.0f; np.y = by + 1.0f;
+    neighbors.push_back(Node{
+      np,
+      c + new_frontiers::distance::d(p, np),
+      new_frontiers::distance::d(np, target)
+    });
+
     // Up neighbor.
     np.x = bx; np.y = by + 1.0f;
+    neighbors.push_back(Node{
+      np,
+      c + new_frontiers::distance::d(p, np),
+      new_frontiers::distance::d(np, target)
+    });
+
+    // Top left neighbor.
+    np.x = bx - 1.0f; np.y = by + 1.0f;
     neighbors.push_back(Node{
       np,
       c + new_frontiers::distance::d(p, np),
@@ -73,8 +89,24 @@ namespace {
       new_frontiers::distance::d(np, target)
     });
 
+    // Bottom left neighbor.
+    np.x = bx - 1.0f; np.y = by - 1.0f;
+    neighbors.push_back(Node{
+      np,
+      c + new_frontiers::distance::d(p, np),
+      new_frontiers::distance::d(np, target)
+    });
+
     // Down neighbor.
     np.x = bx; np.y = by - 1.0f;
+    neighbors.push_back(Node{
+      np,
+      c + new_frontiers::distance::d(p, np),
+      new_frontiers::distance::d(np, target)
+    });
+
+    // Bottom right neighbor.
+    np.x = bx + 1.0f; np.y = by - 1.0f;
     neighbors.push_back(Node{
       np,
       c + new_frontiers::distance::d(p, np),
