@@ -287,7 +287,7 @@ namespace new_frontiers {
   void
   World::generateElements() {
     // Generate the colonies.
-    Colony::Props c = ColonyFactory::newColonyProps(1.0f, 4.0f, utils::Uuid::create());
+    Colony::Props c = ColonyFactory::newColonyProps(1.0f, 5.0f, utils::Uuid::create());
     c.focus = colony::Priority::Expansion;
     c.refill = 0.2f;
     m_colonies.push_back(std::make_shared<Colony>(c));
@@ -303,7 +303,7 @@ namespace new_frontiers {
     // m_colonies.push_back(std::make_shared<Colony>(c));
 
     // Generate resource deposit.
-    Deposit::DProps dp = BlockFactory::newDepositProps(6.0f, 4.0f);
+    Deposit::DProps dp = BlockFactory::newDepositProps(6.0f, 2.0f);
     dp.stock = 20.0f;
     m_blocks.push_back(BlockFactory::newDeposit(dp));
 
@@ -317,6 +317,12 @@ namespace new_frontiers {
 
     // bp.tile.p.x = 4.0f; bp.tile.p.y = 5.0f;
     // m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
+
+    bp.tile.p.x = 4.0f; bp.tile.p.y = 2.0f;
+    m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
+
+    bp.tile.p.x = 3.0f; bp.tile.p.y = 2.0f;
+    m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
     // Generate the player at the same location
     // as the entry portal.
