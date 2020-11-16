@@ -4,6 +4,8 @@
 # include "Entity.hh"
 # include "Point.hh"
 # include "../effects/Pheromon.hh"
+# include "PheromonAnalyzer.hh"
+# include "Path.hh"
 
 namespace new_frontiers {
 
@@ -133,7 +135,7 @@ namespace new_frontiers {
 
       /**
        * @brief - Method guaranteed to be called upon each
-       *          invocation of the `emitPheromon` methos
+       *          invocation of the `emitPheromon` methods
        *          and which gives inheriting classes the
        *          opportunity to block emission of pheromon
        *          for some reason.
@@ -173,6 +175,39 @@ namespace new_frontiers {
        */
       void
       pickRandomTarget(StepInfo& info, const Point& r, float& x, float& y) noexcept;
+
+      /**
+       * @brief - Common handler that can be used during the
+       *          though process of an agent. It will reset
+       *          the active behavior to wandering and pick
+       *          a random target based on the pheromons that
+       *          are currently visible.
+       *          The user can specify a filter that will be
+       *          used to control which pheromons are used
+       *          in the determination of the wandering
+       *          target. The method also expects to be fed
+       *          a way to weigh the pheromons that can be
+       *          seen by the agent.
+       * @param info - the information describing the world.
+       * @param filter - a way to check whether a pheromon
+       *                 is relevant for the wandering target.
+       *                 It should return `true` in case the
+       *                 pheromon is not relevant.
+       * @param analyzer - a way to weigh the pheromons based
+       *                   on their type.
+       * @param path - the path to generate: any information
+       *               will be added to this object.
+       * @return - `true` in case a wandering target could be
+       *           selected and `false` in case the generation
+       *           failed for some reason (mostly due to the
+       *           impossibility to reach the target from the
+       *           current position).
+       */
+      bool
+      returnToWandering(StepInfo& info,
+                        std::function<bool(VFXShPtr)> filter,
+                        PheromonAnalyzer& analyzer,
+                        path::Path& path);
 
     private:
 

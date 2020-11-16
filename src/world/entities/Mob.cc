@@ -77,6 +77,63 @@ namespace new_frontiers {
     y = r.y + d * yDir;
   }
 
+  bool
+  Mob::returnToWandering(StepInfo& info,
+                         std::function<bool(VFXShPtr)> filter,
+                         PheromonAnalyzer& analyzer,
+                         path::Path& path)
+  {
+    // Collect the pheromons visible in the surroundings of
+    // the entity: this will be filtered afterwards using
+    // the provided function.
+    tiles::Effect* te = nullptr;
+    std::vector<VFXShPtr> allVFXs = info.frustum->getVisible(m_tile.p, m_perceptionRadius, te, -1, nullptr);
+
+    std::vector<VFXShPtr> vfxs;
+    for (unsigned id = 0u ; id < allVFXs.size() ; ++id) {
+      if (!filter(allVFXs[id])) {
+        vfxs.push_back(allVFXs[id]);
+      }
+    }
+
+    // We will need a random target so better compute
+    // it right now.
+    float xRnd, yRnd;
+    pickRandomTarget(info, m_tile.p, xRnd, yRnd);
+
+    Point p{xRnd, yRnd};
+
+    // Use the pheromons to select a biased random
+    // target: this will allow to still have some
+    // randomness but more directed towards what
+    // other agents might have explored.
+    if (!vfxs.empty()) {
+      for (unsigned id = 0u ; id < vfxs.size() ; ++id) {
+        VFXShPtr v = vfxs[id];
+
+        PheromonShPtr p = std::dynamic_pointer_cast<Pheromon>(v);
+        if (v == nullptr || p == nullptr) {
+          continue;
+        }
+
+        analyzer.accumulate(*p);
+      }
+
+      // Use the pheromon analyze to yield a valid target
+      // to pick for this warrior. The relative importance
+      // of pheromons will be handled directly.
+      analyzer.computeTarget(xRnd, yRnd);
+
+      p.x = xRnd;
+      p.y = yRnd;
+    }
+
+    // Reset the behavior and generate a path to the
+    // target computed from visible pheromons.
+    setBehavior(Behavior::Wander);
+    return path.generatePathTo(info, p, false);
+  }
+
   Mob::Thought
   Mob::behave(StepInfo& info, const path::Path& /*path*/) noexcept {
     // Save the current behavior.
