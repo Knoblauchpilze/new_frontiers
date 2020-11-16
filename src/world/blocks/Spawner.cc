@@ -62,8 +62,6 @@ namespace new_frontiers {
 
         pp.owner = getOwner();
 
-        pp.perception = 7.0f;
-
         mp = std::make_shared<Worker>(pp);
         } break;
     }
