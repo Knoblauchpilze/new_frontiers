@@ -33,17 +33,12 @@ namespace new_frontiers {
       world::Sort::Distance
     );
 
-    Point p;
-
     if (entities.empty()) {
       // Couldn't find the entity we were chasing, get
       // back to wander behavior.
       log("Lost entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y));
 
-      setBehavior(Behavior::Wander);
-      pickTargetFromPheromon(info, p);
-      path.generatePathTo(info, p, false);
-
+      pickTargetFromPheromon(info, path);
       return true;
     }
 
@@ -71,11 +66,7 @@ namespace new_frontiers {
         log("Killed entity at " + std::to_string(e->getTile().p.x) + "x" + std::to_string(e->getTile().p.y));
 
         info.removeEntity(e.get());
-
-        setBehavior(Behavior::Wander);
-        pickTargetFromPheromon(info, p);
-        path.generatePathTo(info, p, false);
-
+        pickTargetFromPheromon(info, path);
         return true;
       }
     }
@@ -93,8 +84,6 @@ namespace new_frontiers {
       return false;
     }
 
-    Point p;
-
     // We have reached home, do nothing and wait for
     // new instructions. We need to make sure that
     // we are actually close to home (and that it did
@@ -108,10 +97,7 @@ namespace new_frontiers {
     }
 
     if (ie.index < 0 || ie.type != world::ItemType::Block || b.tile.type != tiles::Portal) {
-      setBehavior(Behavior::Wander);
-      pickTargetFromPheromon(info, p);
-      path.generatePathTo(info, p, false);
-
+      pickTargetFromPheromon(info, path);
       return true;
     }
 
@@ -146,10 +132,7 @@ namespace new_frontiers {
         return false;
       }
 
-      Point p;
-      pickTargetFromPheromon(info, p);
-      path.generatePathTo(info, p, false);
-
+      pickTargetFromPheromon(info, path);
       return true;
     }
 
@@ -168,31 +151,8 @@ namespace new_frontiers {
   }
 
   void
-  Warrior::pickTargetFromPheromon(StepInfo& info, Point& p) noexcept {
-    // Collect the pheromons laid out by ennemis of
-    // this warrior.
-    world::Filter f{getOwner(), false};
-    tiles::Effect* te = nullptr;
-    std::vector<VFXShPtr> d = info.frustum->getVisible(m_tile.p, m_perceptionRadius, te, -1, &f);
-
-    // We will need a random target so better compute
-    // it right now.
-    float xRnd, yRnd;
-    pickRandomTarget(info, m_tile.p, xRnd, yRnd);
-
-    // In case no pheromons are visible use the
-    // default wandering behavior.
-    if (d.empty()) {
-      p.x = xRnd;
-      p.y = yRnd;
-
-      return;
-    }
-
-    // Otherwise, see what kind of pheromones are
-    // visible: we will give some priority to the
-    // fighting pheromon over other types and so
-    // on to specialize the behavior.
+  Warrior::pickTargetFromPheromon(StepInfo& info, path::Path& path) noexcept {
+    // Generate the pheromon analyzer.
     PheromonAnalyzer pa;
     pa.setRelativeWeight(pheromon::Type::Chase, 0.1f);
     pa.setRelativeWeight(pheromon::Type::Fight, 0.25f);
@@ -201,23 +161,18 @@ namespace new_frontiers {
     pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
     pa.setRandomWeight(0.3f);
 
-    for (unsigned id = 0u ; id < d.size() ; ++id) {
-      VFXShPtr v = d[id];
+    // Generate the filtering method for pheromons.
+    utils::Uuid owner = getOwner();
+    auto filter = [&owner](VFXShPtr vfx) {
+      return vfx->getOwner() == owner;
+    };
 
-      PheromonShPtr p = std::dynamic_pointer_cast<Pheromon>(v);
-      if (v == nullptr || p == nullptr) {
-        continue;
-      }
-
-      pa.accumulate(*p);
+    // Use the dedicated handler.
+    if (!returnToWandering(info, filter, pa, path)) {
+      log(
+        "Unable to return to wandering, path could not be generated",
+        utils::Level::Warning
+      );
     }
-
-    // Use the pheromon analyze to yield a valid target
-    // to pick for this warrior. The relative importance
-    // of pheromons will be handled directly.
-    pa.computeTarget(xRnd, yRnd);
-
-    p.x = xRnd;
-    p.y = yRnd;
   }
 }

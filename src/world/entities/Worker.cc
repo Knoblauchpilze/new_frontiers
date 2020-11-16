@@ -29,8 +29,6 @@ namespace new_frontiers {
       return false;
     }
 
-    Point p;
-
     // We have reached the deposit, attempt to pick
     // some resource and get back.
     BlockShPtr b = info.frustum->getClosest(
@@ -43,10 +41,7 @@ namespace new_frontiers {
     if (b == nullptr) {
       // For some reason the deposit does not exist,
       // return to wandering.
-      setBehavior(Behavior::Wander);
-      pickTargetFromPheromon(info, p);
-      path.generatePathTo(info, p, false);
-
+      pickTargetFromPheromon(info, path);
       return true;
     }
 
@@ -59,10 +54,7 @@ namespace new_frontiers {
         utils::Level::Warning
       );
 
-      setBehavior(Behavior::Wander);
-      pickTargetFromPheromon(info, p);
-      path.generatePathTo(info, p, false);
-
+      pickTargetFromPheromon(info, path);
       return true;
     }
 
@@ -81,11 +73,7 @@ namespace new_frontiers {
     // wander behavior.
     if (toFetch <= 0.0f) {
       log("Deposit has been emptied while en route");
-
-      setBehavior(Behavior::Wander);
-      pickTargetFromPheromon(info, p);
-      path.generatePathTo(info, p, false);
-
+      pickTargetFromPheromon(info, path);
       return true;
     }
 
@@ -113,8 +101,6 @@ namespace new_frontiers {
       return false;
     }
 
-    Point p;
-
     // We have reached home, attempt to dump the
     // resource we're transporting and get back
     // to wandering.
@@ -124,10 +110,7 @@ namespace new_frontiers {
     if (b == nullptr) {
       // For some reason the home of the entity does
       // not exist, return to wandering.
-      setBehavior(Behavior::Wander);
-      pickTargetFromPheromon(info, p);
-      path.generatePathTo(info, p, false);
-
+      pickTargetFromPheromon(info, path);
       return true;
     }
 
@@ -143,10 +126,7 @@ namespace new_frontiers {
         utils::Level::Warning
       );
 
-      setBehavior(Behavior::Wander);
-      pickTargetFromPheromon(info, p);
-      path.generatePathTo(info, p, false);
-
+      pickTargetFromPheromon(info, path);
       return true;
     }
 
@@ -157,10 +137,7 @@ namespace new_frontiers {
     m_carrying = 0.0f;
 
     // Re-wander again.
-    setBehavior(Behavior::Wander);
-    pickTargetFromPheromon(info, p);
-    path.generatePathTo(info, p, false);
-
+    pickTargetFromPheromon(info, path);
     return true;
   }
 
@@ -189,10 +166,7 @@ namespace new_frontiers {
         log("Deposit is empty");
       }
 
-      Point p;
-      pickTargetFromPheromon(info, p);
-      path.generatePathTo(info, p, false);
-
+      pickTargetFromPheromon(info, path);
       return true;
     }
 
@@ -212,29 +186,8 @@ namespace new_frontiers {
   }
 
   void
-  Worker::pickTargetFromPheromon(StepInfo& info, Point& p) noexcept {
-    // Collect the pheromons laid out by colleagues
-    // of this worker.
-    world::Filter f{getOwner(), true};
-    tiles::Effect* te = nullptr;
-    std::vector<VFXShPtr> d = info.frustum->getVisible(m_tile.p, m_perceptionRadius, te, -1, &f);
-
-    // We will need a random target so better compute
-    // it right now.
-    float xRnd, yRnd;
-    pickRandomTarget(info, m_tile.p, xRnd, yRnd);
-
-    // In case no pheromons are visible use the
-    // default wandering behavior.
-    if (d.empty()) {
-      p.x = xRnd;
-      p.y = yRnd;
-
-      return;
-    }
-
-    // Otherwise, see what kind of pheromones are
-    // visible.
+  Worker::pickTargetFromPheromon(StepInfo& info, path::Path& path) noexcept {
+    // Generate the pheromon analyzer.
     PheromonAnalyzer pa;
     pa.setRelativeWeight(pheromon::Type::Chase, 0.0f);
     pa.setRelativeWeight(pheromon::Type::Fight, 0.0f);
@@ -243,23 +196,19 @@ namespace new_frontiers {
     pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
     pa.setRandomWeight(0.5f);
 
-    for (unsigned id = 0u ; id < d.size() ; ++id) {
-      VFXShPtr v = d[id];
+    // Generate the filtering method for pheromons.
+    utils::Uuid owner = getOwner();
+    auto filter = [&owner](VFXShPtr vfx) {
+      return vfx->getOwner() != owner;
+    };
 
-      PheromonShPtr p = std::dynamic_pointer_cast<Pheromon>(v);
-      if (v == nullptr || p == nullptr) {
-        continue;
-      }
-
-      pa.accumulate(*p);
+    // Use the dedicated handler.
+    if (!returnToWandering(info, filter, pa, path)) {
+      log(
+        "Unable to return to wandering, path could not be generated",
+        utils::Level::Warning
+      );
     }
-
-    // Use the pheromon analyze to yield a valid target
-    // to pick for this worker. The relative importance
-    // of pheromons will be handled directly.
-    pa.computeTarget(xRnd, yRnd);
-    p.x = xRnd;
-    p.y = yRnd;
   }
 
 }

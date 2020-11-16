@@ -45,12 +45,15 @@ namespace new_frontiers {
        *          behavior to favorize emergent behaviors
        *          where another worker might have tracked
        *          a deposit before.
+       *          This method will use the base class method
+       *          and setup the correct environnment for its
+       *          execution.
        * @param info - information about the surroundings of
-       *               the worker.
-       * @param p - output position of the picked target.
+       *               the warrior.
+       * @param path - the path to generate.
        */
       void
-      pickTargetFromPheromon(StepInfo& info, Point& p) noexcept;
+      pickTargetFromPheromon(StepInfo& info, path::Path& path) noexcept;
   };
 
   using WorkerShPtr = std::shared_ptr<Worker>;

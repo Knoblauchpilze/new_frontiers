@@ -56,12 +56,15 @@ namespace new_frontiers {
        *          behavior to favorize emergent behaviors
        *          where pheromons laid out by other mobs
        *          might lead to their 'owners'.
+       *          This method will use the base class method
+       *          and setup the correct environnment for its
+       *          execution.
        * @param info - information about the surroundings of
        *               the warrior.
-       * @param p - the output position picked from pheromons.
+       * @param path - the path to generate.
        */
       void
-      pickTargetFromPheromon(StepInfo& info, Point& p) noexcept;
+      pickTargetFromPheromon(StepInfo& info, path::Path& path) noexcept;
 
     private:
 
