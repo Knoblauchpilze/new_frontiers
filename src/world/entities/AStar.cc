@@ -196,7 +196,7 @@ namespace new_frontiers {
     AssociationMap cameFrom;
     AssociationMap associations;
 
-    associations[init.hash(m_loc->w())] = init.hash(m_loc->w());
+    associations[init.hash(m_loc->w())] = 0;
 
     // Common lambdas to handle sorting and distance
     // computation from a point to another.
@@ -235,7 +235,7 @@ namespace new_frontiers {
         if (found) {
           // Smooth out the sharp turns that might have
           // been produced by the A*.
-          smoothPath(path);
+          smoothPath(path, allowLog);
         }
 
         return found;
@@ -275,6 +275,10 @@ namespace new_frontiers {
         Node& neighbor = neighbors[id];
 
         // Only consider the node if it is not obstructed.
+        // TODO: The fact that the neighbor is not obstructed
+        // does not mean that the path from the `start` to
+        // the `neighbor` is not obstructed. Mainly it is the
+        // case for the first starting position.
         if (m_loc->obstructed(neighbor.p) && !neighbor.contains(m_end)) {
           continue;
         }
@@ -287,6 +291,13 @@ namespace new_frontiers {
             (id == SouthEast && !validSE) ||
             (id == SouthWest && !validSW) ||
             (id == NorthWest && !validNW))
+        {
+          continue;
+        }
+
+        // Prevent neighbors outside of the map.
+        if (neighbor.p.x < 0.0f || neighbor.p.x >= m_loc->w() ||
+            neighbor.p.y < 0.0f || neighbor.p.y >= m_loc->h())
         {
           continue;
         }
@@ -313,6 +324,15 @@ namespace new_frontiers {
             nodes[it->second].c = neighbor.c;
           }
           else {
+            if (allowLog) {
+              log(
+                "Registering " + std::to_string(neighbor.p.x) + "x" + std::to_string(neighbor.p.y) +
+                " with c: " + std::to_string(neighbor.c) + " h: " + std::to_string(neighbor.h) +
+                " (f: " + std::to_string(neighbor.c + neighbor.h) + "," +
+                " parent is " + std::to_string(current.hash(m_loc->w())) + ")"
+              );
+            }
+
             openNodes.push_back(nodes.size());
             associations[neighbor.hash(m_loc->w())] = nodes.size();
             nodes.push_back(neighbor);
@@ -374,7 +394,7 @@ namespace new_frontiers {
   }
 
   void
-  AStar::smoothPath(std::vector<Point>& path) const noexcept {
+  AStar::smoothPath(std::vector<Point>& path, bool allowLog) const noexcept {
     // The basic idea is taken from this very interesting
     // article found in Gamasutra:
     // https://www.gamasutra.com/view/feature/131505/toward_more_realistic_pathfinding.php?page=2
@@ -411,24 +431,24 @@ namespace new_frontiers {
       if (!m_loc->obstructed(p, c, dummy) || n.contains(m_end)) {
         // The path can be reached in a straight line,
         // we can remove the current point.
-# ifdef DEBUG
-        log(
-          "Simplified point " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y)
-        );
-# endif
+        if (allowLog) {
+          log(
+            "Simplified point " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y)
+          );
+        }
         ++id;
       }
       else {
         // Can't reach the point from the current start.
         // This segment cannot be simplified further.
-# ifdef DEBUG
-        log(
-          "Can't simplify path from " + std::to_string(p.x) + "x" + std::to_string(p.y) +
-          " to point " + std::to_string(c.x) + "x" + std::to_string(c.y) +
-          " (id: " + std::to_string(id) + ", s: " + std::to_string(path.size()) + ")" +
-          " registering " + std::to_string(p.x) + "x" + std::to_string(p.y)
-        );
-# endif
+        if (allowLog) {
+          log(
+            "Can't simplify path from " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+            " to point " + std::to_string(c.x) + "x" + std::to_string(c.y) +
+            " (id: " + std::to_string(id) + ", s: " + std::to_string(path.size()) + ")" +
+            " registering " + std::to_string(p.x) + "x" + std::to_string(p.y)
+          );
+        }
         out.push_back(p);
         p = path[id];
       }
@@ -442,6 +462,15 @@ namespace new_frontiers {
 
     // Swap the simplified path with the input argument.
     path.swap(out);
+
+    if (allowLog) {
+      for (unsigned id = 0u ; id < path.size() ; ++id) {
+        log(
+          "Point " + std::to_string(id) + "/" + std::to_string(path.size()) +
+          " at " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y)
+        );
+      }
+    }
   }
 
 }
