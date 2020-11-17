@@ -231,7 +231,7 @@ namespace new_frontiers {
           );
         }
 
-        bool found = reconstructPath(cameFrom, m_loc->w(), path);
+        bool found = reconstructPath(cameFrom, m_loc->w(), path, allowLog);
         if (found) {
           // Smooth out the sharp turns that might have
           // been produced by the A*.
