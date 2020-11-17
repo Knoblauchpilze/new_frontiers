@@ -78,6 +78,7 @@ namespace new_frontiers {
         return tiles::Poison;
       case pheromon::Type::Return:
         return tiles::Lightning;
+      case pheromon::Type::Flee:
       case pheromon::Type::Wander:
       default:
         return tiles::Smoke;

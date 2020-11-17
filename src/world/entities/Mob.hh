@@ -78,7 +78,8 @@ namespace new_frontiers {
         Chase,
         Fight,
         Collect,
-        Return
+        Return,
+        Flee
       };
 
       /**
@@ -160,6 +161,9 @@ namespace new_frontiers {
 
       virtual bool
       getBack(StepInfo& info, path::Path& path);
+
+      virtual bool
+      flee(StepInfo& info, path::Path& path);
 
       virtual bool
       wander(StepInfo& info, path::Path& path);
