@@ -145,8 +145,7 @@ namespace new_frontiers {
     // Assign the target to the closest entities:
     // as we requested the list to be sorted we
     // can pick the first one.
-    path.generatePathTo(info, e->getTile().p, false);
-
+    path.generatePathTo(info, e->getTile().p, false, true);
     return true;
   }
 
