@@ -23,6 +23,9 @@ namespace new_frontiers {
       getBack(StepInfo& info, path::Path& path) override;
 
       bool
+      flee(StepInfo& info, path::Path& path) override;
+
+      bool
       wander(StepInfo& info, path::Path& path) override;
 
       /**
@@ -54,6 +57,21 @@ namespace new_frontiers {
        */
       void
       pickTargetFromPheromon(StepInfo& info, path::Path& path) noexcept;
+
+      /**
+       * @brief - Used to verify in each behavior whether we
+       *          can see some enemies warriors: if this is
+       *          the case we should try to flee them so as
+       *          not to end up dead.
+       * @param info - information about the world.
+       * @param path - the path to update in case a decision
+       *               is taken.
+       * @return - `true` if a decision was made: this means
+       *           that no further processing is required
+       *           for the time being.
+       */
+      bool
+      checkForFlee(StepInfo& info, path::Path& path) noexcept;
   };
 
   using WorkerShPtr = std::shared_ptr<Worker>;
