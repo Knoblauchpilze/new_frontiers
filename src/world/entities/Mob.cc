@@ -146,14 +146,14 @@ namespace new_frontiers {
   }
 
   Mob::Thought
-  Mob::behave(StepInfo& info, const path::Path& /*path*/) noexcept {
+  Mob::behave(StepInfo& info, const path::Path& path) noexcept {
     // Save the current behavior.
     Behavior s = m_behavior;
 
     Thought t;
     t.behaviorChanged = false;
     t.actionTaken = false;
-    t.path = path::newPath(m_tile.p);
+    t.path = path;
 
     switch (s) {
       case Behavior::Chase:
