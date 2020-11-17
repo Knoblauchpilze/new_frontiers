@@ -49,7 +49,13 @@ namespace new_frontiers {
     // the entity: indeed the entity may be moving
     // so we want to accurately chase it.
     path.clear(m_tile.p);
-    path.generatePathTo(info, e->getTile().p, false);
+    if (!path.generatePathTo(info, e->getTile().p, false, true)) {
+      // Couldn't reach the entity, return to wandering.
+      // TODO: Maybe clear the path ? And in other calls to
+      // this method.
+      pickTargetFromPheromon(info, path);
+      return true;
+    }
 
     // In case we are close enough of the entity to
     // actually hit it, do so if we are able to.
@@ -142,11 +148,9 @@ namespace new_frontiers {
     // Pick the first one as it will be the closest.
     EntityShPtr e = entities.front();
 
-    // Assign the target to the closest entities:
-    // as we requested the list to be sorted we
-    // can pick the first one.
-    path.generatePathTo(info, e->getTile().p, false, true);
-    return true;
+    // Try to go to this entity.
+    // TODO: Maybe detect failure here and continue wandering ?
+    return path.generatePathTo(info, e->getTile().p, false, true);
   }
 
   void
