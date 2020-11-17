@@ -62,14 +62,25 @@ namespace new_frontiers {
     // based on that.
     info.clampPath(r, xDir, yDir, d);
 
-    while (info.frustum->obstructed(r, xDir, yDir, d, m_path.cPoints)) {
+    Point t{r.x + d * xDir, r.y + d * yDir};
+
+    while (info.frustum->obstructed(t)) {
       d = info.rng.rndFloat(m_pathLength / 2.0f, m_pathLength);
       theta = info.rng.rndAngle();
 
       xDir = std::cos(theta);
       yDir = std::sin(theta);
 
+      // TODO: The fact that we clamp the coordinates
+      // can lead to some issues in the path finding
+      // as if we pick for example `(4, 5)` as target
+      // the path is indeed not obstructed (the block
+      // is at `(4, 4)` but we still can't go there
+      // without going out of the world.
+      // This should be resolved when we allow for an
+      // infinite world.
       info.clampPath(r, xDir, yDir, d);
+      t = Point{r.x + d * xDir, r.y + d * yDir};
     }
 
     // Save the picked location.
