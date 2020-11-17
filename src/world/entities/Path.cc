@@ -68,7 +68,7 @@ namespace new_frontiers {
     }
 
     bool
-    Path::generatePathTo(StepInfo& info, const Point& p, bool ignoreTargetObstruction) {
+    Path::generatePathTo(StepInfo& info, const Point& p, bool ignoreTargetObstruction, bool allowLog) {
       // Convert to path semantic: the starting point
       // of the path segment will be the end of the
       // registered list of intermediate points. It
@@ -131,7 +131,7 @@ namespace new_frontiers {
       AStar alg(s, p, info.frustum);
       std::vector<Point> steps;
 
-      if (!alg.findPath(steps)) {
+      if (!alg.findPath(steps, allowLog)) {
         return false;
       }
 

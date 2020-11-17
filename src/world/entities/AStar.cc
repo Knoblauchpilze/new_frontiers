@@ -2,6 +2,8 @@
 # include "AStar.hh"
 # include <deque>
 
+# include <iostream>
+
 namespace {
 
   /**
@@ -134,7 +136,7 @@ namespace {
   inline
   int
   Node::hash(int offset) const noexcept {
-    return static_cast<int>(p.y) * offset + static_cast<int>(p.x);
+    return static_cast<int>(std::floor(p.y)) * offset + static_cast<int>(std::floor(p.x));
   }
 
   inline
@@ -166,64 +168,69 @@ namespace new_frontiers {
   }
 
   bool
-  AStar::findPath(std::vector<new_frontiers::Point>& path) const noexcept {
+  AStar::findPath(std::vector<new_frontiers::Point>& path, bool allowLog) const noexcept {
     // The code for this algorithm has been taken from the
     // below link:
     // https://en.wikipedia.org/wiki/A*_search_algorithm
     path.clear();
 
     // The list of nodes that are currently being explored.
-    std::deque<Node> openNodes;
-    Node init{m_start, 0.0f, 0.0f};
-    openNodes.push_back(init);
+    std::vector<Node> nodes;
+    std::deque<int> openNodes;
+    Node init{m_start, 0.0f, distance::d(m_start, m_end)};
+    nodes.push_back(init);
+    openNodes.push_back(0);
 
-# ifdef DEBUG
-    log(
-      "Starting a* at " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
-      " to reach " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y)
-    );
-# endif
+    if (allowLog) {
+      log(
+        "Starting a* at " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
+        " to reach " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y)
+      );
+    }
+
+    using AssociationMap = std::unordered_map<int, int>;
 
     // The `cameFrom[i]` defines the index of its parent
     // node, i.e. the node we were traversing when this
     // node was encountered.
-    std::unordered_map<int, int> cameFrom;
+    AssociationMap cameFrom;
+    AssociationMap associations;
 
-    using ScoreMap = std::unordered_map<int, float>;
-
-    // The `gScore[i]` is the best score reached so far
-    // for any node. The default value being infinity
-    // (if it is not registered in the map).
-    ScoreMap gScore;
-    gScore[init.hash(m_loc->w())] = 0.0f;
-
-    // The `fScore[i]` is our current best guess at how
-    // short a path from start to finish can be if it
-    // passes through `i`.
-    ScoreMap fScore;
-    fScore[init.hash(m_loc->w())] = init.h;
+    associations[init.hash(m_loc->w())] = init.hash(m_loc->w());
 
     // Common lambdas to handle sorting and distance
     // computation from a point to another.
-    auto cmp = [](const Node& lhs, const Node& rhs) {
-      return lhs.c + lhs.h < rhs.c + rhs.h;
-    };
-
-    auto d = [](const Node& lhs, const Node& rhs) {
-      return distance::d(lhs.p, rhs.p);
+    auto cmp = [&nodes](int lhs, int rhs) {
+      const Node& nlhs = nodes[lhs];
+      const Node& nrhs = nodes[rhs];
+      return nlhs.c + nlhs.h < nrhs.c + nrhs.h;
     };
 
     while (!openNodes.empty()) {
       // Sort the open list to fetch nodes with smallest
       // `c + h` value.
       std::sort(openNodes.begin(), openNodes.end(), cmp);
-      Node current = openNodes.front();
+      Node current = nodes[openNodes.front()];
+      openNodes.pop_front();
+
+      if (allowLog) {
+        log(
+          "Picked node " + std::to_string(current.p.x) + "x" + std::to_string(current.p.y) +
+          " with c " + std::to_string(current.c) +
+          " h is " + std::to_string(current.h) +
+          " (nodes: " + std::to_string(openNodes.size()) + ")"
+        );
+      }
 
       // In case we reached the goal, stop there.
       if (current.contains(m_end)) {
-# ifdef DEBUG
-        log("Found path to " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y));
-# endif
+        if (allowLog) {
+          log(
+            "Found path to " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y) +
+            " with c " + std::to_string(current.c) + ", h " + std::to_string(current.h)
+          );
+        }
+
         bool found = reconstructPath(cameFrom, m_loc->w(), path);
         if (found) {
           // Smooth out the sharp turns that might have
@@ -234,20 +241,7 @@ namespace new_frontiers {
         return found;
       }
 
-      openNodes.pop_front();
-
-      std::vector<Node> neighbors = current.generateNeighbors(m_end);
-
-# ifdef DEBUG
-      log(
-        "Picked node " + std::to_string(current.p.x) + "x" + std::to_string(current.p.y) +
-        " with c " + std::to_string(current.c) +
-        " h is " + std::to_string(current.h) +
-        " (nodes: " + std::to_string(openNodes.size()) + ")"
-      );
-# endif
-
-      // Also, consider the node is it is not obstructed
+      // Also, consider the node if it is not obstructed
       // in a less obvious way as below:
       //
       // +----+----+
@@ -262,6 +256,8 @@ namespace new_frontiers {
       // neighbors (so either SE, SW, NE, NW).
       // We will first determine before processing the
       // neighbors and check the status for each one.
+      std::vector<Node> neighbors = current.generateNeighbors(m_end);
+
       float bx = std::floor(current.p.x) + 0.5f;
       float by = std::floor(current.p.y) + 0.5f;
 
@@ -270,15 +266,12 @@ namespace new_frontiers {
       bool obsW = m_loc->obstructed(Point{bx - 1.0f, by});
       bool obsS = m_loc->obstructed(Point{bx, by - 1.0f});
 
-        bool validNE = !obsN || !obsE;
-        bool validNW = !obsN || !obsW;
-        bool validSW = !obsS || !obsW;
-        bool validSE = !obsS || !obsE;
+      bool validNE = !obsN || !obsE;
+      bool validNW = !obsN || !obsW;
+      bool validSW = !obsS || !obsW;
+      bool validSE = !obsS || !obsE;
 
       for (unsigned id = 0u ; id < neighbors.size() ; ++id) {
-        // The `d(current,neighbor)` is the weight of the edge from
-        // current to neighbor `gScoreAttempt` is the distance from
-        // start to the neighbor through `current`.
         Node& neighbor = neighbors[id];
 
         // Only consider the node if it is not obstructed.
@@ -298,29 +291,31 @@ namespace new_frontiers {
           continue;
         }
 
-        float gScoreAttempt = gScore[current.hash(m_loc->w())] + d(current, neighbor);
+        AssociationMap::iterator it = associations.find(neighbor.hash(m_loc->w()));
 
-        ScoreMap::iterator it = gScore.find(neighbor.hash(m_loc->w()));
-
-        if (it == gScore.end() || gScoreAttempt < it->second) {
+        if (it == associations.end() || neighbor.c < nodes[it->second].c) {
           // This path to neighbor is better than any previous one.
           cameFrom[neighbor.hash(m_loc->w())] = current.hash(m_loc->w());
-          gScore[neighbor.hash(m_loc->w())] = gScoreAttempt;
 
-# ifdef DEBUG
-          log(
-            "Updating " + std::to_string(neighbor.p.x) + "x" + std::to_string(neighbor.p.y) +
-            " from c " + std::to_string(neighbor.c) + " to " + std::to_string(gScoreAttempt) +
-            " and f score to " + std::to_string(gScore[neighbor.hash(m_loc->w())] + neighbor.h) +
-            " parent is " + std::to_string(current.hash(m_loc->w()))
-          );
-# endif
+          if (it != associations.end()) {
+            if (allowLog) {
+              log(
+                "Updating " + std::to_string(neighbor.p.x) + "x" + std::to_string(neighbor.p.y) +
+                " from c " + std::to_string(nodes[it->second].c) + ", " + std::to_string(nodes[it->second].h) +
+                " (f: " + std::to_string(nodes[it->second].c + nodes[it->second].h) + "," +
+                " parent: " + std::to_string(cameFrom[nodes[it->second].hash(m_loc->w())]) + ")" +
+                " to c: " + std::to_string(neighbor.c) + " h: " + std::to_string(neighbor.h) +
+                " (f: " + std::to_string(neighbor.c + neighbor.h) + "," +
+                " parent is " + std::to_string(current.hash(m_loc->w())) + ")"
+              );
+            }
 
-          neighbor.c = gScoreAttempt;
-          fScore[neighbor.hash(m_loc->w())] = gScore[neighbor.hash(m_loc->w())] + neighbor.h;
-
-          if (it == gScore.end()) {
-            openNodes.push_back(neighbor);
+            nodes[it->second].c = neighbor.c;
+          }
+          else {
+            openNodes.push_back(nodes.size());
+            associations[neighbor.hash(m_loc->w())] = nodes.size();
+            nodes.push_back(neighbor);
           }
         }
       }
@@ -333,7 +328,8 @@ namespace new_frontiers {
   bool
   AStar::reconstructPath(const std::unordered_map<int, int>& parents,
                          int offset,
-                         std::vector<Point>& path) const noexcept
+                         std::vector<Point>& path,
+                         bool allowLog) const noexcept
   {
     std::vector<Point> out;
 
@@ -343,15 +339,16 @@ namespace new_frontiers {
 
     while (it != parents.cend()) {
       Point p = Node::invertHash(h, offset);
-# ifdef DEBUG
-      log(
-        "Registering point " + std::to_string(p.x) + "x" + std::to_string(p.y) +
-        " with hash " + std::to_string(h) +
-        ", parent is " + std::to_string(it->first)
-      );
-# endif
-      out.push_back(p);
 
+      if (allowLog) {
+        log(
+          "Registering point " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+          " with hash " + std::to_string(h) +
+          ", parent is " + std::to_string(it->second)
+        );
+      }
+
+      out.push_back(p);
       h = it->second;
       it = parents.find(h);
     }

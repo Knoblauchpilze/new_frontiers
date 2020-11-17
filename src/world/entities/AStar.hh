@@ -32,10 +32,12 @@ namespace new_frontiers {
        *          value will indicate so.
        * @param path - the path generated to reach the two
        *               end points of this finder.
+       * @param allowLog - `true` if the process should be
+       *                   logged.
        * @return - `true` if a path could be find.
        */
       bool
-      findPath(std::vector<Point>& path) const noexcept;
+      findPath(std::vector<Point>& path, bool allowLog = false) const noexcept;
 
     private:
 
@@ -50,12 +52,15 @@ namespace new_frontiers {
        *                 hashes for nodes.
        * @param path - output vector which will contain the
        *               reconstructed path.
+       * @param allowLog - `true` if the process should be
+       *                   logged.
        * @return - `true` if the path could be reconstructed.
        */
       bool
       reconstructPath(const std::unordered_map<int, int>& parents,
                       int offset,
-                      std::vector<Point>& path) const noexcept;
+                      std::vector<Point>& path,
+                      bool allowLog) const noexcept;
 
       /**
        * @brief - Used to perform a smoothing of the input path

@@ -155,11 +155,13 @@ namespace new_frontiers {
        *                                  the case for example when
        *                                  the target is a solid
        *                                  block.
+       * @param allowLog - `true` if the A* process should produce
+       *                   logs and information.
        * @return - `true` if we could generate a path to the
        *           target and `false` otherwise.
        */
       bool
-      generatePathTo(StepInfo& info, const Point& p, bool ignoreTargetObstruction);
+      generatePathTo(StepInfo& info, const Point& p, bool ignoreTargetObstruction, bool allowLog = false);
     };
 
     /**
