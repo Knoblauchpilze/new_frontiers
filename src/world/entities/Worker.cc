@@ -88,7 +88,12 @@ namespace new_frontiers {
 
     // And then return to the colony.
     setBehavior(Behavior::Return);
-    path.generatePathTo(info, m_home, true);
+    if (!path.generatePathTo(info, m_home, true)) {
+      log("Could not generate path to colony", utils::Level::Warning);
+      // Return to wandering.
+      pickTargetFromPheromon(info, path);
+      return true;
+    }
 
     return true;
   }
@@ -203,9 +208,7 @@ namespace new_frontiers {
     p.x += 0.5f;
     p.y += 0.5f;
 
-    path.generatePathTo(info, p, true);
-
-    return true;
+    return path.generatePathTo(info, p, true);
   }
 
   void
