@@ -17,6 +17,12 @@ namespace new_frontiers {
 
   bool
   Worker::collect(StepInfo& info, path::Path& path) {
+    // Check for enemies in the perception radius:
+    // we want to flee them.
+    if (checkForFlee(info, path)) {
+      return true;
+    }
+
     // The collect behavior is called when the worker
     // has spotted a deposit close enough and is now
     // moving towards it.
@@ -89,6 +95,11 @@ namespace new_frontiers {
 
   bool
   Worker::getBack(StepInfo& info, path::Path& path) {
+    // Flee enemies.
+    if (checkForFlee(info, path)) {
+      return true;
+    }
+
     // This method is called when the worker has
     // collected some resources and need to get
     // back home.
@@ -142,7 +153,19 @@ namespace new_frontiers {
   }
 
   bool
+  Worker::flee(StepInfo& /*info*/, path::Path& /*path*/) {
+    // TODO: Handle this.
+    return false;
+  }
+
+  bool
   Worker::wander(StepInfo& info, path::Path& path) {
+    // First, we need to make sure that we won't run
+    // into an ennemy.
+    if (checkForFlee(info, path)) {
+      return true;
+    }
+
     // Check whether we can find any deposit in the
     // surroudings of the entity.
     BlockShPtr deposit = info.frustum->getClosest(path.cur, tiles::Portal, m_perceptionRadius, 14);
@@ -212,4 +235,9 @@ namespace new_frontiers {
     }
   }
 
+  bool
+  Worker::checkForFlee(StepInfo& /*info*/, path::Path& /*path*/) noexcept {
+    // TODO: Handle this.
+    return false;
+  }
 }
