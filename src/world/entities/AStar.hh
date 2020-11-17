@@ -69,9 +69,11 @@ namespace new_frontiers {
        * @param path - the path to smooth out. Note that the
        *               smoothened path will be returned directly
        *               in this output argument.
+       * @param allowLog - `true` if the process should be
+       *                   logged.
        */
       void
-      smoothPath(std::vector<Point>& path) const noexcept;
+      smoothPath(std::vector<Point>& path, bool allowLog) const noexcept;
 
     private:
 
