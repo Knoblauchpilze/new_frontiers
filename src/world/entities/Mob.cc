@@ -157,6 +157,9 @@ namespace new_frontiers {
       case Behavior::Return:
         t.actionTaken = getBack(info, t.path);
         break;
+      case Behavior::Flee:
+        t.actionTaken = flee(info, t.path);
+        break;
       case Behavior::Wander:
       default:
         t.actionTaken = wander(info, t.path);

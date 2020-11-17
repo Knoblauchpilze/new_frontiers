@@ -60,11 +60,12 @@ namespace new_frontiers {
   inline
   void
   PheromonAnalyzer::initialize() {
-    m_weights[pheromon::Type::Chase] = 0.1f;
+    m_weights[pheromon::Type::Chase] = 0.05f;
     m_weights[pheromon::Type::Fight] = 0.3f;
     m_weights[pheromon::Type::Collect] = 0.15f;
     m_weights[pheromon::Type::Return] = 0.15f;
     m_weights[pheromon::Type::Wander] = 0.0f;
+    m_weights[pheromon::Type::Flee] = 0.05f;
 
     m_rndWeight = 0.3f;
 
@@ -76,6 +77,7 @@ namespace new_frontiers {
     m_info[pheromon::Type::Collect] = da;
     m_info[pheromon::Type::Return] = da;
     m_info[pheromon::Type::Wander] = da;
+    m_info[pheromon::Type::Flee] = da;
   }
 
 }

@@ -5,7 +5,7 @@
 namespace new_frontiers {
 
   PheromonAnalyzer::PheromonAnalyzer():
-    utils::CoreObject("analyze"),
+    utils::CoreObject("analyzer"),
 
     m_weights(),
     m_rndWeight(),
@@ -132,6 +132,8 @@ namespace new_frontiers {
       std::to_string(pheromons[pheromon::Type::Return].y) +
       ", wa: " + std::to_string(pheromons[pheromon::Type::Wander].x) + "x" +
       std::to_string(pheromons[pheromon::Type::Wander].y) +
+      ", fl: " + std::to_string(pheromons[pheromon::Type::Flee].x) + "x" +
+      std::to_string(pheromons[pheromon::Type::Flee].y) +
       ", fi: " + std::to_string(x) + "x" + std::to_string(y) +
       " (weights: " + std::to_string(wRnd) +
       ", " + std::to_string(pheromons[pheromon::Type::Chase].w) +
@@ -139,12 +141,14 @@ namespace new_frontiers {
       ", " + std::to_string(pheromons[pheromon::Type::Collect].w) +
       ", " + std::to_string(pheromons[pheromon::Type::Return].w) +
       ", " + std::to_string(pheromons[pheromon::Type::Wander].w) +
+      ", " + std::to_string(pheromons[pheromon::Type::Flee].w) +
       ", total: " + std::to_string(totW) + ")" +
       " (counts: " + std::to_string(pheromons[pheromon::Type::Chase].count) +
       ", " + std::to_string(pheromons[pheromon::Type::Fight].count) +
       ", " + std::to_string(pheromons[pheromon::Type::Collect].count) +
       ", " + std::to_string(pheromons[pheromon::Type::Return].count) +
-      ", " + std::to_string(pheromons[pheromon::Type::Wander].count) + ")",
+      ", " + std::to_string(pheromons[pheromon::Type::Wander].count) +
+      ", " + std::to_string(pheromons[pheromon::Type::Flee].count) + ")",
       utils::Level::Verbose
     );
   }

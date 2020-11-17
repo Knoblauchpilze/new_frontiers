@@ -111,6 +111,13 @@ namespace new_frontiers {
 
   inline
   bool
+  Mob::flee(StepInfo& /*info*/, path::Path& /*path*/) {
+    // Empty base implementation.
+    return false;
+  }
+
+  inline
+  bool
   Mob::wander(StepInfo& /*info*/, path::Path& /*path*/) {
     // Empty base implementation.
     return false;
@@ -128,6 +135,8 @@ namespace new_frontiers {
         return pheromon::Type::Collect;
       case Behavior::Return:
         return pheromon::Type::Return;
+      case Behavior::Flee:
+        return pheromon::Type::Flee;
       case Behavior::Wander:
       default:
         return pheromon::Type::Wander;

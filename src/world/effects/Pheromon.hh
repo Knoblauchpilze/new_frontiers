@@ -20,7 +20,8 @@ namespace new_frontiers {
       Chase,
       Collect,
       Fight,
-      Return
+      Return,
+      Flee
     };
 
   }

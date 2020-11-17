@@ -157,8 +157,9 @@ namespace new_frontiers {
     pa.setRelativeWeight(pheromon::Type::Chase, 0.1f);
     pa.setRelativeWeight(pheromon::Type::Fight, 0.25f);
     pa.setRelativeWeight(pheromon::Type::Collect, 0.2f);
-    pa.setRelativeWeight(pheromon::Type::Return, 0.15f);
+    pa.setRelativeWeight(pheromon::Type::Return, 0.07f);
     pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
+    pa.setRelativeWeight(pheromon::Type::Flee, 0.08f);
     pa.setRandomWeight(0.3f);
 
     // Generate the filtering method for pheromons.
