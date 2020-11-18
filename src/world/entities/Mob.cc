@@ -142,6 +142,7 @@ namespace new_frontiers {
     // Reset the behavior and generate a path to the
     // target computed from visible pheromons.
     setBehavior(Behavior::Wander);
+    path.clear(m_tile.p);
     return path.generatePathTo(info, p, false);
   }
 

@@ -51,8 +51,6 @@ namespace new_frontiers {
     path.clear(m_tile.p);
     if (!path.generatePathTo(info, e->getTile().p, false, true)) {
       // Couldn't reach the entity, return to wandering.
-      // TODO: Maybe clear the path ? And in other calls to
-      // this method.
       pickTargetFromPheromon(info, path);
       return true;
     }
@@ -149,8 +147,12 @@ namespace new_frontiers {
     EntityShPtr e = entities.front();
 
     // Try to go to this entity.
-    // TODO: Maybe detect failure here and continue wandering ?
-    return path.generatePathTo(info, e->getTile().p, false, true);
+    bool generated = path.generatePathTo(info, e->getTile().p, false, true);
+    if (!generated) {
+      log("Failed to generate path for entity", utils::Level::Warning);
+    }
+
+    return generated;
   }
 
   void
