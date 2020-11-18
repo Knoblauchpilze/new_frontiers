@@ -88,6 +88,7 @@ namespace new_frontiers {
 
     // And then return to the colony.
     setBehavior(Behavior::Return);
+    path.clear(m_tile.p);
     if (!path.generatePathTo(info, m_home, true)) {
       log("Could not generate path to colony", utils::Level::Warning);
       // Return to wandering.
@@ -208,7 +209,12 @@ namespace new_frontiers {
     p.x += 0.5f;
     p.y += 0.5f;
 
-    return path.generatePathTo(info, p, true);
+    bool generated = path.generatePathTo(info, p, false);
+    if (!generated) {
+      log("Failed to generate path for entity", utils::Level::Warning);
+    }
+
+    return generated;
   }
 
   void
