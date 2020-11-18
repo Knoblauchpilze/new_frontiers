@@ -144,6 +144,7 @@ namespace new_frontiers {
   Locator::obstructed(Point p,
                       Point e,
                       std::vector<Point>& cPoints,
+                      Point* obs,
                       float sample) const noexcept
   {
     // Convert the segment defined by `p` and `e` to
@@ -152,7 +153,7 @@ namespace new_frontiers {
     toDirection(p, e, xD, yD, d);
 
     // Use the dedicated variable.
-    return obstructed(p, xD, yD, d, cPoints, nullptr, sample);
+    return obstructed(p, xD, yD, d, cPoints, obs, sample);
   }
 
   inline
