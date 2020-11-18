@@ -236,7 +236,8 @@ namespace new_frontiers {
         if (found) {
           // Smooth out the sharp turns that might have
           // been produced by the A*.
-          smoothPath(path, allowLog);
+          // TODO: Reactivate this.
+          // smoothPath(path, allowLog);
         }
 
         return found;
@@ -482,6 +483,9 @@ namespace new_frontiers {
     // intermediate position as we know the path
     // from there to the first segment will be
     // valid.
+    // TODO: Maybe this needs to be moved to the
+    // `reconstructPath` method. This might solve
+    // most of our issues.
     Point ooobs{-1.0f, -1.0f};
     bool oo = m_loc->obstructed(out[0], out[1], dummy, &ooobs, 0.5f);
     log(
