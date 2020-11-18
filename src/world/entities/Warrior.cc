@@ -51,6 +51,7 @@ namespace new_frontiers {
     path.clear(m_tile.p);
     if (!path.generatePathTo(info, e->getTile().p, false, true)) {
       // Couldn't reach the entity, return to wandering.
+      log("Entity is now unreachable, returning to wandering from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y));
       pickTargetFromPheromon(info, path);
       return true;
     }
@@ -140,17 +141,28 @@ namespace new_frontiers {
       return true;
     }
 
-    // Change to chasing behavior.
-    setBehavior(Behavior::Chase);
-
     // Pick the first one as it will be the closest.
     EntityShPtr e = entities.front();
 
-    // Try to go to this entity.
-    bool generated = path.generatePathTo(info, e->getTile().p, false, true);
+    // Try to go to this entity: if it fails we will
+    // just continue on our current target.
+    path::Path newPath = path::newPath(m_tile.p);
+    std::swap(newPath, path);
+
+    bool generated = newPath.generatePathTo(info, e->getTile().p, false, true);
     if (!generated) {
-      log("Failed to generate path for entity", utils::Level::Warning);
+      if (isEnRoute()) {
+        return false;
+      }
+
+      pickTargetFromPheromon(info, path);
+      return true;
     }
+
+    // We successfully generated a path to the entity,
+    // use the chase mode.
+    setBehavior(Behavior::Chase);
+    std::swap(newPath, path);
 
     return generated;
   }

@@ -199,20 +199,32 @@ namespace new_frontiers {
       return true;
     }
 
-    // Change to collecting behavior.
-    setBehavior(Behavior::Collect);
+    // Try to generate a path to the closest deposit.
+    // As the list was required to be sorted we can
+    // pick the first one. We will only update the
+    // path in case we can generate one: otherwise
+    // we will continue with our current behavior.
+    path::Path newPath = path::newPath(m_tile.p);
+    std::swap(newPath, path);
 
-    // Assign the target to the closest deposit:
-    // as we requested the list to be sorted we
-    // can pick the first one.
     Point p = d->getTile().p;
     p.x += 0.5f;
     p.y += 0.5f;
 
-    bool generated = path.generatePathTo(info, p, false);
+    bool generated = newPath.generatePathTo(info, p, false);
     if (!generated) {
-      log("Failed to generate path for entity", utils::Level::Warning);
+      log("Failed to generate path to deposit", utils::Level::Warning);
+      if (isEnRoute()) {
+        return false;
+      }
+
+      pickTargetFromPheromon(info, path);
+      return true;
     }
+
+    // Change to collecting behavior.
+    setBehavior(Behavior::Collect);
+    std::swap(newPath, path);
 
     return generated;
   }
