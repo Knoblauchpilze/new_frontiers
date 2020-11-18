@@ -1,6 +1,7 @@
 
 # include "AStar.hh"
 # include <deque>
+# include <iterator>
 
 # include <iostream>
 
@@ -275,10 +276,6 @@ namespace new_frontiers {
         Node& neighbor = neighbors[id];
 
         // Only consider the node if it is not obstructed.
-        // TODO: The fact that the neighbor is not obstructed
-        // does not mean that the path from the `start` to
-        // the `neighbor` is not obstructed. Mainly it is the
-        // case for the first starting position.
         if (m_loc->obstructed(neighbor.p) && !neighbor.contains(m_end)) {
           continue;
         }
@@ -414,11 +411,21 @@ namespace new_frontiers {
 
     std::vector<Point> out;
     Point p = m_start;
+    Node end{m_end, 0.0f, 0.0f};
 
     unsigned id = 0u;
     std::vector<Point> dummy;
 
-    // Simplify the whole path.
+    // Simplify the whole path. We will define a concept
+    // of `path width` which will represent the width of
+    // path that should be unobstructed to consider the
+    // path valid. This can be done by determining the
+    // perpendicular direction to the current path and
+    // checking for obstruction on side lines to the
+    // main direction.
+    // TODO: Handle this. This should probably be done
+    // through some kind of function that would perform
+    // it as we need it in multiple places.
     int count = 0;
     while (id < path.size() - 1u && count < 10) {
       Point c = path[id + 1u];
@@ -428,12 +435,17 @@ namespace new_frontiers {
       // current point can be joined by a straight
       // line without obstructions. Note that we will
       // ignore obstructions in the target.
-      if (!m_loc->obstructed(p, c, dummy) || n.contains(m_end)) {
+      Point o;
+      bool obs = m_loc->obstructed(p, c, dummy, &o);
+      if (!obs || end.contains(o)) {
         // The path can be reached in a straight line,
         // we can remove the current point.
         if (allowLog) {
           log(
-            "Simplified point " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y)
+            "Simplified point " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y) +
+            " as path from " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+            " to " + std::to_string(c.x) + "x" + std::to_string(c.y) +
+            " is unobstructed (obs: " + std::to_string(obs) + ", cont: " + std::to_string(n.contains(m_end)) + ")"
           );
         }
         ++id;
@@ -451,6 +463,7 @@ namespace new_frontiers {
         }
         out.push_back(p);
         p = path[id];
+        ++id;
       }
 
       ++count;
@@ -459,6 +472,43 @@ namespace new_frontiers {
     // Register the last points.
     out.push_back(p);
     out.push_back(path.back());
+
+    // We also need to straighten the first segment
+    // of the path: indeed we never check that the
+    // path between the starting location and the
+    // first cell is unobstructed: if this is the
+    // case, we need to add the center of the cell
+    // containing the starting location as an
+    // intermediate position as we know the path
+    // from there to the first segment will be
+    // valid.
+    Point ooobs{-1.0f, -1.0f};
+    bool oo = m_loc->obstructed(out[0], out[1], dummy, &ooobs, 0.5f);
+    log(
+      "Checking obstruction between " +
+      std::to_string(out[0].x) + "x" + std::to_string(out[0].y) +
+      " and " +
+      std::to_string(out[1].x) + "x" + std::to_string(out[1].y) +
+      " obs: " + std::to_string(oo) + " at " +
+      std::to_string(ooobs.x) + "x" + std::to_string(ooobs.y)
+    );
+
+    if (oo) {
+      Point ip{
+        0.5f + static_cast<int>(std::floor(out[0].x)),
+        0.5f + static_cast<int>(std::floor(out[0].y))
+      };
+
+      log(
+        "Registering point " + std::to_string(ip.x) + "x" + std::to_string(ip.y) +
+        " as path from " + std::to_string(out[0].x) + "x" + std::to_string(out[0].y) +
+        " to " + std::to_string(out[1].x) + "x" + std::to_string(out[1].y) +
+        " is obstructed"
+      );
+
+      std::vector<Point>::iterator b = out.begin();
+      out.insert(std::next(b, 1u), ip);
+    }
 
     // Swap the simplified path with the input argument.
     path.swap(out);
