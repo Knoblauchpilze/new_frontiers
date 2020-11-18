@@ -299,6 +299,9 @@ namespace new_frontiers {
        * @param e - the end point of the segment.
        * @param cPoints - the list of points considered in
        *                  the obsctruction process.
+       * @param obs - if not `null` will output the position
+       *               of the first obstruction. Only relevant
+       *               if the return value is `true`.
        * @param sample - the sampling interval on the line.
        * @return - `true` if the line is obstructed.
        */
@@ -306,6 +309,7 @@ namespace new_frontiers {
       obstructed(Point p,
                  Point e,
                  std::vector<Point>& cPoints,
+                 Point* obs = nullptr,
                  float sample = 0.5f) const noexcept;
 
       /**
