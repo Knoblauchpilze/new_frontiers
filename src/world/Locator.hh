@@ -278,6 +278,7 @@ namespace new_frontiers {
        *                 end of the path. Smaller values can
        *                 be used to detect smaller obstacles
        *                 but also increase the compute time.
+       * @param allowLog - `true` if logs are enabled.
        * @return - `true` if the path is obstructed by any
        *           solid element.
        */
@@ -288,7 +289,8 @@ namespace new_frontiers {
                  float d,
                  std::vector<Point>& cPoints,
                  Point* obs = nullptr,
-                 float sample = 0.5f) const noexcept;
+                 float sample = 0.05f,
+                 bool allowLog = false) const noexcept;
 
       /**
        * @brief - Very similar to the above method. Checks
@@ -303,6 +305,7 @@ namespace new_frontiers {
        *               of the first obstruction. Only relevant
        *               if the return value is `true`.
        * @param sample - the sampling interval on the line.
+       * @param allowLog - `true` if logs are enabled.
        * @return - `true` if the line is obstructed.
        */
       bool
@@ -310,7 +313,8 @@ namespace new_frontiers {
                  Point e,
                  std::vector<Point>& cPoints,
                  Point* obs = nullptr,
-                 float sample = 0.5f) const noexcept;
+                 float sample = 0.05f,
+                 bool allowLog = false) const noexcept;
 
       /**
        * @brief - Return the list of items that are visible

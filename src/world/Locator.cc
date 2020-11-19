@@ -34,7 +34,8 @@ namespace new_frontiers {
                       float d,
                       std::vector<Point>& cPoints,
                       Point* obs,
-                      float sample) const noexcept
+                      float sample,
+                      bool allowLog) const noexcept
   {
     // We basically need to find which cells are 'under' the
     // line when it spans its path so as to determine whether
@@ -59,32 +60,34 @@ namespace new_frontiers {
     int xo = static_cast<int>(p.x);
     int yo = static_cast<int>(p.y);
 
-    // Compute the step to add on the path for each sampling:
-    // it is extracted from the initial direction that we will
-    // normalize.
-    // We handle the trivial case where the direction does not
-    // have a valid length in which case we return `false` (as
-    // in no obstructed) as the initial cell is never considered
-    // obstructed.
-    float l = std::sqrt(xDir * xDir + yDir * yDir);
-    if (l < 0.0001f) {
+    // Handle the trivial case where the direction does not
+    // have a valid length in which case we return `false`
+    // (as in no obstructed) as the initial cell is never
+    // considered obstructed.
+    if (std::sqrt(xDir * xDir + yDir * yDir) < 0.0001f) {
       return false;
     }
-
-    xDir /= l;
-    yDir /= l;
-
-    // Sample the path in steps of at most a
-    // length of half the cell.
-    xDir /= 2.0f;
-    yDir /= 2.0f;
 
     bool obstruction = false;
     float t = 0.0f;
 
     int xi, yi;
 
-    while (!obstruction && t < d) {
+    if (allowLog) {
+      log(
+        "Start: " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+        ", end: " + std::to_string(end.x) + "x" + std::to_string(end.y) +
+        ", l: " + std::to_string(d) +
+        ", dir: " + std::to_string(xDir) + "x" + std::to_string(yDir) +
+        ", (norm: " + std::to_string(std::sqrt(xDir * xDir + yDir * yDir)) + ")",
+        utils::Level::Verbose
+      );
+    }
+
+    xDir *= d;
+    yDir *= d;
+
+    while (!obstruction && t < 1.0f) {
       // Prevent the initial cell to be considered
       // as obstructed: this allow objects that get
       // stuck to be able to move out.
@@ -95,16 +98,19 @@ namespace new_frontiers {
 
       obstruction = (xi != xo || yi != yo) && (m_blocksIDs.count(yi * m_w + xi) > 0);
 
-# ifdef DEBUG
-      std::cout << "[LOC] Considering " << p.x << "x" << p.y
-                << " which " << (obstruction ? "is" : "is not")
-                << " obstructed (" << t << ", " << (100.0f * t / d) << "%, d: " << d << ")"
-                << std::endl;
-# endif
+      if (allowLog) {
+        log(
+          "Considering " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+          " which " + (obstruction ? "is" : "is not") +
+          " obstructed (" + std::to_string(t) + ", " + std::to_string(100.0f * t) +
+          "%, d: " + std::to_string(d) + ")",
+          utils::Level::Verbose
+        );
+      }
 
       if (!obstruction) {
-        p.x += xDir;
-        p.y += yDir;
+        p.x += sample * xDir;
+        p.y += sample * yDir;
 
         t += sample;
       }
@@ -117,11 +123,14 @@ namespace new_frontiers {
         *obs = p;
       }
 
-# ifdef DEBUG
-      std::cout << "[LOC] Found obstruction at " << p.x << "x" << p.y
-                << " (" << t << ", " << (100.0f * t / d) << "%, d: " << d << ")"
-                << std::endl;
-# endif
+      if (allowLog) {
+        log(
+          "Found obstruction at " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+          " (" + std::to_string(t) + ", " + std::to_string(100.0f * t) +
+          "%, d: " + std::to_string(d) + ")",
+          utils::Level::Verbose
+        );
+      }
 
       return true;
     }
@@ -139,11 +148,16 @@ namespace new_frontiers {
       }
     }
 
-# ifdef DEBUG
-      std::cout << "[LOC] " << (obstruction ? "Found" : "Didn't find") << " obstruction 2 at " << end.x << "x" << end.y
-                << " (" << t << ", " << (100.0f * t / d) << "%, d: " << d << ")"
-                << std::endl;
-# endif
+    if (allowLog) {
+      log(
+        std::string("") + (obstruction ? "Found" : "Didn't find") +
+        " obstruction 2 at " +
+        std::to_string(end.x) + "x" + std::to_string(end.y) +
+        " (" + std::to_string(t) + ", " + std::to_string(100.0f * t) +
+        "%, d: " + std::to_string(d) + ")",
+        utils::Level::Verbose
+      );
+    }
 
     return obstruction;
   }

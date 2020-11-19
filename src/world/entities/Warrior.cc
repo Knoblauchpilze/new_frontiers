@@ -58,6 +58,10 @@ namespace new_frontiers {
 
     // In case we are close enough of the entity to
     // actually hit it, do so if we are able to.
+    // TODO: The `isEnRoute` might not be the best
+    // suited method as we want rather to determine
+    // a distance between the target and the entity
+    // directly.
     if (!isEnRoute() && m_energy >= m_attackCost) {
       bool alive = e->damage(m_attack);
       log("Attacking for " + std::to_string(m_attack) + " damage, " + std::to_string(e->getHealthRatio()) + " health ratio");
