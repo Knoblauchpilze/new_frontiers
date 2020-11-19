@@ -3,8 +3,6 @@
 # include <deque>
 # include <iterator>
 
-# include <iostream>
-
 namespace {
 
   /**
@@ -185,7 +183,8 @@ namespace new_frontiers {
     if (allowLog) {
       log(
         "Starting a* at " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
-        " to reach " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y)
+        " to reach " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y),
+        utils::Level::Verbose
       );
     }
 
@@ -219,7 +218,8 @@ namespace new_frontiers {
           "Picked node " + std::to_string(current.p.x) + "x" + std::to_string(current.p.y) +
           " with c " + std::to_string(current.c) +
           " h is " + std::to_string(current.h) +
-          " (nodes: " + std::to_string(openNodes.size()) + ")"
+          " (nodes: " + std::to_string(openNodes.size()) + ")",
+          utils::Level::Verbose
         );
       }
 
@@ -228,7 +228,8 @@ namespace new_frontiers {
         if (allowLog) {
           log(
             "Found path to " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y) +
-            " with c " + std::to_string(current.c) + ", h " + std::to_string(current.h)
+            " with c " + std::to_string(current.c) + ", h " + std::to_string(current.h),
+            utils::Level::Verbose
           );
         }
 
@@ -236,8 +237,7 @@ namespace new_frontiers {
         if (found) {
           // Smooth out the sharp turns that might have
           // been produced by the A*.
-          // TODO: Reactivate this.
-          // smoothPath(path, allowLog);
+          smoothPath(path, allowLog);
         }
 
         return found;
@@ -256,6 +256,21 @@ namespace new_frontiers {
       //
       // This situation can only happen for the diagonal
       // neighbors (so either SE, SW, NE, NW).
+      // In order to avoid entities going through the wall
+      // we will also forbid the following situation:
+      //
+      // +----+----+
+      // | Ob |  E |
+      // |    |    |
+      // +----+----+
+      // |    |    |
+      // | S  |    |
+      // +----+----+
+      //
+      // Basically here we we consider the `E` neighbor
+      // as valid we will reach cases where we are not
+      // able to prevent the entity from going through
+      // the `Ob` so we will just not allow it.
       // We will first determine before processing the
       // neighbors and check the status for each one.
       std::vector<Node> neighbors = current.generateNeighbors(m_end);
@@ -268,10 +283,10 @@ namespace new_frontiers {
       bool obsW = m_loc->obstructed(Point{bx - 1.0f, by});
       bool obsS = m_loc->obstructed(Point{bx, by - 1.0f});
 
-      bool validNE = !obsN || !obsE;
-      bool validNW = !obsN || !obsW;
-      bool validSW = !obsS || !obsW;
-      bool validSE = !obsS || !obsE;
+      bool validNE = (!obsN && !obsE);
+      bool validNW = (!obsN && !obsW);
+      bool validSW = (!obsS && !obsW);
+      bool validSE = (!obsS && !obsE);
 
       for (unsigned id = 0u ; id < neighbors.size() ; ++id) {
         Node& neighbor = neighbors[id];
@@ -362,7 +377,8 @@ namespace new_frontiers {
         log(
           "Registering point " + std::to_string(p.x) + "x" + std::to_string(p.y) +
           " with hash " + std::to_string(h) +
-          ", parent is " + std::to_string(it->second)
+          ", parent is " + std::to_string(it->second),
+          utils::Level::Verbose
         );
       }
 
@@ -385,6 +401,47 @@ namespace new_frontiers {
            ++it)
       {
         path.push_back(*it);
+      }
+
+      // We also need to straighten the first segment
+      // of the path: indeed we never check that the
+      // path between the starting location and the
+      // first cell is unobstructed: if this is the
+      // case, we need to add the center of the cell
+      // containing the starting location as an
+      // intermediate position as we know the path
+      // from there to the first segment will be
+      // valid.
+      Point pObs{-1.0f, -1.0f};
+      std::vector<Point> dummy;
+
+      if (allowLog) {
+        log(
+          "Checking obstruction between " +
+          std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
+          " and " +
+          std::to_string(path[0].x) + "x" + std::to_string(path[0].y),
+          utils::Level::Verbose
+        );
+      }
+
+      if (m_loc->obstructed(m_start, path[0], dummy, &pObs, 0.005f)) {
+        Point ip{
+          0.5f + static_cast<int>(std::floor(m_start.x)),
+          0.5f + static_cast<int>(std::floor(m_start.y))
+        };
+
+        if (allowLog) {
+          log(
+            "Registering point " + std::to_string(ip.x) + "x" + std::to_string(ip.y) +
+            " as path from " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
+            " to " + std::to_string(path[0].x) + "x" + std::to_string(path[0].y) +
+            " is obstructed",
+            utils::Level::Verbose
+          );
+        }
+
+        path.insert(path.begin(), ip);
       }
     }
 
@@ -417,16 +474,7 @@ namespace new_frontiers {
     unsigned id = 0u;
     std::vector<Point> dummy;
 
-    // Simplify the whole path. We will define a concept
-    // of `path width` which will represent the width of
-    // path that should be unobstructed to consider the
-    // path valid. This can be done by determining the
-    // perpendicular direction to the current path and
-    // checking for obstruction on side lines to the
-    // main direction.
-    // TODO: Handle this. This should probably be done
-    // through some kind of function that would perform
-    // it as we need it in multiple places.
+    // Simplify the whole path.
     int count = 0;
     while (id < path.size() - 1u && count < 10) {
       Point c = path[id + 1u];
@@ -437,7 +485,7 @@ namespace new_frontiers {
       // line without obstructions. Note that we will
       // ignore obstructions in the target.
       Point o;
-      bool obs = m_loc->obstructed(p, c, dummy, &o);
+      bool obs = m_loc->obstructed(p, c, dummy, &o, 0.005f);
       if (!obs || end.contains(o)) {
         // The path can be reached in a straight line,
         // we can remove the current point.
@@ -446,7 +494,8 @@ namespace new_frontiers {
             "Simplified point " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y) +
             " as path from " + std::to_string(p.x) + "x" + std::to_string(p.y) +
             " to " + std::to_string(c.x) + "x" + std::to_string(c.y) +
-            " is unobstructed (obs: " + std::to_string(obs) + ", cont: " + std::to_string(n.contains(m_end)) + ")"
+            " is unobstructed (obs: " + std::to_string(obs) + ", cont: " + std::to_string(n.contains(m_end)) + ")",
+            utils::Level::Verbose
           );
         }
         ++id;
@@ -459,7 +508,8 @@ namespace new_frontiers {
             "Can't simplify path from " + std::to_string(p.x) + "x" + std::to_string(p.y) +
             " to point " + std::to_string(c.x) + "x" + std::to_string(c.y) +
             " (id: " + std::to_string(id) + ", s: " + std::to_string(path.size()) + ")" +
-            " registering " + std::to_string(p.x) + "x" + std::to_string(p.y)
+            " registering " + std::to_string(p.x) + "x" + std::to_string(p.y),
+            utils::Level::Verbose
           );
         }
         out.push_back(p);
@@ -474,46 +524,6 @@ namespace new_frontiers {
     out.push_back(p);
     out.push_back(path.back());
 
-    // We also need to straighten the first segment
-    // of the path: indeed we never check that the
-    // path between the starting location and the
-    // first cell is unobstructed: if this is the
-    // case, we need to add the center of the cell
-    // containing the starting location as an
-    // intermediate position as we know the path
-    // from there to the first segment will be
-    // valid.
-    // TODO: Maybe this needs to be moved to the
-    // `reconstructPath` method. This might solve
-    // most of our issues.
-    Point ooobs{-1.0f, -1.0f};
-    bool oo = m_loc->obstructed(out[0], out[1], dummy, &ooobs, 0.5f);
-    log(
-      "Checking obstruction between " +
-      std::to_string(out[0].x) + "x" + std::to_string(out[0].y) +
-      " and " +
-      std::to_string(out[1].x) + "x" + std::to_string(out[1].y) +
-      " obs: " + std::to_string(oo) + " at " +
-      std::to_string(ooobs.x) + "x" + std::to_string(ooobs.y)
-    );
-
-    if (oo) {
-      Point ip{
-        0.5f + static_cast<int>(std::floor(out[0].x)),
-        0.5f + static_cast<int>(std::floor(out[0].y))
-      };
-
-      log(
-        "Registering point " + std::to_string(ip.x) + "x" + std::to_string(ip.y) +
-        " as path from " + std::to_string(out[0].x) + "x" + std::to_string(out[0].y) +
-        " to " + std::to_string(out[1].x) + "x" + std::to_string(out[1].y) +
-        " is obstructed"
-      );
-
-      std::vector<Point>::iterator b = out.begin();
-      out.insert(std::next(b, 1u), ip);
-    }
-
     // Swap the simplified path with the input argument.
     path.swap(out);
 
@@ -521,7 +531,8 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < path.size() ; ++id) {
         log(
           "Point " + std::to_string(id) + "/" + std::to_string(path.size()) +
-          " at " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y)
+          " at " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y),
+            utils::Level::Verbose
         );
       }
     }

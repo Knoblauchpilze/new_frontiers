@@ -145,7 +145,8 @@ namespace new_frontiers {
                       Point e,
                       std::vector<Point>& cPoints,
                       Point* obs,
-                      float sample) const noexcept
+                      float sample,
+                      bool allowLog) const noexcept
   {
     // Convert the segment defined by `p` and `e` to
     // a direction syntax.
@@ -153,7 +154,7 @@ namespace new_frontiers {
     toDirection(p, e, xD, yD, d);
 
     // Use the dedicated variable.
-    return obstructed(p, xD, yD, d, cPoints, obs, sample);
+    return obstructed(p, xD, yD, d, cPoints, obs, sample, allowLog);
   }
 
   inline
