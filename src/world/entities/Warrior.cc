@@ -49,7 +49,7 @@ namespace new_frontiers {
     // the entity: indeed the entity may be moving
     // so we want to accurately chase it.
     path.clear(m_tile.p);
-    if (!path.generatePathTo(info, e->getTile().p, false, true)) {
+    if (!path.generatePathTo(info, e->getTile().p, false)) {
       // Couldn't reach the entity, return to wandering.
       log("Entity is now unreachable, returning to wandering from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y));
       pickTargetFromPheromon(info, path);
@@ -153,7 +153,7 @@ namespace new_frontiers {
     path::Path newPath = path::newPath(m_tile.p);
     std::swap(newPath, path);
 
-    bool generated = newPath.generatePathTo(info, e->getTile().p, false, true);
+    bool generated = newPath.generatePathTo(info, e->getTile().p, false);
     if (!generated) {
       if (isEnRoute()) {
         return false;
