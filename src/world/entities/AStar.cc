@@ -330,7 +330,8 @@ namespace new_frontiers {
                 " parent: " + std::to_string(cameFrom[nodes[it->second].hash(m_loc->w())]) + ")" +
                 " to c: " + std::to_string(neighbor.c) + " h: " + std::to_string(neighbor.h) +
                 " (f: " + std::to_string(neighbor.c + neighbor.h) + "," +
-                " parent is " + std::to_string(current.hash(m_loc->w())) + ")"
+                " parent is " + std::to_string(current.hash(m_loc->w())) + ")",
+                utils::Level::Verbose
               );
             }
 
@@ -342,7 +343,8 @@ namespace new_frontiers {
                 "Registering " + std::to_string(neighbor.p.x) + "x" + std::to_string(neighbor.p.y) +
                 " with c: " + std::to_string(neighbor.c) + " h: " + std::to_string(neighbor.h) +
                 " (f: " + std::to_string(neighbor.c + neighbor.h) + "," +
-                " parent is " + std::to_string(current.hash(m_loc->w())) + ")"
+                " parent is " + std::to_string(current.hash(m_loc->w())) + ")",
+                utils::Level::Verbose
               );
             }
 
@@ -485,7 +487,7 @@ namespace new_frontiers {
       // line without obstructions. Note that we will
       // ignore obstructions in the target.
       Point o;
-      bool obs = m_loc->obstructed(p, c, dummy, &o, 0.005f);
+      bool obs = m_loc->obstructed(p, c, dummy, &o, 0.005f, allowLog);
       if (!obs || end.contains(o)) {
         // The path can be reached in a straight line,
         // we can remove the current point.
