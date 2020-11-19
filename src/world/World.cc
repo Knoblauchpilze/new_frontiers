@@ -297,10 +297,10 @@ namespace new_frontiers {
     // c.refill = 0.4f;
     // m_colonies.push_back(std::make_shared<Colony>(c));
 
-    // c = ColonyFactory::newColonyProps(2.0f, 1.0f, utils::Uuid::create());
-    // c.focus = colony::Priority::War;
-    // c.refill = 0.05f;
-    // m_colonies.push_back(std::make_shared<Colony>(c));
+    c = ColonyFactory::newColonyProps(2.0f, 1.0f, utils::Uuid::create());
+    c.focus = colony::Priority::War;
+    c.refill = 0.05f;
+    m_colonies.push_back(std::make_shared<Colony>(c));
 
     // Generate resource deposit.
     Deposit::DProps dp = BlockFactory::newDepositProps(6.0f, 2.0f);
@@ -322,6 +322,9 @@ namespace new_frontiers {
     m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
     bp.tile.p.x = 3.0f; bp.tile.p.y = 2.0f;
+    m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
+
+    bp.tile.p.x = 2.0f; bp.tile.p.y = 1.0f;
     m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
     // Generate the player at the same location
