@@ -17,6 +17,7 @@ namespace new_frontiers {
       struct WProps: MProps {
         float attack;
         float attackCost;
+        float attackRange;
       };
 
       /**
@@ -83,6 +84,13 @@ namespace new_frontiers {
        *          attack.
        */
       float m_attackCost;
+
+      /**
+       * @brief - Define the radius below which the entity
+       *          is able to hit another one. This can be
+       *          thought of as a range for this entity.
+       */
+      float m_attackRange;
   };
 
   using WarriorShPtr = std::shared_ptr<Warrior>;

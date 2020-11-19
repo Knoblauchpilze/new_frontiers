@@ -83,6 +83,7 @@ namespace new_frontiers {
 
     pp.attack = 2.0f;
     pp.attackCost = 1.0f;
+    pp.attackRange = 0.25f;
 
     return pp;
   }
