@@ -389,14 +389,16 @@ namespace new_frontiers {
 
       // Draw the path of this entity if any.
       if (ed.path.valid()) {
-        olc::vf2d tcb = res.cf.tileCoordsToPixels(ed.path.segments.back().end.x, ed.path.segments.back().end.y, ed.radius);
-
+        olc::vf2d old;
         for (unsigned id = 0u ; id < ed.path.cPoints.size() ; ++id) {
           olc::vf2d p = res.cf.tileCoordsToPixels(ed.path.cPoints[id].x, ed.path.cPoints[id].y, 1.0f);
           FillCircle(p, 3, olc::CYAN);
-        }
 
-        DrawLine(cb, tcb, olc::WHITE);
+          if (id > 0u) {
+            DrawLine(old, p, olc::WHITE);
+          }
+          old = p;
+        }
       }
 
       // Draw the rectangle around the entity and its circle

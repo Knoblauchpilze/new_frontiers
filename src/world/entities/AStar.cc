@@ -373,18 +373,23 @@ namespace new_frontiers {
     std::unordered_map<int, int>::const_iterator it = parents.find(h);
 
     while (it != parents.cend()) {
-      Point p = Node::invertHash(h, offset);
+      n.p = Node::invertHash(h, offset);
 
       if (allowLog) {
         log(
-          "Registering point " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+          "Registering point " + std::to_string(n.p.x) + "x" + std::to_string(n.p.y) +
           " with hash " + std::to_string(h) +
           ", parent is " + std::to_string(it->second),
           utils::Level::Verbose
         );
       }
 
-      out.push_back(p);
+      if (n.contains(m_end)) {
+        out.push_back(m_end);
+      }
+      else {
+        out.push_back(n.p);
+      }
       h = it->second;
       it = parents.find(h);
     }
