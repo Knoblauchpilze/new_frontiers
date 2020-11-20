@@ -211,8 +211,7 @@ namespace new_frontiers {
     p.x += 0.5f;
     p.y += 0.5f;
 
-    // TODO: Cases where this happen.
-    bool generated = newPath.generatePathTo(info, p, false);
+    bool generated = newPath.generatePathTo(info, p, true);
     if (!generated) {
       log("Failed to generate path to deposit", utils::Level::Warning);
       if (isEnRoute()) {
