@@ -167,10 +167,14 @@ namespace new_frontiers {
   }
 
   bool
-  AStar::findPath(std::vector<new_frontiers::Point>& path, bool allowLog) const noexcept {
+  AStar::findPath(std::vector<Point>& path,
+                  float radius,
+                  bool allowLog) const noexcept
+  {
     // The code for this algorithm has been taken from the
     // below link:
     // https://en.wikipedia.org/wiki/A*_search_algorithm
+    std::vector<Point> out;
     path.clear();
 
     // The list of nodes that are currently being explored.
@@ -233,14 +237,44 @@ namespace new_frontiers {
           );
         }
 
-        bool found = reconstructPath(cameFrom, m_loc->w(), path, allowLog);
+        bool found = reconstructPath(cameFrom, m_loc->w(), out, allowLog);
         if (found) {
           // Smooth out the sharp turns that might have
           // been produced by the A*.
-          smoothPath(path, allowLog);
+          smoothPath(out, allowLog);
         }
 
-        return found;
+        // Check whether the path goes beyong the input
+        // limit at any point: if this is the case we
+        // will prevent it from being returned as we do
+        // not consider it valid.
+        bool valid = true;
+        unsigned id = 0u;
+        while (id < out.size() && valid) {
+          valid = (distance::d(m_start, out[id]) < radius);
+
+          if (!valid) {
+            log(
+              "Distance from start " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
+              " to point " + std::to_string(id) + "/" + std::to_string(out.size()) +
+              " " + std::to_string(out[id].x) + "x" + std::to_string(out[id].y) +
+              " is " + std::to_string(distance::d(m_start, out[id])) +
+              ", limit is " + std::to_string(radius)
+            );
+          }
+
+          ++id;
+        }
+
+        // Copy the path if it is valid.
+        if (valid) {
+          std::swap(path, out);
+        }
+        else {
+          log("Path is not valid at point " + std::to_string(id - 1));
+        }
+
+        return found && valid;
       }
 
       // Also, consider the node if it is not obstructed

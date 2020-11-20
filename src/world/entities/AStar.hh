@@ -32,12 +32,21 @@ namespace new_frontiers {
        *          value will indicate so.
        * @param path - the path generated to reach the two
        *               end points of this finder.
+       * @param radius - a float value indicating how far
+       *                 from the starting point the path
+       *                 is allowed to go and still be
+       *                 declared valid. Any path that is
+       *                 led to go farther from the start
+       *                 is considered not realistic for
+       *                 the entity to follow.
        * @param allowLog - `true` if the process should be
        *                   logged.
        * @return - `true` if a path could be find.
        */
       bool
-      findPath(std::vector<Point>& path, bool allowLog = false) const noexcept;
+      findPath(std::vector<Point>& path,
+               float radius = 10.0f,
+               bool allowLog = false) const noexcept;
 
     private:
 

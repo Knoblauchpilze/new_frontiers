@@ -124,14 +124,10 @@ namespace new_frontiers {
       // desired (the A*) as it means that each mob
       // has indeed infinite vision for now but
       // that's it.
-      // TODO: Maybe include a sort of distance
-      // in the A* which will return `false` and
-      // the entity would then go back to real
-      // random wandering.
       AStar alg(s, p, info.frustum);
       std::vector<Point> steps;
 
-      if (!alg.findPath(steps, allowLog)) {
+      if (!alg.findPath(steps, 4.0f, allowLog)) {
         return false;
       }
 
