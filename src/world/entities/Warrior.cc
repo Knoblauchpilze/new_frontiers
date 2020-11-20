@@ -188,6 +188,7 @@ namespace new_frontiers {
 
     // Use the dedicated handler.
     if (!returnToWandering(info, filter, pa, path)) {
+      // TODO: Cases where this happen.
       log(
         "Unable to return to wandering, path could not be generated",
         utils::Level::Warning
