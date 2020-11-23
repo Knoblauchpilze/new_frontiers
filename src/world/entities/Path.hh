@@ -155,13 +155,22 @@ namespace new_frontiers {
        *                                  the case for example when
        *                                  the target is a solid
        *                                  block.
+       * @param maxDistanceFromStart - the maximum distance to which
+       *                               the path can wander from the
+       *                               starting point. Any path that
+       *                               goes farther than this value
+       *                               will be considered invalid.
        * @param allowLog - `true` if the A* process should produce
        *                   logs and information.
        * @return - `true` if we could generate a path to the
        *           target and `false` otherwise.
        */
       bool
-      generatePathTo(StepInfo& info, const Point& p, bool ignoreTargetObstruction, bool allowLog = false);
+      generatePathTo(StepInfo& info,
+                     const Point& p,
+                     bool ignoreTargetObstruction,
+                     float maxDistanceFromStart = 5.0f,
+                     bool allowLog = false);
     };
 
     /**
