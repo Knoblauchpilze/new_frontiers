@@ -253,7 +253,7 @@ namespace new_frontiers {
         while (id < out.size() && valid) {
           valid = (distance::d(m_start, out[id]) < radius);
 
-          if (!valid) {
+          if (!valid && allowLog) {
             log(
               "Distance from start " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
               " to point " + std::to_string(id) + "/" + std::to_string(out.size()) +
@@ -269,9 +269,6 @@ namespace new_frontiers {
         // Copy the path if it is valid.
         if (valid) {
           std::swap(path, out);
-        }
-        else {
-          log("Path is not valid at point " + std::to_string(id - 1));
         }
 
         return found && valid;
