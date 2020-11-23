@@ -201,6 +201,9 @@ namespace new_frontiers {
        *                   on their type.
        * @param path - the path to generate: any information
        *               will be added to this object.
+       * @param attempts - define how many attempts can be made
+       *                   before giving up on generating a new
+       *                   wandering target.
        * @return - `true` in case a wandering target could be
        *           selected and `false` in case the generation
        *           failed for some reason (mostly due to the
@@ -211,7 +214,8 @@ namespace new_frontiers {
       returnToWandering(StepInfo& info,
                         std::function<bool(VFXShPtr)> filter,
                         PheromonAnalyzer& analyzer,
-                        path::Path& path);
+                        path::Path& path,
+                        unsigned attempts = 10u);
 
     private:
 

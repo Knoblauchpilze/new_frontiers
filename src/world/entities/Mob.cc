@@ -92,7 +92,8 @@ namespace new_frontiers {
   Mob::returnToWandering(StepInfo& info,
                          std::function<bool(VFXShPtr)> filter,
                          PheromonAnalyzer& analyzer,
-                         path::Path& path)
+                         path::Path& path,
+                         unsigned attempts)
   {
     // Collect the pheromons visible in the surroundings of
     // the entity: this will be filtered afterwards using
@@ -107,17 +108,9 @@ namespace new_frontiers {
       }
     }
 
-    // We will need a random target so better compute
-    // it right now.
-    float xRnd, yRnd;
-    pickRandomTarget(info, m_tile.p, xRnd, yRnd);
-
-    Point p{xRnd, yRnd};
-
-    // Use the pheromons to select a biased random
-    // target: this will allow to still have some
-    // randomness but more directed towards what
-    // other agents might have explored.
+    // Accumulate the visible pheromons in the analyzer
+    // to be able to pick a direction that is influenced
+    // by them.
     if (!vfxs.empty()) {
       for (unsigned id = 0u ; id < vfxs.size() ; ++id) {
         VFXShPtr v = vfxs[id];
@@ -129,21 +122,47 @@ namespace new_frontiers {
 
         analyzer.accumulate(*p);
       }
+    }
 
-      // Use the pheromon analyze to yield a valid target
-      // to pick for this warrior. The relative importance
-      // of pheromons will be handled directly.
+    // Attempt to pick a random target (as the final
+    // destination is biased to include some level of
+    // randomness) and to generate a path to this pos.
+    // If it fails, we will retry a certain number of
+    // times before giving up.
+    float xRnd, yRnd;
+    Point p;
+    bool generated = false;
+    unsigned tries = 0u;
+    path::Path newP = path::newPath(m_tile.p);
+
+    while (!generated && tries < attempts) {
+      pickRandomTarget(info, m_tile.p, xRnd, yRnd);
       analyzer.computeTarget(xRnd, yRnd);
 
       p.x = xRnd;
       p.y = yRnd;
+
+      newP.clear(m_tile.p);
+      generated = newP.generatePathTo(info, p, false, distance::d(m_tile.p, p) + 1.0f);
+      ++tries;
     }
 
-    // Reset the behavior and generate a path to the
-    // target computed from visible pheromons.
+    // Whatever happens we will be in `Wander` behavior.
     setBehavior(Behavior::Wander);
-    path.clear(m_tile.p);
-    return path.generatePathTo(info, p, false);
+
+    // In case the path could not be generated, wait.
+    if (!generated) {
+      log(
+        "Failed to generate path from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
+        " after " + std::to_string(tries) + " attempt(s)",
+        utils::Level::Warning
+      );
+
+      return false;
+    }
+
+    std::swap(path, newP);
+    return true;
   }
 
   Mob::Thought
