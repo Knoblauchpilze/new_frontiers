@@ -89,9 +89,7 @@ namespace new_frontiers {
     // And then return to the colony.
     setBehavior(Behavior::Return);
     path.clear(m_tile.p);
-    // TODO: The max distance prevent the entity to get
-    // black to the colony.
-    if (!path.generatePathTo(info, m_home, true)) {
+    if (!path.generatePathTo(info, m_home, true, distance::d(m_tile.p, m_home) + 1.0f)) {
       log("Could not generate path to colony", utils::Level::Warning);
       // Return to wandering.
       pickTargetFromPheromon(info, path);
