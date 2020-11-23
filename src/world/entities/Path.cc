@@ -104,11 +104,15 @@ namespace new_frontiers {
       bool obsWithinTarget = obs && (std::abs(obsP.x - p.x) < 1.0f && std::abs(obsP.y - p.y) < 1.0f);
 
       if (!obs || (obsWithinTarget && ignoreTargetObstruction)) {
-        // There is an obstruction but it is within
-        // the target and we ignore it so we could
-        // find a path.
-        for (unsigned id = 0u ; id < iPoints.size() - 1 ; ++id) {
-          cPoints.push_back(iPoints[id]);
+        // Either there is no obstruction or there is one
+        // but we ignore it. In case we could generate at
+        // least one intermediate point between the start
+        // and the end of the path, we need to register
+        // it.
+        if (!iPoints.empty()) {
+          for (unsigned id = 0u ; id < iPoints.size() - 1 ; ++id) {
+            cPoints.push_back(iPoints[id]);
+          }
         }
 
         add(p);
