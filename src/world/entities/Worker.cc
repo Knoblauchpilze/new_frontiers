@@ -90,6 +90,9 @@ namespace new_frontiers {
     setBehavior(Behavior::Return);
     path.clear(m_tile.p);
     if (!path.generatePathTo(info, m_home, true, distance::d(m_tile.p, m_home) + 1.0f)) {
+      // TODO: Maybe we should not get back to `Wandering`
+      // but rather to a more informed mode where we would
+      // still be looking for home.
       log("Could not generate path to colony", utils::Level::Warning);
       // Return to wandering.
       pickTargetFromPheromon(info, path);
@@ -184,15 +187,18 @@ namespace new_frontiers {
       d = std::dynamic_pointer_cast<Deposit>(deposit);
     }
 
-    if (d == nullptr || d->getStock() <= 0.0f) {
+    if (d == nullptr || d->getStock() <= 0.0f || availableCargo() <= 0.0f) {
       // In case we already have a target, continue
       // towards this target.
       if (isEnRoute()) {
         return false;
       }
 
-      if (d != nullptr) {
+      if (d != nullptr && d->getStock() <= 0.0f) {
         log("Deposit is empty");
+      }
+      if (availableCargo() <= 0.0f) {
+        log("Entity is already at max cargo");
       }
 
       pickTargetFromPheromon(info, path);
@@ -210,6 +216,12 @@ namespace new_frontiers {
     Point p = d->getTile().p;
     p.x += 0.5f;
     p.y += 0.5f;
+
+    log(
+      "Entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
+      " found deposit at " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+      " d: " + std::to_string(distance::d(m_tile.p, p))
+    );
 
     bool generated = newPath.generatePathTo(info, p, true);
     if (!generated) {
