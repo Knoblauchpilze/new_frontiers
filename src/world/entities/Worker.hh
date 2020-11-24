@@ -40,6 +40,17 @@ namespace new_frontiers {
     private:
 
       /**
+       * @brief - Possible weigthing of pheromons as
+       *          we might want to give priority to
+       *          some specific types.
+       */
+      enum class GoalPriority {
+        Deposit,
+        Home,
+        Random
+      };
+
+      /**
        * @brief - Used to pick a semi-random target based on
        *          the pheromons that are visible from the
        *          position of this worker.
@@ -52,11 +63,49 @@ namespace new_frontiers {
        *          and setup the correct environnment for its
        *          execution.
        * @param info - information about the surroundings of
-       *               the warrior.
+       *               the worker.
        * @param path - the path to generate.
+       * @param priority - the current priority: used to set
+       *                   relative weights for pheromons.
        */
       void
-      pickTargetFromPheromon(StepInfo& info, path::Path& path) noexcept;
+      pickTargetFromPheromon(StepInfo& info,
+                             path::Path& path,
+                             const GoalPriority& priority) noexcept;
+
+      /**
+       * @brief - Used to wander with the objective to reach
+       *          a deposit. This will give higher priority
+       *          to collect pheromons.
+       * @param info - the information about the surroundings
+       *               of the entity.
+       * @param path - the path to generate. Note that this
+       *               path is assumed to refer to a clean
+       *               path: any result of the wandering is
+       *               added to it. In case thie method is
+       *               returning `false`, the path is left
+       *               in an undefined state.
+       * @return - `true` in case a path could be generated.
+       */
+      bool
+      wanderToDeposit(StepInfo& info, path::Path& path) noexcept;
+
+      /**
+       * @brief - Similar to the above method but performs
+       *          a wandering biased towards finding the
+       *          home of the entity.
+       * @param info - the information about the surroundings
+       *               of the entity.
+       * @param path - the path to generate. Note that this
+       *               path is assumed to refer to a clean
+       *               path: any result of the wandering is
+       *               added to it. In case thie method is
+       *               returning `false`, the path is left
+       *               in an undefined state.
+       * @return - `true` in case a path could be generated.
+       */
+      bool
+      wanderToHome(StepInfo& info, path::Path& path) noexcept;
 
       /**
        * @brief - Used to verify in each behavior whether we
