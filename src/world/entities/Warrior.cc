@@ -118,6 +118,8 @@ namespace new_frontiers {
   Warrior::wander(StepInfo& info, path::Path& path) {
     // Check whether we can find any deposit in the
     // surroudings of the entity.
+    // TODO: We should probably have some sort of
+    // biased wandering as for the `Worker` class.
     world::Filter f{getOwner(), false};
     tiles::Entity* te = nullptr;
     std::vector<EntityShPtr> entities = info.frustum->getVisible(
