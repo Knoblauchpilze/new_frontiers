@@ -14,7 +14,7 @@ namespace new_frontiers {
        * @brief - Creates a new pheromon analyzer. This object
        *          is able to accumulate information about the
        *          pheromons surrounding an entity which can be
-       *          used to weight the relative importance of
+       *          used to weigh the relative importance of
        *          various pheromons in the decision making
        *          process.
        * @param props - the properties describing this mob.

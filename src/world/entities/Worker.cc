@@ -2,9 +2,8 @@
 # include "Worker.hh"
 # include "StepInfo.hh"
 # include "Locator.hh"
-# include "../blocks/Deposit.hh"
-# include "../blocks/SpawnerOMeter.hh"
 # include "PheromonAnalyzer.hh"
+# include "../blocks/Deposit.hh"
 # include <cxxabi.h>
 
 namespace new_frontiers {
@@ -41,7 +40,7 @@ namespace new_frontiers {
     if (b == nullptr) {
       // For some reason the deposit does not exist,
       // return to wandering.
-      pickTargetFromPheromon(info, path, GoalPriority::Deposit);
+      pickTargetFromPheromon(info, path, Goal::Deposit);
       return true;
     }
 
@@ -54,7 +53,7 @@ namespace new_frontiers {
         utils::Level::Warning
       );
 
-      pickTargetFromPheromon(info, path, GoalPriority::Deposit);
+      pickTargetFromPheromon(info, path, Goal::Deposit);
       return true;
     }
 
@@ -73,7 +72,7 @@ namespace new_frontiers {
     // wander behavior.
     if (toFetch <= 0.0f) {
       log("Deposit has been emptied while en route");
-      pickTargetFromPheromon(info, path, GoalPriority::Deposit);
+      pickTargetFromPheromon(info, path, Goal::Deposit);
       return true;
     }
 
@@ -118,7 +117,7 @@ namespace new_frontiers {
     if (b == nullptr) {
       // For some reason the home of the entity does
       // not exist, return to wandering.
-      pickTargetFromPheromon(info, path, GoalPriority::Home);
+      pickTargetFromPheromon(info, path, Goal::Home);
       return true;
     }
 
@@ -134,7 +133,7 @@ namespace new_frontiers {
         utils::Level::Warning
       );
 
-      pickTargetFromPheromon(info, path, GoalPriority::Home);
+      pickTargetFromPheromon(info, path, Goal::Home);
       return true;
     }
 
@@ -145,7 +144,7 @@ namespace new_frontiers {
     m_carrying = 0.0f;
 
     // Re-wander again.
-    pickTargetFromPheromon(info, path, GoalPriority::Deposit);
+    pickTargetFromPheromon(info, path, Goal::Deposit);
     return true;
   }
 
@@ -183,7 +182,7 @@ namespace new_frontiers {
     // We couldn't generate a path: either because
     // there is no target visible to the entity or
     // because the A* failed to find a route. In
-    // both case, the best bet is to continue with
+    // both cases, the best bet is to continue with
     // the current path if any.
     if (isEnRoute()) {
       return false;
@@ -192,20 +191,16 @@ namespace new_frontiers {
     // We couldn't generate a path based on the
     // most rational behavior: use a random based
     // wandering for now.
-    pickTargetFromPheromon(info, path, GoalPriority::Random);
+    pickTargetFromPheromon(info, path, Goal::Random);
     return true;
   }
 
-  void
-  Worker::pickTargetFromPheromon(StepInfo& info,
-                                 path::Path& path,
-                                 const GoalPriority& priority) noexcept
-  {
-    // Generate the pheromon analyzer.
-    // TODO: Handle the priority.
+  PheromonAnalyzer
+  Worker::generateFromGoal(const Goal& goal) noexcept {
     PheromonAnalyzer pa;
-    switch (priority) {
-      case GoalPriority::Deposit:
+
+    switch (goal) {
+      case Goal::Deposit:
         pa.setRelativeWeight(pheromon::Type::Chase, 0.0f);
         pa.setRelativeWeight(pheromon::Type::Fight, 0.0f);
         pa.setRelativeWeight(pheromon::Type::Collect, 0.4f);
@@ -214,7 +209,19 @@ namespace new_frontiers {
         pa.setRelativeWeight(pheromon::Type::Flee, 0.0f);
         pa.setRandomWeight(0.5f);
         break;
-      case GoalPriority::Home:
+      case Goal::Entity:
+        // Workers will tend to group with workers so
+        // we will focus on pheromons laid out only
+        // by workers.
+        pa.setRelativeWeight(pheromon::Type::Chase, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Fight, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Collect, 0.25f);
+        pa.setRelativeWeight(pheromon::Type::Return, 0.25f);
+        pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Flee, 0.0f);
+        pa.setRandomWeight(0.5f);
+        break;
+      case Goal::Home:
         pa.setRelativeWeight(pheromon::Type::Chase, 0.0f);
         pa.setRelativeWeight(pheromon::Type::Fight, 0.0f);
         pa.setRelativeWeight(pheromon::Type::Collect, 0.1f);
@@ -223,7 +230,7 @@ namespace new_frontiers {
         pa.setRelativeWeight(pheromon::Type::Flee, 0.0f);
         pa.setRandomWeight(0.5f);
         break;
-      case GoalPriority::Random:
+      case Goal::Random:
         // Assume default is also `Random`.
       default:
         pa.setRelativeWeight(pheromon::Type::Chase, 0.0f);
@@ -236,110 +243,7 @@ namespace new_frontiers {
         break;
     }
 
-    // Generate the filtering method for pheromons.
-    utils::Uuid owner = getOwner();
-    auto filter = [&owner](VFXShPtr vfx) {
-      return vfx->getOwner() != owner;
-    };
-
-    // Use the dedicated handler.
-    if (!returnToWandering(info, filter, pa, path)) {
-      log(
-        "Unable to return to wandering, path could not be generated",
-        utils::Level::Warning
-      );
-    }
-  }
-
-  bool
-  Worker::wanderToDeposit(StepInfo& info, path::Path& path) noexcept {
-    // Locate the closest deposit if any.
-    BlockShPtr deposit = info.frustum->getClosest(path.cur, tiles::Portal, m_perceptionRadius, 14);
-    DepositShPtr d = nullptr;
-    if (deposit != nullptr) {
-      d = std::dynamic_pointer_cast<Deposit>(deposit);
-    }
-
-    if (d == nullptr || d->getStock() <= 0.0f) {
-      // No deposit could be found: we will
-      // wander to try to find one or stick
-      // with our current target if one is
-      // already defined.
-      if (isEnRoute()) {
-        return false;
-      }
-
-      if (d != nullptr && d->getStock() <= 0.0f) {
-        log("Deposit is empty");
-      }
-
-      pickTargetFromPheromon(info, path, GoalPriority::Deposit);
-      return true;
-    }
-
-    // Attempt to find a path to the deposit.
-    Point p = d->getTile().p;
-    p.x += 0.5f;
-    p.y += 0.5f;
-
-    log(
-      "Entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
-      " found deposit at " + std::to_string(p.x) + "x" + std::to_string(p.y) +
-      " d: " + std::to_string(distance::d(m_tile.p, p))
-    );
-
-    if (!path.generatePathTo(info, p, true)) {
-      return false;
-    }
-
-    // The path could be generated: return it
-    // and set the behavior to `Collect`.
-    setBehavior(Behavior::Collect);
-
-    return true;
-  }
-
-  bool
-  Worker::wanderToHome(StepInfo& info, path::Path& path) noexcept {
-    // Locate the closest deposit if any.
-    world::Filter f{getOwner(), true};
-    BlockShPtr b = info.frustum->getClosest(m_tile.p, tiles::Portal, m_perceptionRadius, -1, &f);
-
-    if (b == nullptr) {
-      // The home can't be found: we will
-      // wander to try to find it or stick
-      // with our current target if one is
-      // already defined.
-      if (isEnRoute()) {
-        return false;
-      }
-
-      log("Home is too far, can't see it");
-
-      pickTargetFromPheromon(info, path, GoalPriority::Home);
-      return true;
-    }
-
-    // Attempt to find a path to the home.
-    Point p = b->getTile().p;
-    p.x += 0.5f;
-    p.y += 0.5f;
-
-    log(
-      "Entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
-      " found home at " + std::to_string(p.x) + "x" + std::to_string(p.y) +
-      " d: " + std::to_string(distance::d(m_tile.p, p))
-    );
-
-    if (!path.generatePathTo(info, p, true)) {
-      return false;
-    }
-
-    // The path could be generated: return it
-    // and set the behavior to `Return`.
-    setBehavior(Behavior::Return);
-
-    return true;
+    return pa;
   }
 
   bool

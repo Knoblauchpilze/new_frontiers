@@ -1,6 +1,8 @@
 
 # include "Mob.hh"
 # include "Locator.hh"
+# include "../blocks/Deposit.hh"
+# include "../blocks/SpawnerOMeter.hh"
 
 namespace new_frontiers {
 
@@ -88,6 +90,141 @@ namespace new_frontiers {
     y = r.y + d * yDir;
   }
 
+
+  bool
+  Mob::wanderToDeposit(StepInfo& info, path::Path& path) noexcept {
+    // Locate the closest deposit if any.
+    BlockShPtr deposit = info.frustum->getClosest(path.cur, tiles::Portal, m_perceptionRadius, 14);
+    DepositShPtr d = nullptr;
+    if (deposit != nullptr) {
+      d = std::dynamic_pointer_cast<Deposit>(deposit);
+    }
+
+    if (d == nullptr || d->getStock() <= 0.0f) {
+      // No deposit could be found: we will
+      // wander to try to find one or stick
+      // with our current target if one is
+      // already defined.
+      if (isEnRoute()) {
+        return false;
+      }
+
+      if (d != nullptr && d->getStock() <= 0.0f) {
+        log("Deposit is empty");
+      }
+
+      pickTargetFromPheromon(info, path, Goal::Deposit);
+      return true;
+    }
+
+    // Attempt to find a path to the deposit.
+    Point p = d->getTile().p;
+    p.x += 0.5f;
+    p.y += 0.5f;
+
+    log(
+      "Entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
+      " found deposit at " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+      " d: " + std::to_string(distance::d(m_tile.p, p))
+    );
+
+    if (!path.generatePathTo(info, p, true)) {
+      return false;
+    }
+
+    // The path could be generated: return it
+    // and set the behavior to `Collect`.
+    setBehavior(Behavior::Collect);
+
+    return true;
+  }
+
+  bool
+  Mob::wanderToHome(StepInfo& info, path::Path& path) noexcept {
+    // Locate the closest deposit if any.
+    world::Filter f{getOwner(), true};
+    BlockShPtr b = info.frustum->getClosest(m_tile.p, tiles::Portal, m_perceptionRadius, -1, &f);
+
+    if (b == nullptr) {
+      // The home can't be found: we will
+      // wander to try to find it or stick
+      // with our current target if one is
+      // already defined.
+      if (isEnRoute()) {
+        return false;
+      }
+
+      log("Home is too far, can't see it");
+
+      pickTargetFromPheromon(info, path, Goal::Home);
+      return true;
+    }
+
+    // Attempt to find a path to the home.
+    Point p = b->getTile().p;
+    p.x += 0.5f;
+    p.y += 0.5f;
+
+    log(
+      "Entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
+      " found home at " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+      " d: " + std::to_string(distance::d(m_tile.p, p))
+    );
+
+    if (!path.generatePathTo(info, p, true)) {
+      return false;
+    }
+
+    // The path could be generated: return it
+    // and set the behavior to `Return`.
+    setBehavior(Behavior::Return);
+
+    return true;
+  }
+
+  bool
+  Mob::wanderToEntity(StepInfo& info, path::Path& path) noexcept {
+    // Locate the closest entity if any.
+    world::Filter f{getOwner(), false};
+    tiles::Entity* te = nullptr;
+    std::vector<EntityShPtr> entities = info.frustum->getVisible(m_tile.p, m_perceptionRadius, te, -1, &f, world::Sort::Distance);
+
+    // In case there are no entities, continue the
+    // wandering around process.
+    if (entities.empty()) {
+      // In case we already have a target, continue
+      // towards this target.
+      if (isEnRoute()) {
+        return false;
+      }
+
+      log("Entity is home alone, no friends nearby");
+
+      pickTargetFromPheromon(info, path, Goal::Entity);
+      return true;
+    }
+
+    // Pick the first one as it will be the closest
+    // and attempt to find a path to reach it.
+    EntityShPtr e = entities.front();
+
+    if (!path.generatePathTo(info, e->getTile().p, false)) {
+      return false;
+    }
+
+    log(
+      "Entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
+      " found ennemy at " + std::to_string(e->getTile().p.x) + "x" + std::to_string(e->getTile().p.y) +
+      " d: " + std::to_string(distance::d(m_tile.p, e->getTile().p))
+    );
+
+    // The path could be generated: return it
+    // and set the behavior to `Chase`.
+    setBehavior(Behavior::Chase);
+
+    return true;
+  }
+
   bool
   Mob::returnToWandering(StepInfo& info,
                          std::function<bool(VFXShPtr)> filter,
@@ -163,6 +300,29 @@ namespace new_frontiers {
 
     std::swap(path, newP);
     return true;
+  }
+
+  void
+  Mob::pickTargetFromPheromon(StepInfo& info,
+                              path::Path& path,
+                              const Goal& priority) noexcept
+  {
+    // Generate the pheromon analyzer and the
+    // filtering method for pheromons.
+    PheromonAnalyzer pa = generateFromGoal(priority);
+
+    utils::Uuid owner = getOwner();
+    auto filter = [&owner](VFXShPtr vfx) {
+      return vfx->getOwner() != owner;
+    };
+
+    // Use the dedicated handler.
+    if (!returnToWandering(info, filter, pa, path)) {
+      log(
+        "Unable to return to wandering, path could not be generated",
+        utils::Level::Warning
+      );
+    }
   }
 
   Mob::Thought
