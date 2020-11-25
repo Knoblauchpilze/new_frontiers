@@ -11,7 +11,9 @@ namespace new_frontiers {
 
     m_attack(props.attack),
     m_attackCost(props.attackCost),
-    m_attackRange(props.attackRange)
+    m_attackRange(props.attackRange),
+
+    m_seekForHealthThreshold(props.seekForHealth)
   {
     setService("warrior");
   }
@@ -127,8 +129,7 @@ namespace new_frontiers {
     path::Path newPath = path::newPath(m_tile.p);
     bool generated = false;
 
-    // TODO: Should be configurable ?
-    if (getHealthRatio() <= 0.2f) {
+    if (getHealthRatio() <= m_seekForHealtThreshold) {
       generated = wanderToHome(info, newPath);
     }
     else {
