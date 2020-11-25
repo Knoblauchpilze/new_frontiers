@@ -18,6 +18,8 @@ namespace new_frontiers {
         float attack;
         float attackCost;
         float attackRange;
+
+        float seekForHealth;
       };
 
       /**
@@ -73,6 +75,13 @@ namespace new_frontiers {
        *          thought of as a range for this entity.
        */
       float m_attackRange;
+
+      /**
+       * @brief - Defines the percentage of health below
+       *          which this warrior is trying to get some
+       *          healing from its home.
+       */
+      float m_seekForHealthThreshold;
   };
 
   using WarriorShPtr = std::shared_ptr<Warrior>;

@@ -85,6 +85,8 @@ namespace new_frontiers {
     pp.attackCost = 1.0f;
     pp.attackRange = 0.25f;
 
+    pp.seekForHealth = 0.2f;
+
     return pp;
   }
 
