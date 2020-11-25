@@ -39,7 +39,7 @@ namespace new_frontiers {
       // back to wander behavior.
       log("Lost entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y));
 
-      pickTargetFromPheromon(info, path);
+      pickTargetFromPheromon(info, path, Goal::Entity);
       return true;
     }
 
@@ -53,7 +53,7 @@ namespace new_frontiers {
     if (!path.generatePathTo(info, e->getTile().p, false)) {
       // Couldn't reach the entity, return to wandering.
       log("Entity is now unreachable, returning to wandering from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y));
-      pickTargetFromPheromon(info, path);
+      pickTargetFromPheromon(info, path, Goal::Entity);
       return true;
     }
 
@@ -72,8 +72,13 @@ namespace new_frontiers {
         log("Killed entity at " + std::to_string(e->getTile().p.x) + "x" + std::to_string(e->getTile().p.y));
 
         info.removeEntity(e.get());
-        pickTargetFromPheromon(info, path);
-        return true;
+
+        // Now we would like to either get back to
+        // the colony in case the entity has lost
+        // too much life or continue searching for
+        // ennemies to kill. This will be handled
+        // better by the `wander` method.
+        return wander(info, path);
       }
     }
 
@@ -103,12 +108,13 @@ namespace new_frontiers {
     }
 
     if (ie.index < 0 || ie.type != world::ItemType::Block || b.tile.type != tiles::Portal) {
-      pickTargetFromPheromon(info, path);
+      pickTargetFromPheromon(info, path, Goal::Home);
       return true;
     }
 
-    // Refill the home spawner with the amount we
-    // scraped from the deposit.
+    // TODO: Maybe heal a bit by stealing resources
+    // from the house ?
+
     log("Reached home, now retired");
 
     return false;
@@ -116,84 +122,86 @@ namespace new_frontiers {
 
   bool
   Warrior::wander(StepInfo& info, path::Path& path) {
-    // Check whether we can find any deposit in the
-    // surroudings of the entity.
-    // TODO: We should probably have some sort of
-    // biased wandering as for the `Worker` class.
-    world::Filter f{getOwner(), false};
-    tiles::Entity* te = nullptr;
-    std::vector<EntityShPtr> entities = info.frustum->getVisible(
-      m_tile.p,
-      m_perceptionRadius,
-      te,
-      -1,
-      &f,
-      world::Sort::Distance
-    );
-
-    // In case there are no entities, continue the
-    // wandering around process.
-    if (entities.empty()) {
-      // In case we already have a target, continue
-      // towards this target.
-      if (isEnRoute()) {
-        return false;
-      }
-
-      pickTargetFromPheromon(info, path);
-      return true;
-    }
-
-    // Pick the first one as it will be the closest.
-    EntityShPtr e = entities.front();
-
-    // Try to go to this entity: if it fails we will
-    // just continue on our current target.
+    // Depending on the status of the entity we will
+    // prioritize a wandering behavior.
     path::Path newPath = path::newPath(m_tile.p);
-    std::swap(newPath, path);
+    bool generated = false;
 
-    bool generated = newPath.generatePathTo(info, e->getTile().p, false);
-    if (!generated) {
-      if (isEnRoute()) {
-        return false;
-      }
+    // TODO: Should be configurable ?
+    if (getHealthRatio() <= 0.2f) {
+      generated = wanderToHome(info, newPath);
+    }
+    else {
+      generated = wanderToEntity(info, newPath);
+    }
 
-      pickTargetFromPheromon(info, path);
+    if (generated) {
+      std::swap(path, newPath);
       return true;
     }
 
-    // We successfully generated a path to the entity,
-    // use the chase mode.
-    setBehavior(Behavior::Chase);
-    std::swap(newPath, path);
-
-    return generated;
-  }
-
-  void
-  Warrior::pickTargetFromPheromon(StepInfo& info, path::Path& path) noexcept {
-    // Generate the pheromon analyzer.
-    PheromonAnalyzer pa;
-    pa.setRelativeWeight(pheromon::Type::Chase, 0.1f);
-    pa.setRelativeWeight(pheromon::Type::Fight, 0.25f);
-    pa.setRelativeWeight(pheromon::Type::Collect, 0.2f);
-    pa.setRelativeWeight(pheromon::Type::Return, 0.07f);
-    pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
-    pa.setRelativeWeight(pheromon::Type::Flee, 0.08f);
-    pa.setRandomWeight(0.3f);
-
-    // Generate the filtering method for pheromons.
-    utils::Uuid owner = getOwner();
-    auto filter = [&owner](VFXShPtr vfx) {
-      return vfx->getOwner() == owner;
-    };
-
-    // Use the dedicated handler.
-    if (!returnToWandering(info, filter, pa, path)) {
-      log(
-        "Unable to return to wandering, path could not be generated",
-        utils::Level::Warning
-      );
+    // We couldn't generate a path: either because
+    // there is no target visible to the entity or
+    // because the A* failed to find a route. In
+    // both cases, the best bet is to continue with
+    // the current path if any.
+    if (isEnRoute()) {
+      return false;
     }
+
+    // We couldn't generate a path based on the
+    // most rational behavior: use a random based
+    // wandering for now.
+    pickTargetFromPheromon(info, path, Goal::Random);
+    return true;
   }
+
+  PheromonAnalyzer
+  Warrior::generateFromGoal(const Goal& goal) noexcept {
+    PheromonAnalyzer pa;
+
+    switch (goal) {
+      case Goal::Deposit:
+        pa.setRelativeWeight(pheromon::Type::Chase, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Fight, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Collect, 0.4f);
+        pa.setRelativeWeight(pheromon::Type::Return, 0.1f);
+        pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Flee, 0.0f);
+        pa.setRandomWeight(0.5f);
+        break;
+      case Goal::Entity:
+        pa.setRelativeWeight(pheromon::Type::Chase, 0.1f);
+        pa.setRelativeWeight(pheromon::Type::Fight, 0.25f);
+        pa.setRelativeWeight(pheromon::Type::Collect, 0.2f);
+        pa.setRelativeWeight(pheromon::Type::Return, 0.07f);
+        pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Flee, 0.08f);
+        pa.setRandomWeight(0.3f);
+        break;
+      case Goal::Home:
+        pa.setRelativeWeight(pheromon::Type::Chase, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Fight, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Collect, 0.1f);
+        pa.setRelativeWeight(pheromon::Type::Return, 0.4f);
+        pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Flee, 0.0f);
+        pa.setRandomWeight(0.5f);
+        break;
+      case Goal::Random:
+        // Assume default is also `Random`.
+      default:
+        pa.setRelativeWeight(pheromon::Type::Chase, 0.05f);
+        pa.setRelativeWeight(pheromon::Type::Fight, 0.05f);
+        pa.setRelativeWeight(pheromon::Type::Collect, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Return, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Wander, 0.0f);
+        pa.setRelativeWeight(pheromon::Type::Flee, 0.1f);
+        pa.setRandomWeight(0.8f);
+        break;
+    }
+
+    return pa;
+  }
+
 }

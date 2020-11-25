@@ -46,26 +46,8 @@ namespace new_frontiers {
       bool
       inhibitPheromon(StepInfo& info) const noexcept override;
 
-    private:
-
-      /**
-       * @brief - Used to pick a semi-random target based on
-       *          the pheromons that are visible from the
-       *          position of this warrior.
-       *          We don't avoid purely random behavior but
-       *          rather weigh it with some deterministic
-       *          behavior to favorize emergent behaviors
-       *          where pheromons laid out by other mobs
-       *          might lead to their 'owners'.
-       *          This method will use the base class method
-       *          and setup the correct environnment for its
-       *          execution.
-       * @param info - information about the surroundings of
-       *               the warrior.
-       * @param path - the path to generate.
-       */
-      void
-      pickTargetFromPheromon(StepInfo& info, path::Path& path) noexcept;
+      PheromonAnalyzer
+      generateFromGoal(const Goal& goal) noexcept override;
 
     private:
 

@@ -83,6 +83,17 @@ namespace new_frontiers {
       };
 
       /**
+       * @brief - Possible weigthing of pheromons as we might want to
+       *          give priority to some specific types when wandering.
+       */
+      enum class Goal {
+        Deposit,
+        Entity,
+        Home,
+        Random
+      };
+
+      /**
        * @brief - Define a new behavior as provided in input and
        *          assign it as the current behavior. No checks
        *          are performed so any assignment is valid.
@@ -181,6 +192,57 @@ namespace new_frontiers {
       pickRandomTarget(StepInfo& info, const Point& r, float& x, float& y) noexcept;
 
       /**
+       * @brief - Used to wander with the objective to reach
+       *          a deposit. This will give higher priority
+       *          to collect pheromons.
+       * @param info - the information about the surroundings
+       *               of the entity.
+       * @param path - the path to generate. Note that this
+       *               path is assumed to refer to a clean
+       *               path: any result of the wandering is
+       *               added to it. In case this method is
+       *               returning `false`, the path is left
+       *               in an undefined state.
+       * @return - `true` in case a path could be generated.
+       */
+      bool
+      wanderToDeposit(StepInfo& info, path::Path& path) noexcept;
+
+      /**
+       * @brief - Similar to the above method but performs
+       *          a wandering biased towards finding the
+       *          home of the entity.
+       * @param info - the information about the surroundings
+       *               of the entity.
+       * @param path - the path to generate. Note that this
+       *               path is assumed to refer to a clean
+       *               path: any result of the wandering is
+       *               added to it. In case this method is
+       *               returning `false`, the path is left
+       *               in an undefined state.
+       * @return - `true` in case a path could be generated.
+       */
+      bool
+      wanderToHome(StepInfo& info, path::Path& path) noexcept;
+
+      /**
+       * @brief - Similar to the above method but performs
+       *          a wandering biased towards finding other
+       *          entities.
+       * @param info - the information about the surroundings
+       *               of the entity.
+       * @param path - the path to generate. Note that this
+       *               path is assumed to refer to a clean
+       *               path: any result of the wandering is
+       *               added to it. In case this method is
+       *               returning `false`, the path is left
+       *               in an undefined state.
+       * @return - `true` in case a path could be generated.
+       */
+      bool
+      wanderToEntity(StepInfo& info, path::Path& path) noexcept;
+
+      /**
        * @brief - Common handler that can be used during the
        *          though process of an agent. It will reset
        *          the active behavior to wandering and pick
@@ -216,6 +278,43 @@ namespace new_frontiers {
                         PheromonAnalyzer& analyzer,
                         path::Path& path,
                         unsigned attempts = 10u);
+
+      /**
+       * @brief - Used to pick a semi-random target based on
+       *          the pheromons that are visible from the
+       *          position of this worker.
+       *          We don't avoid purely random behavior but
+       *          rather weigh it with some deterministic
+       *          behavior to favorize emergent behaviors
+       *          where another worker might have tracked
+       *          a deposit before.
+       *          This method will use the base class method
+       *          and setup the correct environnment for its
+       *          execution.
+       * @param info - information about the surroundings of
+       *               the worker.
+       * @param path - the path to generate.
+       * @param priority - the current priority: used to set
+       *                   relative weights for pheromons.
+       */
+      void
+      pickTargetFromPheromon(StepInfo& info,
+                             path::Path& path,
+                             const Goal& priority) noexcept;
+
+      /**
+       * @brief - Used to generate a pheromon analyzer to be
+       *          able to weigh pheromons based on their type
+       *          according to a priority (or goal). This is
+       *          used during the wandering process to choose
+       *          which pheromones are relevant according to
+       *          the goal of the mob.
+       * @param goal - the goal of the wandering process.
+       * @return - a pheromon analyzer that will be able to
+       *           weigh the pheromons based on the goal.
+       */
+      virtual PheromonAnalyzer
+      generateFromGoal(const Goal& goal) noexcept = 0;
 
     private:
 
