@@ -129,7 +129,7 @@ namespace new_frontiers {
     path::Path newPath = path::newPath(m_tile.p);
     bool generated = false;
 
-    if (getHealthRatio() <= m_seekForHealtThreshold) {
+    if (getHealthRatio() <= m_seekForHealthThreshold) {
       generated = wanderToHome(info, newPath);
     }
     else {

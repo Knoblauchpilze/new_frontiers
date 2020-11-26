@@ -25,9 +25,9 @@ namespace new_frontiers {
   }
 
   inline
-  Worker::MProps
+  Worker::WProps
   EntityFactory::newWorkerProps(float x, float y, const tiles::Entity& ent) noexcept {
-    Worker::MProps pp;
+    Worker::WProps pp;
 
     pp.tile = newTile(ent, 0, x, y);
     pp.radius = sk_radius;
@@ -50,6 +50,8 @@ namespace new_frontiers {
     pp.maxEnergy = 2.1f;
     pp.refill = 1.0f;
     pp.pheromonCost = 2.0f;
+
+    pp.fleeRadius = 1.5f;
 
     return pp;
   }
@@ -129,14 +131,14 @@ namespace new_frontiers {
       return std::make_shared<Warrior>(*wp);
     }
 
+    const Worker::WProps* wp2 = dynamic_cast<const Worker::WProps*>(pp);
+    if (wp2 != nullptr) {
+      return std::make_shared<Worker>(*wp2);
+    }
+
     const Player::PProps* plp = dynamic_cast<const Player::PProps*>(pp);
     if (plp != nullptr) {
       return std::make_shared<Player>(*plp);
-    }
-
-    const Mob::MProps* mp = dynamic_cast<const Mob::MProps*>(pp);
-    if (mp != nullptr) {
-      return std::make_shared<Worker>(*mp);
     }
 
     // Can't interpret the props, return an invalid

@@ -8,8 +8,10 @@
 
 namespace new_frontiers {
 
-  Worker::Worker(const MProps& props):
-    Mob(props)
+  Worker::Worker(const WProps& props):
+    Mob(props),
+
+    m_fleeRadiusThreshold(props.fleeRadius)
   {
     setService("worker");
   }
@@ -247,7 +249,37 @@ namespace new_frontiers {
   }
 
   bool
-  Worker::checkForFlee(StepInfo& /*info*/, path::Path& /*path*/) noexcept {
+  Worker::checkForFlee(StepInfo& info, path::Path& /*path*/) noexcept {
+    // Determine whether an ennemy entity is close
+    // enough to threaten us.
+    world::Filter f{getOwner(), false};
+    tiles::Entity* te = nullptr;
+    std::vector<EntityShPtr> entities = info.frustum->getVisible(
+      m_tile.p,
+      m_fleeRadiusThreshold,
+      te,
+      -1,
+      &f,
+      world::Sort::Distance
+    );
+
+    EntityShPtr e;
+    if (!entities.empty()) {
+      e = entities.front();
+    }
+
+    if (e == nullptr) {
+      return false;
+    }
+
+    // An entity was detected close enough to threaten
+    // us. We need to trigger the flee behavior.
+    log(
+      "ALERT ! ALERT ! Detected entity at " + std::to_string(e->getTile().p.x) + "x" + std::to_string(e->getTile().p.y) +
+      " (d: " + std::to_string(distance::d(e->getTile().p, m_tile.p)) + ")",
+      utils::Level::Warning
+    );
+
     // TODO: Handle this.
     return false;
   }

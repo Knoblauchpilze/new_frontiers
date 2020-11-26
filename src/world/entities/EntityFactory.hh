@@ -17,7 +17,7 @@ namespace new_frontiers {
       newEntityProps(float x, float y, const tiles::Entity& ent) noexcept;
 
       static
-      Worker::MProps
+      Worker::WProps
       newWorkerProps(float x, float y, const tiles::Entity& ent) noexcept;
 
       static

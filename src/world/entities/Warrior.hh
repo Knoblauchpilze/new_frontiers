@@ -10,7 +10,7 @@ namespace new_frontiers {
 
       /**
        * @brief - Convenience structure to regroup the info
-       *          needed to create an entity. It is meant
+       *          needed to create a warrior. It is meant
        *          as a way to reduce the number of arguments
        *          provided to the constructor of this class.
        */
