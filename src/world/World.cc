@@ -58,7 +58,7 @@ namespace {
       return std::make_shared<new_frontiers::Warrior>(pp);
     }
     if (kind == "worker") {
-      new_frontiers::Mob::MProps pp = new_frontiers::EntityFactory::newWorkerProps(x, y, e);
+      new_frontiers::Worker::WProps pp = new_frontiers::EntityFactory::newWorkerProps(x, y, e);
       pp.health = health;
 
       pp.homeX = homeX + 0.5f;

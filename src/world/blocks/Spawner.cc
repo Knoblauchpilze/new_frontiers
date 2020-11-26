@@ -54,7 +54,7 @@ namespace new_frontiers {
       case mob::Type::Worker:
         // Assume default type is a worker.
       default: {
-        Mob::MProps pp = EntityFactory::newWorkerProps(x, y, m_mob);
+        Worker::WProps pp = EntityFactory::newWorkerProps(x, y, m_mob);
         pp.tile.id = m_mobID;
 
         pp.homeX = m_tile.p.x + 0.5f;

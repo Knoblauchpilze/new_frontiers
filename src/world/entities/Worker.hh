@@ -9,10 +9,20 @@ namespace new_frontiers {
     public:
 
       /**
+       * @brief - Convenience structure to regroup the info
+       *          needed to create a worker. It is meant
+       *          as a way to reduce the number of arguments
+       *          provided to the constructor of this class.
+       */
+      struct WProps: MProps {
+        float fleeRadius;
+      };
+
+      /**
        * @brief - Creates a new mob with the specified props.
        * @param props - the properties describing this mob.
        */
-      Worker(const MProps& props);
+      Worker(const WProps& props);
 
     protected:
 
@@ -56,6 +66,14 @@ namespace new_frontiers {
        */
       bool
       checkForFlee(StepInfo& info, path::Path& path) noexcept;
+
+    private:
+
+      /**
+       * @brief - Defines the radius below which an entity
+       *          considers that it should flee.
+       */
+      float m_fleeRadiusThreshold;
   };
 
   using WorkerShPtr = std::shared_ptr<Worker>;
