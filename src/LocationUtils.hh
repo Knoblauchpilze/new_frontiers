@@ -85,6 +85,29 @@ namespace new_frontiers {
     angleFromDirection(const Point& p1,
                        const Point& p2,
                        float threshold = 0.0001f) noexcept;
+
+    /**
+     * @brief - Used to determine whether the point `p` lies
+     *          in the cone defined by `o` with principal dir
+     *          `xDir, yDir` and angle `theta`. The angle is
+     *          assumed to be distributed equally on both
+     *          sides of the principal direction.
+     * @param - the tip of the cone.
+     * @param xDir - the abscissa of the principal direction
+     *               of the cone.
+     * @param yDir - the ordinate of the principal direction
+     *               of the cone.
+     * @param theta - the span of the cone.
+     * @param p - the point whose inclusion in the cone should
+     *            be checked.
+     * @return - `true` if the point lies inside the cone.
+     */
+    float
+    isInCone(const Point& o,
+             float xDir,
+             float yDir,
+             float theta,
+             const Point& p) noexcept;
   }
 }
 

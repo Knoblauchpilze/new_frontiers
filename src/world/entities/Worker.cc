@@ -21,7 +21,8 @@ namespace new_frontiers {
   Worker::collect(StepInfo& info, path::Path& path) {
     // Check for enemies in the perception radius:
     // we want to flee them.
-    if (checkForFlee(info, path)) {
+    bool ret = false;
+    if (checkForFlee(info, path, ret)) {
       return true;
     }
 
@@ -95,7 +96,8 @@ namespace new_frontiers {
   bool
   Worker::getBack(StepInfo& info, path::Path& path) {
     // Flee enemies.
-    if (checkForFlee(info, path)) {
+    bool ret = false;
+    if (checkForFlee(info, path, ret)) {
       return true;
     }
 
@@ -174,10 +176,6 @@ namespace new_frontiers {
     // close enough to threaten us: we need to try to
     // flee in the general opposite direction of their
     // combined position.
-    // TODO: Maybe check if we're en route: if it is
-    // the case *and* the target lies in the flee cone
-    // we might continue on the path.
-
     Point s = m_tile.p;
     Point g = newPoint();
     float w = 0.0f;
@@ -196,6 +194,20 @@ namespace new_frontiers {
 
     g.x /= w;
     g.y /= w;
+
+    // Check if we're en route: if this is the case
+    // but the path still likes in the escape cone
+    // we will continue on that direction.
+    bool inCone = distance::isInCone(
+      m_tile.p,
+      m_tile.p.x - g.x,
+      m_tile.p.y - g.y,
+      m_fleeConeAngleSpan,
+      path.currentTarget()
+    );
+    if (isEnRoute() && inCone) {
+      return false;
+    }
 
     // We now know the general direction that we should
     // avoid. We will try to flee in a cone directed in
@@ -217,7 +229,7 @@ namespace new_frontiers {
     Point t = newPoint(m_tile.p.x + d * xDir, m_tile.p.y + d * yDir);
 
     path::Path newPath = path::newPath(m_tile.p);
-    bool generated = newPath.generatePathTo(info, t, false);
+    bool generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
 
     int count = 0;
     while (!generated) {
@@ -230,23 +242,18 @@ namespace new_frontiers {
       info.clampPath(m_tile.p, xDir, yDir, d);
       t = newPoint(m_tile.p.x + d * xDir, m_tile.p.y + d * yDir);
 
-      log(
-        "Generating path to " + std::to_string(t.x) + "x" + std::to_string(t.y) +
-        " with angle " + std::to_string(baseAngle + theta - m_fleeConeAngleSpan / 2.0f) + " and d " + std::to_string(d)
-      );
-
       newPath.clear(m_tile.p);
-      generated = newPath.generatePathTo(info, t, false);
+      generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
 
       ++count;
     }
 
     log(
-      "ALERT! ALERT! Detected entities at " + std::to_string(g.x) + "x" + std::to_string(g.y) +
-      " (d: " + std::to_string(distance::d(g, m_tile.p)) + "), " +
-      "moving to " + std::to_string(t.x) + "x" + std::to_string(t.y) + " (" +
-      std::to_string(count) + " tries)",
-      utils::Level::Warning
+      "Escaping " + std::to_string(g.x) + "x" + std::to_string(g.y) +
+      " from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
+      " in cone from " + std::to_string(180.0f * (baseAngle - m_fleeConeAngleSpan / 2.0f) / 3.14159f) +
+      " - " + std::to_string(180.0f * (baseAngle + m_fleeConeAngleSpan / 2.0f) / 3.14159f) +
+      " (d: " + std::to_string(distance::d(g, m_tile.p)) + ", " + std::to_string(count) + " tries)"
     );
 
     std::swap(path, newPath);
@@ -259,8 +266,9 @@ namespace new_frontiers {
   Worker::wander(StepInfo& info, path::Path& path) {
     // First, we need to make sure that we won't run
     // into an ennemy.
-    if (checkForFlee(info, path)) {
-      return true;
+    bool ret = false;
+    if (checkForFlee(info, path, ret)) {
+      return ret;
     }
 
     // Depending on the status of the entity we will
@@ -348,7 +356,7 @@ namespace new_frontiers {
   }
 
   bool
-  Worker::checkForFlee(StepInfo& info, path::Path& path) noexcept {
+  Worker::checkForFlee(StepInfo& info, path::Path& path, bool& pathChanged) noexcept {
     // Determine whether an ennemy entity is close
     // enough to threaten us.
     world::Filter f{getOwner(), false};
@@ -366,6 +374,7 @@ namespace new_frontiers {
       return false;
     }
 
-    return flee(info, path);
+    pathChanged = flee(info, path);
+    return true;
   }
 }

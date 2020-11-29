@@ -127,7 +127,7 @@ namespace new_frontiers {
       " d: " + std::to_string(distance::d(m_tile.p, p))
     );
 
-    if (!path.generatePathTo(info, p, true)) {
+    if (!path.generatePathTo(info, p, true, m_perceptionRadius)) {
       return false;
     }
 
@@ -170,7 +170,7 @@ namespace new_frontiers {
       " d: " + std::to_string(distance::d(m_tile.p, p))
     );
 
-    if (!path.generatePathTo(info, p, true)) {
+    if (!path.generatePathTo(info, p, true, m_perceptionRadius)) {
       return false;
     }
 
@@ -207,7 +207,7 @@ namespace new_frontiers {
     // and attempt to find a path to reach it.
     EntityShPtr e = entities.front();
 
-    if (!path.generatePathTo(info, e->getTile().p, false)) {
+    if (!path.generatePathTo(info, e->getTile().p, false, m_perceptionRadius)) {
       return false;
     }
 

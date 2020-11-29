@@ -62,6 +62,27 @@ namespace new_frontiers {
       return angleFromDirection(p2.x - p1.x, p2.y - p1.y, threshold);
     }
 
+    inline
+    float
+    isInCone(const Point& o,
+             float xDir,
+             float yDir,
+             float theta,
+             const Point& p) noexcept
+    {
+      // Compute the angle between the point and the
+      // origin of the cone.
+      float angle = angleFromDirection(o, p);
+
+      // Compute the angle directing the cone.
+      float coneAngle = angleFromDirection(xDir, yDir);
+
+      // In order for the point to lie in the cone we
+      // should have the angle within `theta / 2` of
+      // the cone supporting angle.
+      return std::abs(angle - coneAngle) < theta / 2.0f;
+    }
+
   }
 }
 
