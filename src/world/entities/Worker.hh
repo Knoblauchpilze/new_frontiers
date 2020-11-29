@@ -16,6 +16,7 @@ namespace new_frontiers {
        */
       struct WProps: MProps {
         float fleeRadius;
+        float fleeConeSpan;
       };
 
       /**
@@ -70,10 +71,29 @@ namespace new_frontiers {
     private:
 
       /**
+       * @brief - This valus is used as a threshold to consider
+       *          that an enemy mob is close enough to us that
+       *          it doesn't matter if it gets closer. It allows
+       *          to keep the weights in the flee behavior from
+       *          going to infinity.
+       */
+      static constexpr float sk_proximityAlert = 0.01f;
+
+      /**
        * @brief - Defines the radius below which an entity
        *          considers that it should flee.
        */
       float m_fleeRadiusThreshold;
+
+      /**
+       * @brief - Defines the width of the cone where the entity
+       *          is attempting to flee when enemies are detected.
+       *          This value is expressed in radians.
+       *          The larger this value the wider the cone to flee
+       *          will be, giving the entity less of an urge to
+       *          flee.
+       */
+      float m_fleeConeAngleSpan;
   };
 
   using WorkerShPtr = std::shared_ptr<Worker>;

@@ -52,6 +52,7 @@ namespace new_frontiers {
     pp.pheromonCost = 2.0f;
 
     pp.fleeRadius = 1.5f;
+    pp.fleeConeSpan = 3.1415926535f / 4.0f;
 
     return pp;
   }

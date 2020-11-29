@@ -309,10 +309,10 @@ namespace new_frontiers {
       float bx = std::floor(current.p.x) + 0.5f;
       float by = std::floor(current.p.y) + 0.5f;
 
-      bool obsE = m_loc->obstructed(Point{bx + 1.0f, by});
-      bool obsN = m_loc->obstructed(Point{bx, by + 1.0f});
-      bool obsW = m_loc->obstructed(Point{bx - 1.0f, by});
-      bool obsS = m_loc->obstructed(Point{bx, by - 1.0f});
+      bool obsE = m_loc->obstructed(newPoint(bx + 1.0f, by));
+      bool obsN = m_loc->obstructed(newPoint(bx, by + 1.0f));
+      bool obsW = m_loc->obstructed(newPoint(bx - 1.0f, by));
+      bool obsS = m_loc->obstructed(newPoint(bx, by - 1.0f));
 
       bool validNE = (!obsN && !obsE);
       bool validNW = (!obsN && !obsW);

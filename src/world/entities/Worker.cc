@@ -11,7 +11,8 @@ namespace new_frontiers {
   Worker::Worker(const WProps& props):
     Mob(props),
 
-    m_fleeRadiusThreshold(props.fleeRadius)
+    m_fleeRadiusThreshold(props.fleeRadius),
+    m_fleeConeAngleSpan(props.fleeConeSpan)
   {
     setService("worker");
   }
@@ -151,9 +152,107 @@ namespace new_frontiers {
   }
 
   bool
-  Worker::flee(StepInfo& /*info*/, path::Path& /*path*/) {
-    // TODO: Handle this.
-    return false;
+  Worker::flee(StepInfo& info, path::Path& path) {
+    // Check whether there are some enemies close enough to
+    // threaten us: this will trigger the escape behavior.
+    world::Filter f{getOwner(), false};
+    tiles::Entity* te = nullptr;
+    std::vector<EntityShPtr> enemies = info.frustum->getVisible(
+      m_tile.p,
+      m_fleeRadiusThreshold,
+      te,
+      -1,
+      &f,
+      world::Sort::Distance
+    );
+
+    if (enemies.empty()) {
+      return wander(info, path);
+    }
+
+    // One or more enemies have been detected and are
+    // close enough to threaten us: we need to try to
+    // flee in the general opposite direction of their
+    // combined position.
+    // TODO: Maybe check if we're en route: if it is
+    // the case *and* the target lies in the flee cone
+    // we might continue on the path.
+
+    Point s = m_tile.p;
+    Point g = newPoint();
+    float w = 0.0f;
+
+    auto weight = [&s](const Point& p) {
+      return 1.0f / std::max(sk_proximityAlert, distance::d(s, p));
+    };
+
+    for (unsigned id = 0u ; id < enemies.size() ; ++id) {
+      float cw = weight(enemies[id]->getTile().p);
+
+      g.x += cw * enemies[id]->getTile().p.x;
+      g.y += cw * enemies[id]->getTile().p.y;
+      w += cw;
+    }
+
+    g.x /= w;
+    g.y /= w;
+
+    // We now know the general direction that we should
+    // avoid. We will try to flee in a cone directed in
+    // the opposite direction.
+    // As escaping is the main priority right now we
+    // will delete any existing planned path.
+    float dToEnemy = distance::d(g, m_tile.p);
+    float d = info.rng.rndFloat(dToEnemy, 2.0f * dToEnemy);
+    float theta = info.rng.rndAngle(0.0f, m_fleeConeAngleSpan);
+
+    float baseAngle = distance::angleFromDirection(m_tile.p, g);
+
+    float xDir = std::cos(baseAngle + theta - m_fleeConeAngleSpan / 2.0f);
+    float yDir = std::sin(baseAngle + theta - m_fleeConeAngleSpan / 2.0f);
+
+    // Clamp these coordinates and update the direction
+    // based on that.
+    info.clampPath(m_tile.p, xDir, yDir, d);
+    Point t = newPoint(m_tile.p.x + d * xDir, m_tile.p.y + d * yDir);
+
+    path::Path newPath = path::newPath(m_tile.p);
+    bool generated = newPath.generatePathTo(info, t, false);
+
+    int count = 0;
+    while (!generated) {
+      d = info.rng.rndFloat(dToEnemy, 2.0f * dToEnemy);
+      theta = info.rng.rndAngle(0.0f, m_fleeConeAngleSpan);
+
+      xDir = std::cos(baseAngle + theta - m_fleeConeAngleSpan / 2.0f);
+      yDir = std::sin(baseAngle + theta - m_fleeConeAngleSpan / 2.0f);
+
+      info.clampPath(m_tile.p, xDir, yDir, d);
+      t = newPoint(m_tile.p.x + d * xDir, m_tile.p.y + d * yDir);
+
+      log(
+        "Generating path to " + std::to_string(t.x) + "x" + std::to_string(t.y) +
+        " with angle " + std::to_string(baseAngle + theta - m_fleeConeAngleSpan / 2.0f) + " and d " + std::to_string(d)
+      );
+
+      newPath.clear(m_tile.p);
+      generated = newPath.generatePathTo(info, t, false);
+
+      ++count;
+    }
+
+    log(
+      "ALERT! ALERT! Detected entities at " + std::to_string(g.x) + "x" + std::to_string(g.y) +
+      " (d: " + std::to_string(distance::d(g, m_tile.p)) + "), " +
+      "moving to " + std::to_string(t.x) + "x" + std::to_string(t.y) + " (" +
+      std::to_string(count) + " tries)",
+      utils::Level::Warning
+    );
+
+    std::swap(path, newPath);
+    setBehavior(Behavior::Flee);
+
+    return true;
   }
 
   bool
@@ -249,12 +348,12 @@ namespace new_frontiers {
   }
 
   bool
-  Worker::checkForFlee(StepInfo& info, path::Path& /*path*/) noexcept {
+  Worker::checkForFlee(StepInfo& info, path::Path& path) noexcept {
     // Determine whether an ennemy entity is close
     // enough to threaten us.
     world::Filter f{getOwner(), false};
     tiles::Entity* te = nullptr;
-    std::vector<EntityShPtr> entities = info.frustum->getVisible(
+    std::vector<EntityShPtr> enemies = info.frustum->getVisible(
       m_tile.p,
       m_fleeRadiusThreshold,
       te,
@@ -263,24 +362,10 @@ namespace new_frontiers {
       world::Sort::Distance
     );
 
-    EntityShPtr e;
-    if (!entities.empty()) {
-      e = entities.front();
-    }
-
-    if (e == nullptr) {
+    if (enemies.empty()) {
       return false;
     }
 
-    // An entity was detected close enough to threaten
-    // us. We need to trigger the flee behavior.
-    log(
-      "ALERT ! ALERT ! Detected entity at " + std::to_string(e->getTile().p.x) + "x" + std::to_string(e->getTile().p.y) +
-      " (d: " + std::to_string(distance::d(e->getTile().p, m_tile.p)) + ")",
-      utils::Level::Warning
-    );
-
-    // TODO: Handle this.
-    return false;
+    return flee(info, path);
   }
 }

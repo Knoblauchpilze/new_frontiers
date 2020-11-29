@@ -9,7 +9,7 @@ namespace new_frontiers {
   Mob::Mob(const MProps& props):
     Entity(props),
 
-    m_home(Point{props.homeX, props.homeY}),
+    m_home(newPoint(props.homeX, props.homeY)),
 
     m_carrying(std::max(std::min(props.cargo, props.carrying), 0.0f)),
     m_cargo(std::max(props.cargo, 0.0f)),
@@ -82,14 +82,13 @@ namespace new_frontiers {
       // This should be resolved when we allow for an
       // infinite world.
       info.clampPath(r, xDir, yDir, d);
-      t = Point{r.x + d * xDir, r.y + d * yDir};
+      t = newPoint(r.x + d * xDir, r.y + d * yDir);
     }
 
     // Save the picked location.
     x = r.x + d * xDir;
     y = r.y + d * yDir;
   }
-
 
   bool
   Mob::wanderToDeposit(StepInfo& info, path::Path& path) noexcept {

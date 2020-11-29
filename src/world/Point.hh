@@ -11,6 +11,9 @@ namespace new_frontiers {
     float y;
   };
 
+  Point
+  newPoint(float x = 0.0f, float y = 0.0f);
+
   /**
    * @brief - Used to convert from a position and a
    *          target to a direction-based path.

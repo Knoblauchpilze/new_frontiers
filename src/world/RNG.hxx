@@ -35,8 +35,8 @@ namespace new_frontiers {
 
   inline
   float
-  RNG::rndAngle() noexcept {
-    return rndFloat(0.0f, 2.0f * 3.1415926535f);
+  RNG::rndAngle(float min, float max) noexcept {
+    return rndFloat(min, max);
   }
 
 }

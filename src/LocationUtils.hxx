@@ -31,6 +31,37 @@ namespace new_frontiers {
       return d2(p1.x, p1.y, p2.x, p2.y);
     }
 
+    inline
+    float
+    angleFromDirection(float xDir, float yDir, float threshold) noexcept {
+      // Normalize the input direction and handle
+      // pathological cases.
+      float l = d(0.0f, 0.0f, xDir, yDir);
+      if (l < threshold) {
+        return 0.0f;
+      }
+
+      xDir /= l;
+      yDir /= l;
+
+      float theta = std::atan2(yDir, xDir);
+
+      // As per this link: http://www.cplusplus.com/reference/cmath/atan2/
+      // the value returned is in the interval `]-pi, pi]` (even though it
+      // is not clear if the interval is open in `-pi`) so as we want the
+      // value in the range `[0; 2pi[` we need to add `pi`.
+      return std::min(std::max(theta + 3.1415926535f, 0.0f), 6.283185307f);
+    }
+
+    inline
+    float
+    angleFromDirection(const Point& p1,
+                       const Point& p2,
+                       float threshold) noexcept
+    {
+      return angleFromDirection(p2.x - p1.x, p2.y - p1.y, threshold);
+    }
+
   }
 }
 
