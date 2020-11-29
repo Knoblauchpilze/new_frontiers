@@ -7,6 +7,12 @@
 namespace new_frontiers {
 
   inline
+  Point
+  newPoint(float x, float y) {
+    return Point{x, y};
+  }
+
+  inline
   bool
   toDirection(const Point& s,
               const Point& t,

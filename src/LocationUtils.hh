@@ -51,6 +51,40 @@ namespace new_frontiers {
     float
     d2(const Point& p1, const Point& p2) noexcept;
 
+    /**
+     * @brief - Used to compute the angle associated to
+     *          the input direction. The reference frame
+     *          is set to be `0` when the input vector
+     *          is aligned with the `x` axis.
+     *          In case the length of the specified dir
+     *          is close to `0` a `null` angle will be
+     *          returned.
+     *          The angle is in the range `[0; 2pi[`.
+     * @param xDir - the abscissa of the direction.
+     * @param yDir - the ordinate of the direction.
+     * @param threshold - a threshold to consider the
+     *                    direction to be `null`.
+     * @return - the angle corresponding to the input
+     *           direction.
+     */
+    float
+    angleFromDirection(float xDir, float yDir, float threshold = 0.0001f) noexcept;
+
+    /**
+     * @brief - Very similar to the above method but takes
+     *          two points in argument rather than a dir.
+     * @param p1 - the first point of the segment defining
+     *             the direction.
+     * @param p2 - the second point of the segment defining
+     *             the direction.
+     * @param threshold - a threshold to consider points to
+     *                    be at the same position.
+     * @return - the corresponding angle between both points.
+     */
+    float
+    angleFromDirection(const Point& p1,
+                       const Point& p2,
+                       float threshold = 0.0001f) noexcept;
   }
 }
 
