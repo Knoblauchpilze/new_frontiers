@@ -126,6 +126,15 @@ namespace new_frontiers {
       enRoute(float threshold) const noexcept;
 
       /**
+       * @brief - Used to retrieve the closest target on the
+       *          path: this refers to the endpoint of the
+       *          segment currently followed by the entity.
+       * @return - the next target on the path.
+       */
+      Point
+      currentTarget() const noexcept;
+
+      /**
        * @brief - Used to advance on this path assuming the
        *          path follower is moving at `speed` along
        *          the path and that `elapsed` seconds have

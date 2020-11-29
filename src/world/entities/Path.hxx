@@ -122,6 +122,17 @@ namespace new_frontiers {
     }
 
     inline
+    Point
+    Path::currentTarget() const noexcept {
+      int ss = static_cast<int>(segments.size());
+      if (seg < 0 || seg >= ss) {
+        return newPoint();
+      }
+
+      return segments[seg].end;
+    }
+
+    inline
     Segment
     newSegment(const Point& p, float xD, float yD, float d) noexcept {
       Segment s;

@@ -61,12 +61,21 @@ namespace new_frontiers {
        * @param info - information about the world.
        * @param path - the path to update in case a decision
        *               is taken.
+       * @param pathChanged - `true` in case the path has
+       *                      been changed compared to what
+       *                      it was.
+       *                      This value should be used as
+       *                      the return value in case the
+       *                      return of this function is set
+       *                      to `true` to indicate to the
+       *                      behavior processing layer the
+       *                      status of the path.
        * @return - `true` if a decision was made: this means
        *           that no further processing is required
        *           for the time being.
        */
       bool
-      checkForFlee(StepInfo& info, path::Path& path) noexcept;
+      checkForFlee(StepInfo& info, path::Path& path, bool& pathChanged) noexcept;
 
     private:
 

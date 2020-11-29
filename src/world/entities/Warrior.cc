@@ -52,7 +52,7 @@ namespace new_frontiers {
     // the entity: indeed the entity may be moving
     // so we want to accurately chase it.
     path.clear(m_tile.p);
-    if (!path.generatePathTo(info, e->getTile().p, false)) {
+    if (!path.generatePathTo(info, e->getTile().p, false, m_perceptionRadius)) {
       // Couldn't reach the entity, return to wandering.
       log("Entity is now unreachable, returning to wandering from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y));
       pickTargetFromPheromon(info, path, Goal::Entity);
