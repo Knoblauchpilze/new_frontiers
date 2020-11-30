@@ -51,7 +51,7 @@ namespace new_frontiers {
 # ifdef WORLD_FROM_FILE
     m_world = std::make_shared<World>(100, std::string("data/worlds/level_1.lvl"));
 # else
-    m_world = std::make_shared<World>(100);
+    m_world = std::make_shared<World>(100, 15, 15);
 # endif
     m_loc = m_world->locator();
 
