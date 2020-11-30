@@ -57,9 +57,10 @@ namespace new_frontiers {
        * @param delta - the amount of resource to add or deplete.
        * @param force - `true` if the refill operation should
        *                always be successful.
-       * @return - `true` if the operation could be performed.
+       * @return - the value that was actually added/removed in
+       *           the deposit.
        */
-      bool
+      float
       refill(float delta, bool force = false);
 
     protected:
