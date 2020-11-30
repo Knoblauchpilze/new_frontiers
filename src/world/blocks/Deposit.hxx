@@ -12,14 +12,14 @@ namespace new_frontiers {
   }
 
   inline
-  bool
+  float
   Deposit::refill(float delta, bool force) {
     // In case the `delta` is positive the operation
     // always succeed.
     if (delta >= 0.0f) {
       m_stock += delta;
 
-      return true;
+      return delta;
     }
 
     // Otherwise we have to have a sufficient amount
@@ -31,12 +31,13 @@ namespace new_frontiers {
     if (m_stock < std::abs(delta) && force) {
       m_stock += delta;
 
-      return false;
+      return delta;
     }
 
+    float var = m_stock;
     m_stock = std::max(m_stock + delta, 0.0f);
 
-    return true;
+    return -var;
   }
 
 

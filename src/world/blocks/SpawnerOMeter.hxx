@@ -18,14 +18,14 @@ namespace new_frontiers {
   }
 
   inline
-  bool
+  float
   SpawnerOMeter::refill(float delta, bool force) {
     // In case the `delta` is positive the operation
     // always succeed.
     if (delta >= 0.0f) {
       m_stock += delta;
 
-      return true;
+      return delta;
     }
 
     // Otherwise we have to have a sufficient amount
@@ -34,15 +34,16 @@ namespace new_frontiers {
     // stock no matter if it becomes negative. If we
     // don't force the update then we only make the
     // stock `0`.
-    if (m_stock < delta && force) {
-      m_stock -= delta;
+    if (m_stock < std::abs(delta) && force) {
+      m_stock += delta;
 
-      return false;
+      return delta;
     }
 
-    m_stock = std::max(m_stock - delta, 0.0f);
+    float var = m_stock;
+    m_stock = std::max(m_stock + delta, 0.0f);
 
-    return true;
+    return var;
   }
 
   inline
