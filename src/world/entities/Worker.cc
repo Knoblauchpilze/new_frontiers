@@ -128,7 +128,7 @@ namespace new_frontiers {
 
     SpawnerOMeterShPtr s = std::dynamic_pointer_cast<SpawnerOMeter>(b);
     if (s == nullptr) {
-      // Not able to convert to a valid deposit,
+      // Not able to convert to a valid spawner,
       // use wander again.
       int status;
       std::string bType = abi::__cxa_demangle(typeid(*b).name(), 0, 0, &status);
