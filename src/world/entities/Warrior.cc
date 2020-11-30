@@ -3,6 +3,7 @@
 # include "StepInfo.hh"
 # include "Locator.hh"
 # include "PheromonAnalyzer.hh"
+# include <cxxabi.h>
 
 namespace new_frontiers {
 
@@ -97,29 +98,48 @@ namespace new_frontiers {
       return false;
     }
 
-    // We have reached home, do nothing and wait for
-    // new instructions. We need to make sure that
-    // we are actually close to home (and that it did
-    // not get destroyed for some reasons).
+    // We have reached home. Make sure that the
+    // home still exists.
     world::Filter f{getOwner(), true};
-    world::ItemEntry ie = info.frustum->getClosest(m_tile.p, world::ItemType::Block, f);
-    world::Block b;
+    BlockShPtr b = info.frustum->getClosest(m_tile.p, tiles::Portal, -1, -1, &f);
 
-    if (ie.index >= 0 && ie.type == world::ItemType::Block) {
-      b = info.frustum->block(ie.index);
-    }
-
-    if (ie.index < 0 || ie.type != world::ItemType::Block || b.tile.type != tiles::Portal) {
+    if (b == nullptr) {
+      // For some reason the home of the entity does
+      // not exist, return to wandering.
       pickTargetFromPheromon(info, path, Goal::Home);
       return true;
     }
 
-    // TODO: Maybe heal a bit by stealing resources
-    // from the house ?
+    SpawnerOMeterShPtr s = std::dynamic_pointer_cast<SpawnerOMeter>(b);
+    if (s == nullptr) {
+      // Not able to convert to a valid spawner,
+      // use wander again.
+      int status;
+      std::string bType = abi::__cxa_demangle(typeid(*b).name(), 0, 0, &status);
 
-    log("Reached home, now retired");
+      log(
+        "Reached block of type \"" + bType + "\" which is not a spawner in return behavior",
+        utils::Level::Warning
+      );
 
-    return false;
+      pickTargetFromPheromon(info, path, Goal::Home);
+      return true;
+    }
+
+    // Try to heal as much as possible in the limit of
+    // our own health pool.
+    float missing = m_totalHealth - m_health;
+    float gain = s->refill(-missing, false);
+    m_health += gain;
+
+    log("Healed for " + std::to_string(gain) + " (" + std::to_string(missing) + " was missing)");
+    // TODO: Maybe make sure that the home is able to
+    // provide some heal: otherwise we should go back
+    // to regular behavior.
+
+    // Re-wander again.
+    pickTargetFromPheromon(info, path, Goal::Entity);
+    return true;
   }
 
   bool
