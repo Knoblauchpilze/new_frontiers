@@ -57,7 +57,8 @@ namespace new_frontiers {
   void
   IsometricApp::drawSprite(const SpriteDesc& tile,
                            const CoordinateFrame& cf,
-                           int id)
+                           int id,
+                           const olc::Pixel& tint)
   {
     const SpriteAlias& sa = m_aliases[tile.type];
     const SpritesPack& sp = m_sprites[sa.type];
@@ -68,9 +69,33 @@ namespace new_frontiers {
       spriteCoordsToPixels(sa.alias, sp.layout, id),
       m_ss,
       tile.radius * cf.tileScale(),
-      olc::Pixel(255, 255, 255, tile.alpha)
+      olc::Pixel(tint.r, tint.g, tint.b, tile.alpha)
     );
   }
+
+  inline
+  olc::Pixel
+  IsometricApp::getColorFor(const std::string& colony) noexcept {
+    // Fetch from exsisting.
+    ColorMap::const_iterator it = m_coloniesColors.find(colony);
+    if (it != m_coloniesColors.cend()) {
+      return it->second;
+    }
+
+    // Otherwise generate a new one.
+    bool failed;
+    olc::Pixel col = m_cGenerator.generate(colony, failed);
+
+    if (failed) {
+      log("Failed to generate color for \"" + colony + "\"");
+      col = olc::WHITE;
+    }
+    else {
+      m_coloniesColors[colony] = col;
+    }
+
+    return col;
+}
 
 }
 

@@ -2,6 +2,8 @@
 # define   ISOMETRIC_APP_HH
 
 # include "PGEApp.hh"
+# include <unordered_map>
+# include "ColorGenerator.hh"
 
 namespace new_frontiers {
 
@@ -175,13 +177,36 @@ namespace new_frontiers {
        * @param cf - the coordinate frame to use to perform the
        *             conversion from tile position to pixels.
        * @param id - the index of the variation of this sprite.
+       * @param tint - a tint to apply to the sprite (default
+       *               is white so no change is applied).
        */
       void
       drawSprite(const SpriteDesc& tile,
                  const CoordinateFrame& cf,
-                 int id);
+                 int id,
+                 const olc::Pixel& tint = olc::WHITE);
+
+      /**
+       * @brief - Used to fetch a color for the identifier of
+       *          the colony provided in input.
+       *          If this method fails a `White` color will be
+       *          returned but this state won't be persisted
+       *          giving a chance to restore the situation in
+       *          the future.
+       * @param colony - the identifier of the colony for which
+       *                 a color should be generated as a string.
+       * @return - the color for this colony.
+       */
+      olc::Pixel
+      getColorFor(const std::string& colony) noexcept;
 
     private:
+
+      /**
+       * @brief - Convenience define to refer to the map of
+       *          colors representing colonies.
+       */
+      using ColorMap = std::unordered_map<std::string, olc::Pixel>;
 
       /**
        * @brief - Convenience enumeration to refer to the position of
@@ -249,6 +274,19 @@ namespace new_frontiers {
        *          visual element.
        */
       std::vector<SpriteAlias> m_aliases;
+
+      /**
+       * @brief - Used to generate new colors for colonies when
+       *          needed.
+       */
+      ColorGenerator m_cGenerator;
+
+      /**
+       * @brief - Used to register each colony and assign a color
+       *          to it so that it can be easily distinguished
+       *          from other elements.
+       */
+      ColorMap m_coloniesColors;
   };
 
 }

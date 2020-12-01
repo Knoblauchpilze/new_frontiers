@@ -22,7 +22,10 @@ namespace new_frontiers {
 
     m_ss(theme.size),
     m_sprites(),
-    m_aliases()
+    m_aliases(),
+
+    m_cGenerator(),
+    m_coloniesColors()
   {
     // Create the placeholder for sprites and resource packs.
     m_sprites.resize(SpriteTypesCount);
@@ -179,7 +182,7 @@ namespace new_frontiers {
         sd.y = t.tile.p.y;
         sd.type = aliasOfBlock(t.tile.type);
 
-        drawSprite(sd, res.cf, t.tile.id);
+        drawSprite(sd, res.cf, t.tile.id, getColorFor(t.owner.toString()));
 
         // Draw the healthbar only in case of `interesting`
         // buildings like anything apart from walls.
@@ -268,7 +271,8 @@ namespace new_frontiers {
     // transparent background and then draw each
     // colony's information.
     int cOffset = 3;
-    int icOffset = 2;
+    int icOffset = 30;
+    int colorSize = 20;
     olc::vi2d s(0.0f, cOffset);
     olc::Pixel bg(255, 255, 255, ALPHA_SEMI_OPAQUE);
     int tpSize = 20;
@@ -279,7 +283,7 @@ namespace new_frontiers {
 
       olc::vi2d idFocus = GetTextSize(world::focusToString(c.focus));
 
-      s.x = std::max(s.x, icOffset + idS.x + icOffset + tpSize + icOffset + idFocus.x + icOffset);
+      s.x = std::max(s.x, icOffset + colorSize + icOffset + idS.x + icOffset + tpSize + icOffset + idFocus.x + icOffset);
       s.y += (idS.y + cOffset);
     }
 
@@ -290,7 +294,9 @@ namespace new_frontiers {
     for (int id = 0 ; id < res.loc->coloniesCount() ; ++id) {
       world::Colony c = res.loc->colony(id);
 
-      olc::vi2d idS = GetTextSize(c.id.toString());
+      std::string cID = c.id.toString();
+
+      olc::vi2d idS = GetTextSize(cID);
 
       // Override the background with a different
       // opacity based on whether the colony is
@@ -300,12 +306,16 @@ namespace new_frontiers {
         FillRectDecal(olc::vf2d(0.0f, p.y - cOffset / 2.0f), olc::vf2d(s.x, idS.y + cOffset), uc);
       }
 
+      // Draw the colony's color.
+      olc::Pixel col = getColorFor(cID);
+      FillRectDecal(p, olc::vf2d(colorSize, idS.y), col);
+
       // Draw the colony's identifier.
-      DrawStringDecal(p, c.id.toString(), (c.active ? olc::BLACK : olc::WHITE));
+      olc::vf2d tp(p.x + colorSize + icOffset, p.y);
+      DrawStringDecal(tp, cID, (c.active ? olc::BLACK : olc::WHITE));
 
       // Draw the bar corresponding to the resource
       // budget.
-      olc::vf2d tp(icOffset + idS.x + icOffset, p.y);
       olc::Pixel tint = redToGreenGradient(c.ratio, ALPHA_OPAQUE);
       olc::Pixel emptyTint(
         static_cast<int>(tint.r * 0.5f),
@@ -314,16 +324,17 @@ namespace new_frontiers {
         tint.a
       );
 
-      FillRectDecal(tp, olc::vf2d(c.ratio * tpSize, idS.y), tint);
+      olc::vf2d tb(tp.x + idS.x + icOffset, p.y);
+      FillRectDecal(tb, olc::vf2d(c.ratio * tpSize, idS.y), tint);
       FillRectDecal(
-        olc::vf2d(tp.x + c.ratio * tpSize, tp.y),
+        olc::vf2d(tb.x + c.ratio * tpSize, tb.y),
         olc::vf2d((1.0f - c.ratio) * tpSize, idS.y),
         emptyTint
       );
 
       // Draw the current focus of this colony rendered
       // as a string.
-      olc::vf2d tf(icOffset + idS.x + tpSize + icOffset, p.y);
+      olc::vf2d tf(tb.x + tpSize + icOffset, p.y);
       olc::Pixel fTint = olc::WHITE;
       switch (c.focus) {
         case colony::Priority::Consolidation:
