@@ -4,6 +4,7 @@
 # include <memory>
 # include <core_utils/Uuid.hh>
 # include "WorldElement.hh"
+# include "Point.hh"
 
 namespace new_frontiers {
 
@@ -55,8 +56,7 @@ namespace new_frontiers {
       struct Props {
         utils::Uuid id;
 
-        float homeX;
-        float homeY;
+        Point home;
 
         float budget;
         float actionCost;
@@ -66,6 +66,8 @@ namespace new_frontiers {
 
         float radius;
         int maxSize;
+
+        unsigned warThreshold;
       };
 
       /**
@@ -199,18 +201,12 @@ namespace new_frontiers {
     private:
 
       /**
-       * @brief - The preferred abscissa for this colony. It
+       * @brief - The preferred position for this colony. It
        *          will usually mean that the activity for this
        *          colony will be around this position (at least
        *          for direct actions of the colony).
        */
-      float m_homeX;
-
-      /**
-       * @brief - Similar to the `m_homeX` but handles the
-       *          preferred ordinate for the colony.
-       */
-      float m_homeY;
+      Point m_home;
 
       /**
        * @brief - The current focus of the colony. Starts with
@@ -287,6 +283,16 @@ namespace new_frontiers {
        *          Any colony starts as inactive.
        */
       bool m_active;
+
+      /**
+       * @brief - Defines a threshold of enemy entities above
+       *          which the entity will enter the war mode.
+       *          As soon as too many entities have entered
+       *          the reserved space for this colony we will
+       *          try to take action by producing warriors
+       *          and thus fighting the invaders.
+       */
+      unsigned m_peaceToWarThreshold;
   };
 
   using ColonyShPtr = std::shared_ptr<Colony>;

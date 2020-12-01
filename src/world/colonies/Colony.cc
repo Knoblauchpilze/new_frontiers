@@ -9,8 +9,7 @@ namespace new_frontiers {
   Colony::Colony(const Props& props):
     WorldElement(props.id.toString(), props.id),
 
-    m_homeX(props.homeX),
-    m_homeY(props.homeY),
+    m_home(props.home),
 
     m_focus(props.focus),
 
@@ -22,7 +21,9 @@ namespace new_frontiers {
     m_maxSize(props.maxSize),
     m_size(0),
 
-    m_active(false)
+    m_active(false),
+
+    m_peaceToWarThreshold(props.warThreshold)
   {
     setService("colony");
 
@@ -42,8 +43,24 @@ namespace new_frontiers {
   }
 
   void
-  Colony::changeFocus(const StepInfo& /*info*/) {
-    // TODO: Implement this.
+  Colony::changeFocus(const StepInfo& info) {
+    // Cound how many entities are visible in the
+    // reserved space of the colony.
+    world::Filter f{getOwner(), false};
+    tiles::Entity* te = nullptr;
+    std::vector<EntityShPtr> enemies = info.frustum->getVisible(m_home, m_radius, te, -1, &f);
+
+    // In case the threshold is reached, switch to
+    // war mode.
+    log("Can see " + std::to_string(enemies.size()) + " entities within " + std::to_string(m_radius) + " unit(s)");
+    if (enemies.size() > m_peaceToWarThreshold) {
+      log("Colony is now at war");
+      m_focus = colony::Priority::War;
+    }
+    else {
+      log("Colony is now at peace");
+      m_focus = colony::Priority::Expansion;
+    }
   }
 
   void
@@ -58,15 +75,15 @@ namespace new_frontiers {
     // colony. Note that this position will be
     // set to the `home` position of the colony
     // in case it's the first spawner.
-    float x = m_homeX;
-    float y = m_homeY;
+    float x = m_home.x;
+    float y = m_home.y;
 
     while (info.frustum->obstructed(x, y)) {
       float r = info.rng.rndFloat(0, m_radius * m_radius);
       float theta = info.rng.rndAngle();
 
-      x = m_homeX + std::round(std::sqrt(r) * std::cos(theta));
-      y = m_homeY + std::round(std::sqrt(r) * std::sin(theta));
+      x = m_home.x + std::round(std::sqrt(r) * std::cos(theta));
+      y = m_home.y + std::round(std::sqrt(r) * std::sin(theta));
 
       info.clampCoord(x, y);
     }
