@@ -2,6 +2,7 @@
 # define   COLONY_FACTORY_HXX
 
 # include "ColonyFactory.hxx"
+# include "Point.hh"
 
 namespace new_frontiers {
 
@@ -12,8 +13,7 @@ namespace new_frontiers {
 
     pp.id = id;
 
-    pp.homeX = x;
-    pp.homeY = y;
+    pp.home = newPoint(x, y);
 
     pp.budget = sk_budget;
     pp.actionCost = sk_actionCost;
@@ -23,6 +23,8 @@ namespace new_frontiers {
 
     pp.radius = sk_radius;
     pp.maxSize = sk_maxSize;
+
+    pp.warThreshold = 1u;
 
     return pp;
   }
