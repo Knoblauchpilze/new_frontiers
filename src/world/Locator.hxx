@@ -47,7 +47,8 @@ namespace new_frontiers {
     world::Block bd{
       b->getTile(),
       b->getHealthRatio(),
-      -1.0f
+      -1.0f,
+      b->getOwner()
     };
 
     SpawnerOMeterShPtr som = std::dynamic_pointer_cast<SpawnerOMeter>(b);
