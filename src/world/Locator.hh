@@ -40,6 +40,7 @@ namespace new_frontiers {
       BlockTile tile;
       float health;
       float ratio;
+      utils::Uuid owner;
     };
 
     /**
