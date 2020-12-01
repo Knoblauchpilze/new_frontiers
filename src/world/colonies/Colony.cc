@@ -52,14 +52,30 @@ namespace new_frontiers {
 
     // In case the threshold is reached, switch to
     // war mode.
-    log("Can see " + std::to_string(enemies.size()) + " entities within " + std::to_string(m_radius) + " unit(s)");
+    colony::Priority p = m_focus;
+
     if (enemies.size() > m_peaceToWarThreshold) {
-      log("Colony is now at war");
       m_focus = colony::Priority::War;
     }
     else {
-      log("Colony is now at peace");
       m_focus = colony::Priority::Expansion;
+    }
+
+    if (p != m_focus) {
+      switch (m_focus) {
+        case colony::Priority::War:
+          log("Colony is now at war");
+          break;
+        case colony::Priority::Expansion:
+          log("Colony is now at expansion");
+          break;
+        case colony::Priority::Consolidation:
+          log("Colony is now at consolidation");
+          break;
+        default:
+          log("Colony is now in unknown state");
+          break;
+      }
     }
   }
 

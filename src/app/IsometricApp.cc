@@ -182,7 +182,11 @@ namespace new_frontiers {
         sd.y = t.tile.p.y;
         sd.type = aliasOfBlock(t.tile.type);
 
-        drawSprite(sd, res.cf, t.tile.id, getColorFor(t.owner.toString()));
+        olc::Pixel p = olc::WHITE;
+        if (t.owner.valid()) {
+          p = getColorFor(t.owner.toString());
+        }
+        drawSprite(sd, res.cf, t.tile.id, p);
 
         // Draw the healthbar only in case of `interesting`
         // buildings like anything apart from walls.
