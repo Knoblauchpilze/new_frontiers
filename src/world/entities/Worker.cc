@@ -231,17 +231,20 @@ namespace new_frontiers {
     path::Path newPath = path::newPath(m_tile.p);
     bool generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
 
-    int count = 0;
-
-
-    // TODO: It appears that if we target a path
-    // that is not reachable by the entity with
-    // only a distance of `m_perceptionRadius`
-    // we can get stuck finding a path to flee.
-    // We should try a different approach and
-    // possibly change target after a certain
-    // number of failures.
-    while (!generated) {
+    // There's one caveat with the approach to
+    // flee in a general direction. By assuming
+    // that we want to flee from a distance of
+    // at least `dToEnemy` we might reach pos
+    // behind a wall or something: in this case
+    // we will just fail repeatedly to generate
+    // a new path.
+    // In this case we will just pick a random
+    // location and go there: as we reassess
+    // the behavior quite often we will probably
+    // find a valid position later on (at the
+    // expense of some health points probably).
+    int tries = 10;
+    while (!generated && tries > 0) {
       d = info.rng.rndFloat(dToEnemy, 2.0f * dToEnemy);
       theta = info.rng.rndAngle(0.0f, m_fleeConeAngleSpan);
 
@@ -254,7 +257,29 @@ namespace new_frontiers {
       newPath.clear(m_tile.p);
       generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
 
-      ++count;
+      --tries;
+    }
+
+    // In case we didn't get a valid path, let's
+    // try with a random location.
+    if (!generated) {
+      Point t;
+      pickRandomTarget(info, m_tile.p, t.x, t.y);
+
+      newPath.clear(m_tile.p);
+      generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
+    }
+
+    if (!generated) {
+      // Failed to generate a path from random
+      // motion: let's give up.
+      log(
+        "Failed to escape from " +
+        std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y)
+      );
+
+      setBehavior(Behavior::Flee);
+      return false;
     }
 
     log(
@@ -262,7 +287,7 @@ namespace new_frontiers {
       " from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
       " in cone from " + std::to_string(180.0f * (baseAngle - m_fleeConeAngleSpan / 2.0f) / 3.14159f) +
       " - " + std::to_string(180.0f * (baseAngle + m_fleeConeAngleSpan / 2.0f) / 3.14159f) +
-      " (d: " + std::to_string(distance::d(g, m_tile.p)) + ", " + std::to_string(count) + " tries)"
+      " (d: " + std::to_string(distance::d(g, m_tile.p)) + ")"
     );
 
     std::swap(path, newPath);
