@@ -23,7 +23,7 @@ namespace new_frontiers {
     // we want to flee them.
     bool ret = false;
     if (checkForFlee(info, path, ret)) {
-      return true;
+      return ret;
     }
 
     // The collect behavior is called when the worker
@@ -98,7 +98,7 @@ namespace new_frontiers {
     // Flee enemies.
     bool ret = false;
     if (checkForFlee(info, path, ret)) {
-      return true;
+      return ret;
     }
 
     // This method is called when the worker has
@@ -232,6 +232,15 @@ namespace new_frontiers {
     bool generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
 
     int count = 0;
+
+
+    // TODO: It appears that if we target a path
+    // that is not reachable by the entity with
+    // only a distance of `m_perceptionRadius`
+    // we can get stuck finding a path to flee.
+    // We should try a different approach and
+    // possibly change target after a certain
+    // number of failures.
     while (!generated) {
       d = info.rng.rndFloat(dToEnemy, 2.0f * dToEnemy);
       theta = info.rng.rndAngle(0.0f, m_fleeConeAngleSpan);
