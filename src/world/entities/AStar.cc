@@ -237,12 +237,6 @@ namespace new_frontiers {
           );
         }
 
-        // TODO: We seem to have a deadlock or infinite
-        // loop when a warrior of the first colony is
-        // spawned close to the ennemy warrior in the
-        // top left corner (so in `(5, 2)` when the
-        // worker is close to `(4, 0)`).
-
         bool found = reconstructPath(cameFrom, m_loc->w(), out, allowLog);
         if (found) {
           // Smooth out the sharp turns that might have
