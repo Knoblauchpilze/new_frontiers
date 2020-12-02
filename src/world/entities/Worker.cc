@@ -205,6 +205,10 @@ namespace new_frontiers {
       m_fleeConeAngleSpan,
       path.currentTarget()
     );
+    // TODO: Should probably have some sort of
+    // override in case the target is not in
+    // the cone but was generated due to a
+    // failure to escape ?
     if (isEnRoute() && inCone) {
       return false;
     }
@@ -263,11 +267,19 @@ namespace new_frontiers {
     // In case we didn't get a valid path, let's
     // try with a random location.
     if (!generated) {
-      Point t;
-      pickRandomTarget(info, m_tile.p, t.x, t.y);
+      // Let's do also 10 tries to find a valid
+      // target.
+      tries = 10;
+      while (!generated && tries > 0) {
+        Point t;
+        pickRandomTarget(info, m_tile.p, t.x, t.y);
 
-      newPath.clear(m_tile.p);
-      generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
+        log("Generated random target " + std::to_string(t.x) + "x" + std::to_string(t.y));
+
+        newPath.clear(m_tile.p);
+        generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
+        --tries;
+      }
     }
 
     if (!generated) {
