@@ -43,7 +43,7 @@ namespace new_frontiers {
 
     inline
     void
-    Path::clear(const Point& p) {
+    Path::clear(const Point& p, bool force) {
       // Assign home and current position.
       home = p;
       cur = p;
@@ -55,6 +55,8 @@ namespace new_frontiers {
       // Reset temporary passage points.
       cPoints.clear();
       addPassagePoint(p);
+
+      forced = force;
     }
 
     inline
@@ -177,6 +179,8 @@ namespace new_frontiers {
 
       pa.seg = -1;
       pa.addPassagePoint(p);
+
+      pa.forced = false;
 
       return pa;
     }

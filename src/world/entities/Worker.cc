@@ -205,11 +205,7 @@ namespace new_frontiers {
       m_fleeConeAngleSpan,
       path.currentTarget()
     );
-    // TODO: Should probably have some sort of
-    // override in case the target is not in
-    // the cone but was generated due to a
-    // failure to escape ?
-    if (isEnRoute() && inCone) {
+    if (isEnRoute() && (inCone || path.forced)) {
       return false;
     }
 
@@ -276,7 +272,7 @@ namespace new_frontiers {
 
         log("Generated random target " + std::to_string(t.x) + "x" + std::to_string(t.y));
 
-        newPath.clear(m_tile.p);
+        newPath.clear(m_tile.p, true);
         generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
         --tries;
       }
@@ -299,7 +295,8 @@ namespace new_frontiers {
       " from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
       " in cone from " + std::to_string(180.0f * (baseAngle - m_fleeConeAngleSpan / 2.0f) / 3.14159f) +
       " - " + std::to_string(180.0f * (baseAngle + m_fleeConeAngleSpan / 2.0f) / 3.14159f) +
-      " (d: " + std::to_string(distance::d(g, m_tile.p)) + ")"
+      " (d: " + std::to_string(distance::d(g, m_tile.p)) +
+      ", forced: " + std::to_string(newPath.forced) + ")"
     );
 
     std::swap(path, newPath);

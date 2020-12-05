@@ -50,6 +50,8 @@ namespace new_frontiers {
 
       std::vector<Point> cPoints;
 
+      bool forced;
+
       /**
        * @brief - Used to determine whether this path is
        *          valid. We consider a path valid if it
@@ -64,9 +66,11 @@ namespace new_frontiers {
        *          and assume the entity is starting from the
        *          input position.
        * @param p - the position with which to clear the path.
+       * @param force - `true` if the path should be reset to
+       *                a forced path.
        */
       void
-      clear(const Point& p);
+      clear(const Point& p, bool force = false);
 
       /**
        * @brief - Add the specified passage point in the list
