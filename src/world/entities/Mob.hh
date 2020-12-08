@@ -185,11 +185,17 @@ namespace new_frontiers {
        *          starting at the input position.
        * @param info - a random number generator.
        * @param r - the position for the random target.
+       * @param d - the maximum distance to the `r` point which
+       *            can be picked by this method.
        * @param x - the target abscissa of the mob.
        * @param y - the target ordinate of the mob.
        */
       void
-      pickRandomTarget(StepInfo& info, const Point& r, float& x, float& y) noexcept;
+      pickRandomTarget(StepInfo& info,
+                       const Point& r,
+                       float d,
+                       float& x,
+                       float& y) noexcept;
 
       /**
        * @brief - Used to wander with the objective to reach

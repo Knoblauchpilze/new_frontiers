@@ -268,7 +268,7 @@ namespace new_frontiers {
       tries = 10;
       while (!generated && tries > 0) {
         Point t;
-        pickRandomTarget(info, m_tile.p, t.x, t.y);
+        pickRandomTarget(info, m_tile.p, m_pathLength, t.x, t.y);
 
         log("Generated random target " + std::to_string(t.x) + "x" + std::to_string(t.y));
 

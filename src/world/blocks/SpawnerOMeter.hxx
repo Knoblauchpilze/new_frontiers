@@ -47,6 +47,12 @@ namespace new_frontiers {
   }
 
   inline
+  float
+  SpawnerOMeter::getStock() const noexcept {
+    return m_stock;
+  }
+
+  inline
   void
   SpawnerOMeter::update(StepInfo& info) {
     refill(info.elapsed * m_refill, false);

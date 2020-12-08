@@ -63,6 +63,9 @@ namespace new_frontiers {
       float
       refill(float delta, bool force = false);
 
+      float
+      getStock() const noexcept;
+
     protected:
 
       /**
