@@ -133,12 +133,48 @@ namespace new_frontiers {
     m_health += gain;
 
     log("Healed for " + std::to_string(gain) + " (" + std::to_string(missing) + " was missing)");
-    // TODO: Maybe make sure that the home is able to
-    // provide some heal: otherwise we should go back
-    // to regular behavior.
 
-    // Re-wander again.
-    pickTargetFromPheromon(info, path, Goal::Entity);
+    // In case the home could not heal us enough, let's
+    // pick a target not too far from the home and wait
+    // for home to be filled again.
+    if (getHealthRatio() > m_seekForHealthThreshold) {
+      pickTargetFromPheromon(info, path, Goal::Entity);
+      return true;
+    }
+
+    // Check whether the home has been refilled.
+    missing = std::max(m_totalHealth * m_seekForHealthThreshold - m_health, 0.0f);
+    if (s->getStock() > missing) {
+      path.clear(m_tile.p);
+
+      if (!path.generatePathTo(info, m_home, true, m_perceptionRadius)) {
+        log("Failed to generate path to home even though it is refilled");
+        pickTargetFromPheromon(info, path, Goal::Home);
+        return true;
+      }
+
+      log("Home is now refilled, going there");
+
+      return true;
+    }
+
+    Point t;
+    pickRandomTarget(info, m_home, m_perceptionRadius, t.x, t.y);
+
+    path.clear(m_tile.p);
+    if (!path.generatePathTo(info, t, false, distance::d(m_tile.p, t) + 1.0f)) {
+      // Couldn't reach the entity, return to wandering.
+      log("Failed to generate path to random target to stay close from home");
+      pickTargetFromPheromon(info, path, Goal::Home);
+      return true;
+    }
+
+    log(
+      "Not healed enough, going to " +
+      std::to_string(t.x) + "x" + std::to_string(t.y) +
+      " at " + std::to_string(distance::d(m_home, t)) + " from home"
+    );
+
     return true;
   }
 
