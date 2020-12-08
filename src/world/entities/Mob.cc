@@ -46,7 +46,12 @@ namespace new_frontiers {
   }
 
   void
-  Mob::pickRandomTarget(StepInfo& info, const Point& r, float& x, float& y) noexcept {
+  Mob::pickRandomTarget(StepInfo& info,
+                        const Point& r,
+                        float d,
+                        float& x,
+                        float& y) noexcept
+  {
     // Pick a random location within the radius of the
     // motion for this entity. We will use the locator
     // to determine if any element is obstructing the
@@ -54,7 +59,7 @@ namespace new_frontiers {
     // We want at least a path of `m_speed` long so as
     // to have a traversal duration of at least 1ms.
     // we also take a bit of margin for good measure.
-    float d = info.rng.rndFloat(m_pathLength / 2.0f, m_pathLength);
+    float len = info.rng.rndFloat(d / 2.0f, d);
     float theta = info.rng.rndAngle();
 
     float xDir = std::cos(theta);
@@ -62,12 +67,12 @@ namespace new_frontiers {
 
     // Clamp these coordinates and update the direction
     // based on that.
-    info.clampPath(r, xDir, yDir, d);
+    info.clampPath(r, xDir, yDir, len);
 
-    Point t{r.x + d * xDir, r.y + d * yDir};
+    Point t{r.x + len * xDir, r.y + len * yDir};
 
     while (info.frustum->obstructed(t)) {
-      d = info.rng.rndFloat(m_pathLength / 2.0f, m_pathLength);
+      len = info.rng.rndFloat(d / 2.0f, d);
       theta = info.rng.rndAngle();
 
       xDir = std::cos(theta);
@@ -81,13 +86,13 @@ namespace new_frontiers {
       // without going out of the world.
       // This should be resolved when we allow for an
       // infinite world.
-      info.clampPath(r, xDir, yDir, d);
-      t = newPoint(r.x + d * xDir, r.y + d * yDir);
+      info.clampPath(r, xDir, yDir, len);
+      t = newPoint(r.x + len * xDir, r.y + len * yDir);
     }
 
     // Save the picked location.
-    x = r.x + d * xDir;
-    y = r.y + d * yDir;
+    x = r.x + len * xDir;
+    y = r.y + len * yDir;
   }
 
   bool
@@ -272,7 +277,7 @@ namespace new_frontiers {
     path::Path newP = path::newPath(m_tile.p);
 
     while (!generated && tries < attempts) {
-      pickRandomTarget(info, m_tile.p, xRnd, yRnd);
+      pickRandomTarget(info, m_tile.p, m_pathLength, xRnd, yRnd);
       analyzer.computeTarget(xRnd, yRnd);
 
       p.x = xRnd;
