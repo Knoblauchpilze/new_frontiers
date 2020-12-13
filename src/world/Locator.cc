@@ -1,6 +1,6 @@
 
 # include "Locator.hxx"
-# include "LocationUtils.hh"
+# include <maths_utils/LocationUtils.hh>
 
 namespace new_frontiers {
 
@@ -28,12 +28,12 @@ namespace new_frontiers {
   }
 
   bool
-  Locator::obstructed(Point p,
+  Locator::obstructed(utils::Point2f p,
                       float xDir,
                       float yDir,
                       float d,
-                      std::vector<Point>& cPoints,
-                      Point* obs,
+                      std::vector<utils::Point2f>& cPoints,
+                      utils::Point2f* obs,
                       float sample,
                       bool allowLog) const noexcept
   {
@@ -53,12 +53,12 @@ namespace new_frontiers {
     // precisely where we sample the path.
     // We chose to use half a tile dims as a sample path in
     // order to be precise enough.
-    Point end;
-    end.x = p.x + d * xDir;
-    end.y = p.y + d * yDir;
+    utils::Point2f end;
+    end.x() = p.x() + d * xDir;
+    end.y() = p.y() + d * yDir;
 
-    int xo = static_cast<int>(p.x);
-    int yo = static_cast<int>(p.y);
+    int xo = static_cast<int>(p.x());
+    int yo = static_cast<int>(p.y());
 
     // Handle the trivial case where the direction does not
     // have a valid length in which case we return `false`
@@ -75,8 +75,8 @@ namespace new_frontiers {
 
     if (allowLog) {
       log(
-        "Start: " + std::to_string(p.x) + "x" + std::to_string(p.y) +
-        ", end: " + std::to_string(end.x) + "x" + std::to_string(end.y) +
+        "Start: " + std::to_string(p.x()) + "x" + std::to_string(p.y()) +
+        ", end: " + std::to_string(end.x()) + "x" + std::to_string(end.y()) +
         ", l: " + std::to_string(d) +
         ", dir: " + std::to_string(xDir) + "x" + std::to_string(yDir) +
         ", (norm: " + std::to_string(std::sqrt(xDir * xDir + yDir * yDir)) + ")",
@@ -91,8 +91,8 @@ namespace new_frontiers {
       // Prevent the initial cell to be considered
       // as obstructed: this allow objects that get
       // stuck to be able to move out.
-      xi = static_cast<int>(p.x);
-      yi = static_cast<int>(p.y);
+      xi = static_cast<int>(p.x());
+      yi = static_cast<int>(p.y());
 
       cPoints.push_back(p);
 
@@ -100,7 +100,7 @@ namespace new_frontiers {
 
       if (allowLog) {
         log(
-          "Considering " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+          "Considering " + std::to_string(p.x()) + "x" + std::to_string(p.y()) +
           " which " + (obstruction ? "is" : "is not") +
           " obstructed (" + std::to_string(t) + ", " + std::to_string(100.0f * t) +
           "%, d: " + std::to_string(d) + ")",
@@ -109,8 +109,8 @@ namespace new_frontiers {
       }
 
       if (!obstruction) {
-        p.x += sample * xDir;
-        p.y += sample * yDir;
+        p.x() += sample * xDir;
+        p.y() += sample * yDir;
 
         t += sample;
       }
@@ -125,7 +125,7 @@ namespace new_frontiers {
 
       if (allowLog) {
         log(
-          "Found obstruction at " + std::to_string(p.x) + "x" + std::to_string(p.y) +
+          "Found obstruction at " + std::to_string(p.x()) + "x" + std::to_string(p.y()) +
           " (" + std::to_string(t) + ", " + std::to_string(100.0f * t) +
           "%, d: " + std::to_string(d) + ")",
           utils::Level::Verbose
@@ -136,8 +136,8 @@ namespace new_frontiers {
     }
 
     // Check obstruction for the final cell.
-    xi = static_cast<int>(end.x);
-    yi = static_cast<int>(end.y);
+    xi = static_cast<int>(end.x());
+    yi = static_cast<int>(end.y());
 
     cPoints.push_back(end);
 
@@ -152,7 +152,7 @@ namespace new_frontiers {
       log(
         std::string("") + (obstruction ? "Found" : "Didn't find") +
         " obstruction 2 at " +
-        std::to_string(end.x) + "x" + std::to_string(end.y) +
+        std::to_string(end.x()) + "x" + std::to_string(end.y()) +
         " (" + std::to_string(t) + ", " + std::to_string(100.0f * t) +
         "%, d: " + std::to_string(d) + ")",
         utils::Level::Verbose
@@ -183,7 +183,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
         const BlockTile& t = m_blocks[id]->getTile();
 
-        if (t.p.x < xMin || t.p.x > xMax || t.p.y < yMin || t.p.y > yMax) {
+        if (t.p.x() < xMin || t.p.x() > xMax || t.p.y() < yMin || t.p.y() > yMax) {
           continue;
         }
 
@@ -217,7 +217,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
         const EntityTile& t = m_entities[id]->getTile();
 
-        if (t.p.x < xMin || t.p.x > xMax || t.p.y < yMin || t.p.y > yMax) {
+        if (t.p.x() < xMin || t.p.x() > xMax || t.p.y() < yMin || t.p.y() > yMax) {
           continue;
         }
 
@@ -246,7 +246,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
         const VFXTile& t = m_vfxs[id]->getTile();
 
-        if (t.p.x < xMin || t.p.x > xMax || t.p.y < yMin || t.p.y > yMax) {
+        if (t.p.x() < xMin || t.p.x() > xMax || t.p.y() < yMin || t.p.y() > yMax) {
           continue;
         }
 
@@ -277,7 +277,7 @@ namespace new_frontiers {
         // `z` order: indeed we don't have any ref
         // point to sort by distance so it would be
         // pointless anyway.
-        return lhs.p.x < rhs.p.x || (lhs.p.x == rhs.p.x && lhs.p.y < rhs.p.y);
+        return lhs.p.x() < rhs.p.x() || (lhs.p.x() == rhs.p.x() && lhs.p.y() < rhs.p.y());
       };
 
       std::sort(entries.begin(), entries.end(), cmp);
@@ -296,7 +296,7 @@ namespace new_frontiers {
   }
 
   std::vector<world::ItemEntry>
-  Locator::getVisible(const Point& p,
+  Locator::getVisible(const utils::Point2f& p,
                       float r,
                       const world::ItemType* type,
                       const world::Filter* filter,
@@ -315,7 +315,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
         const BlockTile& t = m_blocks[id]->getTile();
 
-        if (r > 0.0f && distance::d2(t.p.x + 0.5f, t.p.y + 0.5f, p.x, p.y) > r2) {
+        if (r > 0.0f && utils::d2(t.p.x() + 0.5f, t.p.y() + 0.5f, p.x(), p.y()) > r2) {
           continue;
         }
 
@@ -349,7 +349,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_entities.size() ; ++id) {
         const EntityTile& t = m_entities[id]->getTile();
 
-        if (r > 0.0f && distance::d2(t.p.x, t.p.y, p.x, p.y) > r2) {
+        if (r > 0.0f && utils::d2(t.p.x(), t.p.y(), p.x(), p.y()) > r2) {
           continue;
         }
 
@@ -378,7 +378,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < m_vfxs.size() ; ++id) {
         const VFXTile& t = m_vfxs[id]->getTile();
 
-        if (r > 0.0f && distance::d2(t.p, p) > r2) {
+        if (r > 0.0f && utils::d2(t.p, p) > r2) {
           continue;
         }
 
@@ -407,12 +407,12 @@ namespace new_frontiers {
       auto cmp = [&sort, &p](const SortEntry& lhs, const SortEntry& rhs) {
         switch (sort) {
           case world::Sort::Distance:
-            return distance::d(p, lhs.p) < distance::d(p, rhs.p);
+            return utils::d(p, lhs.p) < utils::d(p, rhs.p);
           case world::Sort::ZOrder:
             // Use `z` order as default sorting alg
             // in case the input is unknown.
           default:
-            return lhs.p.x < rhs.p.x || (lhs.p.x == rhs.p.x && lhs.p.y < rhs.p.y);
+            return lhs.p.x() < rhs.p.x() || (lhs.p.x() == rhs.p.x() && lhs.p.y() < rhs.p.y());
         }
       };
 
@@ -436,7 +436,7 @@ namespace new_frontiers {
     // Register each solid tile in the map.
     for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
       const BlockTile& bt = m_blocks[id]->getTile();
-      m_blocksIDs.insert(static_cast<int>(bt.p.y) * m_w + static_cast<int>(bt.p.x));
+      m_blocksIDs.insert(static_cast<int>(bt.p.y()) * m_w + static_cast<int>(bt.p.x()));
     }
   }
 

@@ -3,7 +3,7 @@
 
 # include <core_utils/CoreObject.hh>
 # include <unordered_map>
-# include "Point.hh"
+# include <maths_utils/Point2.hh>
 # include "Locator.hh"
 
 namespace new_frontiers {
@@ -20,8 +20,8 @@ namespace new_frontiers {
        * @param e - the end position.
        * @param loc - the locator describing the world.
        */
-      AStar(const Point& s,
-            const Point& e,
+      AStar(const utils::Point2f& s,
+            const utils::Point2f& e,
             LocatorShPtr loc);
 
       /**
@@ -44,7 +44,7 @@ namespace new_frontiers {
        * @return - `true` if a path could be find.
        */
       bool
-      findPath(std::vector<Point>& path,
+      findPath(std::vector<utils::Point2f>& path,
                float radius = 10.0f,
                bool allowLog = false) const noexcept;
 
@@ -68,7 +68,7 @@ namespace new_frontiers {
       bool
       reconstructPath(const std::unordered_map<int, int>& parents,
                       int offset,
-                      std::vector<Point>& path,
+                      std::vector<utils::Point2f>& path,
                       bool allowLog) const noexcept;
 
       /**
@@ -82,19 +82,19 @@ namespace new_frontiers {
        *                   logged.
        */
       void
-      smoothPath(std::vector<Point>& path, bool allowLog) const noexcept;
+      smoothPath(std::vector<utils::Point2f>& path, bool allowLog) const noexcept;
 
     private:
 
       /**
        * @brief - The starting point of the algorithm.
        */
-      Point m_start;
+      utils::Point2f m_start;
 
       /**
        * @brief - The end point of the algorithm.
        */
-      Point m_end;
+      utils::Point2f m_end;
 
       /**
        * @brief - A locator object allowing to determine

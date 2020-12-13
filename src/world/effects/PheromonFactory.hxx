@@ -18,12 +18,12 @@ namespace new_frontiers {
     pp.owner.invalidate();
 
     static const int b = 1000;
-    std::vector<Duration> decay = {
-      toMilliseconds(b),
-      toMilliseconds(2 * b),
-      toMilliseconds(4 * b),
-      toMilliseconds(8 * b),
-      toMilliseconds(8 * b)
+    std::vector<utils::Duration> decay = {
+      utils::toMilliseconds(b),
+      utils::toMilliseconds(2 * b),
+      utils::toMilliseconds(4 * b),
+      utils::toMilliseconds(8 * b),
+      utils::toMilliseconds(8 * b)
     };
 
     pp.phases.swap(decay);
@@ -95,7 +95,7 @@ namespace new_frontiers {
   inline
   VFXTile
   PheromonFactory::newTile(const tiles::Effect& e, int id, float x, float y) noexcept {
-    return VFXTile{x, y, e, id};
+    return VFXTile{utils::Point2f(x, y), e, id};
   }
 
 }

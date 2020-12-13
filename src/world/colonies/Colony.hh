@@ -4,7 +4,7 @@
 # include <memory>
 # include <core_utils/Uuid.hh>
 # include "WorldElement.hh"
-# include "Point.hh"
+# include <maths_utils/Point2.hh>
 
 namespace new_frontiers {
 
@@ -56,7 +56,7 @@ namespace new_frontiers {
       struct Props {
         utils::Uuid id;
 
-        Point home;
+        utils::Point2f home;
 
         float budget;
         float actionCost;
@@ -149,7 +149,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the pause occur.
        */
       void
-      pause(const TimeStamp& t) override;
+      pause(const utils::TimeStamp& t) override;
 
       /**
        * @brief - Implementation of the interface method to
@@ -157,7 +157,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the resume occur.
        */
       void
-      resume(const TimeStamp& t) override;
+      resume(const utils::TimeStamp& t) override;
 
     private:
 
@@ -206,7 +206,7 @@ namespace new_frontiers {
        *          colony will be around this position (at least
        *          for direct actions of the colony).
        */
-      Point m_home;
+      utils::Point2f m_home;
 
       /**
        * @brief - The current focus of the colony. Starts with

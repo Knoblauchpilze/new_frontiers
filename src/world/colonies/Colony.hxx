@@ -84,13 +84,13 @@ namespace new_frontiers {
 
   inline
   void
-  Colony::pause(const TimeStamp& /*t*/) {
+  Colony::pause(const utils::TimeStamp& /*t*/) {
     // Nothing to do yet.
   }
 
   inline
   void
-  Colony::resume(const TimeStamp& /*t*/) {
+  Colony::resume(const utils::TimeStamp& /*t*/) {
     // Nothing to do yet.
   }
 

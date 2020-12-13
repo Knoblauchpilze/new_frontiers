@@ -12,9 +12,9 @@ namespace new_frontiers {
     m_spawned(0),
 
     m_interval(props.interval),
-    m_last(now() - m_interval),
+    m_last(utils::now() - m_interval),
 
-    m_passed(Duration::zero())
+    m_passed(utils::Duration::zero())
   {}
 
   void

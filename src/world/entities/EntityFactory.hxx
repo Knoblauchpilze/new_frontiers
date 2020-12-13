@@ -112,8 +112,8 @@ namespace new_frontiers {
     pp.sprintSpeed = 4.0f;
     pp.recoverySpeed = 0.5f;
 
-    pp.exhaustion = toMilliseconds(3000);
-    pp.recovery = toMilliseconds(6000);
+    pp.exhaustion = utils::toMilliseconds(3000);
+    pp.recovery = utils::toMilliseconds(6000);
 
     return pp;
   }
@@ -150,7 +150,7 @@ namespace new_frontiers {
   inline
   EntityTile
   EntityFactory::newTile(const tiles::Entity& e, int id, float x, float y) noexcept {
-    return EntityTile{x, y, e, id};
+    return EntityTile{utils::Point2f(x, y), e, id};
   }
 
 }

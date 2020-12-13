@@ -49,7 +49,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the pause occur.
        */
       void
-      pause(const TimeStamp& t) override;
+      pause(const utils::TimeStamp& t) override;
 
       /**
        * @brief - Base implementation for an element which
@@ -58,7 +58,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the resume occur.
        */
       void
-      resume(const TimeStamp& t) override;
+      resume(const utils::TimeStamp& t) override;
 
     protected:
 

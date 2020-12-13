@@ -25,108 +25,108 @@ namespace {
    * @brief - Convenience structure to define an opened node.
    */
   struct Node {
-    new_frontiers::Point p;
+    utils::Point2f p;
     float c;
     float h;
 
     bool
-    contains(const new_frontiers::Point& p) const noexcept;
+    contains(const utils::Point2f& p) const noexcept;
 
     std::vector<Node>
-    generateNeighbors(const new_frontiers::Point& target) const noexcept;
+    generateNeighbors(const utils::Point2f& target) const noexcept;
 
     int
     hash(int offset) const noexcept;
 
     static
-    new_frontiers::Point
+    utils::Point2f
     invertHash(int hash, int offset) noexcept;
   };
 
   inline
   bool
-  Node::contains(const new_frontiers::Point& m) const noexcept {
-    int iPX = static_cast<int>(p.x);
-    int iPY = static_cast<int>(p.y);
+  Node::contains(const utils::Point2f& m) const noexcept {
+    int iPX = static_cast<int>(p.x());
+    int iPY = static_cast<int>(p.y());
 
-    int iMX = static_cast<int>(m.x);
-    int iMY = static_cast<int>(m.y);
+    int iMX = static_cast<int>(m.x());
+    int iMY = static_cast<int>(m.y());
 
     return iPX == iMX && iPY == iMY;
   }
 
   inline
   std::vector<Node>
-  Node::generateNeighbors(const new_frontiers::Point& target) const noexcept {
+  Node::generateNeighbors(const utils::Point2f& target) const noexcept {
     std::vector<Node> neighbors(Count);
 
-    new_frontiers::Point np;
+    utils::Point2f np;
 
-    float bx = std::floor(p.x) + 0.5f;
-    float by = std::floor(p.y) + 0.5f;
+    float bx = std::floor(p.x()) + 0.5f;
+    float by = std::floor(p.y()) + 0.5f;
 
     // Right neighbor.
-    np.x = bx + 1.0f; np.y = by;
+    np.x() = bx + 1.0f; np.y() = by;
     neighbors[East] = Node{
       np,
-      c + new_frontiers::distance::d(p, np),
-      new_frontiers::distance::d(np, target)
+      c + utils::d(p, np),
+      utils::d(np, target)
     };
 
     // Top right neighbor.
-    np.x = bx + 1.0f; np.y = by + 1.0f;
+    np.x() = bx + 1.0f; np.y() = by + 1.0f;
     neighbors[NorthEast] = Node{
       np,
-      c + new_frontiers::distance::d(p, np),
-      new_frontiers::distance::d(np, target)
+      c + utils::d(p, np),
+      utils::d(np, target)
     };
 
     // Up neighbor.
-    np.x = bx; np.y = by + 1.0f;
+    np.x() = bx; np.y() = by + 1.0f;
     neighbors[North] = Node{
       np,
-      c + new_frontiers::distance::d(p, np),
-      new_frontiers::distance::d(np, target)
+      c + utils::d(p, np),
+      utils::d(np, target)
     };
 
     // Top left neighbor.
-    np.x = bx - 1.0f; np.y = by + 1.0f;
+    np.x() = bx - 1.0f; np.y() = by + 1.0f;
     neighbors[NorthWest] = Node{
       np,
-      c + new_frontiers::distance::d(p, np),
-      new_frontiers::distance::d(np, target)
+      c + utils::d(p, np),
+      utils::d(np, target)
     };
 
     // Left neighbor.
-    np.x = bx - 1.0f; np.y = by;
+    np.x() = bx - 1.0f; np.y() = by;
     neighbors[West] = Node{
       np,
-      c + new_frontiers::distance::d(p, np),
-      new_frontiers::distance::d(np, target)
+      c + utils::d(p, np),
+      utils::d(np, target)
     };
 
     // Bottom left neighbor.
-    np.x = bx - 1.0f; np.y = by - 1.0f;
+    np.x() = bx - 1.0f; np.y() = by - 1.0f;
     neighbors[SouthWest] = Node{
       np,
-      c + new_frontiers::distance::d(p, np),
-      new_frontiers::distance::d(np, target)
+      c + utils::d(p, np),
+      utils::d(np, target)
     };
 
     // Down neighbor.
-    np.x = bx; np.y = by - 1.0f;
+    np.x() = bx; np.y() = by - 1.0f;
     neighbors[South] = Node{
       np,
-      c + new_frontiers::distance::d(p, np),
-      new_frontiers::distance::d(np, target)
+      c + utils::d(p, np),
+      utils::d(np, target)
     };
 
     // Bottom right neighbor.
-    np.x = bx + 1.0f; np.y = by - 1.0f;
+    np.x() = bx + 1.0f; np.y() = by - 1.0f;
     neighbors[SouthEast] = Node{
       np,
-      c + new_frontiers::distance::d(p, np),
-      new_frontiers::distance::d(np, target)
+      c + utils::d(p, np),
+      utils::d(np, target)
     };
 
     return neighbors;
@@ -135,16 +135,16 @@ namespace {
   inline
   int
   Node::hash(int offset) const noexcept {
-    return static_cast<int>(std::floor(p.y)) * offset + static_cast<int>(std::floor(p.x));
+    return static_cast<int>(std::floor(p.y())) * offset + static_cast<int>(std::floor(p.x()));
   }
 
   inline
-  new_frontiers::Point
+  utils::Point2f
   Node::invertHash(int hash, int offset) noexcept {
-    new_frontiers::Point p;
+    utils::Point2f p;
 
-    p.x = 0.5f + hash % offset;
-    p.y = 0.5f + hash / offset;
+    p.x() = 0.5f + hash % offset;
+    p.y() = 0.5f + hash / offset;
 
     return p;
   }
@@ -153,8 +153,8 @@ namespace {
 
 namespace new_frontiers {
 
-  AStar::AStar(const Point& s,
-               const Point& e,
+  AStar::AStar(const utils::Point2f& s,
+               const utils::Point2f& e,
                LocatorShPtr loc):
     utils::CoreObject("algo"),
 
@@ -167,27 +167,27 @@ namespace new_frontiers {
   }
 
   bool
-  AStar::findPath(std::vector<Point>& path,
+  AStar::findPath(std::vector<utils::Point2f>& path,
                   float radius,
                   bool allowLog) const noexcept
   {
     // The code for this algorithm has been taken from the
     // below link:
     // https://en.wikipedia.org/wiki/A*_search_algorithm
-    std::vector<Point> out;
+    std::vector<utils::Point2f> out;
     path.clear();
 
     // The list of nodes that are currently being explored.
     std::vector<Node> nodes;
     std::deque<int> openNodes;
-    Node init{m_start, 0.0f, distance::d(m_start, m_end)};
+    Node init{m_start, 0.0f, utils::d(m_start, m_end)};
     nodes.push_back(init);
     openNodes.push_back(0);
 
     if (allowLog) {
       log(
-        "Starting a* at " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
-        " to reach " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y),
+        "Starting a* at " + std::to_string(m_start.x()) + "x" + std::to_string(m_start.y()) +
+        " to reach " + std::to_string(m_end.x()) + "x" + std::to_string(m_end.y()),
         utils::Level::Verbose
       );
     }
@@ -219,7 +219,7 @@ namespace new_frontiers {
 
       if (allowLog) {
         log(
-          "Picked node " + std::to_string(current.p.x) + "x" + std::to_string(current.p.y) +
+          "Picked node " + std::to_string(current.p.x()) + "x" + std::to_string(current.p.y()) +
           " with c " + std::to_string(current.c) +
           " h is " + std::to_string(current.h) +
           " (nodes: " + std::to_string(openNodes.size()) + ")",
@@ -231,7 +231,7 @@ namespace new_frontiers {
       if (current.contains(m_end)) {
         if (allowLog) {
           log(
-            "Found path to " + std::to_string(m_end.x) + "x" + std::to_string(m_end.y) +
+            "Found path to " + std::to_string(m_end.x()) + "x" + std::to_string(m_end.y()) +
             " with c " + std::to_string(current.c) + ", h " + std::to_string(current.h),
             utils::Level::Verbose
           );
@@ -251,14 +251,14 @@ namespace new_frontiers {
         bool valid = true;
         unsigned id = 0u;
         while (id < out.size() && valid) {
-          valid = (distance::d(m_start, out[id]) < radius);
+          valid = (utils::d(m_start, out[id]) < radius);
 
           if (!valid && allowLog) {
             log(
-              "Distance from start " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
+              "Distance from start " + std::to_string(m_start.x()) + "x" + std::to_string(m_start.y()) +
               " to point " + std::to_string(id) + "/" + std::to_string(out.size()) +
-              " " + std::to_string(out[id].x) + "x" + std::to_string(out[id].y) +
-              " is " + std::to_string(distance::d(m_start, out[id])) +
+              " " + std::to_string(out[id].x()) + "x" + std::to_string(out[id].y()) +
+              " is " + std::to_string(utils::d(m_start, out[id])) +
               ", limit is " + std::to_string(radius)
             );
           }
@@ -306,13 +306,13 @@ namespace new_frontiers {
       // neighbors and check the status for each one.
       std::vector<Node> neighbors = current.generateNeighbors(m_end);
 
-      float bx = std::floor(current.p.x) + 0.5f;
-      float by = std::floor(current.p.y) + 0.5f;
+      float bx = std::floor(current.p.x()) + 0.5f;
+      float by = std::floor(current.p.y()) + 0.5f;
 
-      bool obsE = m_loc->obstructed(newPoint(bx + 1.0f, by));
-      bool obsN = m_loc->obstructed(newPoint(bx, by + 1.0f));
-      bool obsW = m_loc->obstructed(newPoint(bx - 1.0f, by));
-      bool obsS = m_loc->obstructed(newPoint(bx, by - 1.0f));
+      bool obsE = m_loc->obstructed(utils::Point2f(bx + 1.0f, by));
+      bool obsN = m_loc->obstructed(utils::Point2f(bx, by + 1.0f));
+      bool obsW = m_loc->obstructed(utils::Point2f(bx - 1.0f, by));
+      bool obsS = m_loc->obstructed(utils::Point2f(bx, by - 1.0f));
 
       bool validNE = (!obsN && !obsE);
       bool validNW = (!obsN && !obsW);
@@ -340,8 +340,8 @@ namespace new_frontiers {
         }
 
         // Prevent neighbors outside of the map.
-        if (neighbor.p.x < 0.0f || neighbor.p.x >= m_loc->w() ||
-            neighbor.p.y < 0.0f || neighbor.p.y >= m_loc->h())
+        if (neighbor.p.x() < 0.0f || neighbor.p.x() >= m_loc->w() ||
+            neighbor.p.y() < 0.0f || neighbor.p.y() >= m_loc->h())
         {
           continue;
         }
@@ -355,7 +355,7 @@ namespace new_frontiers {
           if (it != associations.end()) {
             if (allowLog) {
               log(
-                "Updating " + std::to_string(neighbor.p.x) + "x" + std::to_string(neighbor.p.y) +
+                "Updating " + std::to_string(neighbor.p.x()) + "x" + std::to_string(neighbor.p.y()) +
                 " from c " + std::to_string(nodes[it->second].c) + ", " + std::to_string(nodes[it->second].h) +
                 " (f: " + std::to_string(nodes[it->second].c + nodes[it->second].h) + "," +
                 " parent: " + std::to_string(cameFrom[nodes[it->second].hash(m_loc->w())]) + ")" +
@@ -371,7 +371,7 @@ namespace new_frontiers {
           else {
             if (allowLog) {
               log(
-                "Registering " + std::to_string(neighbor.p.x) + "x" + std::to_string(neighbor.p.y) +
+                "Registering " + std::to_string(neighbor.p.x()) + "x" + std::to_string(neighbor.p.y()) +
                 " with c: " + std::to_string(neighbor.c) + " h: " + std::to_string(neighbor.h) +
                 " (f: " + std::to_string(neighbor.c + neighbor.h) + "," +
                 " parent is " + std::to_string(current.hash(m_loc->w())) + ")",
@@ -394,10 +394,10 @@ namespace new_frontiers {
   bool
   AStar::reconstructPath(const std::unordered_map<int, int>& parents,
                          int offset,
-                         std::vector<Point>& path,
+                         std::vector<utils::Point2f>& path,
                          bool allowLog) const noexcept
   {
-    std::vector<Point> out;
+    std::vector<utils::Point2f> out;
 
     Node n{m_end, 0.0f, 0.0f};
     int h = n.hash(offset);
@@ -408,7 +408,7 @@ namespace new_frontiers {
 
       if (allowLog) {
         log(
-          "Registering point " + std::to_string(n.p.x) + "x" + std::to_string(n.p.y) +
+          "Registering point " + std::to_string(n.p.x()) + "x" + std::to_string(n.p.y()) +
           " with hash " + std::to_string(h) +
           ", parent is " + std::to_string(it->second),
           utils::Level::Verbose
@@ -434,7 +434,7 @@ namespace new_frontiers {
     if (sh == h) {
       // We need to reverse the path as we've built
       // it from the end.
-      for (std::vector<Point>::const_reverse_iterator it = out.crbegin() ;
+      for (std::vector<utils::Point2f>::const_reverse_iterator it = out.crbegin() ;
            it != out.crend() ;
            ++it)
       {
@@ -450,30 +450,30 @@ namespace new_frontiers {
       // intermediate position as we know the path
       // from there to the first segment will be
       // valid.
-      Point pObs{-1.0f, -1.0f};
-      std::vector<Point> dummy;
+      utils::Point2f pObs(-1.0f, -1.0f);
+      std::vector<utils::Point2f> dummy;
 
       if (allowLog) {
         log(
           "Checking obstruction between " +
-          std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
+          std::to_string(m_start.x()) + "x" + std::to_string(m_start.y()) +
           " and " +
-          std::to_string(path[0].x) + "x" + std::to_string(path[0].y),
+          std::to_string(path[0].x()) + "x" + std::to_string(path[0].y()),
           utils::Level::Verbose
         );
       }
 
       if (m_loc->obstructed(m_start, path[0], dummy, &pObs, 0.005f)) {
-        Point ip{
-          0.5f + static_cast<int>(std::floor(m_start.x)),
-          0.5f + static_cast<int>(std::floor(m_start.y))
-        };
+        utils::Point2f ip(
+          0.5f + static_cast<int>(std::floor(m_start.x())),
+          0.5f + static_cast<int>(std::floor(m_start.y()))
+        );
 
         if (allowLog) {
           log(
-            "Registering point " + std::to_string(ip.x) + "x" + std::to_string(ip.y) +
-            " as path from " + std::to_string(m_start.x) + "x" + std::to_string(m_start.y) +
-            " to " + std::to_string(path[0].x) + "x" + std::to_string(path[0].y) +
+            "Registering point " + std::to_string(ip.x()) + "x" + std::to_string(ip.y()) +
+            " as path from " + std::to_string(m_start.x()) + "x" + std::to_string(m_start.y()) +
+            " to " + std::to_string(path[0].x()) + "x" + std::to_string(path[0].y()) +
             " is obstructed",
             utils::Level::Verbose
           );
@@ -487,7 +487,7 @@ namespace new_frontiers {
   }
 
   void
-  AStar::smoothPath(std::vector<Point>& path, bool allowLog) const noexcept {
+  AStar::smoothPath(std::vector<utils::Point2f>& path, bool allowLog) const noexcept {
     // The basic idea is taken from this very interesting
     // article found in Gamasutra:
     // https://www.gamasutra.com/view/feature/131505/toward_more_realistic_pathfinding.php?page=2
@@ -505,33 +505,33 @@ namespace new_frontiers {
       return;
     }
 
-    std::vector<Point> out;
-    Point p = m_start;
+    std::vector<utils::Point2f> out;
+    utils::Point2f p = m_start;
     Node end{m_end, 0.0f, 0.0f};
 
     unsigned id = 0u;
-    std::vector<Point> dummy;
+    std::vector<utils::Point2f> dummy;
 
     // Simplify the whole path.
     int count = 0;
     while (id < path.size() - 1u && count < 10) {
-      Point c = path[id + 1u];
+      utils::Point2f c = path[id + 1u];
       Node n{c, 0.0f, 0.0f};
 
       // Check whether the starting position and the
       // current point can be joined by a straight
       // line without obstructions. Note that we will
       // ignore obstructions in the target.
-      Point o;
+      utils::Point2f o;
       bool obs = m_loc->obstructed(p, c, dummy, &o, 0.005f, allowLog);
       if (!obs || end.contains(o)) {
         // The path can be reached in a straight line,
         // we can remove the current point.
         if (allowLog) {
           log(
-            "Simplified point " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y) +
-            " as path from " + std::to_string(p.x) + "x" + std::to_string(p.y) +
-            " to " + std::to_string(c.x) + "x" + std::to_string(c.y) +
+            "Simplified point " + std::to_string(path[id].x()) + "x" + std::to_string(path[id].y()) +
+            " as path from " + std::to_string(p.x()) + "x" + std::to_string(p.y()) +
+            " to " + std::to_string(c.x()) + "x" + std::to_string(c.y()) +
             " is unobstructed (obs: " + std::to_string(obs) + ", cont: " + std::to_string(n.contains(m_end)) + ")",
             utils::Level::Verbose
           );
@@ -543,10 +543,10 @@ namespace new_frontiers {
         // This segment cannot be simplified further.
         if (allowLog) {
           log(
-            "Can't simplify path from " + std::to_string(p.x) + "x" + std::to_string(p.y) +
-            " to point " + std::to_string(c.x) + "x" + std::to_string(c.y) +
+            "Can't simplify path from " + std::to_string(p.x()) + "x" + std::to_string(p.y()) +
+            " to point " + std::to_string(c.x()) + "x" + std::to_string(c.y()) +
             " (id: " + std::to_string(id) + ", s: " + std::to_string(path.size()) + ")" +
-            " registering " + std::to_string(p.x) + "x" + std::to_string(p.y),
+            " registering " + std::to_string(p.x()) + "x" + std::to_string(p.y()),
             utils::Level::Verbose
           );
         }
@@ -569,7 +569,7 @@ namespace new_frontiers {
       for (unsigned id = 0u ; id < path.size() ; ++id) {
         log(
           "Point " + std::to_string(id) + "/" + std::to_string(path.size()) +
-          " at " + std::to_string(path[id].x) + "x" + std::to_string(path[id].y),
+          " at " + std::to_string(path[id].x()) + "x" + std::to_string(path[id].y()),
             utils::Level::Verbose
         );
       }

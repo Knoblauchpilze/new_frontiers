@@ -1,7 +1,7 @@
 #ifndef    WORLD_ELEMENT_HH
 # define   WORLD_ELEMENT_HH
 
-# include "TimeUtils.hh"
+# include <core_utils/TimeUtils.hh>
 # include <core_utils/CoreObject.hh>
 # include <core_utils/Uuid.hh>
 
@@ -54,7 +54,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the pause occur.
        */
       virtual void
-      pause(const TimeStamp& t) = 0;
+      pause(const utils::TimeStamp& t) = 0;
 
       /**
        * @brief - Opposite operation to the `pause`, this method
@@ -63,7 +63,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the resume occur.
        */
       virtual void
-      resume(const TimeStamp& t) = 0;
+      resume(const utils::TimeStamp& t) = 0;
 
     protected:
 

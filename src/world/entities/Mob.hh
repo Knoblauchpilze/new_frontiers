@@ -2,7 +2,7 @@
 # define   MOB_HH
 
 # include "Entity.hh"
-# include "Point.hh"
+# include <maths_utils/Point2.hh>
 # include "../effects/Pheromon.hh"
 # include "PheromonAnalyzer.hh"
 # include "Path.hh"
@@ -55,7 +55,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the pause occur.
        */
       void
-      pause(const TimeStamp& t) override;
+      pause(const utils::TimeStamp& t) override;
 
       /**
        * @brief - Implementation of the interface method to resume
@@ -63,7 +63,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the resume occur.
        */
       void
-      resume(const TimeStamp& t) override;
+      resume(const utils::TimeStamp& t) override;
 
     protected:
 
@@ -192,7 +192,7 @@ namespace new_frontiers {
        */
       void
       pickRandomTarget(StepInfo& info,
-                       const Point& r,
+                       const utils::Point2f& r,
                        float d,
                        float& x,
                        float& y) noexcept;
@@ -359,7 +359,7 @@ namespace new_frontiers {
        * @brief - The home position of this mob. Used when the
        *          entity needs to come back home.
        */
-      Point m_home;
+      utils::Point2f m_home;
 
       /**
        * @brief - The amount of a resource that is carried by

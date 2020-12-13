@@ -16,7 +16,7 @@ namespace new_frontiers {
        *          provided to the constructor of this class.
        */
       struct TSProps: SProps {
-        Duration interval;
+        utils::Duration interval;
         int stock;
       };
 
@@ -30,10 +30,10 @@ namespace new_frontiers {
       TimedSpawner(const TSProps& props);
 
       void
-      pause(const TimeStamp& t) override;
+      pause(const utils::TimeStamp& t) override;
 
       void
-      resume(const TimeStamp& t) override;
+      resume(const utils::TimeStamp& t) override;
 
     protected:
 
@@ -72,13 +72,13 @@ namespace new_frontiers {
        *          It is expressed in milliseconds and attempts
        *          will only occur when an interval expires.
        */
-      Duration m_interval;
+      utils::Duration m_interval;
 
       /**
        * @brief - The timestamp at which a mob was generated
        *          last by this spawner.
        */
-      TimeStamp m_last;
+      utils::TimeStamp m_last;
 
       /**
        * @brief - Holds the remaining duration before a spawn
@@ -87,7 +87,7 @@ namespace new_frontiers {
        *          is not allowed to spawn anything anymore it
        *          won't contain anything.
        */
-      Duration m_passed;
+      utils::Duration m_passed;
   };
 
   using TimedSpawnerShPtr = std::shared_ptr<TimedSpawner>;

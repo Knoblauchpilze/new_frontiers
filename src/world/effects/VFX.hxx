@@ -35,13 +35,13 @@ namespace new_frontiers {
 
   inline
   void
-  VFX::pause(const TimeStamp& /*t*/) {
+  VFX::pause(const utils::TimeStamp& /*t*/) {
     // Nothing to do.
   }
 
   inline
   void
-  VFX::resume(const TimeStamp& /*t*/) {
+  VFX::resume(const utils::TimeStamp& /*t*/) {
     // Nothing to do.
   }
 

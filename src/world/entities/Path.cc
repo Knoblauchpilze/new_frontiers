@@ -21,15 +21,15 @@ namespace new_frontiers {
       // segment until we either reach the end
       // of the path or don't travel enough to
       // do so.
-      float dToEofS = distance::d(cur, segments[seg].end);
+      float dToEofS = utils::d(cur, segments[seg].end);
 
       while (traveled > dToEofS && seg < ss) {
         // Move along the path segment: as we
         // traveled far enough to complete the
         // path segment we can directly go to
         // the target point of the segment.
-        cur.x = segments[seg].end.x;
-        cur.y = segments[seg].end.y;
+        cur.x() = segments[seg].end.x();
+        cur.y() = segments[seg].end.y();
 
         // Finish this path segment and move to
         // the next one.
@@ -44,13 +44,13 @@ namespace new_frontiers {
         // end of the previous segment but as it
         // is not guaranteed, we will ensure it.
         if (seg < ss) {
-          cur.x = segments[seg].start.x;
-          cur.y = segments[seg].start.y;
+          cur.x() = segments[seg].start.x();
+          cur.y() = segments[seg].start.y();
         }
 
         // Initialize the distance to the end
         // of the path segment.
-        dToEofS = distance::d(cur, segments[seg].end);
+        dToEofS = utils::d(cur, segments[seg].end);
       }
 
       // See whether we reached the end of the
@@ -63,13 +63,13 @@ namespace new_frontiers {
       }
 
       // Advance on the path of the amount left.
-      cur.x += traveled * segments[seg].xD;
-      cur.y += traveled * segments[seg].yD;
+      cur.x() += traveled * segments[seg].xD;
+      cur.y() += traveled * segments[seg].yD;
     }
 
     bool
     Path::generatePathTo(StepInfo& info,
-                         const Point& p,
+                         const utils::Point2f& p,
                          bool ignoreTargetObstruction,
                          float maxDistanceFromStart,
                          bool allowLog)
@@ -79,13 +79,13 @@ namespace new_frontiers {
       // registered list of intermediate points. It
       // can correspond to the home position in case
       // no segments are defined.
-      Point s = home;
+      utils::Point2f s = home;
       if (seg >= 0) {
         s = segments[segments.size() - 1].end;
       }
 
       float xDir, yDir, d;
-      toDirection(s, p, xDir, yDir, d);
+      utils::toDirection(s, p, xDir, yDir, d);
 
       // Detect trivial case where the target is a
       // solid block and we're not supposed to be
@@ -97,11 +97,11 @@ namespace new_frontiers {
 
       // First, try to find a straight path to the
       // target: if this is possible it's cool.
-      Point obsP;
-      std::vector<Point> iPoints;
+      utils::Point2f obsP;
+      std::vector<utils::Point2f> iPoints;
 
       bool obs = info.frustum->obstructed(s, xDir, yDir, d, iPoints, &obsP);
-      bool obsWithinTarget = obs && (std::abs(obsP.x - p.x) < 1.0f && std::abs(obsP.y - p.y) < 1.0f);
+      bool obsWithinTarget = obs && (std::abs(obsP.x() - p.x()) < 1.0f && std::abs(obsP.y() - p.y()) < 1.0f);
 
       if (!obs || (obsWithinTarget && ignoreTargetObstruction)) {
         // Either there is no obstruction or there is one
@@ -134,7 +134,7 @@ namespace new_frontiers {
       // has indeed infinite vision for now but
       // that's it.
       AStar alg(s, p, info.frustum);
-      std::vector<Point> steps;
+      std::vector<utils::Point2f> steps;
 
       if (!alg.findPath(steps, maxDistanceFromStart, allowLog)) {
         return false;

@@ -2,7 +2,7 @@
 # define   COLONY_FACTORY_HXX
 
 # include "ColonyFactory.hxx"
-# include "Point.hh"
+# include <maths_utils/Point2.hh>
 
 namespace new_frontiers {
 
@@ -13,7 +13,7 @@ namespace new_frontiers {
 
     pp.id = id;
 
-    pp.home = newPoint(x, y);
+    pp.home = utils::Point2f(x, y);
 
     pp.budget = sk_budget;
     pp.actionCost = sk_actionCost;

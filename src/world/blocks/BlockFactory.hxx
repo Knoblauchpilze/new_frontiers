@@ -45,7 +45,7 @@ namespace new_frontiers {
 
     pp.spawnRadius = 2.0f;
 
-    pp.interval = toMilliseconds(500);
+    pp.interval = utils::toMilliseconds(500);
     pp.stock = 1;
 
     return pp;
@@ -157,7 +157,7 @@ namespace new_frontiers {
   inline
   BlockTile
   BlockFactory::newTile(const tiles::Block& b, int id, float x, float y) noexcept {
-    return BlockTile{x, y, b, id};
+    return BlockTile{utils::Point2f(x, y), b, id};
   }
 
 }

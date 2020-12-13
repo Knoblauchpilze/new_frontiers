@@ -13,7 +13,7 @@ namespace new_frontiers {
 
   inline
   bool
-  EvaporatingVFX::isTerminated(const TimeStamp& /*moment*/) const noexcept {
+  EvaporatingVFX::isTerminated(const utils::TimeStamp& /*moment*/) const noexcept {
     // We consider the effect evaporated when it
     // reaches a negative value.
     return (getAmount() <= 0.0f);

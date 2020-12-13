@@ -9,14 +9,14 @@ namespace new_frontiers {
     m_phases(props.phases),
     m_transition(0u),
 
-    m_next(Duration::zero()),
+    m_next(utils::Duration::zero()),
     m_decayTimeLeft()
   {
     // Adjust the next phase duration if any transitions
     // is specified.
     if (!m_phases.empty()) {
       m_transition = 0u;
-      m_next = now() + m_phases[m_transition];
+      m_next = utils::now() + m_phases[m_transition];
     }
   }
 

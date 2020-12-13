@@ -1,7 +1,7 @@
 
 # include "Entity.hh"
 # include "Locator.hh"
-# include "LocationUtils.hh"
+# include <maths_utils/LocationUtils.hh>
 
 namespace new_frontiers {
 
