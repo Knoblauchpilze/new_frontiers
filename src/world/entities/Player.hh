@@ -19,8 +19,8 @@ namespace new_frontiers {
         float sprintSpeed;
         float recoverySpeed;
 
-        Duration exhaustion;
-        Duration recovery;
+        utils::Duration exhaustion;
+        utils::Duration recovery;
       };
 
       /**
@@ -45,7 +45,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the pause occur.
        */
       void
-      pause(const TimeStamp& t) override;
+      pause(const utils::TimeStamp& t) override;
 
       /**
        * @brief - Implementation of the interface method to resume
@@ -54,7 +54,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the resume occur.
        */
       void
-      resume(const TimeStamp& t) override;
+      resume(const utils::TimeStamp& t) override;
 
     protected:
 
@@ -103,20 +103,20 @@ namespace new_frontiers {
        * @brief - The duration the player can sprint before
        *          being exhausted.
        */
-      Duration m_exhaustion;
+      utils::Duration m_exhaustion;
 
       /**
        * @brief - The duration needed for the player to recover
        *          the strength to sprint again.
        */
-      Duration m_recovery;
+      utils::Duration m_recovery;
 
       /**
        * @brief - A time stamp used to meausre the beginning
        *          of the current phase for the player, be it
        *          a recovery or a sprinting phase.
        */
-      TimeStamp m_origin;
+      utils::TimeStamp m_origin;
 
       /**
        * @brief - A duration that represents the remaining
@@ -124,7 +124,7 @@ namespace new_frontiers {
        *          might be submitted to when a pause event
        *          occurs.
        */
-      Duration m_remaining;
+      utils::Duration m_remaining;
   };
 
   using PlayerShPtr = std::shared_ptr<Player>;

@@ -91,15 +91,15 @@ namespace new_frontiers {
     // colony. Note that this position will be
     // set to the `home` position of the colony
     // in case it's the first spawner.
-    float x = m_home.x;
-    float y = m_home.y;
+    float x = m_home.x();
+    float y = m_home.y();
 
     while (info.frustum->obstructed(x, y)) {
       float r = info.rng.rndFloat(0, m_radius * m_radius);
       float theta = info.rng.rndAngle();
 
-      x = m_home.x + std::round(std::sqrt(r) * std::cos(theta));
-      y = m_home.y + std::round(std::sqrt(r) * std::sin(theta));
+      x = m_home.x() + std::round(std::sqrt(r) * std::cos(theta));
+      y = m_home.y() + std::round(std::sqrt(r) * std::sin(theta));
 
       info.clampCoord(x, y);
     }

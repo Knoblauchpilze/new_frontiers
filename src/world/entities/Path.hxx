@@ -2,7 +2,7 @@
 # define   PATH_HXX
 
 # include "Path.hh"
-# include "LocationUtils.hh"
+# include <maths_utils/LocationUtils.hh>
 
 namespace new_frontiers {
   namespace path {
@@ -11,8 +11,8 @@ namespace new_frontiers {
     float
     Segment::length() const noexcept {
       return std::sqrt(
-        (end.x - start.x) * (end.x - start.x) +
-        (end.y - start.y) * (end.y - start.y)
+        (end.x() - start.x()) * (end.x() - start.x()) +
+        (end.y() - start.y()) * (end.y() - start.y())
       );
     }
 
@@ -25,8 +25,8 @@ namespace new_frontiers {
       info.clampCoord(end);
 
       // Update direction for this segment.
-      xD = end.x - start.x;
-      yD = end.y - start.y;
+      xD = end.x() - start.x();
+      yD = end.y() - start.y();
 
       float d = length();
       if (d > 0.0001f) {
@@ -43,7 +43,7 @@ namespace new_frontiers {
 
     inline
     void
-    Path::clear(const Point& p, bool force) {
+    Path::clear(const utils::Point2f& p, bool force) {
       // Assign home and current position.
       home = p;
       cur = p;
@@ -61,13 +61,13 @@ namespace new_frontiers {
 
     inline
     void
-    Path::addPassagePoint(const Point& p) {
+    Path::addPassagePoint(const utils::Point2f& p) {
       cPoints.push_back(p);
     }
 
     inline
     void
-    Path::add(const Point& p, float xD, float yD, float d) {
+    Path::add(const utils::Point2f& p, float xD, float yD, float d) {
       Segment s = newSegment(p, xD, yD, d);
       segments.push_back(s);
       addPassagePoint(s.end);
@@ -80,7 +80,7 @@ namespace new_frontiers {
 
     inline
     void
-    Path::add(const Point& s, const Point& t) {
+    Path::add(const utils::Point2f& s, const utils::Point2f& t) {
       Segment se = newSegment(s, t);
       segments.push_back(se);
       addPassagePoint(se.end);
@@ -93,12 +93,12 @@ namespace new_frontiers {
 
     inline
     void
-    Path::add(const Point& p) {
+    Path::add(const utils::Point2f& p) {
       if (seg < 0) {
         // We want to make sure that we don't
         // register the home position once
         // again.
-        if (home.x != p.x || home.y != p.y) {
+        if (home.x() != p.x() || home.y() != p.y()) {
           add(home, p);
         }
       }
@@ -120,15 +120,15 @@ namespace new_frontiers {
         return false;
       }
 
-      return (seg < ss - 1) || distance::d(segments[seg].end, cur) > threshold;
+      return (seg < ss - 1) || utils::d(segments[seg].end, cur) > threshold;
     }
 
     inline
-    Point
+    utils::Point2f
     Path::currentTarget() const noexcept {
       int ss = static_cast<int>(segments.size());
       if (seg < 0 || seg >= ss) {
-        return newPoint();
+        return utils::Point2f();
       }
 
       return segments[seg].end;
@@ -136,29 +136,29 @@ namespace new_frontiers {
 
     inline
     Segment
-    newSegment(const Point& p, float xD, float yD, float d) noexcept {
+    newSegment(const utils::Point2f& p, float xD, float yD, float d) noexcept {
       Segment s;
 
       s.start = p;
       s.xD = xD;
       s.yD = yD;
 
-      s.end.x = s.start.x + d * s.xD;
-      s.end.y = s.start.y + d * s.yD;
+      s.end.x() = s.start.x() + d * s.xD;
+      s.end.y() = s.start.y() + d * s.yD;
 
       return s;
     }
 
     inline
     Segment
-    newSegment(const Point& s, const Point& t) noexcept {
+    newSegment(const utils::Point2f& s, const utils::Point2f& t) noexcept {
       Segment se;
 
       se.start = s;
       se.end = t;
 
-      se.xD = se.end.x - se.start.x;
-      se.yD = se.end.y - se.start.y;
+      se.xD = se.end.x() - se.start.x();
+      se.yD = se.end.y() - se.start.y();
 
       float d = se.length();
       if (d > 0.0001f) {
@@ -171,7 +171,7 @@ namespace new_frontiers {
 
     inline
     Path
-    newPath(const Point& p) noexcept {
+    newPath(const utils::Point2f& p) noexcept {
       Path pa;
 
       pa.home = p;

@@ -252,7 +252,7 @@ namespace new_frontiers {
        * @return - `true` if the location is occupied.
        */
       bool
-      obstructed(const Point& p) const noexcept;
+      obstructed(const utils::Point2f& p) const noexcept;
 
       /**
        * @brief - Determine whether the path defined by the
@@ -284,12 +284,12 @@ namespace new_frontiers {
        *           solid element.
        */
       bool
-      obstructed(Point p,
+      obstructed(utils::Point2f p,
                  float xDir,
                  float yDir,
                  float d,
-                 std::vector<Point>& cPoints,
-                 Point* obs = nullptr,
+                 std::vector<utils::Point2f>& cPoints,
+                 utils::Point2f* obs = nullptr,
                  float sample = 0.05f,
                  bool allowLog = false) const noexcept;
 
@@ -310,10 +310,10 @@ namespace new_frontiers {
        * @return - `true` if the line is obstructed.
        */
       bool
-      obstructed(Point p,
-                 Point e,
-                 std::vector<Point>& cPoints,
-                 Point* obs = nullptr,
+      obstructed(utils::Point2f p,
+                 utils::Point2f e,
+                 std::vector<utils::Point2f>& cPoints,
+                 utils::Point2f* obs = nullptr,
                  float sample = 0.05f,
                  bool allowLog = false) const noexcept;
 
@@ -377,7 +377,7 @@ namespace new_frontiers {
        *           specified area.
        */
       std::vector<world::ItemEntry>
-      getVisible(const Point& p,
+      getVisible(const utils::Point2f& p,
                  float r,
                  const world::ItemType* type = nullptr,
                  const world::Filter* filter = nullptr,
@@ -401,7 +401,7 @@ namespace new_frontiers {
        *           found.
        */
       world::ItemEntry
-      getClosest(const Point& p,
+      getClosest(const utils::Point2f& p,
                  const world::ItemType& type,
                  const world::Filter& filter) const noexcept;
 
@@ -426,7 +426,7 @@ namespace new_frontiers {
        * @return - the list of blocks.
        */
       std::vector<BlockShPtr>
-      getVisible(const Point& p,
+      getVisible(const utils::Point2f& p,
                  float r,
                  const tiles::Block* bTile,
                  int id = -1,
@@ -454,7 +454,7 @@ namespace new_frontiers {
        * @return - the list of entities.
        */
       std::vector<EntityShPtr>
-      getVisible(const Point& p,
+      getVisible(const utils::Point2f& p,
                  float r,
                  const tiles::Entity* eTile,
                  int id = -1,
@@ -482,7 +482,7 @@ namespace new_frontiers {
        * @return - the list of VFXs.
        */
       std::vector<VFXShPtr>
-      getVisible(const Point& p,
+      getVisible(const utils::Point2f& p,
                  float r,
                  const tiles::Effect* vTile,
                  int id = -1,
@@ -507,7 +507,7 @@ namespace new_frontiers {
        * @return - the list of blocks.
        */
       BlockShPtr
-      getClosest(const Point& p,
+      getClosest(const utils::Point2f& p,
                  const tiles::Block& bTile,
                  float r = -1.0f,
                  int id = -1,
@@ -531,7 +531,7 @@ namespace new_frontiers {
        * @return - the list of entities.
        */
       EntityShPtr
-      getClosest(const Point& p,
+      getClosest(const utils::Point2f& p,
                  const tiles::Entity& eTile,
                  float r = -1.0f,
                  int id = -1,
@@ -554,7 +554,7 @@ namespace new_frontiers {
        *          sorting of tiles and entities.
        */
       struct SortEntry {
-        Point p;
+        utils::Point2f p;
         unsigned id;
       };
 

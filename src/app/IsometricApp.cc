@@ -178,8 +178,8 @@ namespace new_frontiers {
         sd.alpha = ALPHA_OPAQUE;
         sd.radius = 1.0f;
         sd.location = Cell::TopLeft;
-        sd.x = t.tile.p.x;
-        sd.y = t.tile.p.y;
+        sd.x = t.tile.p.x();
+        sd.y = t.tile.p.y();
         sd.type = aliasOfBlock(t.tile.type);
 
         olc::Pixel p = olc::WHITE;
@@ -206,8 +206,8 @@ namespace new_frontiers {
 
         sd.radius = t.radius;
         sd.location = Cell::UpperLeft;
-        sd.x = t.tile.p.x;
-        sd.y = t.tile.p.y;
+        sd.x = t.tile.p.x();
+        sd.y = t.tile.p.y();
 
         if (t.state.glowing) {
           sd.alpha = ALPHA_SEMI_OPAQUE;
@@ -242,8 +242,8 @@ namespace new_frontiers {
         sd.alpha = static_cast<int>(std::round(ALPHA_OPAQUE * t.amount));
         sd.radius = t.radius;
         sd.location = Cell::UpperLeft;
-        sd.x = t.tile.p.x;
-        sd.y = t.tile.p.y;
+        sd.x = t.tile.p.x();
+        sd.y = t.tile.p.y();
         sd.type = aliasOfEffect(t.tile.type);
 
         drawSprite(sd, res.cf, t.tile.id);
@@ -400,13 +400,13 @@ namespace new_frontiers {
 
       world::Entity ed = res.loc->entity(ie.index);
 
-      olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.p.x, ed.tile.p.y, ed.radius);
+      olc::vf2d cb = res.cf.tileCoordsToPixels(ed.tile.p.x(), ed.tile.p.y(), ed.radius);
 
       // Draw the path of this entity if any.
       if (ed.path.valid()) {
         olc::vf2d old;
         for (unsigned id = 0u ; id < ed.path.cPoints.size() ; ++id) {
-          olc::vf2d p = res.cf.tileCoordsToPixels(ed.path.cPoints[id].x, ed.path.cPoints[id].y, 1.0f);
+          olc::vf2d p = res.cf.tileCoordsToPixels(ed.path.cPoints[id].x(), ed.path.cPoints[id].y(), 1.0f);
           FillCircle(p, 3, olc::CYAN);
 
           if (id > 0u) {
@@ -418,14 +418,14 @@ namespace new_frontiers {
 
       // Draw the rectangle around the entity and its circle
       // to represent its position.
-      olc::vf2d ul = res.cf.tileCoordsToPixels(ed.tile.p.x, ed.tile.p.y, ed.radius, Cell::UpperLeft);
+      olc::vf2d ul = res.cf.tileCoordsToPixels(ed.tile.p.x(), ed.tile.p.y(), ed.radius, Cell::UpperLeft);
       DrawRect(ul, ed.radius * res.cf.tileScale() * m_ss, olc::MAGENTA);
       FillCircle(cb, 5, olc::YELLOW);
 
       // TODO: In case the size of the tile is different in
       // one direction and the other it means that we should
       // in fact draw an ellipse.
-      olc::vf2d tlpr = res.cf.tileCoordsToPixels(ed.tile.p.x, ed.tile.p.y, ed.percepRadius);
+      olc::vf2d tlpr = res.cf.tileCoordsToPixels(ed.tile.p.x(), ed.tile.p.y(), ed.percepRadius);
       DrawCircle(tlpr, ed.percepRadius * res.cf.tileSize().y, olc::BLUE);
     }
 

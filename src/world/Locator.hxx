@@ -136,16 +136,16 @@ namespace new_frontiers {
 
   inline
   bool
-  Locator::obstructed(const Point& p) const noexcept {
-    return obstructed(p.x, p.y);
+  Locator::obstructed(const utils::Point2f& p) const noexcept {
+    return obstructed(p.x(), p.y());
   }
 
   inline
   bool
-  Locator::obstructed(Point p,
-                      Point e,
-                      std::vector<Point>& cPoints,
-                      Point* obs,
+  Locator::obstructed(utils::Point2f p,
+                      utils::Point2f e,
+                      std::vector<utils::Point2f>& cPoints,
+                      utils::Point2f* obs,
                       float sample,
                       bool allowLog) const noexcept
   {
@@ -160,7 +160,7 @@ namespace new_frontiers {
 
   inline
   world::ItemEntry
-  Locator::getClosest(const Point& p,
+  Locator::getClosest(const utils::Point2f& p,
                       const world::ItemType& type,
                       const world::Filter& filter) const noexcept
   {
@@ -180,7 +180,7 @@ namespace new_frontiers {
 
   inline
   std::vector<BlockShPtr>
-  Locator::getVisible(const Point& p,
+  Locator::getVisible(const utils::Point2f& p,
                       float r,
                       const tiles::Block* bTile,
                       int id,
@@ -214,7 +214,7 @@ namespace new_frontiers {
 
   inline
   std::vector<EntityShPtr>
-  Locator::getVisible(const Point& p,
+  Locator::getVisible(const utils::Point2f& p,
                       float r,
                       const tiles::Entity* eTile,
                       int id,
@@ -248,7 +248,7 @@ namespace new_frontiers {
 
   inline
   std::vector<VFXShPtr>
-  Locator::getVisible(const Point& p,
+  Locator::getVisible(const utils::Point2f& p,
                       float r,
                       const tiles::Effect* vTile,
                       int id,
@@ -282,7 +282,7 @@ namespace new_frontiers {
 
   inline
   BlockShPtr
-  Locator::getClosest(const Point& p,
+  Locator::getClosest(const utils::Point2f& p,
                       const tiles::Block& bTile,
                       float r,
                       int id,
@@ -299,7 +299,7 @@ namespace new_frontiers {
 
   inline
   EntityShPtr
-  Locator::getClosest(const Point& p,
+  Locator::getClosest(const utils::Point2f& p,
                       const tiles::Entity& eTile,
                       float r,
                       int id,

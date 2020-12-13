@@ -7,10 +7,10 @@ namespace new_frontiers {
 
   inline
   void
-  TimedSpawner::pause(const TimeStamp& t) {
+  TimedSpawner::pause(const utils::TimeStamp& t) {
     // Only save something if the spawner is not
     // depleted already.
-    m_passed = Duration::zero();
+    m_passed = utils::Duration::zero();
 
     if (!depleted()) {
       m_passed = t - m_last;
@@ -19,10 +19,10 @@ namespace new_frontiers {
 
   inline
   void
-  TimedSpawner::resume(const TimeStamp& t) {
+  TimedSpawner::resume(const utils::TimeStamp& t) {
     // In case the duration saved is not null we
     // need to restore it.
-    if (m_passed != Duration::zero()) {
+    if (m_passed != utils::Duration::zero()) {
       m_last = t - m_passed;
     }
   }

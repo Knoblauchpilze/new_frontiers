@@ -2,7 +2,7 @@
 # define   PATH_HH
 
 # include "StepInfo.hh"
-# include "Point.hh"
+# include <maths_utils/Point2.hh>
 
 namespace new_frontiers {
   namespace path {
@@ -13,8 +13,8 @@ namespace new_frontiers {
      *          a direction.
      */
     struct Segment {
-      Point start;
-      Point end;
+      utils::Point2f start;
+      utils::Point2f end;
 
       float xD, yD;
 
@@ -41,14 +41,14 @@ namespace new_frontiers {
      *          more segments.
      */
     struct Path {
-      Point home;
+      utils::Point2f home;
 
-      Point cur;
+      utils::Point2f cur;
       int seg;
 
       std::vector<Segment> segments;
 
-      std::vector<Point> cPoints;
+      std::vector<utils::Point2f> cPoints;
 
       bool forced;
 
@@ -70,7 +70,7 @@ namespace new_frontiers {
        *                a forced path.
        */
       void
-      clear(const Point& p, bool force = false);
+      clear(const utils::Point2f& p, bool force = false);
 
       /**
        * @brief - Add the specified passage point in the list
@@ -78,7 +78,7 @@ namespace new_frontiers {
        * @param p - the passage point to add to the path.
        */
       void
-      addPassagePoint(const Point& p);
+      addPassagePoint(const utils::Point2f& p);
 
       /**
        * @brief - Add a new segment to this path with the
@@ -91,7 +91,7 @@ namespace new_frontiers {
        * @param d - the length of the path segment.
        */
       void
-      add(const Point& p, float xD, float yD, float d);
+      add(const utils::Point2f& p, float xD, float yD, float d);
 
       /**
        * @brief - Other variant to register a new segment
@@ -100,7 +100,7 @@ namespace new_frontiers {
        * @param t - the target of the path segment.
        */
       void
-      add(const Point& s, const Point& t);
+      add(const utils::Point2f& s, const utils::Point2f& t);
 
       /**
        * @brief - Add a new path segment starting from the
@@ -112,7 +112,7 @@ namespace new_frontiers {
        *            create.
        */
       void
-      add(const Point& p);
+      add(const utils::Point2f& p);
 
       /**
        * @brief - Determine whether the current position on
@@ -135,7 +135,7 @@ namespace new_frontiers {
        *          segment currently followed by the entity.
        * @return - the next target on the path.
        */
-      Point
+      utils::Point2f
       currentTarget() const noexcept;
 
       /**
@@ -180,7 +180,7 @@ namespace new_frontiers {
        */
       bool
       generatePathTo(StepInfo& info,
-                     const Point& p,
+                     const utils::Point2f& p,
                      bool ignoreTargetObstruction,
                      float maxDistanceFromStart = 5.0f,
                      bool allowLog = false);
@@ -199,7 +199,7 @@ namespace new_frontiers {
      * @return - the created path segment.
      */
     Segment
-    newSegment(const Point& p, float xD, float yD, float d) noexcept;
+    newSegment(const utils::Point2f& p, float xD, float yD, float d) noexcept;
 
     /**
      * @brief - Create a new segment from a starting location
@@ -209,7 +209,7 @@ namespace new_frontiers {
      * @return - the created path segment.
      */
     Segment
-    newSegment(const Point& s, const Point& t) noexcept;
+    newSegment(const utils::Point2f& s, const utils::Point2f& t) noexcept;
 
     /**
      * @brief - Create a new path with the input position
@@ -218,7 +218,7 @@ namespace new_frontiers {
      * @return - the created path.
      */
     Path
-    newPath(const Point& p) noexcept;
+    newPath(const utils::Point2f& p) noexcept;
 
   }
 }

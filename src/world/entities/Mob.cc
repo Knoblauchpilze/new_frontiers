@@ -9,7 +9,7 @@ namespace new_frontiers {
   Mob::Mob(const MProps& props):
     Entity(props),
 
-    m_home(newPoint(props.homeX, props.homeY)),
+    m_home(utils::Point2f(props.homeX, props.homeY)),
 
     m_carrying(std::max(std::min(props.cargo, props.carrying), 0.0f)),
     m_cargo(std::max(props.cargo, 0.0f)),
@@ -47,7 +47,7 @@ namespace new_frontiers {
 
   void
   Mob::pickRandomTarget(StepInfo& info,
-                        const Point& r,
+                        const utils::Point2f& r,
                         float d,
                         float& x,
                         float& y) noexcept
@@ -69,7 +69,7 @@ namespace new_frontiers {
     // based on that.
     info.clampPath(r, xDir, yDir, len);
 
-    Point t{r.x + len * xDir, r.y + len * yDir};
+    utils::Point2f t(r.x() + len * xDir, r.y() + len * yDir);
 
     while (info.frustum->obstructed(t)) {
       len = info.rng.rndFloat(d / 2.0f, d);
@@ -87,12 +87,12 @@ namespace new_frontiers {
       // This should be resolved when we allow for an
       // infinite world.
       info.clampPath(r, xDir, yDir, len);
-      t = newPoint(r.x + len * xDir, r.y + len * yDir);
+      t = utils::Point2f(r.x() + len * xDir, r.y() + len * yDir);
     }
 
     // Save the picked location.
-    x = r.x + len * xDir;
-    y = r.y + len * yDir;
+    x = r.x() + len * xDir;
+    y = r.y() + len * yDir;
   }
 
   bool
@@ -122,14 +122,14 @@ namespace new_frontiers {
     }
 
     // Attempt to find a path to the deposit.
-    Point p = d->getTile().p;
-    p.x += 0.5f;
-    p.y += 0.5f;
+    utils::Point2f p = d->getTile().p;
+    p.x() += 0.5f;
+    p.y() += 0.5f;
 
     log(
-      "Entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
-      " found deposit at " + std::to_string(p.x) + "x" + std::to_string(p.y) +
-      " d: " + std::to_string(distance::d(m_tile.p, p))
+      "Entity at " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
+      " found deposit at " + std::to_string(p.x()) + "x" + std::to_string(p.y()) +
+      " d: " + std::to_string(utils::d(m_tile.p, p))
     );
 
     if (!path.generatePathTo(info, p, true, m_perceptionRadius)) {
@@ -165,14 +165,14 @@ namespace new_frontiers {
     }
 
     // Attempt to find a path to the home.
-    Point p = b->getTile().p;
-    p.x += 0.5f;
-    p.y += 0.5f;
+    utils::Point2f p = b->getTile().p;
+    p.x() += 0.5f;
+    p.y() += 0.5f;
 
     log(
-      "Entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
-      " found home at " + std::to_string(p.x) + "x" + std::to_string(p.y) +
-      " d: " + std::to_string(distance::d(m_tile.p, p))
+      "Entity at " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
+      " found home at " + std::to_string(p.x()) + "x" + std::to_string(p.y()) +
+      " d: " + std::to_string(utils::d(m_tile.p, p))
     );
 
     if (!path.generatePathTo(info, p, true, m_perceptionRadius)) {
@@ -217,9 +217,9 @@ namespace new_frontiers {
     }
 
     log(
-      "Entity at " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
-      " found ennemy at " + std::to_string(e->getTile().p.x) + "x" + std::to_string(e->getTile().p.y) +
-      " d: " + std::to_string(distance::d(m_tile.p, e->getTile().p))
+      "Entity at " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
+      " found ennemy at " + std::to_string(e->getTile().p.x()) + "x" + std::to_string(e->getTile().p.y()) +
+      " d: " + std::to_string(utils::d(m_tile.p, e->getTile().p))
     );
 
     // The path could be generated: return it
@@ -271,7 +271,7 @@ namespace new_frontiers {
     // If it fails, we will retry a certain number of
     // times before giving up.
     float xRnd, yRnd;
-    Point p;
+    utils::Point2f p;
     bool generated = false;
     unsigned tries = 0u;
     path::Path newP = path::newPath(m_tile.p);
@@ -280,11 +280,11 @@ namespace new_frontiers {
       pickRandomTarget(info, m_tile.p, m_pathLength, xRnd, yRnd);
       analyzer.computeTarget(xRnd, yRnd);
 
-      p.x = xRnd;
-      p.y = yRnd;
+      p.x() = xRnd;
+      p.y() = yRnd;
 
       newP.clear(m_tile.p);
-      generated = newP.generatePathTo(info, p, false, distance::d(m_tile.p, p) + 1.0f);
+      generated = newP.generatePathTo(info, p, false, utils::d(m_tile.p, p) + 1.0f);
       ++tries;
     }
 
@@ -294,7 +294,7 @@ namespace new_frontiers {
     // In case the path could not be generated, wait.
     if (!generated) {
       log(
-        "Failed to generate path from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
+        "Failed to generate path from " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
         " after " + std::to_string(tries) + " attempt(s)",
         utils::Level::Warning
       );

@@ -69,7 +69,7 @@ namespace new_frontiers {
       "Collecting " +
       std::to_string(toFetch) + "/" + std::to_string(d->getStock()) +
       " on deposit at " +
-      std::to_string(d->getTile().p.x) + "x" + std::to_string(d->getTile().p.y)
+      std::to_string(d->getTile().p.x()) + "x" + std::to_string(d->getTile().p.y())
     );
 
     // In case we can't fetch anything, return to
@@ -176,32 +176,32 @@ namespace new_frontiers {
     // close enough to threaten us: we need to try to
     // flee in the general opposite direction of their
     // combined position.
-    Point s = m_tile.p;
-    Point g = newPoint();
+    utils::Point2f s = m_tile.p;
+    utils::Point2f g;
     float w = 0.0f;
 
-    auto weight = [&s](const Point& p) {
-      return 1.0f / std::max(sk_proximityAlert, distance::d(s, p));
+    auto weight = [&s](const utils::Point2f& p) {
+      return 1.0f / std::max(sk_proximityAlert, utils::d(s, p));
     };
 
     for (unsigned id = 0u ; id < enemies.size() ; ++id) {
       float cw = weight(enemies[id]->getTile().p);
 
-      g.x += cw * enemies[id]->getTile().p.x;
-      g.y += cw * enemies[id]->getTile().p.y;
+      g.x() += cw * enemies[id]->getTile().p.x();
+      g.y() += cw * enemies[id]->getTile().p.y();
       w += cw;
     }
 
-    g.x /= w;
-    g.y /= w;
+    g.x() /= w;
+    g.y() /= w;
 
     // Check if we're en route: if this is the case
     // but the path still likes in the escape cone
     // we will continue on that direction.
-    bool inCone = distance::isInCone(
+    bool inCone = utils::isInCone(
       m_tile.p,
-      m_tile.p.x - g.x,
-      m_tile.p.y - g.y,
+      m_tile.p.x() - g.x(),
+      m_tile.p.y() - g.y(),
       m_fleeConeAngleSpan,
       path.currentTarget()
     );
@@ -214,11 +214,11 @@ namespace new_frontiers {
     // the opposite direction.
     // As escaping is the main priority right now we
     // will delete any existing planned path.
-    float dToEnemy = distance::d(g, m_tile.p);
+    float dToEnemy = utils::d(g, m_tile.p);
     float d = info.rng.rndFloat(dToEnemy, 2.0f * dToEnemy);
     float theta = info.rng.rndAngle(0.0f, m_fleeConeAngleSpan);
 
-    float baseAngle = distance::angleFromDirection(m_tile.p, g);
+    float baseAngle = utils::angleFromDirection(m_tile.p, g);
 
     float xDir = std::cos(baseAngle + theta - m_fleeConeAngleSpan / 2.0f);
     float yDir = std::sin(baseAngle + theta - m_fleeConeAngleSpan / 2.0f);
@@ -226,7 +226,7 @@ namespace new_frontiers {
     // Clamp these coordinates and update the direction
     // based on that.
     info.clampPath(m_tile.p, xDir, yDir, d);
-    Point t = newPoint(m_tile.p.x + d * xDir, m_tile.p.y + d * yDir);
+    utils::Point2f t(m_tile.p.x() + d * xDir, m_tile.p.y() + d * yDir);
 
     path::Path newPath = path::newPath(m_tile.p);
     bool generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
@@ -252,7 +252,7 @@ namespace new_frontiers {
       yDir = std::sin(baseAngle + theta - m_fleeConeAngleSpan / 2.0f);
 
       info.clampPath(m_tile.p, xDir, yDir, d);
-      t = newPoint(m_tile.p.x + d * xDir, m_tile.p.y + d * yDir);
+      t = utils::Point2f(m_tile.p.x() + d * xDir, m_tile.p.y() + d * yDir);
 
       newPath.clear(m_tile.p);
       generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
@@ -267,10 +267,10 @@ namespace new_frontiers {
       // target.
       tries = 10;
       while (!generated && tries > 0) {
-        Point t;
-        pickRandomTarget(info, m_tile.p, m_pathLength, t.x, t.y);
+        utils::Point2f t;
+        pickRandomTarget(info, m_tile.p, m_pathLength, t.x(), t.y());
 
-        log("Generated random target " + std::to_string(t.x) + "x" + std::to_string(t.y));
+        log("Generated random target " + std::to_string(t.x()) + "x" + std::to_string(t.y()));
 
         newPath.clear(m_tile.p, true);
         generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
@@ -283,7 +283,7 @@ namespace new_frontiers {
       // motion: let's give up.
       log(
         "Failed to escape from " +
-        std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y)
+        std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y())
       );
 
       setBehavior(Behavior::Flee);
@@ -291,11 +291,11 @@ namespace new_frontiers {
     }
 
     log(
-      "Escaping " + std::to_string(g.x) + "x" + std::to_string(g.y) +
-      " from " + std::to_string(m_tile.p.x) + "x" + std::to_string(m_tile.p.y) +
+      "Escaping " + std::to_string(g.x()) + "x" + std::to_string(g.y()) +
+      " from " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
       " in cone from " + std::to_string(180.0f * (baseAngle - m_fleeConeAngleSpan / 2.0f) / 3.14159f) +
       " - " + std::to_string(180.0f * (baseAngle + m_fleeConeAngleSpan / 2.0f) / 3.14159f) +
-      " (d: " + std::to_string(distance::d(g, m_tile.p)) +
+      " (d: " + std::to_string(utils::d(g, m_tile.p)) +
       ", forced: " + std::to_string(newPath.forced) + ")"
     );
 

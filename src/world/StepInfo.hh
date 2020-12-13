@@ -4,10 +4,10 @@
 # include <vector>
 # include <memory>
 # include "RNG.hh"
-# include "TimeUtils.hh"
+# include <core_utils/TimeUtils.hh>
 # include "Controls.hh"
 # include "Influence.hh"
-# include "Point.hh"
+# include <maths_utils/Point2.hh>
 
 namespace new_frontiers {
 
@@ -43,7 +43,7 @@ namespace new_frontiers {
 
     std::vector<InfluenceShPtr>& influences;
 
-    TimeStamp moment;
+    utils::TimeStamp moment;
     float elapsed;
 
     LocatorShPtr frustum;
@@ -54,7 +54,7 @@ namespace new_frontiers {
     clampCoord(float& x, float& y) const noexcept;
 
     void
-    clampCoord(Point& p) const noexcept;
+    clampCoord(utils::Point2f& p) const noexcept;
 
     /**
      * @brief - Clamp the direction indicated by the input
@@ -70,7 +70,7 @@ namespace new_frontiers {
      * @param d - the length of the path.
      */
     void
-    clampPath(const Point& s, float& xD, float& yD, float& d) const noexcept;
+    clampPath(const utils::Point2f& s, float& xD, float& yD, float& d) const noexcept;
 
     void
     spawnBlock(BlockShPtr e);

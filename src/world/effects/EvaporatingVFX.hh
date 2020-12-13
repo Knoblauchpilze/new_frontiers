@@ -29,7 +29,7 @@ namespace new_frontiers {
     protected:
 
       bool
-      isTerminated(const TimeStamp& moment) const noexcept override;
+      isTerminated(const utils::TimeStamp& moment) const noexcept override;
 
       void
       update(StepInfo& step) noexcept override;

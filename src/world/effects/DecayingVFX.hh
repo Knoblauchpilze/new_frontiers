@@ -16,7 +16,7 @@ namespace new_frontiers {
        *          provided to the constructor of this class.
        */
       struct DProps: Props {
-        std::vector<Duration> phases;
+        std::vector<utils::Duration> phases;
       };
 
       /**
@@ -27,10 +27,10 @@ namespace new_frontiers {
       DecayingVFX(const DProps& props);
 
       void
-      pause(const TimeStamp& t) override;
+      pause(const utils::TimeStamp& t) override;
 
       void
-      resume(const TimeStamp& t) override;
+      resume(const utils::TimeStamp& t) override;
 
     protected:
 
@@ -45,7 +45,7 @@ namespace new_frontiers {
        *                 removal.
        */
       bool
-      isTerminated(const TimeStamp& moment) const noexcept override;
+      isTerminated(const utils::TimeStamp& moment) const noexcept override;
 
       /**
        * @brief - Implementation of the interface method to make
@@ -68,7 +68,7 @@ namespace new_frontiers {
        *          In case no phase is provided, the effect is
        *          kept as it is forever.
        */
-      std::vector<Duration> m_phases;
+      std::vector<utils::Duration> m_phases;
 
       /**
        * @brief - The index of the next transition that should
@@ -83,7 +83,7 @@ namespace new_frontiers {
        *          It is updated when this point in time is
        *          reached in the simulation.
        */
-      TimeStamp m_next;
+      utils::TimeStamp m_next;
 
       /**
        * @brief - This duration is used in the case of a `pause`
@@ -92,7 +92,7 @@ namespace new_frontiers {
        *          to restore the same amount of decaying time
        *          when the effect is resumed.
        */
-      Duration m_decayTimeLeft;
+      utils::Duration m_decayTimeLeft;
   };
 
 }

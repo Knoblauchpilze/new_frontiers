@@ -7,10 +7,10 @@ namespace new_frontiers {
 
   inline
   void
-  Player::pause(const TimeStamp& t) {
+  Player::pause(const utils::TimeStamp& t) {
     // In case the player has an effect applied, save
     // the remaining duration for later use.
-    m_remaining = Duration::zero();
+    m_remaining = utils::Duration::zero();
 
     if (m_state.glowing || m_state.exhausted) {
       m_remaining = t - m_origin;
@@ -19,9 +19,9 @@ namespace new_frontiers {
 
   inline
   void
-  Player::resume(const TimeStamp& t) {
+  Player::resume(const utils::TimeStamp& t) {
     // Restore the remaining state if any was saved.
-    if (m_remaining != Duration::zero()) {
+    if (m_remaining != utils::Duration::zero()) {
       m_origin = t + m_remaining;
     }
   }

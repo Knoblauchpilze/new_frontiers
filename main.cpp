@@ -32,6 +32,8 @@
  *          as to have an ants-vibe.
  *          Enemies would follow the same principle to get
  *          to the mother nest and attack it.
+ *
+ *          Put on hold on December 13th 2020.
  */
 // TODO: Quadtree system to represent the elements of the world (in Locator class).
 

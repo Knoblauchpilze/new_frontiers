@@ -41,25 +41,25 @@ namespace new_frontiers {
     if (info.controls.keys[MoveRight]) {
       // Right is moving along the negative
       // `x` axis and conversely.
-      m_tile.p.x -= info.elapsed * std::sqrt(sp);
-      m_tile.p.y += info.elapsed * std::sqrt(sp);
+      m_tile.p.x() -= info.elapsed * std::sqrt(sp);
+      m_tile.p.y() += info.elapsed * std::sqrt(sp);
     }
 
     if (info.controls.keys[MoveUp]) {
       // Up is moving along the negative
       // `y` axis and conversely.
-      m_tile.p.y -= info.elapsed * std::sqrt(sp);
-      m_tile.p.x -= info.elapsed * std::sqrt(sp);
+      m_tile.p.y() -= info.elapsed * std::sqrt(sp);
+      m_tile.p.x() -= info.elapsed * std::sqrt(sp);
     }
 
     if (info.controls.keys[MoveLeft]) {
-      m_tile.p.x += info.elapsed * std::sqrt(sp);
-      m_tile.p.y -= info.elapsed * std::sqrt(sp);
+      m_tile.p.x() += info.elapsed * std::sqrt(sp);
+      m_tile.p.y() -= info.elapsed * std::sqrt(sp);
     }
 
     if (info.controls.keys[MoveDown]) {
-      m_tile.p.y += info.elapsed * std::sqrt(sp);
-      m_tile.p.x += info.elapsed * std::sqrt(sp);
+      m_tile.p.y() += info.elapsed * std::sqrt(sp);
+      m_tile.p.x() += info.elapsed * std::sqrt(sp);
     }
 
     // Update the state of the player if he's

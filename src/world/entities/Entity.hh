@@ -4,7 +4,7 @@
 # include <memory>
 # include "Element.hh"
 # include "../effects/Pheromon.hh"
-# include "TimeUtils.hh"
+# include <core_utils/TimeUtils.hh>
 # include "Path.hh"
 
 namespace new_frontiers {
@@ -209,7 +209,7 @@ namespace new_frontiers {
        *          save the progression upon a pause event to
        *          restore it when a resume occurs.
        */
-      Duration m_passed;
+      utils::Duration m_passed;
   };
 
   using EntityShPtr = std::shared_ptr<Entity>;

@@ -19,13 +19,13 @@ namespace new_frontiers {
 
   inline
   void
-  Mob::pause(const TimeStamp& /*t*/) {
+  Mob::pause(const utils::TimeStamp& /*t*/) {
     // Nothing to do.
   }
 
   inline
   void
-  Mob::resume(const TimeStamp& /*t*/) {
+  Mob::resume(const utils::TimeStamp& /*t*/) {
     // Nothing to do.
   }
 

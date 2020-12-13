@@ -16,13 +16,13 @@ namespace new_frontiers {
 
   inline
   void
-  Block::pause(const TimeStamp& /*t*/) {
+  Block::pause(const utils::TimeStamp& /*t*/) {
     // Nothing to do.
   }
 
   inline
   void
-  Block::resume(const TimeStamp& /*t*/) {
+  Block::resume(const utils::TimeStamp& /*t*/) {
     // Nothing to do.
   }
 

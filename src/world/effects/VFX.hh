@@ -3,7 +3,7 @@
 
 # include <memory>
 # include "Element.hh"
-# include "TimeUtils.hh"
+# include <core_utils/TimeUtils.hh>
 
 namespace new_frontiers {
 
@@ -60,7 +60,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the pause occur.
        */
       void
-      pause(const TimeStamp& t) override;
+      pause(const utils::TimeStamp& t) override;
 
       /**
        * @brief - Base implementation for an element which
@@ -69,7 +69,7 @@ namespace new_frontiers {
        * @param t - the timestamp at which the resume occur.
        */
       void
-      resume(const TimeStamp& t) override;
+      resume(const utils::TimeStamp& t) override;
 
     protected:
 
@@ -98,7 +98,7 @@ namespace new_frontiers {
        *                 for removal.
        */
       virtual bool
-      isTerminated(const TimeStamp& moment) const noexcept = 0;
+      isTerminated(const utils::TimeStamp& moment) const noexcept = 0;
 
       /**
        * @brief - Interface method allowing to make an effect

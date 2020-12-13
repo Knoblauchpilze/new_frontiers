@@ -9,7 +9,7 @@
 # include "entities/Player.hh"
 # include "entities/Mob.hh"
 # include "colonies/ColonyFactory.hh"
-# include "TimeUtils.hh"
+# include <core_utils/TimeUtils.hh>
 
 namespace {
 
@@ -152,7 +152,7 @@ namespace new_frontiers {
 
       m_influences,
 
-      now(),
+      utils::now(),
       tDelta,
 
       m_loc,
@@ -188,7 +188,7 @@ namespace new_frontiers {
   {
     // Call the pause method on each world element. The
     // pause method is invoked at this moment in time.
-    TimeStamp moment = now();
+    utils::TimeStamp moment = utils::now();
 
     for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
       m_blocks[id]->pause(moment);
@@ -209,7 +209,7 @@ namespace new_frontiers {
   {
     // Call the resume method on each world element. The
     // pause method is invoked at this moment in time.
-    TimeStamp moment = now();
+    utils::TimeStamp moment = utils::now();
 
     for (unsigned id = 0u ; id < m_blocks.size() ; ++id) {
       m_blocks[id]->resume(moment);
@@ -238,8 +238,8 @@ namespace new_frontiers {
 
     switch (m_actions.type) {
       case ActionType::Block:
-        m_actions.block->tile.p.x = x;
-        m_actions.block->tile.p.y = y;
+        m_actions.block->tile.p.x() = x;
+        m_actions.block->tile.p.y() = y;
 
         m_actions.block->owner = m_actions.owner;
 
@@ -251,8 +251,8 @@ namespace new_frontiers {
         );
         break;
       case ActionType::VFX:
-        m_actions.vfx->tile.p.x = x;
-        m_actions.vfx->tile.p.y = y;
+        m_actions.vfx->tile.p.x() = x;
+        m_actions.vfx->tile.p.y() = y;
 
         m_actions.vfx->owner = m_actions.owner;
 
@@ -264,8 +264,8 @@ namespace new_frontiers {
         );
         break;
       case ActionType::Entity:
-        m_actions.ent->tile.p.x = x;
-        m_actions.ent->tile.p.y = y;
+        m_actions.ent->tile.p.x() = x;
+        m_actions.ent->tile.p.y() = y;
 
         m_actions.ent->owner = m_actions.owner;
 
@@ -312,19 +312,19 @@ namespace new_frontiers {
     bp.tile.id = 3;
     m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
-    bp.tile.p.x = 4.0f; bp.tile.p.y = 4.0f;
+    bp.tile.p.x() = 4.0f; bp.tile.p.y() = 4.0f;
     m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
     // bp.tile.p.x = 4.0f; bp.tile.p.y = 5.0f;
     // m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
-    bp.tile.p.x = 4.0f; bp.tile.p.y = 2.0f;
+    bp.tile.p.x() = 4.0f; bp.tile.p.y() = 2.0f;
     m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
-    bp.tile.p.x = 3.0f; bp.tile.p.y = 2.0f;
+    bp.tile.p.x() = 3.0f; bp.tile.p.y() = 2.0f;
     m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
-    bp.tile.p.x = 2.0f; bp.tile.p.y = 1.0f;
+    bp.tile.p.x() = 2.0f; bp.tile.p.y() = 1.0f;
     m_blocks.push_back(BlockFactory::newBlock(bp, "wall"));
 
     // Generate the player at the same location
