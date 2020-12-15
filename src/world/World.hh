@@ -4,7 +4,7 @@
 # include <memory>
 # include <fstream>
 # include <core_utils/CoreObject.hh>
-# include "RNG.hh"
+# include <core_utils/RNG.hh>
 # include "Tiles.hh"
 # include "colonies/Colony.hh"
 # include "Element.hh"
@@ -260,7 +260,7 @@ namespace new_frontiers {
        *          make tthe simulation deterministic by gathering all
        *          randomness in a single place.
        */
-      RNG m_rng;
+      utils::RNG m_rng;
 
       /**
        * @brief - The list of colonies registered in the world.

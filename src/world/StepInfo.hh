@@ -3,7 +3,7 @@
 
 # include <vector>
 # include <memory>
-# include "RNG.hh"
+# include <core_utils/RNG.hh>
 # include <core_utils/TimeUtils.hh>
 # include "Controls.hh"
 # include "Influence.hh"
@@ -39,7 +39,7 @@ namespace new_frontiers {
     float xMin, xMax;
     float yMin, yMax;
 
-    RNG& rng;
+    utils::RNG& rng;
 
     std::vector<InfluenceShPtr>& influences;
 
