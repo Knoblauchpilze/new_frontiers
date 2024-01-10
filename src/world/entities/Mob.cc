@@ -114,7 +114,7 @@ namespace new_frontiers {
       }
 
       if (d != nullptr && d->getStock() <= 0.0f) {
-        log("Deposit is empty");
+        debug("Deposit is empty");
       }
 
       pickTargetFromPheromon(info, path, Goal::Deposit);
@@ -126,7 +126,7 @@ namespace new_frontiers {
     p.x() += 0.5f;
     p.y() += 0.5f;
 
-    log(
+    debug(
       "Entity at " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
       " found deposit at " + std::to_string(p.x()) + "x" + std::to_string(p.y()) +
       " d: " + std::to_string(utils::d(m_tile.p, p))
@@ -158,7 +158,7 @@ namespace new_frontiers {
         return false;
       }
 
-      log("Home is too far, can't see it");
+      debug("Home is too far, can't see it");
 
       pickTargetFromPheromon(info, path, Goal::Home);
       return true;
@@ -169,7 +169,7 @@ namespace new_frontiers {
     p.x() += 0.5f;
     p.y() += 0.5f;
 
-    log(
+    debug(
       "Entity at " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
       " found home at " + std::to_string(p.x()) + "x" + std::to_string(p.y()) +
       " d: " + std::to_string(utils::d(m_tile.p, p))
@@ -202,7 +202,7 @@ namespace new_frontiers {
         return false;
       }
 
-      log("Entity is home alone, no friends nearby");
+      debug("Entity is home alone, no friends nearby");
 
       pickTargetFromPheromon(info, path, Goal::Entity);
       return true;
@@ -216,7 +216,7 @@ namespace new_frontiers {
       return false;
     }
 
-    log(
+    debug(
       "Entity at " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
       " found ennemy at " + std::to_string(e->getTile().p.x()) + "x" + std::to_string(e->getTile().p.y()) +
       " d: " + std::to_string(utils::d(m_tile.p, e->getTile().p))
@@ -293,10 +293,9 @@ namespace new_frontiers {
 
     // In case the path could not be generated, wait.
     if (!generated) {
-      log(
+      warn(
         "Failed to generate path from " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
-        " after " + std::to_string(tries) + " attempt(s)",
-        utils::Level::Warning
+        " after " + std::to_string(tries) + " attempt(s)"
       );
 
       return false;
@@ -322,10 +321,7 @@ namespace new_frontiers {
 
     // Use the dedicated handler.
     if (!returnToWandering(info, filter, pa, path)) {
-      log(
-        "Unable to return to wandering, path could not be generated",
-        utils::Level::Warning
-      );
+      warn("Unable to return to wandering, path could not be generated");
     }
   }
 

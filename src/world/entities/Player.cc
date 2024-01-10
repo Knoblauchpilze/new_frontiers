@@ -66,20 +66,20 @@ namespace new_frontiers {
     // currently recovering or sprinting.
     if (m_state.exhausted && m_origin + m_recovery <= info.moment) {
       m_state.exhausted = false;
-      log("Player is not exhausted anymore");
+      debug("Player is not exhausted anymore");
     }
     if (m_state.glowing && m_origin + m_exhaustion <= info.moment) {
       m_state.glowing = false;
       m_state.exhausted = true;
       m_origin = info.moment;
-      log("Player is now exhausted (and no more glowing)");
+      debug("Player is now exhausted (and no more glowing)");
     }
 
     // Update the sprinting status.
     if (info.controls.keys[Sprint] && !m_state.glowing && !m_state.exhausted) {
       m_state.glowing = true;
       m_origin = info.moment;
-      log("Player is now glowing");
+      debug("Player is now glowing");
     }
   }
 

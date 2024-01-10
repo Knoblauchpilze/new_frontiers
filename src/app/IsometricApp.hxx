@@ -44,13 +44,13 @@ namespace new_frontiers {
   inline
   int
   IsometricApp::aliasOfEntity(const tiles::Entity& ent) {
-    return tiles::BlocksCount + ent;
+    return static_cast<int>(tiles::BlocksCount) + ent;
   }
 
   inline
   int
   IsometricApp::aliasOfEffect(const tiles::Effect& vfx) {
-    return tiles::BlocksCount + tiles::EntitiesCount + vfx;
+    return static_cast<int>(tiles::BlocksCount) + static_cast<int>(tiles::EntitiesCount) + vfx;
   }
 
   inline
@@ -87,7 +87,7 @@ namespace new_frontiers {
     olc::Pixel col = m_cGenerator.generate(colony, failed);
 
     if (failed) {
-      log("Failed to generate color for \"" + colony + "\"");
+      debug("Failed to generate color for \"" + colony + "\"");
       col = olc::WHITE;
     }
     else {

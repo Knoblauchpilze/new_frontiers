@@ -64,16 +64,16 @@ namespace new_frontiers {
     if (p != m_focus) {
       switch (m_focus) {
         case colony::Priority::War:
-          log("Colony is now at war");
+          debug("Colony is now at war");
           break;
         case colony::Priority::Expansion:
-          log("Colony is now at expansion");
+          debug("Colony is now at expansion");
           break;
         case colony::Priority::Consolidation:
-          log("Colony is now at consolidation");
+          debug("Colony is now at consolidation");
           break;
         default:
-          log("Colony is now in unknown state");
+          debug("Colony is now in unknown state");
           break;
       }
     }
@@ -104,7 +104,7 @@ namespace new_frontiers {
       info.clampCoord(x, y);
     }
 
-    log("Spawning portal at " + std::to_string(x) + "x" + std::to_string(y));
+    debug("Spawning portal at " + std::to_string(x) + "x" + std::to_string(y));
 
     // Spawn a block corresponding to the current
     // focus of the colony.

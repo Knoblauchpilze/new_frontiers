@@ -43,7 +43,7 @@ namespace new_frontiers {
     // Spawn a new entity and prepare it.
     EntityShPtr ent = spawn(info);
     if (ent == nullptr) {
-      log("Spawner generated null entity, discarding it");
+      debug("Spawner generated null entity, discarding it");
       return;
     }
 

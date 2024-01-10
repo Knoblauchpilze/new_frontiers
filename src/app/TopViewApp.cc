@@ -55,11 +55,10 @@ namespace new_frontiers {
       world::Sort::ZOrder
     );
 
-    log(
+    verbose(
       "Fetched " + std::to_string(items.size()) + " element(s)" +
       " in viewport [" + std::to_string(v.p.x) + "," + std::to_string(v.p.y) +
-      " : " + std::to_string(v.dims.x) + "x" + std::to_string(v.dims.y) + "]",
-      utils::Level::Verbose
+      " : " + std::to_string(v.dims.x) + "x" + std::to_string(v.dims.y) + "]"
     );
 
     SpriteDesc sd;
@@ -289,9 +288,8 @@ namespace new_frontiers {
 
       // Be on the safe side.
       if (ie.type != world::ItemType::Entity) {
-        log(
-          "Fetched item with type " + std::to_string(static_cast<int>(ie.type)) + " while requesting only entities",
-          utils::Level::Warning
+        warn(
+          "Fetched item with type " + std::to_string(static_cast<int>(ie.type)) + " while requesting only entities"
         );
 
         continue;
