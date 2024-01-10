@@ -278,7 +278,7 @@ namespace new_frontiers {
         break;
       case ActionType::None:
         // Nothing to do if no action type is selected.
-        log("Not implemented or nothing to do");
+        debug("Not implemented or nothing to do");
       default:
         break;
     }
@@ -388,7 +388,7 @@ namespace new_frontiers {
           }
           } break;
         default:
-          log("Unhandled influence with type " + std::to_string(static_cast<int>(i->getType())), utils::Level::Warning);
+          warn("Unhandled influence with type " + std::to_string(static_cast<int>(i->getType())));
           break;
       }
     }
@@ -431,7 +431,7 @@ namespace new_frontiers {
         break;
       }
 
-      log("Reading section \"" + section + "\" from \"" + file + "\"");
+      debug("Reading section \"" + section + "\" from \"" + file + "\"");
 
       if (section == "colonies") {
         loadColonies(in);
@@ -450,10 +450,7 @@ namespace new_frontiers {
         std::string line;
         std::getline(in, line);
 
-        log(
-          std::string("Failed to decode unknown section \"") + section + "\"",
-          utils::Level::Error
-        );
+        warn("Failed to decode unknown section \"" + section + "\"");
 
         // This is a failure of the parsing.
         success = false;
@@ -500,7 +497,7 @@ namespace new_frontiers {
         std::string line;
         std::getline(in, line);
 
-        log("Skipping section \"" + section + "\" (not a colony)", utils::Level::Warning);
+        warn("Skipping section \"" + section + "\" (not a colony)");
         continue;
       }
 
@@ -509,10 +506,9 @@ namespace new_frontiers {
       // Convert the identifier to a valid kind.
       utils::Uuid id = utils::Uuid::create(uuidStr);
       if (!id.valid()) {
-        log(
+        warn(
           "Could not decode uuid for colony \"" + uuidStr + "\" at " +
-          std::to_string(x) + "x" + std::to_string(y),
-          utils::Level::Warning
+          std::to_string(x) + "x" + std::to_string(y)
         );
 
         continue;
@@ -522,19 +518,15 @@ namespace new_frontiers {
       bool err = false;
       colony::Priority p = colony::strToFocus(focusStr, err);
       if (err) {
-        log(
+        warn(
           "Could not decode colony focus \"" + focusStr +
-          "\" at " + std::to_string(x) + "x" + std::to_string(y),
-          utils::Level::Warning
+          "\" at " + std::to_string(x) + "x" + std::to_string(y)
         );
 
         continue;
       }
 
-      log(
-        "Registering colony at " + std::to_string(x) + "x" + std::to_string(y),
-        utils::Level::Verbose
-      );
+      verbose("Registering colony at " + std::to_string(x) + "x" + std::to_string(y));
 
       // Note that we only allow creation of portals
       // with a spawner-o-meter type for now.
@@ -584,7 +576,7 @@ namespace new_frontiers {
         std::string line;
         std::getline(in, line);
 
-        log("Skipping section \"" + section + "\" (not a portal)", utils::Level::Warning);
+        warn("Skipping section \"" + section + "\" (not a portal)");
         continue;
       }
 
@@ -593,10 +585,9 @@ namespace new_frontiers {
       // Convert mob type from string to enumeration.
       tiles::Entity e = strToEntity(mobStr);
       if (e == tiles::EntitiesCount) {
-        log(
+        warn(
           "Could not decode portal spawning unknown entity \"" + mobStr +
-          "\" at " + std::to_string(x) + "x" + std::to_string(y),
-          utils::Level::Warning
+          "\" at " + std::to_string(x) + "x" + std::to_string(y)
         );
 
         continue;
@@ -606,10 +597,9 @@ namespace new_frontiers {
       bool err = false;
       mob::Type mt = mob::strToType(mobTypeStr, err);
       if (err) {
-        log(
+        warn(
           "Could not decode portal spawning unknown entity type \"" + mobTypeStr +
-          "\" at " + std::to_string(x) + "x" + std::to_string(y),
-          utils::Level::Warning
+          "\" at " + std::to_string(x) + "x" + std::to_string(y)
         );
 
         continue;
@@ -617,19 +607,15 @@ namespace new_frontiers {
 
       utils::Uuid id = utils::Uuid::create(owner);
       if (!id.valid()) {
-        log(
+        warn(
           "Could not decode owner of portal \"" + owner + "\" at " +
-          std::to_string(x) + "x" + std::to_string(y),
-          utils::Level::Warning
+          std::to_string(x) + "x" + std::to_string(y)
         );
 
         continue;
       }
 
-      log(
-        "Registering portal spawning " + mobStr + " at " + std::to_string(x) + "x" + std::to_string(y),
-        utils::Level::Verbose
-      );
+      verbose("Registering portal spawning " + mobStr + " at " + std::to_string(x) + "x" + std::to_string(y));
 
       // Note that we only allow creation of portals
       // with a spawner-o-meter type for now.
@@ -681,7 +667,7 @@ namespace new_frontiers {
         std::string line;
         std::getline(in, line);
 
-        log("Skipping section \"" + section + "\" (not a wall nor a deposit)", utils::Level::Warning);
+        warn("Skipping section \"" + section + "\" (not a wall nor a deposit)");
         continue;
       }
 
@@ -691,10 +677,7 @@ namespace new_frontiers {
       if (section == "wall") {
         in >> health >> type >> x >> y;
 
-        log(
-          "Registering wall " + std::to_string(type) + " at " + std::to_string(x) + "x" + std::to_string(y),
-          utils::Level::Verbose
-        );
+        verbose("Registering wall " + std::to_string(type) + " at " + std::to_string(x) + "x" + std::to_string(y));
 
         Block::Props pp = BlockFactory::newWallProps(x, y, type);
         pp.health = health;
@@ -704,10 +687,7 @@ namespace new_frontiers {
       else if (section == "deposit") {
         in >> x >> y >> health >> stock;
 
-        log(
-          "Registering deposit with stock " + std::to_string(stock) + " at " + std::to_string(x) + "x" + std::to_string(y),
-          utils::Level::Verbose
-        );
+        verbose("Registering deposit with stock " + std::to_string(stock) + " at " + std::to_string(x) + "x" + std::to_string(y));
 
         Deposit::DProps pp = BlockFactory::newDepositProps(x, y);
         pp.health = health;
@@ -753,7 +733,7 @@ namespace new_frontiers {
         std::string line;
         std::getline(in, line);
 
-        log("Skipping section \"" + section + "\" (not an entity)", utils::Level::Warning);
+        warn("Skipping section \"" + section + "\" (not an entity)");
         continue;
       }
 
@@ -761,7 +741,7 @@ namespace new_frontiers {
 
       EntityShPtr e = createEntity(kind, mob, owner, x, y, health, homeX, homeY, carrying, cargo, attack);
       if (e == nullptr) {
-        log("Failed to decode props of entity at " + std::to_string(x) + "x" + std::to_string(y), utils::Level::Warning);
+        warn("Failed to decode props of entity at " + std::to_string(x) + "x" + std::to_string(y));
         continue;
       }
 

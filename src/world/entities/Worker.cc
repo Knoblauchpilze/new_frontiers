@@ -52,10 +52,7 @@ namespace new_frontiers {
     if (d == nullptr) {
       // Not able to convert to a valid deposit,
       // use wander again.
-      log(
-        "Reached block that is not deposit in collect behavior",
-        utils::Level::Warning
-      );
+      warn("Reached block that is not deposit in collect behavior");
 
       pickTargetFromPheromon(info, path, Goal::Deposit);
       return true;
@@ -65,7 +62,7 @@ namespace new_frontiers {
     // the stock of the deposit and the available
     // carrying capacity.
     float toFetch = std::min(availableCargo(), d->getStock());
-    log(
+    debug(
       "Collecting " +
       std::to_string(toFetch) + "/" + std::to_string(d->getStock()) +
       " on deposit at " +
@@ -75,7 +72,7 @@ namespace new_frontiers {
     // In case we can't fetch anything, return to
     // wander behavior.
     if (toFetch <= 0.0f) {
-      log("Deposit has been emptied while en route");
+      debug("Deposit has been emptied while en route");
       pickTargetFromPheromon(info, path, Goal::Deposit);
       return true;
     }
@@ -133,9 +130,8 @@ namespace new_frontiers {
       int status;
       std::string bType = abi::__cxa_demangle(typeid(*b).name(), 0, 0, &status);
 
-      log(
-        "Reached block of type \"" + bType + "\" which is not a spawner in return behavior",
-        utils::Level::Warning
+      warn(
+        "Reached block of type \"" + bType + "\" which is not a spawner in return behavior"
       );
 
       pickTargetFromPheromon(info, path, Goal::Home);
@@ -144,7 +140,7 @@ namespace new_frontiers {
 
     // Refill the home spawner with the amount we
     // scraped from the deposit.
-    log("Refilling home with " + std::to_string(m_carrying) + " resource(s)");
+    debug("Refilling home with " + std::to_string(m_carrying) + " resource(s)");
     s->refill(m_carrying);
     m_carrying = 0.0f;
 
@@ -270,7 +266,7 @@ namespace new_frontiers {
         utils::Point2f t;
         pickRandomTarget(info, m_tile.p, m_pathLength, t.x(), t.y());
 
-        log("Generated random target " + std::to_string(t.x()) + "x" + std::to_string(t.y()));
+        debug("Generated random target " + std::to_string(t.x()) + "x" + std::to_string(t.y()));
 
         newPath.clear(m_tile.p, true);
         generated = newPath.generatePathTo(info, t, false, m_perceptionRadius);
@@ -281,7 +277,7 @@ namespace new_frontiers {
     if (!generated) {
       // Failed to generate a path from random
       // motion: let's give up.
-      log(
+      debug(
         "Failed to escape from " +
         std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y())
       );
@@ -290,7 +286,7 @@ namespace new_frontiers {
       return false;
     }
 
-    log(
+    debug(
       "Escaping " + std::to_string(g.x()) + "x" + std::to_string(g.y()) +
       " from " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()) +
       " in cone from " + std::to_string(180.0f * (baseAngle - m_fleeConeAngleSpan / 2.0f) / 3.14159f) +

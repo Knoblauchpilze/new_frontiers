@@ -120,7 +120,7 @@ namespace new_frontiers {
     x /= totW;
     y /= totW;
 
-    log(
+    verbose(
       "rn: " + std::to_string(xRnd) + "x" +  std::to_string(yRnd) +
       ", ch: " + std::to_string(pheromons[pheromon::Type::Chase].x) + "x" +
       std::to_string(pheromons[pheromon::Type::Chase].y) +
@@ -148,8 +148,7 @@ namespace new_frontiers {
       ", " + std::to_string(pheromons[pheromon::Type::Collect].count) +
       ", " + std::to_string(pheromons[pheromon::Type::Return].count) +
       ", " + std::to_string(pheromons[pheromon::Type::Wander].count) +
-      ", " + std::to_string(pheromons[pheromon::Type::Flee].count) + ")",
-      utils::Level::Verbose
+      ", " + std::to_string(pheromons[pheromon::Type::Flee].count) + ")"
     );
   }
 

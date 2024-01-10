@@ -37,29 +37,22 @@
  */
 // TODO: Quadtree system to represent the elements of the world (in Locator class).
 
-# include <core_utils/StdLogger.hh>
-# include <core_utils/LoggerLocator.hh>
+# include <core_utils/log/StdLogger.hh>
+# include <core_utils/log/Locator.hh>
+# include <core_utils/log/PrefixedLogger.hh>
 # include <core_utils/CoreException.hh>
 # include "app/IsometricApp.hh"
 # include "app/TopViewApp.hh"
 
 int main(int /*argc*/, char** /*argv*/) {
   // Create the logger.
-  utils::StdLogger logger;
-  utils::LoggerLocator::provide(&logger);
-
-  logger.setLevel(utils::Level::Debug);
-
-  const std::string service("new_frontiers");
-  const std::string module("main");
+  utils::log::StdLogger raw;
+  raw.setLevel(utils::log::Severity::DEBUG);
+  utils::log::PrefixedLogger logger("pge", "main");
+  utils::log::Locator::provide(&raw);
 
   try {
-    utils::LoggerLocator::getLogger().logMessage(
-      utils::Level::Notice,
-      std::string("Starting application"),
-      module,
-      service
-    );
+    logger.notice("Starting application");
 
     // Define the theme of this application.
     new_frontiers::Theme t;
@@ -86,30 +79,15 @@ int main(int /*argc*/, char** /*argv*/) {
     demo.Start();
   }
   catch (const utils::CoreException& e) {
-    utils::LoggerLocator::getLogger().logMessage(
-      utils::Level::Critical,
-      std::string("Caught internal exception while setting up application"),
-      module,
-      service,
-      e.what()
-    );
+    logger.error("Caught internal exception while setting up application",
+                e.what());
   }
   catch (const std::exception& e) {
-    utils::LoggerLocator::getLogger().logMessage(
-      utils::Level::Critical,
-      std::string("Caught exception while setting up application"),
-      module,
-      service,
-      e.what()
-    );
+    logger.error("Caught internal exception while setting up application",
+                 e.what());
   }
   catch (...) {
-    utils::LoggerLocator::getLogger().logMessage(
-      utils::Level::Critical,
-      std::string("Unexpected error while setting up application"),
-      module,
-      service
-    );
+    logger.error("Unexpected error while setting up application");
   }
 
   // All is good.

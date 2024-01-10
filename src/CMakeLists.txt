@@ -1,6 +1,6 @@
 project (new_frontiers_lib)
 
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
@@ -33,7 +33,7 @@ add_library (new_frontiers_lib SHARED
 set (NEW_FRONTIERS_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
 
 target_link_libraries(new_frontiers_lib
-  sdl_core
+  core_utils
   png
   X11
   GL

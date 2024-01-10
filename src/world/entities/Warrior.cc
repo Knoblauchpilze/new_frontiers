@@ -40,7 +40,7 @@ namespace new_frontiers {
     if (entities.empty()) {
       // Couldn't find the entity we were chasing, get
       // back to wander behavior.
-      log("Lost entity at " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()));
+      debug("Lost entity at " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()));
 
       pickTargetFromPheromon(info, path, Goal::Entity);
       return true;
@@ -55,7 +55,7 @@ namespace new_frontiers {
     path.clear(m_tile.p);
     if (!path.generatePathTo(info, e->getTile().p, false, m_perceptionRadius)) {
       // Couldn't reach the entity, return to wandering.
-      log("Entity is now unreachable, returning to wandering from " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()));
+      debug("Entity is now unreachable, returning to wandering from " + std::to_string(m_tile.p.x()) + "x" + std::to_string(m_tile.p.y()));
       pickTargetFromPheromon(info, path, Goal::Entity);
       return true;
     }
@@ -64,7 +64,7 @@ namespace new_frontiers {
     // actually hit it, do so if we are able to.
     if (m_energy >= m_attackCost && utils::d(e->getTile().p, m_tile.p) < m_attackRange) {
       bool alive = e->damage(m_attack);
-      log("Attacking for " + std::to_string(m_attack) + " damage, " + std::to_string(e->getHealthRatio()) + " health ratio");
+      debug("Attacking for " + std::to_string(m_attack) + " damage, " + std::to_string(e->getHealthRatio()) + " health ratio");
 
       m_energy -= m_attackCost;
 
@@ -72,7 +72,7 @@ namespace new_frontiers {
       // now dead. We will also return back to the
       // wandering behavior.
       if (!alive) {
-        log("Killed entity at " + std::to_string(e->getTile().p.x()) + "x" + std::to_string(e->getTile().p.y()));
+        debug("Killed entity at " + std::to_string(e->getTile().p.x()) + "x" + std::to_string(e->getTile().p.y()));
 
         info.removeEntity(e.get());
 
@@ -117,9 +117,8 @@ namespace new_frontiers {
       int status;
       std::string bType = abi::__cxa_demangle(typeid(*b).name(), 0, 0, &status);
 
-      log(
-        "Reached block of type \"" + bType + "\" which is not a spawner in return behavior",
-        utils::Level::Warning
+      warn(
+        "Reached block of type \"" + bType + "\" which is not a spawner in return behavior"
       );
 
       pickTargetFromPheromon(info, path, Goal::Home);
@@ -132,7 +131,7 @@ namespace new_frontiers {
     float gain = s->refill(-missing, false);
     m_health += gain;
 
-    log("Healed for " + std::to_string(gain) + " (" + std::to_string(missing) + " was missing)");
+    debug("Healed for " + std::to_string(gain) + " (" + std::to_string(missing) + " was missing)");
 
     // In case the home could not heal us enough, let's
     // pick a target not too far from the home and wait
@@ -148,12 +147,12 @@ namespace new_frontiers {
       path.clear(m_tile.p);
 
       if (!path.generatePathTo(info, m_home, true, m_perceptionRadius)) {
-        log("Failed to generate path to home even though it is refilled");
+        debug("Failed to generate path to home even though it is refilled");
         pickTargetFromPheromon(info, path, Goal::Home);
         return true;
       }
 
-      log("Home is now refilled, going there");
+      debug("Home is now refilled, going there");
 
       return true;
     }
@@ -164,12 +163,12 @@ namespace new_frontiers {
     path.clear(m_tile.p);
     if (!path.generatePathTo(info, t, false, utils::d(m_tile.p, t) + 1.0f)) {
       // Couldn't reach the entity, return to wandering.
-      log("Failed to generate path to random target to stay close from home");
+      debug("Failed to generate path to random target to stay close from home");
       pickTargetFromPheromon(info, path, Goal::Home);
       return true;
     }
 
-    log(
+    debug(
       "Not healed enough, going to " +
       std::to_string(t.x()) + "x" + std::to_string(t.y()) +
       " at " + std::to_string(utils::d(m_home, t)) + " from home"

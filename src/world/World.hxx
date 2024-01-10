@@ -36,7 +36,7 @@ namespace new_frontiers {
 
     // Consistency check.
     if (m_actions.block == nullptr) {
-      log("Assigned invalid null block action", utils::Level::Warning);
+      warn("Assigned invalid null block action");
       m_actions.type = ActionType::None;
     }
   }
@@ -49,7 +49,7 @@ namespace new_frontiers {
 
     // Consistency check.
     if (m_actions.ent == nullptr) {
-      log("Assigned invalid null entity action", utils::Level::Warning);
+      warn("Assigned invalid null entity action");
       m_actions.type = ActionType::None;
     }
   }
@@ -62,14 +62,14 @@ namespace new_frontiers {
 
     // Consistency check.
     if (m_actions.vfx == nullptr) {
-      log("Assigned invalid null vfx action", utils::Level::Warning);
+      warn("Assigned invalid null vfx action");
       m_actions.type = ActionType::None;
     }
 
     if (m_actions.type != ActionType::None) {
       Pheromon::PProps* pp = dynamic_cast<Pheromon::PProps*>(m_actions.vfx.get());
       if (pp == nullptr) {
-        log("Unhandled vfx action which is not a pheromon", utils::Level::Error);
+        warn("Unhandled vfx action which is not a pheromon");
 
         m_actions.vfx = nullptr;
         m_actions.type = ActionType::None;
@@ -100,10 +100,9 @@ namespace new_frontiers {
     // Check whether we could find out which
     // colony is currently active.
     if (id >= m_colonies.size()) {
-      log(
+      warn(
         "Could not find colony corresponding to current active one " +
-        m_actions.owner.toString() + ", switching to first one",
-        utils::Level::Error
+        m_actions.owner.toString() + ", switching to first one"
       );
 
       m_actions.owner = m_colonies[0u]->getOwner();

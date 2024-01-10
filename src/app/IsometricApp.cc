@@ -71,7 +71,7 @@ namespace new_frontiers {
     m_sprites[CursorID].res = new olc::Decal(spr);
 
     // Build the atlas.
-    int spritesCount = tiles::BlocksCount + tiles::EntitiesCount + tiles::EffectsCount;
+    int spritesCount = static_cast<int>(tiles::BlocksCount) + static_cast<int>(tiles::EntitiesCount) + static_cast<int>(tiles::EffectsCount);
     m_aliases.resize(spritesCount + 1);
 
     m_aliases[aliasOfBlock(tiles::Empty)]              = SpriteAlias{SolidID, olc::vi2d(4, 2)};
@@ -140,11 +140,10 @@ namespace new_frontiers {
       world::Sort::ZOrder
     );
 
-    log(
+    verbose(
       "Fetched " + std::to_string(items.size()) + " element(s)" +
       " in viewport [" + std::to_string(v.p.x) + "," + std::to_string(v.p.y) +
-      " : " + std::to_string(v.dims.x) + "x" + std::to_string(v.dims.y) + "]",
-      utils::Level::Verbose
+      " : " + std::to_string(v.dims.x) + "x" + std::to_string(v.dims.y) + "]"
     );
 
     SpriteDesc sd;
@@ -390,9 +389,8 @@ namespace new_frontiers {
 
       // Be on the safe side.
       if (ie.type != world::ItemType::Entity) {
-        log(
-          "Fetched item with type " + std::to_string(static_cast<int>(ie.type)) + " while requesting only entities",
-          utils::Level::Warning
+        warn(
+          "Fetched item with type " + std::to_string(static_cast<int>(ie.type)) + " while requesting only entities"
         );
 
         continue;
